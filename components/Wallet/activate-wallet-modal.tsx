@@ -12,20 +12,31 @@ import { toast } from "sonner";
 import { useModal } from "../Modal/modal";
 import { useWalletStore } from "@/store/wallet-store";
 import { ReloadIcon } from "@/public/icons/icons";
+import { useRole } from "@/hooks/roleContext";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import useBranchData from "@/hooks/useBranchData";
 
 const ActivateWalletModal = () => {
   const { setIsOpen } = useModal();
   const [requestLoading, setRequestLoading] = useState(false);
   const [resendReqLoading, setResendReqLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
-  const walletId = useWalletStore((state) => state.walletId);
+  const { branch } = usePersonalInfoStore();
+  // useBranchData(branch?.branch_id || 0);
+  const { sub_wallet } = useBranchInfoStore();
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
   const [otp, setOtp] = useState("");
   const [countdown, setCountdown] = useState(60);
   const [canResend, setCanResend] = useState(false);
+  const { role } = useRole();
   const [activeStep, setActiveStep] =
     useState<ActivateWalletOptions>("setup-pin");
+
+  const managerWallerID = sub_wallet?.wallet_id;
+  const defaultWalletID = useWalletStore((state) => state.walletId);
+  const walletId = role === "manager" ? managerWallerID : defaultWalletID;
 
   const handleResendOtp = async () => {
     if (canResend) {
@@ -83,7 +94,6 @@ const ActivateWalletModal = () => {
             <p className="text-black">
               {`${String(Math.floor(countdown / 60)).padStart(2, "0")}:${String(
                 countdown % 60
-                
               ).padStart(2, "0")}`}
             </p>
           ) : (
@@ -132,6 +142,7 @@ const ActivateWalletModal = () => {
       const status = await setWalletPin(pin, confirmPin, otp, walletId);
       if (status) {
         setIsOpen(false);
+        window.dispatchEvent(new Event("refetchBranch"));
       }
       setRequestLoading(false);
     }

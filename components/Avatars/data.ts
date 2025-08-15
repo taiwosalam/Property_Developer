@@ -1,5 +1,5 @@
 import api, { handleAxiosError } from "@/services/api";
-import type { AvatarLinksResponse } from "./types";
+import type { AvatarLinksResponse, BranchAvatarLinksResponse } from "./types";
 
 export const avatarLinks = [
   "https://pubassets.ourproperty.ng/uploads/gBTaZYUXOch2qrKq5k5F2EdShRihQjYGuxDwOuu6.png",
@@ -107,6 +107,7 @@ export const branchAvatarLinks = [
 ];
 
 let cachedAvatarLinks: { id: string; image_url: string }[] | null = null;
+let cachedBranchAvatarLinks: { id: string; image_url: string }[] | null = null;
 
 export const getAvatarLinks = async () => {
   if (cachedAvatarLinks) {
@@ -116,6 +117,20 @@ export const getAvatarLinks = async () => {
     const { data } = await api<AvatarLinksResponse>("avatars");
     cachedAvatarLinks = data.avatars;
     return data.avatars;
+  } catch (error) {
+    handleAxiosError(error);
+    return [];
+  }
+};
+
+export const getBranchAvatarLinks = async () => {
+  if (cachedBranchAvatarLinks) {
+    return cachedBranchAvatarLinks;
+  }
+  try {
+    const { data } = await api<BranchAvatarLinksResponse>("branch-images");
+    cachedBranchAvatarLinks = data.images;
+    return data.images;
   } catch (error) {
     handleAxiosError(error);
     return [];

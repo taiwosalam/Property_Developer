@@ -1,6 +1,6 @@
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
-import { getAllStates, getLocalGovernments, getCities } from "@/utils/states";
+import { getAllStates, getLocalGovernments, getCities, getAllLocalGovernments, getAllCities } from "@/utils/states";
 import { useState } from "react";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import CameraCircle from "@/public/icons/camera-circle.svg";
@@ -14,6 +14,9 @@ import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
 
 export interface VehicleDataProps {
   id: number;
@@ -34,8 +37,11 @@ export interface PersonalDataProps {
   local_government: string;
   city: string;
   address: string;
-  phone_number: string;
+  // phone_number?: {
+  //   profile_phone: string;
+  // };
   avatar?: string;
+  phone_number: string;
 }
 
 type BaseFieldProps = {
@@ -45,35 +51,38 @@ type BaseFieldProps = {
 type VehicleFieldProps = BaseFieldProps &
   (
     | {
-      editMode: true;
-      data: VehicleDataProps;
-      loading?: boolean;
-    }
+        editMode: true;
+        data: VehicleDataProps;
+        loading?: boolean;
+      }
     | {
-      editMode?: false;
-      loading?: boolean;
-    }
+        editMode?: false;
+        loading?: boolean;
+      }
   );
 
 type PersonalFieldProps = BaseFieldProps & {
   formstep: number;
+
   setFormstep: (step: number) => void;
-} &
-  (
+  changeTenant?: () => void;
+} & (
     | {
-      editMode: true;
-      data: PersonalDataProps;
-      loading?: boolean;
-    }
+        editMode: true;
+        data: PersonalDataProps;
+        loading?: boolean;
+      }
     | {
-      editMode?: false;
-      loading?: boolean;
-    }
+        editMode?: false;
+        loading?: boolean;
+      }
   );
 
 export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
   props
 ) => {
+  const { isMobile, isTablet, isDesktop } = useWindowWidth();
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const { editMode, showSubmitButton, loading, formstep, setFormstep } = props;
   const [activeAvatar, setActiveAvatar] = useState(
     editMode ? props.data.avatar : ""
@@ -91,13 +100,17 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
   } = useImageUploader({
-    placeholder: editMode ? props.data.avatar || CameraCircle : CameraCircle,
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
   });
 
   const handleAvatarSelection = (avatarUrl: string) => {
     clearImageSelection();
     setActiveAvatar(avatarUrl);
-    setFormstep(1);
+    setAvatarModalOpen(false);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -105,9 +118,15 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     originalHandleImageChange(e);
   };
 
+  console.log("props", props)
   return (
     <div className="relative">
-      <div className={formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"}>
+      <div
+        className={avatarModalOpen ? "hidden z-0" : "space-y-5 z-10"}
+        // className={
+        //   formstep === 2 ? "pointer-events-none opacity-0" : "space-y-5"
+        // }
+      >
         <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
           <Input
             required
@@ -119,6 +138,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Select
             label="State"
             id="state"
+            required
             options={getAllStates()}
             inputContainerClassName="bg-neutral-2"
             value={address.state}
@@ -134,6 +154,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Select
             label="Local Government"
             id="lga"
+            required
             options={getLocalGovernments(address.state)}
             inputContainerClassName="bg-neutral-2"
             value={address.local_government}
@@ -148,6 +169,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
           <Select
             label="City"
             id="city"
+            required
             options={getCities(address.state, address.local_government)}
             inputContainerClassName="bg-neutral-2"
             value={address.city}
@@ -156,19 +178,29 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             }
             allowCustom
           />
-          <Input
-            label="Address"
+
+          <RestrictInput
             id="address"
-            inputClassName="rounded-lg"
-            defaultValue={editMode ? props.data.address : undefined}
-          />
-          <PhoneNumberInput
+            label="Street Name/Number"
+            inputClassName="rounded-lg py-4"
             required
-            id="phone"
-            label="Phone Number"
-            inputContainerClassName="bg-neutral-2"
-            defaultValue={editMode ? props.data.phone_number : undefined}
+            defaultValue={editMode ? props.data.address : undefined}
+            restrictedWordsOptions={{
+              words: [
+                ...getAllStates(),
+                ...getAllLocalGovernments(),
+                ...getAllCities(),
+              ],
+            }}
           />
+
+            <PhoneNumberInput
+              required
+              id="phone"
+              label="Phone Number"
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={editMode ? props.data.phone_number : ""}
+            />
         </div>
         <div className="flex gap-4 justify-between items-end flex-wrap">
           <div className="flex items-end gap-3">
@@ -176,7 +208,7 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
               htmlFor="picture"
               className="relative cursor-pointer flex-shrink-0"
             >
-              <Picture src={preview} alt="camera" size={40} rounded />
+              <Picture src={preview} alt="camera" size={60} rounded />
               {preview && preview !== CameraCircle && (
                 <div
                   role="button"
@@ -202,53 +234,76 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
               />
               <input type="hidden" name="avatar" value={activeAvatar} />
             </label>
-            <button
-              type="button"
-              onClick={() => setFormstep(2)}
-              className="w-[40px] h-[40px] rounded-full flex items-center justify-center text-white relative bg-red-500"
+            <Modal
+              state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
             >
-              {activeAvatar ? (
-                <>
-                  <Image
-                    src={activeAvatar}
-                    alt="selected avatar"
-                    width={40}
-                    height={40}
-                    className="object-cover object-center w-[40px] h-[40px] rounded-full bg-brand-9"
-                  />
-                  <div
-                    role="button"
-                    aria-label="remove avatar"
-                    className="absolute top-0 right-0"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setActiveAvatar("");
-                    }}
-                  >
-                    <DeleteIconOrange size={20} />
-                  </div>
-                </>
-              ) : (
-                <PersonIcon size={18} />
-              )}
-            </button>
+              <ModalTrigger
+                className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+                aria-label="choose avatar"
+              >
+                {activeAvatar ? (
+                  <>
+                    <Image
+                      src={activeAvatar}
+                      alt="selected avatar"
+                      width={60}
+                      height={60}
+                      className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+                    />
+                    <div
+                      role="button"
+                      aria-label="remove avatar"
+                      className="absolute top-0 right-0"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setActiveAvatar("");
+                      }}
+                    >
+                      <DeleteIconOrange size={20} />
+                    </div>
+                  </>
+                ) : (
+                  <PersonIcon size={18} />
+                )}
+              </ModalTrigger>
+              <ModalContent>
+                <LandlordTenantModalPreset
+                  heading="Choose Avatar"
+                  style={{
+                    maxWidth:
+                      isTablet || isMobile ? "90%" : isDesktop ? "60%" : "70%",
+                    zIndex: "1",
+                  }}
+                >
+                  <Avatars onClick={handleAvatarSelection} />
+                </LandlordTenantModalPreset>
+              </ModalContent>
+            </Modal>
+            {props.changeTenant && (
+              <Button
+                onClick={props.changeTenant}
+                className="px-4 py-2"
+                size="sm_normal"
+              >
+                Change Tenant/Guest
+              </Button>
+            )}
           </div>
           {showSubmitButton && (
-            <Button
-              type="submit"
-              size="16_bold"
-              className="ml-auto rounded-lg py-2 px-8"
-            >
-              {loading ? "Loading..." : editMode ? "Update" : "Create"}
-            </Button>
+            <div className="flex w-full items-center justify-end">
+              <div className="flex items-center justify-end">
+                <Button
+                  type="submit"
+                  size="16_bold"
+                  className="mr-auto rounded-lg py-2 px-8"
+                >
+                  {loading ? "Loading..." : editMode ? "Update" : "Create"}
+                </Button>
+              </div>
+            </div>
           )}
         </div>
       </div>
-      {formstep === 2 && (
-        <div className="absolute top-0 left-0 right-0 pb-5">
-          <Avatars onClick={handleAvatarSelection} />
-        </div>
-      )}
     </div>
   );
 };
@@ -265,115 +320,120 @@ export const VehicleDetailsFormFields: React.FC<VehicleFieldProps> = (
   });
 
   return (
-    <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
-      <Input
-        required
-        label="Plate Number"
-        id="plate_number"
-        inputClassName="rounded-lg"
-        defaultValue={editMode ? props.data.plate_number : undefined}
-      />
-      <Select
-        required
-        label="State"
-        id="vehicle_state"
-        options={getAllStates()}
-        inputContainerClassName="bg-neutral-2"
-        defaultValue={editMode ? props.data.state : undefined}
-      />
-      <Select
-        required
-        label="Vehicle Type"
-        id="vehicle_type"
-        options={Object.keys(vehicleData)}
-        value={vehicleRecord.type}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({
-            ...prev,
-            type: option,
-            brand: "",
-            color: "",
-            year: "",
-          }))
-        }
-      />
-      <Select
-        required
-        label="Vehicle Brand Name"
-        id="vehicle_brand"
-        options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.brands ||
-          []
-        }
-        value={vehicleRecord.brand}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({
-            ...prev,
-            brand: option,
-          }))
-        }
-      />
-      {/* {vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.colors
-        ?.length > 0 && (
-          <Select
-            label="Color"
-            id="color"
-            options={
-              vehicleData[vehicleRecord.type as keyof typeof vehicleData]
-                ?.colors || []
-            }
-            value={vehicleRecord.color}
-            onChange={(option) =>
-              setVehicleRecord((prev) => ({ ...prev, color: option }))
-            }
-          />
+    <div>
+      <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-10">
+        <Input
+          required
+          label="Plate Number"
+          id="plate_number"
+          inputClassName="rounded-lg"
+          defaultValue={editMode ? props.data.plate_number : undefined}
+        />
+        <Select
+          required
+          label="State"
+          id="vehicle_state"
+          options={getAllStates()}
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={editMode ? props.data.state : undefined}
+        />
+        <Select
+          required
+          label="Vehicle Type"
+          id="vehicle_type"
+          options={Object.keys(vehicleData)}
+          value={vehicleRecord.type}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({
+              ...prev,
+              type: option,
+              brand: "",
+              color: "",
+              year: "",
+            }))
+          }
+        />
+        <Select
+          required
+          label="Vehicle Brand Name"
+          id="vehicle_brand"
+          options={
+            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+              ?.brands || []
+          }
+          value={vehicleRecord.brand}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({
+              ...prev,
+              brand: option,
+            }))
+          }
+        />
+        <Select
+          label="Color"
+          id="color"
+          options={
+            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+              ?.colors || []
+          }
+          value={vehicleRecord.color}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({ ...prev, color: option }))
+          }
+        />
+        <Select
+          label="Manufacture Year"
+          id="manufacture_year"
+          options={
+            vehicleData[vehicleRecord.type as keyof typeof vehicleData]
+              ?.years || []
+          }
+          value={vehicleRecord.year}
+          onChange={(option) =>
+            setVehicleRecord((prev) => ({ ...prev, year: option }))
+          }
+        />
+        <Input
+          label="Model"
+          id="model"
+          inputClassName="rounded-lg"
+          defaultValue={editMode ? props.data.model : undefined}
+        />
+        <Select
+          label="Visitor Category"
+          id="visitor_category"
+          options={visitorCategories}
+          inputContainerClassName="bg-neutral-2"
+          defaultValue={editMode ? props.data.visitor_category : undefined}
+        />
+
+        {/* {showSubmitButton && (
+          <FixedFooter>
+            <div className="flex w-full items-center justify-end">
+              <Button
+                type="submit"
+                size="16_bold"
+                disabled={props.loading}
+                className="rounded-lg py-2 px-8"
+              >
+                {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
+              </Button>
+            </div>
+          </FixedFooter>
         )} */}
-      <Select
-        label="Color"
-        id="color"
-        options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]
-            ?.colors || []
-        }
-        value={vehicleRecord.color}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({ ...prev, color: option }))
-        }
-      />
-      <Select
-        label="Manufacture Year"
-        id="manufacture_year"
-        options={
-          vehicleData[vehicleRecord.type as keyof typeof vehicleData]?.years ||
-          []
-        }
-        value={vehicleRecord.year}
-        onChange={(option) =>
-          setVehicleRecord((prev) => ({ ...prev, year: option }))
-        }
-      />
-      <Input
-        label="Model"
-        id="model"
-        inputClassName="rounded-lg"
-        defaultValue={editMode ? props.data.model : undefined}
-      />
-      <Select
-        label="Visitor Category"
-        id="visitor_category"
-        options={visitorCategories}
-        inputContainerClassName="bg-neutral-2"
-        defaultValue={editMode ? props.data.visitor_category : undefined}
-      />
-      {showSubmitButton && (
-        <Button
-          type="submit"
-          size="16_bold"
-          className="ml-auto rounded-lg py-2 px-8 self-end justify-self-start md:col-span-2 lg:col-span-1 lg:col-start-3"
-        >
-          {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
-        </Button>
-      )}
+      </div>
+      <div className="w-full mt-3">
+        <div className="flex w-full items-center justify-end">
+          <Button
+            type="submit"
+            size="16_bold"
+            disabled={props.loading}
+            className="rounded-lg py-2 px-8"
+          >
+            {props.loading ? "Loading..." : editMode ? "Update" : "Create"}
+          </Button>
+        </div>
+      </div>
     </div>
   );
 };

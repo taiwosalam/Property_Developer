@@ -1,82 +1,137 @@
 "use client";
-import { useState } from "react";
-import { CameraIcon } from "@/public/icons/icons";
+
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import Sample from "@/public/empty/SampleProperty.jpeg";
-import { SectionSeparator } from "@/components/Section/section-components";
-import Sample2 from "@/public/empty/SampleProperty2.jpeg";
-import Sample3 from "@/public/empty/SampleProperty3.jpeg";
-import Sample4 from "@/public/empty/SampleProperty4.png";
-import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import { CameraIcon } from "lucide-react";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
 import Switch from "@/components/Form/Switch/switch";
+import { useOccupantStore } from "@/hooks/occupant-store";
+import { SectionSeparator } from "@/components/Section/section-components";
+import { empty } from "@/app/config";
+import { cn } from "@/lib/utils";
 
 interface PropertySwitchUnitItemProps {
   id: string;
   isSelected: boolean;
   onSelect: (id: string) => void;
   isRental?: boolean;
+  cautionDeposit?: string;
+  serviceCharge?: string;
+  unitDetails: string;
+  totalPackage?: string;
+  unitImages: string[];
+  rent: string;
+  propertyType: string;
+  unitName: string;
+  vatAmount?: string;
+  otherCharge?: string;
+  legalFee?: string;
+  inspectionFee?: string;
+  agencyFee?: string;
 }
+
+// Utility function to check for valid, non-zero values
+const isValidValue = (value: string | undefined): boolean => {
+  if (value === undefined || value === null || value === "") return false;
+
+  // Remove currency symbols (e.g., ₦) and trim whitespace
+  const cleanValue = value.replace(/[^\d.-]/g, "").trim();
+
+  // Check if the cleaned value is a number and not zero
+  const numericValue = parseFloat(cleanValue);
+  return !isNaN(numericValue) && numericValue !== 0;
+};
 
 const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
   id,
   isSelected,
   onSelect,
   isRental,
+  cautionDeposit,
+  serviceCharge,
+  unitDetails,
+  totalPackage,
+  unitImages,
+  rent,
+  propertyType,
+  unitName,
+  vatAmount,
+  otherCharge,
+  legalFee,
+  inspectionFee,
+  agencyFee,
 }) => {
+  const { setCalculation, setDeduction, calculation, deduction } =
+    useOccupantStore();
   const [screenModal, setScreenModal] = useState(false);
-  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
-  const [checked1, setChecked1] = useState(false);
-  const [checked2, setChecked2] = useState(false);
+  // const [calcChecked, setCalcChecked] = useState(calculation);
+  const [calcChecked, setCalcChecked] = useState(false);
+  // const [deductChecked, setDeductChecked] = useState(deduction);
+  const [deductChecked, setDeductChecked] = useState(false);
+
+  // Sync local state with store
+  useEffect(() => {
+    setCalcChecked(calculation);
+  }, [calculation]);
+
+  useEffect(() => {
+    setDeductChecked(deduction);
+  }, [deduction]);
+
+  const fields = [
+    { label: "Unit No/Name", value: unitName, required: true },
+    { label: "Rent", value: rent, required: true },
+    { label: "Unit Details", value: unitDetails, required: true },
+    { label: "Caution Deposit", value: cautionDeposit },
+    { label: "Service Charge", value: serviceCharge },
+    { label: "VAT Amount", value: vatAmount },
+    { label: "Other Charge", value: otherCharge },
+    { label: "Legal Fee", value: legalFee },
+    { label: "Inspection Fee", value: inspectionFee },
+    { label: "Agency Fee", value: agencyFee },
+    { label: "Total Package", value: totalPackage },
+  ];
+
+  // Filter fields to show only those with valid values or required
+  const visibleFields = fields.filter(
+    (field) => field.required || isValidValue(field.value)
+  );
+
   return (
-    <div
-      className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
-      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
-    >
+    <div className="p-6 rounded-2xl bg-white dark:bg-darkText-primary shadow-[2px_2px_4px_0px_rgba(0,0,0,0.05)]">
       {/* Image Modal */}
       <PopupImageModal
         isOpen={screenModal}
         onClose={() => setScreenModal(false)}
-        images={sampleImages.map((image) => ({
-          src: image.src,
-        }))}
+        images={unitImages.map((image) => ({ src: image, isVideo: false }))}
       />
-      <div className="flex items-center justify-between">
-        <h4 className="text-brand-10 text-base font-bold">
-          Unit ID: 123456776342
-        </h4>
-        <Checkbox onChange={() => onSelect(id)} checked={isSelected} />
+
+      {/* Unit ID and Checkbox */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-sm font-bold text-brand-10 dark:text-darkText-1">
+          Unit ID: {id}
+        </span>
+        <Checkbox
+          onChange={() => onSelect(id)}
+          checked={isSelected}
+          aria-label={`Select unit ${unitName}`}
+        />
       </div>
-      <SectionSeparator className="my-4 h-[2px]" />
-      <div className="flex items-center gap-2 justify-between overflow-y-auto custom-round-scrollbar pb-2">
-        <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
-          <div>
-            <p className="text-[#747474] dark:text-white">Unit Details</p>
-            <p className="text-black dark:text-darkText-1">
-              Newly Built 5 Bedroom Detached Duplex
-            </p>
-          </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Rent</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
-          </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Unit No/Name</p>
-            <p className="text-black dark:text-darkText-1">Flat 4</p>
-          </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Caution Deposit</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
-          </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Unit Description</p>
-            <p className="text-black dark:text-darkText-1">Abiola Moniya</p>
-          </div>
-          <div>
-            <p className="text-[#747474] dark:text-white">Service Charge</p>
-            <p className="text-black dark:text-darkText-1">₦300,000</p>
-          </div>
+
+      {/* Main Content */}
+      <div className="flex items-start gap-4 justify-between">
+        <div className="flex-grow text-sm md:text-base grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-4">
+          {visibleFields.map((field, index) => (
+            <div key={index} className="flex items-start gap-4">
+              <p className="text-[#747474] dark:text-white min-w-[120px] capitalize">
+                {field.label}
+              </p>
+              <p className="text-black dark:text-darkText-2 flex-1 capitalize truncate">
+                {field.value}
+              </p>
+            </div>
+          ))}
         </div>
 
         {/* Image */}
@@ -84,52 +139,22 @@ const PropertySwitchUnitItem: React.FC<PropertySwitchUnitItemProps> = ({
           role="button"
           className="flex-shrink-0 w-[168px] h-[168px] rounded-2xl relative overflow-hidden cursor-pointer"
           onClick={() => setScreenModal(true)}
+          aria-label={`View images for unit ${unitName}`}
         >
           <div className="absolute z-[1] left-[65%] top-3 bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
-            <CameraIcon />
-            <p className="text-black font-medium text-[10px]">+23</p>
+            <CameraIcon width={12} height={12} />
+            <p className="text-black font-medium text-[10px]">
+              {unitImages.length > 0 ? `+${unitImages.length}` : "No images"}
+            </p>
           </div>
           <Image
-            src={"/empty/SampleProperty3.jpeg"}
-            alt={""}
+            src={unitImages[0] || empty}
+            alt={unitName || "Unit image"}
             fill
-            className="object-cover object-center"
+            className="object-cover object-center rounded-2xl"
           />
         </div>
       </div>
-      <SectionSeparator className="my-4 h-[2px]" />
-      {isSelected && isRental && (
-        <div className="space-y-6 text-text-secondary dark:text-darkText-1 text-sm font-medium">
-          <div className="space-y-[10px]">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={checked1}
-                onClick={() => setChecked1((x) => !x)}
-              />
-              <p>Calclation</p>
-            </div>
-            <p>
-              {!checked1
-                ? "Charge the tenants the same total package as renewal tenants since they were tenants in one of the units of the property before"
-                : "Calculate the total package of the new rent, including caution deposit, Service Charge, agency fee, legal fee and other Charges) for the tenants that you are transferring to the new unit."}
-            </p>
-          </div>
-          <div className="space-y-[10px]">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={checked2}
-                onClick={() => setChecked2((x) => !x)}
-              />
-              <p>Deduction</p>
-            </div>
-            <p>
-              {!checked2
-                ? "Do not deduct the current outstanding rent balance from the cost of the new units that the occupants are moving into"
-                : "Calculate the total package of the new fee, including service charge and other Charges for the occupant that you are transferring to the new unit."}
-            </p>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

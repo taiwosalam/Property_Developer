@@ -4,7 +4,11 @@ export interface AllTransactionsResponse {
   data: {
     current_page: number;
     last_page: number;
-    data: Transaction[];
+    transactions: Transaction[];
+    pagination: {
+      current_page: number;
+      last_page: number;
+    };
   };
 }
 

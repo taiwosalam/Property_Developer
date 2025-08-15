@@ -27,7 +27,7 @@ const WithdrawFundsModal = ({ branch }: { branch?: boolean}) => {
     },
     "input pin": {
       heading: "Input Pin",
-      content: <InputPin />,
+      content: <InputPin branch={branch} />,
     },
   };
 

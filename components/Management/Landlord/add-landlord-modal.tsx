@@ -13,26 +13,32 @@ import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants"
 import InvitationForm from "../invitation-form";
 import {
   addLandlord,
+  addLandlordWithEmail,
   inviteLandlordEmail,
   multipleCreateLandlord,
   multipleInviteLandlord,
 } from "./data";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useRole } from "@/hooks/roleContext";
 
 type AddLandlordModalOptions =
-  | 'options'
-  | 'add-landlord'
-  | 'add-multiple-owners'
-  | 'invite-owner'
-  | 'invite-multiple-owners'
-  | 'add-landlord-with-id';
-
+  | "options"
+  | "add-landlord"
+  | "add-multiple-owners"
+  | "invite-owner"
+  | "invite-multiple-owners"
+  | "add-landlord-with-email";
 
 const AddLandlordModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { setIsOpen } = useModal();
+  const { role } = useRole();
+
+  const [identifier, setIdentifier] = useState("");
 
   const [activeStep, setActiveStep] =
     useState<AddLandlordModalOptions>("options");
@@ -42,16 +48,32 @@ const AddLandlordModal = () => {
   const handleBack = () => {
     if (activeStep === "add-landlord" && formStep === 2) {
       setFormStep(1);
+    } else if (activeStep === "add-landlord-with-email" && formStep === 3) {
+      setFormStep(1);
+      setIdentifier("");
     } else {
       setActiveStep("options");
       setFormStep(1);
+      setIdentifier("");
+    }
+  };
+
+  // switch the pathname based on the role
+  const switchPathname = () => {
+    switch (role) {
+      case "manager":
+        return `/manager/management/landlord`;
+      case "account":
+        return `/accountant/management/landlord`;
+      default:
+        return `/management/landlord`;
     }
   };
 
   const closeModalAndRefresh = () => {
     setIsOpen(false);
-    if (pathname !== "/management/landlord") {
-      router.push("/management/landlord");
+    if (pathname !== switchPathname()) {
+      router.push(switchPathname());
     } else {
       setTimeout(() => {
         window.dispatchEvent(new Event("refetchLandlords"));
@@ -68,6 +90,16 @@ const AddLandlordModal = () => {
 
   const handleInviteLandlordEmail = async (data: any) => {
     const status = await inviteLandlordEmail(data);
+    if (status) {
+      closeModalAndRefresh();
+    }
+  };
+
+  const handleAddLandlordWithEmmailOrID = async (data: any) => {
+    const payload = {
+      identifier: data,
+    };
+    const status = await addLandlordWithEmail(objectToFormData(payload));
     if (status) {
       closeModalAndRefresh();
     }
@@ -143,9 +175,20 @@ const AddLandlordModal = () => {
         />
       ),
     },
-    "add-landlord-with-id": {
-      heading: "Add Landlord/Landlady with ID",
-      content: <InvitationForm method="id" submitAction={async () => {}} />,
+    "add-landlord-with-email": {
+      heading:
+        formStep === 3 ? "Adding Warning!" : "Add Landlord/Landlady with Email",
+      content: (
+        <InvitationForm
+          method="id"
+          page="landlord"
+          formStep={formStep}
+          setFormStep={setFormStep}
+          identifier={identifier}
+          setIdentifier={setIdentifier}
+          submitAction={() => handleAddLandlordWithEmmailOrID(identifier)}
+        />
+      ),
     },
   };
 

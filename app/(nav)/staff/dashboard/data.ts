@@ -12,6 +12,65 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import { formatNumber } from "@/utils/number-formatter";
+import {
+  type DashboardBranchDataResponse,
+  type CardData,
+} from "../../accountant/dashboard/types";
+
+// ========== STAFF DASHBOARD CARD DATA ==========
+export const getStaffDashboardCardData = (
+  data: DashboardBranchDataResponse
+): CardData[] => [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: formatNumber(data.data.property_count),
+    subValue: formatNumber(data.data.month_count),
+    link: "/staff/management/properties",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+    value: formatNumber(data.data.landlord_count),
+    subValue: formatNumber(data.data.month_landlord_count),
+    link: "/staff/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: formatNumber(data.data.tenant_count),
+    subValue: formatNumber(data.data.month_tenant_count),
+    link: "/staff/management/tenants",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: formatNumber(data.data.complaint_count),
+    subValue: formatNumber(data.data.month_complaint_count),
+    link: "/staff/tasks/complaints",
+  },
+  {
+    title: "Vehicles Record",
+    bg: getBackgroundColor("vacant unit"),
+    icon: ExpiredIcon,
+    value: formatNumber(data.data.vehicle_record_count),
+    subValue: formatNumber(data.data.month_vehicle_record_count),
+    link: "/staff/management/vehicles-record",
+  },
+  {
+    title: "Visitor Request",
+    bg: getBackgroundColor("expired"),
+    icon: BedIcon,
+    value: formatNumber(data.data.visitor_request_count),
+    subValue: formatNumber(data.data.month_visitor_request_count),
+    link: "/staff/tasks/visitors",
+  },
+];
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -128,95 +187,92 @@ export const dashboardCardData = [
   },
 ];
 
-
 export const accountantDashboardCardData = [
   {
-    title: 'Properties',
-    bg: getBackgroundColor('properties'),
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
     icon: BuildingIcon,
     value: 10,
     subValue: 20,
-    link: '/management/staff-branch/',
+    link: "/management/staff-branch/",
   },
   {
-    title: 'Landlords',
-    bg: getBackgroundColor('landlords'),
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
     value: 15,
     subValue: 20,
-    link: '/management/landlord',
+    link: "/management/landlord",
   },
   {
-    title: 'Tenants & Occupants',
-    bg: getBackgroundColor('tenants & occupants'),
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
     icon: TenantIcon,
     value: 25,
     subValue: 20,
-    link: '/management/tenants',
+    link: "/management/tenants",
   },
   {
-    title: 'Expired',
-    bg: getBackgroundColor('expired'),
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
     icon: ExpiredIcon,
     value: 3,
     subValue: 20,
-    link: '/management/rent-unit',
+    link: "/management/rent-unit",
   },
   {
-    title: 'Invoices',
-    bg: getBackgroundColor('invoices'),
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
     icon: InvoiceIcon,
     value: 12,
     subValue: 20,
-    link: '/accounting/invoice',
+    link: "/accounting/invoice",
   },
 
   {
-    title: 'Complaints',
-    bg: getBackgroundColor('complaints'),
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
     icon: ComplaintsIcon,
     value: 8,
     subValue: 20,
-    link: '/tasks/complaints',
+    link: "/tasks/complaints",
   },
 ];
-
 
 export const staffDashboardCardData = [
   {
-    title: 'Properties',
-    bg: getBackgroundColor('properties'),
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
     icon: BuildingIcon,
     value: 10,
     subValue: 20,
-    link: '/management/staff-branch/',
+    link: "/management/staff-branch/",
   },
   {
-    title: 'Landlords',
-    bg: getBackgroundColor('landlords'),
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
     value: 15,
     subValue: 20,
-    link: '/management/landlord',
+    link: "/management/landlord",
   },
   {
-    title: 'Tenants & Occupants',
-    bg: getBackgroundColor('tenants & occupants'),
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
     icon: TenantIcon,
     value: 25,
     subValue: 20,
-    link: '/management/tenants',
+    link: "/management/tenants",
   },
   {
-    title: 'Complaints',
-    bg: getBackgroundColor('complaints'),
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
     icon: ComplaintsIcon,
     value: 8,
     subValue: 20,
-    link: '/tasks/complaints',
+    link: "/tasks/complaints",
   },
 ];
-
 
 export const walletBalanceCardData = {
   mainBalance: 1000,
@@ -334,9 +390,9 @@ export const dashboardListingsChartConfig = {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
 

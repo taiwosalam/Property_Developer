@@ -10,10 +10,12 @@ export interface PropertyListingCardDataProps {
   branch: string;
   address: string;
   last_updated: string;
-  account_officer: string;
+  // account_officer: string;
+  account_manager: string;
   state: string;
   local_government: string;
   total_unit: string;
+  video_link?: string;
   images?: string[];
 }
 
@@ -25,6 +27,7 @@ export interface PropertyListingCardProps {
   propertyType: PropertyType;
   status: PropertyListingStatus;
   data: Partial<Record<PropertyListingCardDataProps>>;
+  page?: "manager" | "account";
 }
 
 export interface PropertyListingLabelIDProps {

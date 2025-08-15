@@ -89,6 +89,7 @@ export const deleteTenant = async (id: string) => {
 interface UploadFilePayload {
   type: string;
   files: File[];
+  unit_id?: number;
 }
 
 interface RemoveFilePayload {
@@ -97,7 +98,8 @@ interface RemoveFilePayload {
 
 export const uploadDocuments = async (
   documents: TenantData["documents"],
-  tenantId: string
+  tenantId: string,
+  unitId?: number
 ) => {
   const documentsWithFiles = documents.filter((doc) => doc.file);
   if (documentsWithFiles.length === 0) return true;
@@ -116,7 +118,11 @@ export const uploadDocuments = async (
 
   // Send each document type to the API
   for (const [type, files] of Object.entries(documentsByType)) {
-    const payload: UploadFilePayload = { type, files };
+    const payload: UploadFilePayload = {
+      type,
+      files,
+      unit_id: unitId,
+    };
     try {
       await api.post(`/tenant/${tenantId}/attach-documents`, payload);
     } catch (error) {
@@ -126,15 +132,53 @@ export const uploadDocuments = async (
   return true;
 };
 
+// export const removeDocuments = async (
+//   urlsToRemove: string[],
+//   tenantId: string
+// ) => {
+//   const payload: RemoveFilePayload = { remove_files: urlsToRemove };
+//   try {
+//     await api.post(`/tenant/${tenantId}/attach-documents`, payload);
+//     return true;
+//   } catch (error) {
+//     return false;
+//   }
+// };
+
 export const removeDocuments = async (
-  urlsToRemove: string[],
+  urlsToRemove: { url: string; type: string }[],
   tenantId: string
 ) => {
-  const payload: RemoveFilePayload = { remove_files: urlsToRemove };
-  try {
-    await api.post(`/tenant/${tenantId}/attach-documents`, payload);
-    return true;
-  } catch (error) {
-    return false;
+  // Group URLs by document type
+  const urlsByType = urlsToRemove.reduce<Record<string, string[]>>(
+    (acc, { url, type }) => {
+      if (!acc[type]) {
+        acc[type] = [];
+      }
+      acc[type].push(url);
+      return acc;
+    },
+    {}
+  );
+
+  // Send removal requests for each document type
+  for (const [type, remove_files] of Object.entries(urlsByType)) {
+    const formData = new FormData();
+    formData.append("type", type);
+    remove_files.forEach((url, index) => {
+      formData.append(`remove_files[${index}]`, url);
+    });
+
+    try {
+      await api.post(`/tenant/${tenantId}/attach-documents`, formData);
+    } catch (error) {
+      console.error(`Failed to remove documents of type ${type}:`, error);
+      return false;
+    }
   }
+  return true;
+};
+
+export const isValidValue = (value: string | undefined | null): boolean => {
+  return value !== undefined && value !== null && value.trim() !== "";
 };

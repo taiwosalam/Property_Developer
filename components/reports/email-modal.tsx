@@ -7,9 +7,11 @@ import {
 } from "@/public/icons/icons";
 import { empty } from "@/app/config";
 import Image from "next/image";
+import TruncatedText from "../TruncatedText/truncated-text";
 
 export interface EmailRecord {
   id: string;
+  email_id?: number;
   user_id: string;
   client_name: string;
   branch: string;
@@ -19,6 +21,7 @@ export interface EmailRecord {
   to: string;
   headline: string;
   message: string;
+  isMedia?: boolean;
 }
 
 const LabelValuePair: React.FC<{
@@ -42,6 +45,7 @@ const EmailModal: React.FC<EmailRecord> = ({
   to,
   headline,
   message,
+  isMedia = false,
 }) => {
   return (
     <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white dark:bg-darkText-primary overflow-x-auto custom-round-scrollbar font-medium">
@@ -89,13 +93,16 @@ const EmailModal: React.FC<EmailRecord> = ({
         <div className="space-y-[18px]">
           <div className="space-y-1">
             <p className="text-text-secondary dark:text-white">Message</p>
-            <p className="text-text-tertiary dark:text-darkText-2">
-              {message}
-            </p>
+            <TruncatedText>
+              <div
+                className="text-text-tertiary dark:text-darkText-2"
+                dangerouslySetInnerHTML={{ __html: message }}
+              />
+            </TruncatedText>
           </div>
-          <div className="space-y-4">
+          {isMedia && <div className="space-y-4">
             <p className="text-text-secondary dark:text-white flex items-center gap-1">
-              <AttachmentIcon /> 
+              <AttachmentIcon />
               <span>Attachment</span>
             </p>
             <div className="flex items-center gap-3 flex-wrap [&>*]:flex-shrink-0 [&>*]:w-[100px] [&>*]:h-[100px] [&>*]:relative [&>*]:overflow-hidden [&>*]:rounded-lg">
@@ -106,11 +113,11 @@ const EmailModal: React.FC<EmailRecord> = ({
                 <Image src={empty} alt="empty" fill className="object-cover" />
               </div>
             </div>
-          </div>
+          </div>}
         </div>
         <hr className="border-t-2 my-6 border-brand-7 border-dotted" />
         <div className="space-y-3 ">
-          <div className="flex items-center justify-between">
+          {/* <div className="flex items-center justify-between">
             <p>Other Mail</p>
             <div className="flex items-center gap-3 text-text-tertiary">
               <button type="button" aria-label="Previous">
@@ -120,10 +127,10 @@ const EmailModal: React.FC<EmailRecord> = ({
                 <ArrowRightIcon />
               </button>
             </div>
-          </div>
+          </div> */}
           <div className="py-4 px-[18px] rounded-lg bg-brand-1 dark:bg-[#3C3D37] space-y-1    ">
-            <LabelValuePair label="From" value={from} />
-            <LabelValuePair label="To" value={to} />
+            {/* <LabelValuePair label="From" value={from} />
+            <LabelValuePair label="To" value={to} /> */}
             <LabelValuePair label="Date" value={`${date} ${time}`} />
           </div>
         </div>

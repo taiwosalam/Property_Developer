@@ -10,7 +10,7 @@ interface ZoomState {
 }
 
 export const useZoomStore = create<ZoomState>((set) => ({
-  zoomLevel: 100, // Default zoom level at 100%
+  zoomLevel: 90, // Default zoom level at 100%
   increaseZoom: () =>
     set((state) => ({ zoomLevel: Math.min(state.zoomLevel + 10, 140) })),
   decreaseZoom: () =>

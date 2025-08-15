@@ -1,6 +1,6 @@
 import Skeleton from "@mui/material/Skeleton";
 
-const CardsLoading = ({ length = 20 }) => {
+const CardsLoading = ({ length = 20, className}: {length?: number, className?: string}) => {
   return (
     <>
       {Array.from({ length }).map((_, index) => (
@@ -12,6 +12,7 @@ const CardsLoading = ({ length = 20 }) => {
           sx={{
             transform: "none",
           }}
+          className={className}
         />
       ))}
     </>

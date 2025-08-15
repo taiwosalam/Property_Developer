@@ -1,3 +1,4 @@
+
 import React from "react";
 
 // Types
@@ -27,7 +28,7 @@ const Switch: React.FC<SwitchProps> = ({
       }}
     >
       <div
-        className="rounded-full bg-white"
+        className="rounded-full bg-white dark:bg-darkText-primary"
         style={{ width: size, height: size }}
       />
     </button>

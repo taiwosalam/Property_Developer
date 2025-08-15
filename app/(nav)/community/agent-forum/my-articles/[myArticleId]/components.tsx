@@ -1,0 +1,144 @@
+"use client";
+
+import Image from "next/image";
+import { useCallback, useState } from "react";
+import { toast } from "sonner";
+import { CommentData } from "@/components/tasks/announcements/comment";
+import DOMPurify from "dompurify";
+import { useThreadContext } from "@/utils/my-article-context";
+import { SummarySkeleton } from "@/components/Loader/SummarySkeleton";
+import { toggleLike } from "../data";
+import { LikeDislikeButtons, ThreadArticleSkeleton } from "../../components";
+import { DislikeIcon, LikeIcon } from "@/public/icons/icons";
+import useDarkMode from "@/hooks/useCheckDarkMode";
+
+export const ThreadArticle = (): JSX.Element => {
+  const isDarkMode = useDarkMode();
+  const { post, slug, comments } = useThreadContext();
+  const [userAction, setUserAction] = useState<"like" | "dislike" | null>(
+    post?.user_liked ? "like" : null
+  );
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleToggleLike = async (type: number) => {
+    try {
+      setIsLoading(true);
+      const res = await toggleLike(slug, type);
+      if (res) {
+        window.dispatchEvent(new Event("refetchComments"));
+      }
+    } catch (error) {
+      console.error("Error toggling like:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!post) return <ThreadArticleSkeleton />;
+  const sanitizedHTML = DOMPurify.sanitize(post?.content || "");
+
+  return (
+    <div className="mt-4">
+      <div
+        className="text-sm text-darkText-secondary mt-2 overflow-x-hidden"
+        dangerouslySetInnerHTML={{ __html: sanitizedHTML }}
+      />
+      <div className="flex justify-between mt-6">
+        <div className="flex items-center gap-2">
+          <span className="text-text-secondary dark:text-white font-semibold text-md">
+            Comments
+          </span>
+        </div>
+
+        <div className="flex gap-2">
+          <div className="like-dislike flex gap-2">
+            <button
+              className="flex items-center gap-1"
+              disabled={isLoading}
+              onClick={() => handleToggleLike(1)}
+            >
+              <LikeIcon
+                fill={`${post.user_liked ? "#E15B0F" : ""} `}
+                stroke={`${
+                  post.user_liked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+                } `}
+              />
+              <p>{post?.likes_up}</p>
+            </button>
+            <button
+              className="flex items-center gap-1"
+              disabled={isLoading}
+              onClick={() => handleToggleLike(-1)}
+            >
+              <DislikeIcon
+                fill={`${post.user_disliked ? "#E15B0F" : "none"} `}
+                stroke={`${
+                  post.user_disliked ? "#E15B0F" : isDarkMode ? "#FFF" : "#000"
+                } `}
+              />
+              <p>{post?.likes_down}</p>
+            </button>
+          </div>
+          <div className="flex items-center">
+            <div className="images flex z-30">
+              {comments.slice(0, 3).map((comment, index) => (
+                <Image
+                  key={index}
+                  src={comment.profile_picture}
+                  alt={`commenter ${index + 1}`}
+                  width={300}
+                  height={300}
+                  className="-mr-2 h-[30px] w-[30px] object-cover rounded-full bg-brand-9"
+                />
+              ))}
+            </div>
+            {post?.comments_count > 0 && (
+              <div className="rounded-r-[23px] w-[48px] h-[23px] flex-shrink-0 bg-brand-9 z-10 flex items-center justify-center text-[10px] font-semibold tracking-[0px] text-white">
+                +{post?.comments_count}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const Summary = () => {
+  const { post, loading } = useThreadContext();
+  if (loading) {
+    return <SummarySkeleton />;
+  }
+
+  const MyArticleSummaryData = [
+    { label: "Posted Date", value: post?.created_at },
+    { label: "Last Updated", value: post?.updated_at },
+    { label: "Total Seen", value: post?.views_count },
+    { label: "Total Comments", value: post?.comments_count },
+    {
+      label: "Target Audience",
+      value: post?.state + ", " + post?.lga,
+    },
+  ];
+
+  return (
+    <div className="bg-white shadow-md dark:bg-darkText-primary p-4 rounded-lg">
+      <h2 className="text-black font-semibold text-lg dark:text-white">
+        Summary
+      </h2>
+      <div className="flex flex-col mt-4 gap-2">
+        {MyArticleSummaryData.map((item, index) => (
+          <div
+            className="flex gap-4 justify-between w-full items-start"
+            key={index}
+          >
+            <p className="text-[#747474] text-sm w-1/2">{item.label}</p>
+            <p className="dark:text-white text-black text-sm flex items-start w-1/2">
+              {item.value}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

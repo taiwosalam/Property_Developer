@@ -15,10 +15,17 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import VehicleCard from "@/components/Management/Properties/vehicle-card";
-import { initialPageState, VehicleRecordAPIRes, VehicleRecordParams } from "./type";
-import { initialData, transformVehicleRecords, vehicleRecordFIltersOptionsWithDropdown } from "./data";
+import {
+  initialPageState,
+  VehicleRecordAPIRes,
+  VehicleRecordParams,
+} from "./type";
+import {
+  initialData,
+  transformVehicleRecords,
+  vehicleRecordFIltersOptionsWithDropdown,
+} from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-
 
 const VehilceRecords = () => {
   const storedView = useView();
@@ -30,7 +37,7 @@ const VehilceRecords = () => {
     total_vehicle_records,
     vehicle_records_this_month,
     current_page,
-    last_page
+    last_page,
   } = pageData.stats;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -64,7 +71,6 @@ const VehilceRecords = () => {
     });
   };
 
-
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
@@ -88,12 +94,12 @@ const VehilceRecords = () => {
       sort: "asc",
       search: "",
     };
-    options.forEach(option => {
-      if (option === 'all') {
-        queryParams.all = true;
-      } else if (option === 'trending') {
+    options.forEach((option) => {
+      if (option === "all") {
+        queryParams.all = "true";
+      } else if (option === "trending") {
         queryParams.trending = true;
-      } else if (option === 'new') {
+      } else if (option === "new") {
         queryParams.recent = true;
       }
     });
@@ -110,11 +116,7 @@ const VehilceRecords = () => {
     setConfig({
       params: queryParams,
     });
-
-    console.log({ menuOptions, startDate, endDate, options })
   };
-
-
 
   const {
     data: apiData,
@@ -136,12 +138,15 @@ const VehilceRecords = () => {
     }
   }, [apiData]);
 
-  console.log("Page data", pageData)
-
+  console.log("Page data", pageData);
 
   if (loading)
     return (
-      <CustomLoader layout="page" pageTitle="Vehicle Records" statsCardCount={3} />
+      <CustomLoader
+        layout="page"
+        pageTitle="Vehicle Records"
+        statsCardCount={3}
+      />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -150,23 +155,23 @@ const VehilceRecords = () => {
     return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
-    <div className='space-y-9'>
-      <div className='page-header-container'>
-        <div className='hidden md:flex gap-5 flex-wrap'>
+    <div className="space-y-9">
+      <div className="page-header-container">
+        <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
-            title='Total Vehicle Records'
+            title="Total Vehicle Records"
             newData={properties_this_month}
             total={total_properties}
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title='Rental Vehicle Records'
+            title="Rental Vehicle Records"
             newData={vehicle_records_this_month}
             total={total_vehicle_records}
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title='Facility Vehicle Records'
+            title="Facility Vehicle Records"
             newData={vehicle_records_this_month}
             total={total_vehicle_records}
             colorScheme={3}
@@ -176,16 +181,20 @@ const VehilceRecords = () => {
 
       {/* Page Title with search */}
       <FilterBar
-        pageTitle='vehicles record'
+        pageTitle="vehicles record"
         hasGridListToggle={false}
-        noExclamationMark
-        searchInputPlaceholder='Search for vehicles record'
+        aboutPageModalData={{
+          title: "vehicles record",
+          description:
+            "This page contains a list of vehicles record on the platform.",
+        }}
+        searchInputPlaceholder="Search for vehicles record"
         filterOptions={{
           radio: true,
           value: [
-            { label: 'All', value: 'all' },
-            { label: 'Rental', value: 'rental' },
-            { label: 'Facility', value: 'facility' },
+            { label: "All", value: "all" },
+            { label: "Rental", value: "rental" },
+            { label: "Facility", value: "facility" },
           ],
         }}
         handleFilterApply={handleFilterApply}
@@ -194,16 +203,16 @@ const VehilceRecords = () => {
         appliedFilters={appliedFilters}
       />
 
-      <section className='capitalize'>
+      <section className="capitalize">
         {pageData.data.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className='col-span-full text-center py-8 text-gray-500'>
+            <div className="col-span-full text-center py-8 text-gray-500">
               No Search/Filter Found
             </div>
           ) : (
             <EmptyList
               noButton
-              title='You have not activate any vehicles record yet'
+              title="You have not activate any vehicles record yet"
               body={
                 <p>
                   When creating or editing property settings, you have the
@@ -231,9 +240,9 @@ const VehilceRecords = () => {
                   Facility vehicle records cater to the management of occupants
                   in gated estates or commercial facilities. This feature allows
                   property managers to oversee essential activities, including:
-                  <ul className='custom-list'>
+                  <ul className="custom-list">
                     <li>
-                      Monitoring occupant vehicle movements (entry and exit).{' '}
+                      Monitoring occupant vehicle movements (entry and exit).{" "}
                     </li>
                     <li>Managing visitor access to the premises.</li>
                     <li>
@@ -256,10 +265,7 @@ const VehilceRecords = () => {
                 <CardsLoading />
               ) : (
                 pageData.data.map((p, index) => (
-                  <VehicleCard
-                    key={index}
-                    data={p}
-                  />
+                  <VehicleCard key={index} data={p} page="account" />
                 ))
               )}
             </AutoResizingGrid>

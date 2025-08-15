@@ -2,86 +2,143 @@ import CommentsSection from "./comments-section";
 import { LikeIcon, DislikeIcon } from "@/public/icons/icons";
 import Image from "next/image";
 import clsx from "clsx";
+import {
+  CommentProps,
+  IAnnounceUserSummary,
+  toggleAnnouncementLike,
+} from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
+import { Comment } from "@/app/(nav)/tasks/announcements/types";
+import { CommentData } from "./comment";
+import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
+import { useState } from "react";
+import ThreadComments from "@/components/Community/ThreadComments";
+import { empty } from "@/app/config";
+import data from "@/app/(nav)/reports/landlord/page";
+import { useParams } from "next/navigation";
+import AnnouncementComment from "./accouncement-comments";
+import AnnouncementThread from "./announcement-thread";
 
-const AnnouncementPost = () => {
-  const images = [
-    "/empty/SampleProperty.jpeg",
-    "/empty/SampleProperty2.jpeg",
-    "/empty/SampleProperty3.jpeg",
-    "/empty/SampleProperty4.png",
-    "/empty/SampleProperty5.jpg",
-    "/empty/SampleProperty6.jpg",
-  ];
-  // Limit to first 3 images
-  const maxImagesToShow = 3;
-  const excessImagesCount = images.length - maxImagesToShow;
+const images = [
+  "/empty/SampleProperty.jpeg",
+  "/empty/SampleProperty2.jpeg",
+  "/empty/SampleProperty3.jpeg",
+  "/empty/SampleProperty4.png",
+  "/empty/SampleProperty5.jpg",
+  "/empty/SampleProperty6.jpg",
+];
+
+interface AnnouncementPostProps {
+  data?: {
+    description: string;
+    likes: number;
+    dislikes: number;
+    viewers: (string | null)[];
+    comments: CommentProps[];
+    my_like: boolean;
+    my_dislike: boolean;
+  };
+}
+
+const maxImagesToShow = 3;
+
+const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
+  const [comment, setComment] = useState<any>([]);
+  const [isLike, setIsLike] = useState(false);
+
+  const { announcementId } = useParams();
+  const paramId = announcementId as string;
+
+  // Get unique, non-null user images from comments
+  const uniqueUserImages = Array.from(
+    new Map(
+      (data?.comments || [])
+        .filter((comment) => comment.image != null) // Exclude null or undefined images
+        .map((comment) => [comment.image, comment.image as string]) // Map to [image, image] pairs
+    ).values()
+  ).slice(0, maxImagesToShow);
+
+  const uniqueCommenterCount = new Set(
+    (data?.comments || [])
+      .filter((comment) => comment.image != null)
+      .map((comment) => comment.image)
+  ).size;
+
+  const excessImagesCount = Math.max(uniqueCommenterCount - maxImagesToShow, 0);
+
+  const handleToggleLike = async (type: string) => {
+    try {
+      setIsLike(true);
+      await toggleAnnouncementLike(paramId, type);
+    } catch (error) {
+    } finally {
+      setIsLike(false);
+    }
+  };
 
   return (
     <div>
       <div className="space-y-8">
-        <p className="text-sm font-medium text-text-secondary dark:text-darkText-2">
-          #Commercial and retail real estate fundamentals are expected to remain
-          strong due to the scarcity of new construction deliveries, prompting
-          compelling opportunities for investors amid high interest rates and
-          inflation in the market, writes CHINEDUM UWAEGBULAM. Despite economic
-          headwinds and challenges with obtaining building permits, experts
-          predict that the demand for housing will remain strong, and the market
-          will see a steady increase in property values this year. There are
-          also opportunities available for high-quality properties that meet the
-          needs of investors and tenants, while low mortgage rates and
-          government incentives will likely contribute to this optimistic
-          outlook as inflation may remain a concern in 2024, affecting both home
-          prices and mortgage rates. The Guardian gathered that one of the key
-          factors that will shape the real estate market in 2024 is technology,
-          as virtual reality property tours, blockchain in real estate
-          transactions, and Artificial Intelligence (AI)-driven market analysis
-          tools will make the buying and selling process more efficient and
-          accessible Besides, with high demand and limited supply, sellers can
-          anticipate competitive offers and faster sales. They anticipate
-          primary markets becoming more competitive and expensive, secondary
-          markets offering attractive opportunities for buyers and investors
-          looking for affordable properties. It is expected that cities and
-          other states’ capitals without many security challenges will witness
-          refinements. Many urban centres will witness positive changes in real
-          estate, but the most prominent among them are Lagos, being the
-          economic hub of the country; Abuja- the political heart of Nigeria;
-          Port Harcourt- the oil and gas industry; Ibadan as a growing
-          metropolis; Abeokuta being the emerging economic centre; Uyo as a
-          blossoming urban centre; and Kano metropolis.
-        </p>
+        <div
+          className="text-sm font-medium text-text-secondary dark:text-darkText-2"
+          dangerouslySetInnerHTML={{ __html: data?.description || "" }}
+        />
+
         <div className="text-text-quaternary flex items-center gap-4 w-fit ml-auto">
-          <p className="flex items-center gap-1">
-            <LikeIcon />
-            <span className="text-xs font-normal">0</span>
-          </p>
-          <p className="flex items-center gap-1">
-            <DislikeIcon />
-            <span className="text-xs font-normal">0</span>
-          </p>
-          <div className="flex items-center">
-            {images.slice(0, maxImagesToShow).map((i, index) => (
-              <Image
-                key={index}
-                src={i}
-                alt="image"
-                width={24}
-                height={24}
-                className={clsx(
-                  "w-6 h-6 border border-highlight rounded-full object-cover",
-                  index !== 0 && "-ml-3"
-                )}
-                style={{ zIndex: index }} // Control stacking
-              />
-            ))}
-            {excessImagesCount > 0 && (
-              <div className="bg-highlight h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
-                +{excessImagesCount}
-              </div>
-            )}
-          </div>
+          <button
+            disabled={isLike}
+            className="flex items-center gap-1"
+            onClick={() => handleToggleLike("1")}
+          >
+            <LikeIcon
+              fill={`${data?.my_like ? "#E15B0F" : ""} `}
+              stroke={`${data?.my_like ? "#E15B0F" : "#000"} `}
+            />
+            <p>{data?.likes}</p>
+          </button>
+          <button
+            disabled={isLike}
+            className="flex items-center gap-1"
+            onClick={() => handleToggleLike("-1")}
+          >
+            <DislikeIcon
+              fill={`${data?.my_dislike ? "#E15B0F" : "none"} `}
+              stroke={`${data?.my_dislike ? "#E15B0F" : "#000"} `}
+            />
+            <p>{data?.dislikes}</p>
+          </button>
+          {data && data.viewers.length > 0 && (
+            <div className="flex items-center">
+              {uniqueUserImages.map((image, index) => (
+                <Image
+                  key={index}
+                  src={image || empty}
+                  alt="user avatar"
+                  width={24}
+                  height={24}
+                  className={clsx(
+                    "w-6 h-6 border border-brand-9 rounded-full object-cover",
+                    index !== 0 && "-ml-3"
+                  )}
+                  style={{ zIndex: index }} // control stacking
+                />
+              ))}
+              {excessImagesCount > 0 && (
+                <div className="bg-brand-9 h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
+                  +{excessImagesCount}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
-      <CommentsSection comments={[]} />
+      <AnnouncementComment
+        id={announcementId as string}
+        slug={`/announcements/${announcementId}/comment`}
+        comments={data?.comments || []}
+        setComments={setComment}
+      />
+      <AnnouncementThread comments={data?.comments || []} />
+      {/* <CommentsSection comments={data?.comments || []} /> */}
     </div>
   );
 };

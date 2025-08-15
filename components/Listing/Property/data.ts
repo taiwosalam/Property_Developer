@@ -1,13 +1,14 @@
 export const property_listing_data = {
   property_name: "",
   total_returns: "",
-  total_income: "",
   branch: "",
   address: "",
   last_updated: "",
-  account_officer: "",
-  state: "",
-  local_government: "",
+  // total_income: "",
+  // account_officer: "",
+  account_manager: "",
+  // state: "",
+  // local_government: "",
   total_unit: "",
 };
 

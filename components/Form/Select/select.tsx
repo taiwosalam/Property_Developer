@@ -2,9 +2,9 @@
 import clsx from "clsx";
 import { v4 as uuidv4 } from "uuid";
 import Label from "../Label/label";
-import { useEffect, useRef, useState, useContext } from "react";
+import { useEffect, useRef, useState, useContext, useCallback } from "react";
 import type { SelectOptionObject, SelectProps } from "./types";
-import { DeleteIconX, ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
+import { ArrowDownIcon, SearchIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { checkValidatonError } from "@/utils/validation";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
@@ -21,7 +21,7 @@ const Select: React.FC<SelectProps> = ({
   onChange,
   inputTextClassName,
   validationErrors = {},
-  placeholder = "Select options",
+  placeholder = "Select options", 
   allowCustom = false,
   isSearchable = true,
   hiddenInputClassName,
@@ -31,14 +31,20 @@ const Select: React.FC<SelectProps> = ({
   requiredNoStar,
   disabled,
   error,
+  desc,
+  renderValue,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const inputRef = useRef<HTMLInputElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   const initialState = {
     showAbove: false,
     isOpen: false,
     searchTerm: "",
     filteredOptions: [] as (string | SelectOptionObject)[],
+    visibleOptions: [] as (string | SelectOptionObject)[],
     selectedValue: "",
     selectedLabel: "",
   };
@@ -47,18 +53,100 @@ const Select: React.FC<SelectProps> = ({
     isOpen,
     searchTerm,
     filteredOptions,
+    visibleOptions,
     selectedValue,
     selectedLabel,
     showAbove,
   } = state;
-  const dropdownRef = useRef<HTMLDivElement>(null);
-  // State to store validation error message
   const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Constants for virtualization
+  const ITEMS_PER_PAGE = 20;
+  const DEBOUNCE_DELAY = 300;
+  const SCROLL_THRESHOLD = 100;
+
+  // Determine effective placeholder
+  const effectivePlaceholder = options.length === 0 ? "No Option Available" : placeholder;
+
+  // Custom debounce function
+  const debounce = <T extends (...args: any[]) => void>(
+    func: T,
+    delay: number
+  ) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  const filterOptions = (
+    options: (string | SelectOptionObject)[],
+    searchTerm: string
+  ) => {
+    const filtered = options.filter((option) => {
+      if (typeof option === "string") {
+        return option.toLowerCase().includes(searchTerm.toLowerCase());
+      } else {
+        return option?.label
+          ?.toLowerCase()
+          ?.includes(searchTerm?.toLowerCase());
+      }
+    });
+    return filtered;
+  };
+
+  const debouncedFilterOptions = useCallback(
+    debounce((term: string) => {
+      const newFilteredOptions = filterOptions(options, term);
+      setState((prev) => ({
+        ...prev,
+        filteredOptions: newFilteredOptions,
+        visibleOptions: newFilteredOptions.slice(0, ITEMS_PER_PAGE),
+      }));
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+    }, DEBOUNCE_DELAY),
+    [options]
+  );
+
+  const loadMoreOptions = useCallback(
+    debounce(() => {
+      setState((prev) => {
+        if (prev.visibleOptions.length >= prev.filteredOptions.length) {
+          console.log("No more options to load");
+          return prev;
+        }
+        const nextBatch = prev.filteredOptions.slice(
+          prev.visibleOptions.length,
+          prev.visibleOptions.length + ITEMS_PER_PAGE
+        );
+        return {
+          ...prev,
+          visibleOptions: [...prev.visibleOptions, ...nextBatch],
+        };
+      });
+    }, DEBOUNCE_DELAY),
+    []
+  );
+
+  const handleScroll = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    const scrollPosition = container.scrollTop + container.clientHeight;
+    const scrollHeight = container.scrollHeight;
+
+    if (scrollPosition >= scrollHeight - SCROLL_THRESHOLD) {
+      loadMoreOptions();
+    }
+  }, [loadMoreOptions]);
 
   const updateDropdownPosition = () => {
     if (dropdownRef.current) {
       const dropdownRect = dropdownRef.current.getBoundingClientRect();
-      const dropdownHeight = 240; // max-h-60 = 15rem = 240px
+      const dropdownHeight = 240;
       const windowHeight = window.innerHeight;
       const bottomSpace = windowHeight - dropdownRect.bottom;
       setState((x) => ({ ...x, showAbove: bottomSpace < dropdownHeight }));
@@ -75,26 +163,22 @@ const Select: React.FC<SelectProps> = ({
       searchTerm: "",
       isOpen: false,
     }));
-    onChange && onChange(`${value}`); // Call the onChange prop if provided
-  };
-
-  const filterOptions = (
-    options: (string | SelectOptionObject)[],
-    searchTerm: string
-  ) => {
-    return options.filter((option) => {
-      if (typeof option === "string") {
-        return option.toLowerCase().includes(searchTerm.toLowerCase());
-      } else {
-        // If the option is an object, match the label
-        return option.label.toLowerCase().includes(searchTerm.toLowerCase());
-      }
-    });
+    onChange && onChange(`${value}`);
   };
 
   useOutsideClick(dropdownRef, () => {
     setState((x) => ({ ...x, isOpen: false, searchTerm: "" }));
   });
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!isOpen || !container) return;
+
+    container.addEventListener("scroll", handleScroll);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [isOpen, handleScroll]);
 
   useEffect(() => {
     updateDropdownPosition();
@@ -103,15 +187,10 @@ const Select: React.FC<SelectProps> = ({
     }
   }, [isOpen]);
 
-  // Filter options based on the search term
   useEffect(() => {
-    setState((x) => ({
-      ...x,
-      filteredOptions: filterOptions(options, searchTerm),
-    }));
-  }, [options, searchTerm]);
+    debouncedFilterOptions(searchTerm);
+  }, [searchTerm, debouncedFilterOptions]);
 
-  // Initialize
   useEffect(() => {
     const updateSelection = (value: string, label: string) => {
       setState((prevState) => ({
@@ -141,7 +220,6 @@ const Select: React.FC<SelectProps> = ({
     handleInputChange && handleInputChange();
   }, [selectedValue, handleInputChange]);
 
-  // Check and set validation error for this input when validationErrors or id changes
   useEffect(() => {
     setValidationError(
       checkValidatonError({ errors: validationErrors, key: id })
@@ -152,13 +230,10 @@ const Select: React.FC<SelectProps> = ({
     <div
       className={clsx(
         "custom-flex-col gap-2",
-        {
-          "pointer-events-none opacity-50": disabled,
-        },
+        { "pointer-events-none opacity-50": disabled },
         className
       )}
     >
-      {/* input for flow progress and holding the selected value for form submission */}
       <input
         name={name ? name : id}
         id={id}
@@ -173,8 +248,12 @@ const Select: React.FC<SelectProps> = ({
           {label}
         </Label>
       )}
+      {desc && (
+        <p className="text-text-disabled text-xs md:text-sm font-normal">
+          {desc}
+        </p>
+      )}
       <div className={clsx("relative", dropdownRefClassName)} ref={dropdownRef}>
-        {/* Trigger for the custom dropdown with embedded search field */}
         <div
           className={clsx(
             "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out",
@@ -185,11 +264,9 @@ const Select: React.FC<SelectProps> = ({
             inputContainerClassName
           )}
           onClick={() => {
-            if (!selectedValue && !disabled)
-              setState((x) => ({ ...x, isOpen: !x.isOpen }));
+            if (!disabled) setState((x) => ({ ...x, isOpen: !x.isOpen }));
           }}
         >
-          {/* Conditionally render the search icon */}
           {isSearchable && (
             <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
               <span className="dark:text-white">
@@ -197,7 +274,6 @@ const Select: React.FC<SelectProps> = ({
               </span>
             </div>
           )}
-          {/* Conditionally render input or selected value based on `isSearchable` */}
           {selectedValue && !isOpen ? (
             <span
               className={clsx(
@@ -205,7 +281,7 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {selectedLabel}
+              {renderValue ? renderValue(selectedValue) : selectedLabel}
             </span>
           ) : isSearchable ? (
             <input
@@ -215,7 +291,7 @@ const Select: React.FC<SelectProps> = ({
                 "w-full flex-1 bg-transparent outline-none text-xs md:text-sm font-normal",
                 inputTextClassName
               )}
-              placeholder={placeholder}
+              placeholder={effectivePlaceholder} 
               value={searchTerm}
               onInput={() => setValidationError(null)}
               onChange={(e) => {
@@ -224,13 +300,13 @@ const Select: React.FC<SelectProps> = ({
                   searchTerm: e.target.value,
                   isOpen: true,
                 }));
+                console.log(`Search term changed: ${e.target.value}`);
               }}
               onClick={(e) => {
                 setState((x) => ({ ...x, isOpen: true }));
-
-                e.stopPropagation(); // Prevent dropdown from toggling
+                e.stopPropagation();
               }}
-              autoFocus={isOpen} // Autofocus when opened
+              autoFocus={isOpen}
             />
           ) : (
             <span
@@ -239,34 +315,20 @@ const Select: React.FC<SelectProps> = ({
                 inputTextClassName
               )}
             >
-              {placeholder}
+              {effectivePlaceholder} 
             </span>
           )}
           <div className="ml-auto flex items-center justify-center">
-            {!selectedValue ? (
-              <div
-                className={clsx(
-                  "transition-transform duration-300",
-                  isOpen && "rotate-180"
-                )}
-              >
-                <ArrowDownIcon />
-              </div>
-            ) : (
-              <button
-                type="button"
-                aria-label="Clear"
-                onClick={(e) => {
-                  handleSelection("");
-                  e.stopPropagation();
-                }}
-              >
-                <DeleteIconX />
-              </button>
-            )}
+            <div
+              className={clsx(
+                "transition-transform duration-300",
+                isOpen && "rotate-180"
+              )}
+            >
+              <ArrowDownIcon />
+            </div>
           </div>
         </div>
-        {/* Options dropdown */}
         {isOpen && (
           <div
             className={clsx(
@@ -278,9 +340,9 @@ const Select: React.FC<SelectProps> = ({
               showAbove ? "bottom-full mb-2" : "top-full mt-2"
             )}
           >
-            <div className="max-h-60 overflow-y-auto">
-              {filteredOptions.length > 0 ? (
-                filteredOptions.map((option) => {
+            <div className="max-h-60 overflow-y-auto" ref={scrollContainerRef}>
+              {visibleOptions.length > 0 ? (
+                visibleOptions.map((option) => {
                   const label =
                     typeof option === "string" ? option : option.label;
                   return (
@@ -294,7 +356,7 @@ const Select: React.FC<SelectProps> = ({
                     </div>
                   );
                 })
-              ) : searchTerm ? ( // Show "No match" only if there's a search term
+              ) : searchTerm ? (
                 <div className="p-2 text-gray-500">
                   <p>No match</p>
                   {allowCustom && (
@@ -316,7 +378,6 @@ const Select: React.FC<SelectProps> = ({
         )}
       </div>
       {error && <p className="text-sm text-red-500 font-medium">{error}</p>}
-      {/* Render validation error message if present */}
       {validationError && (
         <p className="text-sm text-red-500 font-medium">{validationError}</p>
       )}

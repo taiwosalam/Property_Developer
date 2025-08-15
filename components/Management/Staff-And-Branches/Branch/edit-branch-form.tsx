@@ -23,13 +23,18 @@ import {
 import { toast } from "sonner";
 import { updateBranch } from "@/app/(nav)/management/staff-branch/[branchId]/edit-branch/data";
 import UpdateBranchModalSuccess from "./update-branch-modal-success";
+import Button from "@/components/Form/Button/button";
+import { useRole } from "@/hooks/roleContext";
+import DateInput from "@/components/Form/DateInput/date-input";
 
 const EditBranchForm = ({
   somedata,
-  setUpdateRequestLoading,
+  // setUpdateRequestLoading,
+  page,
 }: {
   somedata: EditBranchFormData | null;
-  setUpdateRequestLoading: (value: boolean) => void;
+  // setUpdateRequestLoading: (value: boolean) => void;
+  page?: "manager" | "account";
 }) => {
   const {
     preview,
@@ -41,7 +46,9 @@ const EditBranchForm = ({
     placeholder: CameraCircle,
   });
 
-  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [updateRequestLoading, setUpdateRequestLoading] = useState(false);
+  const { role } = useRole();
+  // const [successModalOpen, setSuccessModalOpen] = useState(false);
 
   const [avatarModalOpen, setAvatarModalOpen] = useState(false);
   const [selectedAvatar, setSelectedAvatar] = useState("");
@@ -85,15 +92,22 @@ const EditBranchForm = ({
       // Remove picture field if it wasn't changed cos its partial update on d backend
       data.delete("picture");
     }
-    setUpdateRequestLoading(true);
-    convertYesNoToBoolean(data, ["branch_wallet"]);
-    if (somedata?.id) {
-      const status = await updateBranch(data, somedata.id);
-      if (status) {
-        setSuccessModalOpen(true);
+    try {
+      setUpdateRequestLoading(true);
+      convertYesNoToBoolean(data, ["branch_wallet"]);
+      if (somedata?.id) {
+        const status = await updateBranch(data, somedata.id);
+        if (status) {
+          // setSuccessModalOpen(true);
+          toast.success("Branch updated successfully");
+          window.dispatchEvent(new Event("refetch-branch"));
+        }
       }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setUpdateRequestLoading(false);
     }
-    setUpdateRequestLoading(false);
   };
 
   useEffect(() => {
@@ -129,15 +143,16 @@ const EditBranchForm = ({
                 id="branch_name"
                 label="branch title"
                 placeholder="Write Here"
-                inputClassName="bg-white"
+                inputClassName="branch-title-input bg-white"
                 defaultValue={somedata?.branch_name}
               />
+
               <Select
                 id="state"
                 isSearchable
                 label="state"
                 options={getAllStates()}
-                inputContainerClassName="bg-white"
+                inputContainerClassName="state-lga-selection bg-white"
                 value={address.state}
                 onChange={(value) => handleAddressChange("state", value)}
               />
@@ -146,44 +161,47 @@ const EditBranchForm = ({
                 isSearchable
                 label="local government"
                 options={getLocalGovernments(address.state)}
-                inputContainerClassName="bg-white"
+                inputContainerClassName="state-lga-selection bg-white"
                 value={address.local_govt}
                 onChange={(value) => handleAddressChange("local_govt", value)}
               />
+
               <Select
                 id="city"
                 label="city"
                 placeholder="Select options"
-                inputContainerClassName="bg-white"
+                inputContainerClassName="city-street-input bg-white"
                 value={address.city}
                 onChange={(value) => handleAddressChange("city", value)}
                 options={getCities(address.state, address.local_govt)}
               />
               <Input
                 id="branch_address"
-                label="Branch Full Address"
+                label="Street Name/Building Number"
                 placeholder="Enter Address"
-                inputClassName="bg-white"
+                inputClassName="city-street-input bg-white"
                 defaultValue={somedata?.address}
               />
-              <Select
-                id="branch_wallet"
-                label="branch wallet"
-                options={["yes", "no"]}
-                inputContainerClassName="bg-white"
-                defaultValue={somedata?.wallet}
-              />
+              {role !== "manager" && (
+                <Select
+                  id="branch_wallet"
+                  label="Activate branch wallet"
+                  options={["yes", "no"]}
+                  inputContainerClassName="wallet-selection-toggle bg-white"
+                  defaultValue={somedata?.wallet}
+                />
+              )}
             </div>
 
             <TextArea
-              inputSpaceClassName="bg-white dark:bg-darkText-primary"
+              inputSpaceClassName="about-branch-textarea bg-white dark:bg-darkText-primary"
               id="branch_description"
               defaultValue={somedata?.description}
-              label="branch description"
+              label="about branch"
             />
           </div>
         </div>
-        <div className="custom-flex-col gap-3">
+        <div className="custom-flex-col gap-3 branch-picture-upload">
           <p className="text-black dark:text-white text-base font-normal">
             Upload Branch picture or choose from options.
           </p>
@@ -253,8 +271,21 @@ const EditBranchForm = ({
             </Modal>
           </div>
         </div>
+        {(role === "manager" || role === "director") && (
+          <div className="flex justify-end -mt-4">
+            <Button
+              type="submit"
+              size="sm_medium"
+              className="update-branch-button py-2 px-8 ml-auto"
+              form="edit-branch-form"
+              disabled={updateRequestLoading}
+            >
+              {updateRequestLoading ? "Updating..." : "Update"}
+            </Button>
+          </div>
+        )}
       </AuthForm>
-      <Modal
+      {/* <Modal
         state={{
           isOpen: successModalOpen,
           setIsOpen: setSuccessModalOpen,
@@ -263,7 +294,7 @@ const EditBranchForm = ({
         <ModalContent>
           <UpdateBranchModalSuccess />
         </ModalContent>
-      </Modal>
+      </Modal> */}
     </>
   );
 };

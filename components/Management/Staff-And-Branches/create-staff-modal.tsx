@@ -5,7 +5,7 @@ import type { CreateStaffModalProps } from "./types";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Image from "next/image";
 import { toast } from "sonner";
-import { addStaff } from "./data";
+import { addStaff, isValidEmail } from "./data";
 import Input from "@/components/Form/Input/input";
 import Avatars from "@/components/Avatars/avatars";
 import Picture from "@/components/Picture/picture";
@@ -23,6 +23,7 @@ import { titles, genderTypes, industryOptions } from "@/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
 import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
 import useBranchStore from "@/store/branch-store";
+import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
 
 const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   branchId,
@@ -33,7 +34,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
   const [formStep, setFormStep] = useState(1);
   const { branch } = useBranchStore();
 
-  const { staffs } = branch
+  const { staffs } = branch;
   // console.log("Branch data", branch.isManagerAvailable)
 
   const {
@@ -58,16 +59,33 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
     originalHandleImageChange(e);
   };
 
+
   const handleCreateStaff = async (data: FormData) => {
+    const email = data.get("email")?.toString() || "";
+    const phoneNumber = data.get("phone_number")?.toString() || "";
+  
     if (!checkFormDataForImageOrAvatar(data)) {
       toast.warning("Please upload a picture or select an avatar.");
       return;
     }
-    setIsLoading(true);
-    cleanPhoneNumber(data);
-    if (!data.get("phone_number")) {
-      data.append("phone_number", "");
+  
+    const isEmailValid = await isValidEmail(email);
+    if (!isEmailValid) {
+      toast.warning("Invalid email address!");
+      return;
     }
+  
+    // Validate phone number
+    const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber);
+    if (!cleanedPhoneNumber && phoneNumber) {
+      toast.warning("Please enter a valid phone number.");
+      return;
+    }
+  
+    setIsLoading(true);
+    // Replace the original phone number with the cleaned version
+    data.set("phone_number", cleanedPhoneNumber || "");
+    
     const status = await addStaff(data, branchId);
     if (status) {
       setIsOpen(false);
@@ -76,6 +94,14 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
       setIsLoading(false);
     }
   };
+
+  
+  const STAFF_ROLE_OPTIONS = [
+    ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
+    // { value: "account_officer", label: "account officer" },
+    { value: "account officer", label: "account manager" },
+    { value: "staff", label: "Other Staff" },
+  ];
 
   return (
     <LandlordTenantModalPreset
@@ -101,8 +127,9 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
               options={titles}
             />
             <Select
-              id="estate_title"
+              id="professional_title"
               label="real estate title"
+              required
               inputContainerClassName="bg-neutral-2"
               options={industryOptions}
             />
@@ -122,22 +149,9 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
             <Select
               id="position"
               required
-              label="position"
+              label="Staff Role"
               inputContainerClassName="bg-neutral-2"
-              options={[
-                ...(hasManager
-                  ? []
-                  : [{ value: "manager", label: "branch manager" }]),
-                "account officer",
-                "staff",
-              ]}
-              // options={[
-              //   ...(branch.isManagerAvailable
-              //     ? []
-              //     : [{ value: "manager", label: "branch manager" }]),
-              //   "account officer",
-              //   "staff",
-              // ]}
+              options={STAFF_ROLE_OPTIONS}
             />
             <Select
               id="gender"
@@ -148,7 +162,8 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
             />
             <PhoneNumberInput
               id="phone_number"
-              label="phone number"
+              label="WhatsApp number"
+              required
               inputContainerClassName="bg-neutral-2"
             />
           </div>

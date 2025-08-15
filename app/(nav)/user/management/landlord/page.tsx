@@ -1,8 +1,14 @@
+
+
+
+
+
 import AutoResizingGrid from '@/components/AutoResizingGrid/AutoResizingGrid';
 import ManagementStatistcsCard from '@/components/Management/ManagementStatistcsCard';
 import LandlordPropertyCard from '@/components/users/property-card';
 import React from 'react';
 import { properties } from './data';
+import Link from 'next/link';
 
 
 const Landlord = () => {
@@ -28,10 +34,12 @@ const Landlord = () => {
       </div>
       <AutoResizingGrid minWidth={315}>
         {properties.map((p) => (
-          <LandlordPropertyCard
+          <Link
             key={p.id}
-            {...p}
-          />
+            href={`/user/management/landlord/${p.id}`}
+          >
+            <LandlordPropertyCard {...p} />
+          </Link>
         ))}
       </AutoResizingGrid>
     </div>

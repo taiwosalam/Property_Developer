@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import Image from "next/image";
 
 // Imports
@@ -39,36 +39,162 @@ import {
   SettingsAppearanceIcon,
 } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
-const notificationSettings = [
+import { debounce } from "lodash";
+import { otherNotificationSettings, updateCompanyNotification } from "@/app/(nav)/settings/others/data";
+import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
+import useFetch from "@/hooks/useFetch";
+const notificationSettingOptions = [
   {
-    title: "General Notification",
+    title: "Email Notification",
+    name: "general_notification",
     desc: "Receive priority notifications for general events or whenever there is a new event of notification.",
   },
   {
-    title: "Email Notification",
+    title: "System Notification",
+    name: "email_notification",
     desc: "Receive email notifications for every notification and reminder, as well as whenever I make any transaction in my wallet and other payment transactions.",
   },
 ];
 
+interface NotificationSettings {
+  [key: string]: boolean;
+}
+
+const notificationOptions = [
+  {
+    name: "new_messages",
+    text: "Ever there is a new message from either a client or a group chat related to the branch.",
+  },
+  {
+    name: "task_updates",
+    text: "Task is created or if there are unattended tasks pending for an extended period.",
+  },
+  {
+    name: "profile_approval",
+    text: "A profile is created for web landlords/landladies and tenants/occupants awaiting approval.",
+  },
+  {
+    name: "property_approval",
+    text: "A property is created and awaiting approval.",
+  },
+  {
+    name: "property_vacant",
+    text: "Property becomes vacant and is moved to the listing page.",
+  },
+];
 
 const Others = () => {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
   const [activeStep, setActiveStep] = useState<DirectorsFormOptions>("options");
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
+  const [userPlan, setUserPlan] = useState<string>("");
+   const [loadingNotification, setLoadingNotification] = useState(false);
   const handleBack = () => setActiveStep("options");
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
   }>({});
 
+  const [messageReviewSettingsState, setMessageReviewSettingsState] = useState<{
+    [key: string]: boolean;
+  }>({
+    reviews: true,
+    messages: true,
+  });
+  const [notificationSettings, setNotificationSettings] =
+    useState<NotificationSettings>({
+      new_messages: true,
+      task_updates: true,
+      profile_approval: true,
+      property_approval: true,
+      property_vacant: true,
+    });
+
   type DirectorsFormOptions = "options" | "choose-avatar";
-  
-    const handleSubmit = async (data: FormData) => {
-      console.log(data);
-      // if (res) {
-      //   setIsOpen(false);
-      // }
+
+  const handleSubmit = async (data: FormData) => {
+    console.log(data);
+    // if (res) {
+    //   setIsOpen(false);
+    // }
+  };
+  const { data: planData } = useFetch<ApiResponseUserPlan>(
+    "/property-manager-subscription/active"
+  );
+
+  useEffect(() => {
+    if (planData) {
+      const premiumPlan =
+        planData?.data?.plan?.plan_name.toLowerCase() ?? "free";
+      setUserPlan(premiumPlan);
+    }
+  }, [planData]);
+
+  const handleCheckedState = useCallback(
+    debounce(async (name: string, checked: boolean) => {
+      setCheckedStates((prevState) => ({
+        ...prevState,
+        [name]: checked,
+      }));
+
+      const payload = {
+        [name]: checked,
+      };
+
+      await otherNotificationSettings(name, payload);
+    }, 500),
+    []
+  );
+
+  const handleCheckboxChange = (name: string, checked: boolean) => {
+    // if (userPlan !== "professional") {
+    //   toast.error(
+    //     "You cannot toggle the switch until you upgrade to a professional plan."
+    //   );
+    //   return;
+    // }
+    setNotificationSettings((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
+  };
+  const handleMessageReviewCheckbox = (name: string, checked: boolean) => {
+    setMessageReviewSettingsState((prev) => ({
+      ...prev,
+      [name]: checked,
+    }));
   };
 
+  const handleSetIsChecked = (name: string, value: SetStateAction<boolean>) => {
+    const newValue =
+      typeof value === "function" ? value(notificationSettings[name]) : value;
+    // if (userPlan !== "professional") {
+    //   return;
+    // } else {
+    setNotificationSettings((prev) => ({
+      ...prev,
+
+      [name]: newValue,
+    }));
+    //}
+  };
+
+  const saveSettings = async () => {
+    try {
+      setLoadingNotification(true);
+
+      const updatedSettings = {
+        ...notificationSettings,
+      };
+
+      setNotificationSettings(updatedSettings);
+
+      // Send the computed payload to the backend
+      await updateCompanyNotification(updatedSettings);
+    } catch (error) {
+    } finally {
+      setLoadingNotification(false);
+    }
+  };
 
   const modal_states: Record<
     DirectorsFormOptions,
@@ -79,12 +205,14 @@ const Others = () => {
   > = {
     options: {
       heading: "Create New Director",
-      content: <DirectorsForm 
-      submitAction={handleSubmit}
-      chooseAvatar={() => setActiveStep("choose-avatar")}
-      avatar={selectedAvatar}
-      setAvatar={setSelectedAvatar}
-        />,
+      content: (
+        <DirectorsForm
+          submitAction={handleSubmit}
+          chooseAvatar={() => setActiveStep("choose-avatar")}
+          avatar={selectedAvatar}
+          setAvatar={setSelectedAvatar}
+        />
+      ),
     },
     "choose-avatar": {
       heading: "Choose Avatar",
@@ -99,49 +227,52 @@ const Others = () => {
     },
   };
 
-  
-
   return (
     <>
       {/* NOTIFICATIONS */}
-      <SettingsSection title="Notifications">
+      <SettingsSection title="Email/Notifications">
         <div className="custom-flex-col gap-6 mt-4">
-          <div className="mt-2 flex flex-col gap-2">
+          <div className="mt-2 flex flex-col gap-4">
             <h4> Notify me when: </h4>
-            {[
-              "Ever there is a new message from either a client or a group chat related to the branch.",
-              "Task is created or if there are unattended tasks pending for an extended period.",
-              "A profile is created for web landlords/landladies and tenants/occupants awaiting approval.",
-              "A property is created and awaiting approval.",
-              "Property becomes vacant and is moved to the listing page.",
-            ].map((option, index) => (
-              <DocumentCheckbox darkText key={index} checked={true}>
-                {option}
+            {notificationOptions.map((option) => (
+              <DocumentCheckbox
+                key={option.name}
+                name={option.name}
+                darkText
+                state={{
+                  isChecked: notificationSettings[option.name],
+                  // CHANGE 2: Use the new helper function
+                  setIsChecked: (value) =>
+                    handleSetIsChecked(option.name, value),
+                }}
+                onChange={handleCheckboxChange}
+              >
+                {option.text}
               </DocumentCheckbox>
             ))}
           </div>
 
-          <div className="toggle flex flex-col gap-2">
-            {notificationSettings.map((setting, index) => (
+          <div className="toggle flex flex-col gap-6">
+            {notificationSettingOptions.map((setting, index) => (
               <SettingsOthersCheckBox
+                plan={userPlan}
                 key={index}
                 title={setting.title}
                 desc={setting.desc}
-                value={setting.title}
+                value={setting.name}
+                name={setting.name}
                 checked={checkedStates[setting.title] || true}
-                onChange={(value, checked) => {
-                  setCheckedStates((prevState) => ({
-                    ...prevState,
-                    [value]: checked,
-                  }));
-                  console.log(`${value} changed to: ${checked}`);
-                }}
+                onChange={handleCheckedState}
               />
             ))}
           </div>
         </div>
-        <div className="flex justify-end mt-2">
-          <SettingsUpdateButton />
+        <div className="flex justify-end mt-6">
+          <SettingsUpdateButton
+            loading={loadingNotification}
+            action={saveSettings}
+            //action={userPlan === "professional" ? saveSettings : undefined}
+          />
         </div>
       </SettingsSection>
     </>

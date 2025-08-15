@@ -1,3 +1,4 @@
+import { staffTierColorMap, tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import type { BranchCardProps } from "@/components/Management/Staff-And-Branches/branch-card";
 import type { Field } from "@/components/Table/types";
 
@@ -96,9 +97,11 @@ export interface BranchApiResponse {
     staffs_count: number;
     properties_count: number;
     units_count: number;
+    is_active: 1 | 0;
     manager: {
       id: string;
       name: string;
+      tier: 1 | 2 | 3 | 4| 5;
       picture: string | null;
     } | null;
   }[];
@@ -114,6 +117,7 @@ export const transformBranchApiResponse = (
   response: BranchApiResponse
 ): BranchesPageData => {
   const { data, branch_count, pagination } = response;
+  console.log("branch data", response)
   return {
     total_pages: pagination.last_page,
     current_page: pagination.current_page,
@@ -126,13 +130,18 @@ export const transformBranchApiResponse = (
     branches: data.map((branch) => ({
       id: branch.id,
       branch_title: branch.branch_name,
+      is_active: branch.is_active,
       branch_full_address: `${branch.branch_address}, ${branch.city}, ${branch.local_government}, ${branch.state}`,
       manager_name: branch.manager?.name || "",
       branch_picture: branch.picture,
-      staff_count: branch.staffs_count,
-      property_count: branch.properties_count,
-      unit_count: branch.units_count,
+      staff_count: branch.staffs_count || 0,
+      property_count: branch.properties_count || 0,
+      unit_count: branch.units_count || 0,
       manager_picture: branch.manager?.picture || null,
+      badgeColor: branch.manager?.tier && branch.manager.tier > 2 ? "gray" : undefined,
+      // badgeColor: branch?.manager?.tier
+      //   ? staffTierColorMap[branch?.manager?.tier as keyof typeof staffTierColorMap]
+      //   : undefined,
     })),
   };
 };

@@ -1,112 +1,56 @@
 "use client";
-
-import { useParams } from "next/navigation";
 import { useState } from "react";
-
-// Types
-import type { MessagesLayoutProps } from "./types";
-
-// Images
-import ClipBlue from "@/public/icons/clip-blue.svg";
-import MicrophoneBlue from "@/public/icons/microphone-blue.svg";
-
-// Imports
-import Input from "@/components/Form/Input/input";
-import Picture from "@/components/Picture/picture";
+import { useParams } from "next/navigation";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import Button from "@/components/Form/Button/button";
-import MessageCard from "@/components/Message/message-card";
-import { message_card_data } from "@/components/Message/data";
-import FilterButton from "@/components/FilterButton/filter-button";
-import MessagesFilterMenu from "@/components/Message/messages-filter-menu";
+import { AuthForm } from "@/components/Auth/auth-components";
+import MessageInputArea from "@/components/Message/messageInputArea";
+import { MessagesProvider } from "@/contexts/messageContext";
+import MessagesSidebar from "@/components/Message/message-sidebar";
+import NoMessage from "./messages-component";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
-const MessagesLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
-  const { id } = useParams();
-
+const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
   const { isCustom } = useWindowWidth(900);
-
+  const { id } = useParams();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-  };
+  const handleMenuClose = () => setAnchorEl(null);
 
   return (
-    <>
-      {isCustom && id ? null : (
-        <div className="flex flex-1 p-4 pr-0">
-          <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
-            <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
-              <div className="flex-1 relative">
-                <Input
-                  id="search"
-                  className="w-full"
-                  placeholder="Search for messages"
-                  leftIcon={"/icons/search-icon.svg"}
-                  inputClassName="pr-[52px] border-transparent"
-                />
-                <div className="absolute top-1/2 right-0 -translate-y-1/2">
-                  <FilterButton
-                    noTitle
-                    className="bg-transparent py-[10px] px-4"
-                    onClick={(e) => setAnchorEl(e.currentTarget)}
-                  />
-                  <MessagesFilterMenu
-                    anchorEl={anchorEl}
-                    open={Boolean(anchorEl)}
-                    onClose={handleMenuClose}
-                    filterOptions={[
-                      { label: "Inbox" },
-                      { label: "Groups" },
-                      { label: "Unread" },
-                    ]}
-                  />
-                </div>
-              </div>
-              <Button
-                href="/reviews"
-                variant="sky_blue"
-                size="xs_medium"
-                className="py-2 px-7 dark:bg-darkBrand-primary"
-              >
-                see reviews
-              </Button>
-            </div>
-            <div className="custom-flex-col relative z-[1] pb-4">
-              {message_card_data.map((message, idx) => (
-                <MessageCard
-                  key={idx}
-                  {...message}
-                  highlight={message.id === id}
-                />
-              ))}
-            </div>
+    <MessagesProvider>
+      <>
+        {/* Sidebar only on large screens */}
+        {!isCustom && (
+          <div
+            className="flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0"
+          >
+            <MessagesSidebar
+              anchorEl={anchorEl}
+              setAnchorEl={setAnchorEl}
+              handleMenuClose={handleMenuClose}
+              id={id}
+            />
           </div>
-        </div>
-      )}
-      {(!isCustom || id) && (
-        <div className="flex-1">
-          <div className="custom-flex-col h-full">
+        )}
+        {/* Main message area */}
+        <div className="flex-1 overflow-hidden flex flex-col">
+          {!id && (
+            <div className="custom-flex-col w-full h-full">
+              <NoMessage />
+            </div>
+          )}
+          <div className="custom-flex-col w-full h-full flex-1">
             {children}
             {id && (
-              <div className="py-4 px-6 flex items-center gap-4">
-                <button>
-                  <Picture src={ClipBlue} alt="attachment" size={24} />
-                </button>
-                <Input
-                  id="chat"
-                  placeholder="Type your message here"
-                  className="flex-1 text-sm"
-                />
-                <button>
-                  <Picture src={MicrophoneBlue} alt="voice note" size={24} />
-                </button>
-              </div>
+              <AuthForm onFormSubmit={() => {}}>
+                <MessageInputArea />
+              </AuthForm>
             )}
           </div>
         </div>
-      )}
-    </>
+      </>
+    </MessagesProvider>
   );
 };
 

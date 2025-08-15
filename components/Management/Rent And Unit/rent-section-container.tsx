@@ -5,6 +5,12 @@ import { DetailItem } from "../detail-item";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import EditWarningModal from "./edit-warning-modal";
 import Button from "@/components/Form/Button/button";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
+import { parseAmount } from "./Edit-Rent/data";
 
 export const RentSectionContainer: React.FC<{
   title: string;
@@ -44,42 +50,84 @@ export const FeeDetails: React.FC<{
   feeDetails: FeeDetail[];
   total_package: number;
   id: string;
-}> = ({ title, feeDetails, total_package, id }) => {
+  noEdit?: boolean;
+  deduction?: boolean;
+  owing?: boolean;
+  currency?: Currency;
+  isExcess?: boolean;
+}> = ({
+  title,
+  feeDetails,
+  total_package,
+  id,
+  noEdit,
+  deduction,
+  owing,
+  currency,
+  isExcess
+}) => {
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
   const totalFee = feeDetails
-    .reduce((acc, fee) => acc + fee.amount, 0)
+    .reduce((acc, fee) => acc + Number(fee.amount), 0)
     .toLocaleString();
+
+  // Filter out fee details with invalid amounts
+  const validFeeDetails = feeDetails.filter((fee) => {
+    const parsedAmount = parseAmount(fee.amount);
+    return parsedAmount > 0;
+  });
+
   return (
     <RentSectionContainer title={title}>
       <div className="space-y-6">
         <div className="grid md:grid-cols-2 gap-y-4 gap-x-2">
-          {feeDetails.map((fee, index) => (
+          {validFeeDetails.map((fee, index) => (
             <DetailItem
               key={index}
               style={{ width: "120px" }}
               label={fee.name}
-              value={`₦${fee?.amount?.toLocaleString()}`}
+              value={`${fee?.amount}`}
             />
           ))}
         </div>
         <div className="flex items-center justify-between gap-4 flex-wrap">
           <div className="space-y-2">
-            <p className="text-[#747474] dark:text-white text-base font-normal">
-              Total Package
-            </p>
+            {noEdit && (
+              <p className="text-[#747474] dark:text-white text-base font-normal">
+                {deduction
+                  ? "Total Package"
+                  : isExcess
+                  ? "Total"
+                  : "Total Package"}
+              </p>
+            )}
+            {!noEdit && (
+              <p className="text-[#747474] dark:text-white text-base font-normal">
+                Total Package
+              </p>
+            )}
             <p className="text-lg lg:text-xl text-brand-9 font-bold">
-            {`₦${total_package?.toLocaleString()}`}
+              {total_package
+                ? `${CURRENCY}${formatNumber(
+                    parseFloat(total_package.toString())
+                  )}`
+                : `${CURRENCY}0`}
             </p>
           </div>
-          <Modal>
-            <ModalTrigger asChild>
-              <Button type="submit" className="py-2 px-6" size="base_medium">
-                Edit
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <EditWarningModal id={id}/>
-            </ModalContent>
-          </Modal>
+          {!noEdit && (
+            <Modal>
+              <ModalTrigger asChild>
+                <Button type="submit" className="py-2 px-6" size="base_medium">
+                  Edit
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <EditWarningModal id={id} />
+              </ModalContent>
+            </Modal>
+          )}
         </div>
       </div>
     </RentSectionContainer>

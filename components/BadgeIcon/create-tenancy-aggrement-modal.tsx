@@ -1,228 +1,334 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
-import Button from "../Form/Button/button";
-import Select from "../Form/Select/select";
 import SettingsLegalDrawer, {
   Checkbox,
 } from "../Settings/Modals/settings-legal-drawer";
 import { Drawer } from "@mui/material";
-import { useModal } from "../Modal/modal";
-import Link from "next/link";
 import { useDrawerStore } from "@/store/drawerStore";
+import { checkboxOptions, transformDocumentsResponse } from "./data";
+import useFetch from "@/hooks/useFetch";
+import CheckBoxLoader from "../Loader/CheckBoxLoader";
+import OtherAgreement from "./other-agrement";
+import TenancyAgreement from "./TenancyAgrrement";
+import {
+  AGREEMENT_OPTIONS,
+  OTHER_DOCUMENTS_OPTIONS,
+} from "@/app/(nav)/documents/data";
+import { toast } from "sonner";
+import { Modal, ModalContent, useModal } from "../Modal/modal";
+import { OtherAgreementDocumentOption } from "../Documents/other-agreement";
+import { useGlobalStore } from "@/store/general-store";
 
-export const checkboxOptions = [
-  {
-    title: "Tenancy Agreement (Free)",
-    value: "tenancy_agreement",
-    description:
-      "A tenancy agreement is a legally binding contract between a landlord and tenant that specifies the terms and conditions for renting or leasing a property. It clearly sets expectations for both parties, helping to prevent disputes by outlining their rights and responsibilities.",
-  },
-  {
-    title: "Quit Notice ₦5,000",
-    value: "quit_notice",
-    description:
-      "A Quit Notice serves to formally inform tenants that their tenancy is ending and is issued by landlords to instruct tenants to vacate the rented premises by a specific date. It is typically issued when tenants breach the terms of the lease, such as by late rent payments, property damage, or involvement in illegal activities.",
-  },
-  {
-    title: "Warning/Reminder ₦5,000",
-    value: "warning_reminder",
-    description:
-      "A warning or reminder is a form of communication designed to notify tenants or occupants about a specific issue, action, or situation. Its purpose is to draw attention to important matters that may necessitate action or careful consideration.",
-  },
-  {
-    title: "Court Process ₦15,000",
-    value: "court_process",
-    description:
-      "The court process refers to the series of legal procedures and steps followed within a court system to resolve disputes or address legal matters. This process typically involves several stages, including filing of documents, hearings, evidence presentation, legal arguments, and ultimately a decision by a judge or jury.",
-  },
-  {
-    title: "Possession ₦10,000",
-    value: "possession",
-    description:
-      "A Quit Notice serves to formally inform tenants that their tenancy is ending and is issued by landlords to instruct tenants to vacate the rented premises by a specific date. It is typically issued when tenants breach the terms of the lease, such as by late rent payments, property damage, or involvement in illegal activities.",
-  },
-  {
-    title: "Other Legal Processes ₦10,000",
-    value: "other_legal",
-    description:
-      "These are the additional legal procedures that govern tenants and occupants, aside from the ones listed above.",
-  },
-];
+interface ICreateAgreement {
+  defaultOption?: string;
+}
 
-const CreateTenancyAggrementModal = () => {
-  const [selectedOption, setSelectedOption] = useState<string | null>(null);
-  const { setSelectedLegalOption } = useDrawerStore();
+const CreateTenancyAggrementModal = ({
+  defaultOption = "",
+}: ICreateAgreement) => {
+  const [step, setStep] = useState<number>(0);
+  const { setGlobalInfoStore } = useGlobalStore();
+  const { setIsOpen } = useModal();
+  const [selectedOptionId, setSelectedOptionId] = useState<string | null>(null);
+  const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
+  const [openDocumentModal, setOpenDocumentModal] = useState<boolean>(false);
+  const [selectedDocumentOption, setSelectedDocumentOption] =
+    useState<OtherAgreementDocumentOption | null>(null);
+  const [selectedAgreementOption, setSelectedAgreementOption] =
+    useState(defaultOption);
+  const [checkboxOptions, setCheckboxOptions] = useState<CheckboxOption[]>([]);
 
-  // HANDLE CHECKBOX CHANGE
-  const handleCheckboxChange = (value: string) => {
-    setSelectedOption(value);
-    const selectedOption = checkboxOptions.find(
-      (option) => option.value === value
-    );
-    if (selectedOption) {
-      setSelectedLegalOption({
-        title: selectedOption.title,
-        description: selectedOption.description,
-      });
+  const { data, loading } = useFetch<DocumentsAPIResponse>(
+    "/property-document/documents"
+  );
+
+  const IS_TENANCY_AGREEMENT = selectedAgreementOption === "tenancy_agreement";
+  const IS_TENANCY_SELECTED =
+    selectedLegalOption?.title === "Tenancy Agreement";
+  const IS_OTHER_AGREEMENT_SELECTED =
+    selectedAgreementOption === "other_document";
+  const IS_TENANCY_APPLICATION_FORM =
+    selectedAgreementOption === "tenancy_application_form";
+  const IS_MANAGEMENT_APPLICATION_FORM =
+    selectedAgreementOption === "management_application_form";
+
+  useEffect(() => {
+    if (data && selectedAgreementOption) {
+      const options = transformDocumentsResponse(data, selectedAgreementOption);
+      setCheckboxOptions(options);
+    } else {
+      setCheckboxOptions([]); // Clear options if no agreement type is selected
+    }
+  }, [data, selectedAgreementOption]);
+
+  // Handle defaultOption on mount
+  useEffect(() => {
+    if (defaultOption) {
+      if (
+        defaultOption === "tenancy_agreement" ||
+        defaultOption === "other_document" ||
+        defaultOption === "tenancy_application_form" ||
+        defaultOption === "management_application_form"
+      ) {
+        setSelectedAgreementOption(defaultOption);
+        setStep(1);
+
+        // Automatically open the document for application forms
+        if (
+          defaultOption === "tenancy_application_form" ||
+          defaultOption === "management_application_form"
+        ) {
+          const selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+            (option) => option.value === defaultOption
+          );
+          if (selectedOption) {
+            setGlobalInfoStore("selectedDocumentOption", selectedOption);
+            setGlobalInfoStore("openDocumentModal", true);
+            setIsOpen(false); // Close the modal
+          }
+        }
+      } else {
+        toast.warning("Coming soon");
+        setSelectedAgreementOption("");
+      }
+    }
+  }, [defaultOption, setGlobalInfoStore, setIsOpen]);
+
+  const handleCheckboxChange = (value: string | number) => {
+    if (
+      IS_OTHER_AGREEMENT_SELECTED ||
+      IS_TENANCY_APPLICATION_FORM ||
+      IS_MANAGEMENT_APPLICATION_FORM
+    ) {
+      let selectedOption;
+
+      if (IS_TENANCY_APPLICATION_FORM) {
+        selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+          (option) => option.value === "tenancy_application_form"
+        );
+      } else if (IS_MANAGEMENT_APPLICATION_FORM) {
+        selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+          (option) => option.value === "management_application_form"
+        );
+      } else {
+        selectedOption = OTHER_DOCUMENTS_OPTIONS.find(
+          (option) => option.value === value
+        );
+      }
+
+      if (selectedOption) {
+        setSelectedOptionId(value.toString());
+        setIsOpen(false); // Close the CreateTenancyAggrementModal
+        setGlobalInfoStore("selectedDocumentOption", selectedOption);
+        setGlobalInfoStore("openDocumentModal", true); // Open the document modal
+      }
+    } else {
+      const selectedOption = checkboxOptions.find(
+        (option) => option.id === value
+      );
+      if (selectedOption) {
+        setSelectedOptionId(value.toString());
+        setSelectedLegalOption({
+          title: selectedOption.title,
+          description: selectedOption.description,
+          amount: selectedOption.amount ?? 0,
+          id: selectedOption.id ?? 0,
+        });
+        setStep(2); // Move to agreement step for tenancy
+      }
+    }
+  };
+
+  // HANDLE BACK
+  const handleBack = () => {
+    setSelectedOptionId(null);
+    setSelectedLegalOption({
+      title: "",
+      description: "",
+      amount: 0,
+      id: 0,
+    });
+    setSelectedAgreementOption("");
+    setStep(0);
+  };
+
+  // HANDLE AGREEMENT OPTION CLICKED
+  const handleAgreementOption = (option: string) => {
+    if (
+      option !== "tenancy_agreement" &&
+      option !== "other_document" &&
+      option !== "tenancy_application_form" &&
+      option !== "management_application_form"
+    ) {
+      toast.warning("Coming soon");
+      return;
+    }
+    setSelectedAgreementOption(option);
+    setStep(1); // Move to step 1
+  };
+
+  // GET HEADING FOR STEP
+  const getHeading = () => {
+    if (step === 1) {
+      const selectedOption = AGREEMENT_OPTIONS.find(
+        (option) => option.value === selectedAgreementOption
+      );
+      const isTenancy = selectedOption?.value === "tenancy_agreement";
+      const isTenancyApplication =
+        selectedAgreementOption === "tenancy_application_form";
+      const isManagementApplication =
+        selectedAgreementOption === "management_application_form";
+
+      if (isTenancyApplication) {
+        return "Tenancy Application Form";
+      } else if (isManagementApplication) {
+        return "Management Application Form";
+      } else if (isTenancy) {
+        return "Create a Reusable Tenancy Agreement Template";
+      } else {
+        return selectedOption?.title ?? "Other Document";
+      }
+    }
+    return step === 2 ? "Select Property" : "Select Document";
+  };
+
+  // RENDER CONTENT BASED ON STEP
+  const renderContent = () => {
+    switch (step) {
+      case 0:
+        return (
+          <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-4 mt-4">
+              {AGREEMENT_OPTIONS.map((option) => (
+                <Checkbox
+                  key={option.value}
+                  title={option.title}
+                  checked={selectedAgreementOption === option.value}
+                  groupName="legal_process"
+                  state={{
+                    isChecked: selectedAgreementOption === option.value,
+                    setIsChecked: () => {
+                      handleAgreementOption(option.value);
+                    },
+                  }}
+                  noCheckbox={true}
+                >
+                  <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
+                    {option.description}
+                  </p>
+                </Checkbox>
+              ))}
+            </div>
+          </div>
+        );
+      case 1:
+        return (
+          <div>
+            {!IS_OTHER_AGREEMENT_SELECTED && (
+              <div className="my-4">
+                <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium mb-1">
+                  Easily generate a standardized tenancy agreement that will
+                  automatically apply to all units under the property during new
+                  rentals, renewals, and tenant management.
+                </p>
+                <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
+                  To ensure accurate and relevant document content, please
+                  select the appropriate property category before proceeding.
+                </p>
+              </div>
+            )}
+            <div>
+              {IS_OTHER_AGREEMENT_SELECTED ||
+              IS_TENANCY_APPLICATION_FORM ||
+              IS_MANAGEMENT_APPLICATION_FORM ? (
+                <div className="mt-4">
+                  <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
+                    Choose from a Range of Essential Documents to Support
+                    Property Management
+                  </h2>
+                  <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
+                    Select key documents such as the Tenancy Application Form
+                    and Management Application Form, vital for streamlining
+                    tenant onboarding and ensuring smooth, professional
+                    property administration.
+                  </p>
+                  <div className="mt-2">
+                    {OTHER_DOCUMENTS_OPTIONS.map((option) => (
+                      <Checkbox
+                        key={option.value}
+                        title={option.title}
+                        checked={selectedOptionId === option.value}
+                        groupName="legal_process"
+                        state={{
+                          isChecked: selectedOptionId === option.value,
+                          setIsChecked: () =>
+                            handleCheckboxChange(option.value),
+                        }}
+                        noCheckbox={true}
+                      >
+                        <p className="text-sm text-darkText-secondary capitalize text-text-disabled tracking-[0px]">
+                          {option.description}
+                        </p>
+                      </Checkbox>
+                    ))}
+                    <Modal>
+                      <ModalContent>
+                        <div>document here</div>
+                      </ModalContent>
+                    </Modal>
+                  </div>
+                </div>
+              ) : checkboxOptions.length > 0 ? (
+                <>
+                  {loading ? (
+                    <CheckBoxLoader />
+                  ) : (
+                    checkboxOptions.map((option) => (
+                      <Checkbox
+                        key={option.value}
+                        title={option.title}
+                        checked={selectedOptionId === option.value}
+                        groupName="legal_process"
+                        state={{
+                          isChecked: selectedOptionId === option.value,
+                          setIsChecked: () =>
+                            handleCheckboxChange(option.id ?? 0),
+                        }}
+                        noCheckbox={true}
+                      >
+                        <p className="text-sm text-darkText-secondary capitalize text-text-disabled tracking-[0px]">
+                          {option.description}
+                        </p>
+                      </Checkbox>
+                    ))
+                  )}
+                </>
+              ) : (
+                <p className="text-sm text-darkText-secondary">
+                  No documents available for the selected agreement type.
+                </p>
+              )}
+            </div>
+          </div>
+        );
+      case 2:
+        return IS_TENANCY_SELECTED ? <TenancyAgreement /> : <OtherAgreement />;
+      default:
+        return null;
     }
   };
 
   return (
-    <>
-      <LandlordTenantModalPreset
-        {...(selectedOption
-          ? { back: { handleBack: () => setSelectedOption(null) } }
-          : {})}
-        style={{ maxWidth: "714px" }}
-        heading={
-          selectedOption
-            ? checkboxOptions.find((option) => option.value === selectedOption)
-                ?.title || ""
-            : "Tenancy Legal Procedure"
-        }
-      >
-        {selectedOption ? (
-          <>
-            {selectedOption !== "tenancy_agreement" ? (
-              <OtherAgreement />
-            ) : (
-              selectedOption === "tenancy_agreement" && <TenancyAgreement />
-            )}
-          </>
-        ) : (
-          <div className="flex flex-col gap-1">
-            <h2 className="text-text-primary text-[20px] font-bold dark:text-white text-base not-italic leading-[32px]">
-              Engage legal counsel.
-            </h2>
-            <p className="text-text-disabled dark:text-darkText-1 text-sm font-medium">
-              The legal steps and processes involved in renting or leasing
-              property, usually regulated by landlord-tenant laws and
-              regulations. Please choose any options below that are most
-              applicable to the property unit.
-            </p>
-          </div>
-        )}
-
-        {/* Render checkboxes only if no option is selected */}
-        {!selectedOption && (
-          <div className="flex flex-col gap-4 mt-4">
-            {checkboxOptions.map((option) => (
-              <Checkbox
-                key={option.value}
-                title={option.title}
-                checked={selectedOption === option.value}
-                groupName="legal_process"
-                state={{
-                  isChecked: selectedOption === option.value,
-                  setIsChecked: () => {
-                    handleCheckboxChange(option.value);
-                  },
-                }}
-                noCheckbox={true}
-              >
-                <p className="text-sm text-darkText-secondary text-text-disabled tracking-[0px]">
-                  {option.description}
-                </p>
-              </Checkbox>
-            ))}
-          </div>
-        )}
-      </LandlordTenantModalPreset>
-    </>
+    <LandlordTenantModalPreset
+      noPaddingTop
+      {...(step !== 0 ? { back: { handleBack } } : {})}
+      style={{ maxWidth: "714px" }}
+      heading={getHeading()}
+    >
+      {renderContent()}
+    </LandlordTenantModalPreset>
   );
 };
 
 export default CreateTenancyAggrementModal;
-
-// OTHER AGREEMENT COMPONENT FLOW
-const OtherAgreement = () => {
-  const { setIsOpen } = useModal();
-  const { isDrawerOpen, openDrawer, closeDrawer } = useDrawerStore();
-
-  const handleOpenDrawer = () => {
-    setIsOpen(false);
-    openDrawer();
-    console.log("Drawer is open", isDrawerOpen);
-  };
-
-  return (
-    <>
-      <div className="flex flex-wrap gap-4 items-center justify-center">
-        <Select
-          options={["property 1", "property 2", "property 3"]}
-          id="legal_process"
-          value={""}
-          label="Select property"
-          className="w-full sm:w-1/2"
-        />
-        <Select
-          options={["Unit 1", "Unit 2", "Unit 3"]}
-          id="legal_process"
-          value={""}
-          label="Select property Unit"
-          className="w-full sm:w-1/2"
-        />
-      </div>
-      <div className="flex items-end justify-end mt-4">
-        <Button type="button" className="rounded-md" onClick={handleOpenDrawer}>
-          Proceed
-        </Button>
-      </div>
-    </>
-  );
-};
-
-// DRAWER COMPONENT FLOW
-export const DrawerComponent = () => {
-  const { isDrawerOpen, closeDrawer, selectedLegalOption } = useDrawerStore();
-
-  return (
-    <Drawer
-      anchor="bottom"
-      open={isDrawerOpen}
-      onClose={closeDrawer}
-      classes={{ paper: "custom-round-scrollbar" }}
-      sx={{
-        "& .MuiPaper-root": {
-          borderTopLeftRadius: "32px",
-          borderTopRightRadius: "32px",
-          overflow: "auto",
-          height: "500px",
-        },
-        zIndex: 1,
-      }}
-    >
-      <SettingsLegalDrawer
-        onClose={closeDrawer}
-        noCheckbox={true}
-        selectedLegalOption={selectedLegalOption}
-      />
-    </Drawer>
-  );
-};
-
-// TENANCY AGREEMENST COMPONENT FLOW
-const TenancyAgreement = () => {
-  return (
-    <>
-      <div className="flex flex-wrap gap-4 items-center justify-center">
-        <Select
-          options={["property 1", "property 2", "property 3"]}
-          id="legal_process"
-          value={""}
-          label="Select property"
-          className="w-full sm:w-1/2"
-        />
-      </div>
-      <div className="flex items-end justify-end mt-4">
-        <Link
-          href="/documents/create-tenancy-agreement"
-          className="bg-brand-9 px-12 py-3 rounded-md text-white"
-        >
-          Add
-        </Link>
-      </div>
-    </>
-  );
-};

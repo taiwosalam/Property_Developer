@@ -7,8 +7,8 @@ import { type BadgeIconColors } from "../BadgeIcon/badge-icon";
 export interface cardProps extends React.HTMLAttributes<HTMLDivElement> {
   title: string;
   icon: React.ReactNode;
-  value: number;
-  subvalue: number;
+  value: string;
+  subvalue: string;
   bg: string;
 }
 
@@ -19,10 +19,11 @@ export interface walletBalanceCardProps
 
 export interface notificationCardProps {
   seeAllLink?: string;
-  sectionHeader: "Staffs" | "Recent Messages" | "Complaints";
+  sectionHeader: "Staffs" | "Recent Messages" | "Recent Complaints" | "Complaints";
   className?: string;
   branchId?: string;
   notifications: {
+    id?: string;
     avatarSrc: string;
     name: string;
     message?: string;
@@ -30,6 +31,11 @@ export interface notificationCardProps {
     title?: string;
     position?: string;
     staff_ID?: string;
+    user_id?: string;
     badgeColor?: BadgeIconColors;
+    count?: number;
+    content_type?: string;
+    online?: boolean;
+    
   }[];
 }

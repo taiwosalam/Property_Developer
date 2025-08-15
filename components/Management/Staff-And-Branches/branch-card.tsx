@@ -1,6 +1,10 @@
 import { empty } from "@/app/config";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import DefaultBranchManagerAvatar from "@/public/icons/contact.svg";
+import { Button } from "@mui/material";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export interface BranchCardProps {
   id: string;
@@ -9,12 +13,15 @@ export interface BranchCardProps {
   branch_full_address: string;
   manager_name: string;
   manager_picture?: string | null;
+  badgeColor?: "gray" | "red" | "yellow" | "blue" | "green" | "black" | "purple";
   staff_count: number;
   property_count: number;
   unit_count: number;
+  is_active: 1 | 0;
 }
 
 const BranchCard: React.FC<BranchCardProps> = ({
+  id,
   branch_title,
   branch_full_address,
   branch_picture,
@@ -23,7 +30,11 @@ const BranchCard: React.FC<BranchCardProps> = ({
   staff_count,
   property_count,
   unit_count,
+  is_active,
+  badgeColor,
 }) => {
+  const router = useRouter();
+  const [hoverText, setHoverText] = useState("Inactive Branch");
   return (
     <div className="relative mt-[3rem]">
       <div
@@ -55,36 +66,69 @@ const BranchCard: React.FC<BranchCardProps> = ({
             height={20}
             className="w-5 h-5 rounded-full object-cover"
           />
-          <p className="text-black dark:text-darkText-1 font-medium text-sm line-clamp-1 truncate text-ellipsis text-wrap">
-            {manager_name}
-          </p>
-        </div>
-        <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
-          <div>
-            <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
-              {staff_count}
+          <div className="flex gap-1 items-center">
+            <p className="text-black dark:text-darkText-1 font-medium text-sm line-clamp-1 truncate text-ellipsis text-wrap">
+              {manager_name}
             </p>
-            <p className="text-text-label text-base font-medium dark:text-darkText-1">
-              Staffs
-            </p>
-          </div>
-          <div>
-            <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8">
-              {property_count}
-            </p>
-            <p className="text-text-label text-base font-medium dark:text-darkText-1">
-              Properties
-            </p>
-          </div>
-          <div>
-            <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8">
-              {unit_count}
-            </p>
-            <p className="text-text-label text-base font-medium dark:text-darkText-1">
-              Units
-            </p>
+            {badgeColor && (
+              <div className="flex items-center">
+                <BadgeIcon color={badgeColor} />
+              </div>
+            )}
           </div>
         </div>
+        {/* {is_active === 1 && ( */}
+        {/* {is_active && ( */}
+          <div className="flex gap-5 [&>div]:flex [&>div]:flex-col [&>div]:gap-2 [&>div]:items-center overflow-x-auto max-w-[100%]">
+            <div>
+              <p className="bg-support-3 text-white font-medium text-base p-1 rounded-lg w-8">
+                {staff_count}
+              </p>
+              <p className="text-text-label text-base font-medium dark:text-darkText-1">
+                Staffs
+              </p>
+            </div>
+            <div>
+              <p className="bg-support-2 text-white font-medium text-base p-1 rounded-lg w-8">
+                {property_count}
+              </p>
+              <p className="text-text-label text-base font-medium dark:text-darkText-1">
+                Properties
+              </p>
+            </div>
+            <div>
+              <p className="bg-support-1 text-white font-medium text-base p-1 rounded-lg w-8">
+                {unit_count}
+              </p>
+              <p className="text-text-label text-base font-medium dark:text-darkText-1">
+                Units
+              </p>
+            </div>
+          </div>
+        {/* )} */}
+
+        {/* {is_active === 0 && ( */}
+        {!is_active && (
+          <Button
+            type="button"
+            onClick={() =>
+              router.push(`/management/staff-branch/${id}/edit-branch`)
+            }
+            onMouseEnter={() => setHoverText("Click to Activate")}
+            onMouseLeave={() => setHoverText("Inactive Branch")}
+            className="page-header-button mt-4"
+            sx={{
+              textTransform: "capitalize",
+              marginTop: "1.8em",
+              backgroundColor: "var(--brand-9)",
+              color: "white",
+            }}
+            size="large"
+            variant="contained"
+          >
+            {hoverText}
+          </Button>
+        )}
       </div>
     </div>
   );

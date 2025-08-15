@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import { LocationIcon, CameraIcon, VideoIcon } from "@/public/icons/icons";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
+import { useRole } from "@/hooks/roleContext";
 
 export interface PropertyCardProps {
   id: string;
@@ -29,6 +30,8 @@ export interface PropertyCardProps {
   currency?: keyof typeof currencySymbols;
   isClickable?: boolean;
   viewOnly?: boolean;
+  default_image?: string;
+  isManagerPage?: boolean;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -52,11 +55,15 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   currency,
   isClickable,
   viewOnly,
+  isManagerPage,
+  default_image,
 }) => {
   const isRental = property_type === "rental";
-  const symbol =
-    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  // const symbol =
+  //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
+  const { role } = useRole();
   const [isModalActive, setIsModalActive] = useState(false);
 
   useOutsideClick(modalRef, () => {
@@ -64,6 +71,29 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       setIsModalActive(false);
     }
   });
+
+  const baseRoute =
+    role === "manager"
+      ? "/manager/management"
+      : role === "account"
+      ? "/accountant/management"
+      : role === "staff"
+      ? "/staff/management"
+      : role === "director"
+      ? "/management"
+      : "/unauthorized";
+
+  const getRoute = (action: "edit" | "preview") => {
+    switch (action) {
+      case "edit":
+        return `${baseRoute}/properties/${id}/edit-property`;
+      case "preview":
+        return `${baseRoute}/properties/${id}`;
+      default:
+        return "#";
+    }
+  };
+
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
@@ -84,41 +114,50 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <Button
               size="base_bold"
               className="py-2 px-8"
-              href={`/management/properties/${id}/edit-property`}
+              // href={`/management/properties/${id}/edit-property`}
+              href={getRoute("edit")}
             >
               Manage
             </Button>
             <Button
               size="base_bold"
               className="py-2 px-8"
-              href={`/management/properties/${id}`}
+              // href={`/management/properties/${id}`}
+              href={getRoute("preview")}
             >
               Preview
             </Button>
           </motion.div>
         )}
       </AnimatePresence>
-      <ImageSlider
-        images={images}
-        showImageIndexOnHover
-        className="h-[200px] rounded-t-2xl"
-      >
-        <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
-          {total_unit_pictures && (
-            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
-              <CameraIcon />
-              <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
-                +{total_unit_pictures}
-              </p>
-            </div>
-          )}
-          {hasVideo && (
-            <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
-              <VideoIcon />
-            </div>
-          )}
-        </div>
-      </ImageSlider>
+      <div className="relative">
+        <ImageSlider
+          default_image={default_image}
+          images={images}
+          showImageIndexOnHover
+          className="h-[200px] rounded-t-2xl"
+        >
+          <div className="absolute z-50 right-2 top-3">
+            <PropertyTag propertyType={property_type} sm />
+          </div>
+          <div className="flex items-stretch gap-[10px] absolute z-[2] right-2 bottom-2">
+            {total_unit_pictures && (
+              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                <CameraIcon />
+                <p className="text-black dark:text-darkText-1 font-medium text-[10px]">
+                  +{total_unit_pictures}
+                </p>
+              </div>
+            )}
+
+            {hasVideo && (
+              <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 grid place-items-center">
+                <VideoIcon />
+              </div>
+            )}
+          </div>
+        </ImageSlider>
+      </div>
 
       <div
         className="relative rounded-b-2xl p-4"
@@ -142,8 +181,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             {address}
           </span>
         </p>
-        <div className="flex flex-wrap justify-between items-end mt-1">
-          <PropertyTag propertyType={property_type} sm />
+        <div className="flex flex-wrap justify-end items-end mt-1">
           <div className="text-right">
             <p className="text-brand-primary text-lg lg:text-xl font-bold">{`${symbol}${formatNumber(
               total_returns
@@ -180,27 +218,36 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             </div>
             <div>
               <p className="text-label font-normal">
-                {isRental ? "Available" : "Owing"} Units
+                Available Units
+                {/* {isRental ? "Available" : "Owing"} Units */}
               </p>
               <p className="text-brand-9 font-bold">
-                {isRental ? available_units : owing_units}
+                {available_units}
+                {/* {isRental ? available_units : owing_units} */}
               </p>
             </div>
             <div>
-              <p className="text-label font-normal">Account Officer</p>
-              <p className="text-brand-9 font-bold">{accountOfficer}</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Mobile Tenants</p>
+              <p className="text-label font-normal">
+                {isRental ? "Mobile Tenants" : "Mobile Occupants"}
+              </p>
               <p className="text-brand-9 font-bold">{mobile_tenants}</p>
             </div>
             <div>
-              <p className="text-label font-normal">Web Tenants</p>
+              <p className="text-label font-normal">
+                {isRental ? "Web Tenants" : "Web Occupants"}
+              </p>
               <p className="text-brand-9 font-bold">{web_tenants}</p>
             </div>
             <div>
               <p className="text-label font-normal">Last Updated</p>
               <p className="text-brand-9 font-bold">{last_updated}</p>
+            </div>
+            <div className="col-span-3">
+              <p className="text-label font-normal">Account Officer</p>
+              <p className="text-brand-9 font-bold truncate line-clamp-1">
+                {accountOfficer}
+                {/* {accountOfficer ? `${accountOfficer.substring(0, 30)}...` : ""} */}
+              </p>
             </div>
           </motion.div>
         )}

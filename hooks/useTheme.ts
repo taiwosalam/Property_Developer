@@ -17,7 +17,7 @@ const useThemeColors = () => {
         // const computedStyle = getComputedStyle(document.documentElement);
         // setColor(computedStyle.getPropertyValue("--primary-color").trim());
         // setCSSVariables(defaultColorsMap);
-        setColor("#2563EB");
+        setColor("#0033C4");
       }
     }
   }, [setColor]);

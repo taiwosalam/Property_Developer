@@ -37,10 +37,7 @@ const AddPhotoAndVideo = ({
         setVideoLink(data.video_link);
       }
     }
-  }, [data, editing]);
-
-  // console.log(imagePreviews);
-  console.log('retainMedia', retainMedia);
+  }, [data, editing, setRetainMedia]);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     let files = Array.from(e.target.files || []);
@@ -101,7 +98,7 @@ const AddPhotoAndVideo = ({
   };
 
   return (
-    <div className="lg:flex-1 space-y-4">
+    <div className="media-upload-section lg:flex-1 space-y-4">
       <div className="grid gap-4 md:grid-cols-2">
         {imagePreviews.map((src, index) => (
           <div

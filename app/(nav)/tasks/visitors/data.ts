@@ -1,3 +1,6 @@
+import api, { handleAxiosError } from "@/services/api";
+import dayjs from "dayjs";
+
 export const VisitorRequestFilterOptionsWithDropdown = [
   {
     label: "Property",
@@ -21,6 +24,7 @@ export interface VisitorRequestDataDataType {
   secretAnswer: string;
   purpose: string;
   propertyName: string;
+  unitName?: string;
   branch: string;
 } //check with API
 
@@ -82,3 +86,218 @@ export const VisitorRequestData: VisitorRequestDataDataType[] = [
     branch: "Akinleye",
   },
 ];
+
+export interface Visitor {
+  userId: number;
+  userName: string;
+  requestDate: string;
+  tier_id: number;
+  requestId: string;
+  status: "completed" | "pending" | "in-progress" | "decline";
+  pictureSrc: string;
+  visitorName: string;
+  visitorPhoneNumber: string;
+  secretQuestion: string;
+  secretAnswer: string;
+  purpose: string;
+  propertyName: string;
+  unitName: string;
+  branch: string;
+  checked_status: string;
+  checked_in_by: string | null;
+  checked_out_by: string | null;
+  check_out_companion: string;
+  check_in_companion: string;
+  check_in_inventory: string;
+  check_out_inventory: string;
+  check_in_date: string | null;
+  check_out_date: string | null;
+  decline_by: string | null;
+  decline_date: string | null;
+  decline_time: string | null;
+  reason: string | null;
+  check_in_time: string | null;
+  check_out_time: string | null;
+}
+export interface VisitorPageData {
+  total: number;
+  month_total: number;
+  total_pending: number;
+  month_pending: number;
+  total_completed: number;
+  month_completed: number;
+  visitors: Visitor[];
+  pagination: {
+    current_page: number;
+    per_page: number;
+    total: number;
+    total_pages: number;
+  };
+}
+
+export const transformVisitorRequestData = (
+  data: VisitorRequestsResponse
+): VisitorPageData => {
+  return {
+    total: data?.total || 0,
+    month_total: data?.this_month_total || 0,
+    total_pending: data?.total_pending || 0,
+    month_pending: data?.this_month_pending || 0,
+    total_completed: data?.total_completed || 0,
+    month_completed: data?.this_month_completed || 0,
+    visitors: data?.data?.map((visitor) => {
+      return {
+        id: visitor.id,
+        userId: visitor.user_id,
+        checked_status: visitor.status,
+        checked_in_by: visitor.check_in_by?.toLowerCase() || "",
+        checked_out_by: visitor.check_out_by?.toLocaleLowerCase() || "",
+        check_out_companion: visitor.check_out_companion,
+        check_in_companion: visitor.check_in_companion,
+        check_in_inventory: visitor.check_in_inventory || "___ ___",
+        check_out_inventory: visitor.check_out_inventory,
+        check_in_date: visitor.check_in_date,
+        check_out_date: visitor.check_out_date,
+        check_in_time: visitor.check_in_time,
+        check_out_time: visitor.check_out_time,
+        decline_by: visitor.decline_by?.toLowerCase() || "",
+        decline_date: visitor.decline_date
+          ? dayjs(visitor.decline_date).format("DD/MM/YYYY")
+          : "___ ___",
+        decline_time: visitor.decline_time
+          ? dayjs(visitor.decline_time).format("HH:MM A")
+          : "___ ___",
+        reason: visitor.reason,
+        tier_id: visitor.user?.tier,
+        userName: visitor.user?.name?.toLowerCase(),
+        requestDate: visitor.request_date,
+        requestId: visitor.request_id,
+        status: visitor.status,
+        pictureSrc: visitor.user?.picture,
+        visitorName: visitor.visitor_name?.toLowerCase(),
+        visitorPhoneNumber: visitor.visitor_number,
+        secretQuestion: visitor.secret_question,
+        secretAnswer: visitor.secret_answer,
+        purpose: visitor.purpose,
+        unitName: visitor?.unit_name || "___ ___",
+        propertyName:
+          visitor.user?.tenant?.units
+            ?.map((property) => property.property.title)
+            .join("") ||
+          visitor.property_name ||
+          "___ ___",
+        branch:
+          visitor.user?.tenant?.units
+            ?.map((property) => property.property.branch_name)
+            .join("") ||
+          visitor?.branch_name ||
+          "___ ___",
+      };
+    }),
+    pagination: {
+      current_page: data?.pagination?.current_page || 1,
+      per_page: data?.pagination?.per_page || 10,
+      total: data?.pagination?.total,
+      total_pages: data?.pagination?.total_pages,
+    },
+  };
+};
+
+export interface ICheckInPayload {
+  inventory: string;
+  companion: string;
+  check_in_date?: string;
+  check_in_time?: string;
+  check_out_date?: string;
+  check_out_time?: string;
+}
+
+export interface IDeclinePayload {
+  reason: string;
+  decline_date?: string;
+  decline_time?: string;
+}
+
+export const handleDecline = async (id: string, data: IDeclinePayload) => {
+  const payload = {
+    reason: data.reason,
+    date: data.decline_date,
+    time: data.decline_time,
+  };
+
+  try {
+    const response = await api.put(`visitor-requests/${id}/cancel`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchVisitors"));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Check-in failed:", error);
+    handleAxiosError(error);
+    throw error; // Re-throw to handle in component
+  }
+};
+
+export const handleCheckIn = async (id: string, data: ICheckInPayload) => {
+  const payload = {
+    check_in_inventory: data.inventory,
+    check_in_companion: data.companion,
+    check_in_date: data.check_in_date,
+    check_in_time: data.check_in_time,
+  };
+
+  try {
+    const response = await api.put(`visitor-requests/${id}/check-in`, payload, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchVisitors"));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Check-in failed:", error);
+    handleAxiosError(error);
+    throw error; // Re-throw to handle in component
+  }
+};
+
+export const handleCheckOut = async (id: string, data: ICheckInPayload) => {
+  const payload = {
+    check_out_inventory: data.inventory,
+    check_out_companion: data.companion,
+    check_out_date: data.check_out_date,
+    check_out_time: data.check_out_time,
+  };
+
+  try {
+    const response = await api.put(
+      `visitor-requests/${id}/check-out`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchVisitors"));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Check-out failed:", error);
+    handleAxiosError(error);
+    throw error;
+  }
+};

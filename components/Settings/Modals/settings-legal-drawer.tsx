@@ -9,8 +9,8 @@ import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-i
 import { SectionSeparator } from "@/components/Section/section-components";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { LegalOption } from "../types";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
+import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 
 // DATA
 const checkboxOptions = [
@@ -67,6 +67,8 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
   const [selectedOption, setSelectedOption] = useState<string | null>(
     selectedLegalOption?.title ?? null
   );
+
+  // console.log("selectOp", selectedLegalOption);
 
   const handleCheckboxChange = (value: string) => {
     setSelectedOption(value);
@@ -158,11 +160,9 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
           {!selectedLegalOption?.description && (
             <div className="enageg my-4 px-2">
               <h3 className="text-[20px] font-bold dark:text-white">
-                {" "}
                 Engage legal counsel.
               </h3>
               <p className="text-text-disabled text-sm mt-1 mb-3 dark:text-darkText-1">
-                {" "}
                 Please choose any options below that are most applicable to the
                 property unit.
               </p>
@@ -196,16 +196,6 @@ const SettingsLegalDrawer: React.FC<SettingsLegalDrawerProps> = ({
 export default SettingsLegalDrawer;
 
 const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
-  const [openPaymentModal, setOpenPaymentModal] = useState(false);
-
-  const handleOpenPaymentModal = () => {
-    setOpenPaymentModal((prev) => !prev);
-  };
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
   return (
     <div className="dark:bg-[#3c3d37] bg-white w-full min-h-[136px] flex flex-col md:flex-row items-start md:items-center justify-between gap-4 px-4 md:px-8 pb-8 pt-10 sticky top-0 border-b border-darkText-2">
       <div className="title flex-1">
@@ -226,23 +216,15 @@ const DrawerHeader = ({ onClose }: { onClose: () => void }) => {
         >
           Back
         </Button>
-        <Button
-          type="button"
-          size="base_medium"
-          className="py-2 px-5"
-          onClick={handleOpen}
-        >
-          Submit
-        </Button>
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={style}>
-            <PaymentMethod title="Legal Procedure Fee" price={2000} />
-          </Box>
+        <Modal>
+          <ModalTrigger asChild>
+            <Button type="button" size="base_medium" className="py-2 px-5">
+              Submit
+            </Button>
+          </ModalTrigger>
+          <ModalContent>
+            <AddFundsModal doc />
+          </ModalContent>
         </Modal>
       </div>
     </div>
@@ -342,11 +324,9 @@ interface CheckboxProps {
   groupName?: string;
   noCheckbox?: boolean;
 }
-
 export const Checkbox: React.FC<CheckboxProps> = ({
   title,
   state,
-  darkText,
   children,
   checked,
   groupName,
@@ -365,48 +345,102 @@ export const Checkbox: React.FC<CheckboxProps> = ({
     }
   };
 
-  // Effect to synchronize state with group
-  useEffect(() => {
-    if (groupName && isChecked) {
-    }
-  }, [isChecked, groupName]);
-
   return (
-    <div className="flex w-full hover:bg-[#f2f2f2] dark:hover:bg-darkText-primary">
-      <button
-        className="flex gap-3 text-start rounded-full"
-        onClick={handleClick}
-      >
-        {!noCheckbox && (
-          <div
-            className={`rounded-full p-[2px] flex items-center justify-center ${
-              isChecked ? "border border-blue-600" : ""
-            }`}
-          >
-            <div
-              className={`rounded-full w-5 h-5 border min-w-2 min-h-2  border-darkText-2 ${
-                isChecked ? "bg-blue-600 " : ""
-              }`}
-            ></div>
-          </div>
-        )}
+    <div
+      className="flex w-full gap-3 p-2 rounded-lg cursor-pointer hover:bg-[#f2f2f2] dark:hover:bg-darkText-primary"
+      onClick={handleClick}
+    >
+      {!noCheckbox && (
         <div
-          className={`custom-flex-col gap-[2px] ${
-            noCheckbox
-              ? "hover:cursor-pointer hover:darkText-2 hover:text-white"
-              : ""
+          className={`rounded-full p-[2px] flex items-center justify-center ${
+            isChecked ? "border border-blue-600" : ""
           }`}
         >
-          {title && (
-            <p className="text-text-black dark:text-darkText-1 text-base font-medium capitalize">
-              {title}
-            </p>
-          )}
-          <p className="text-sm font-normal text-text-disabled dark:text-darkText-disabled">
-            {children}
-          </p>
+          <div
+            className={`rounded-full w-5 h-5 border min-w-2 min-h-2 border-darkText-2 ${
+              isChecked ? "bg-blue-600" : ""
+            }`}
+          />
         </div>
-      </button>
+      )}
+      <div className="flex flex-col gap-[2px]">
+        {title && (
+          <p className="text-text-black dark:text-darkText-1 text-base font-medium capitalize">
+            {title}
+          </p>
+        )}
+        <p className="text-sm font-normal text-text-disabled dark:text-darkText-disabled">
+          {children}
+        </p>
+      </div>
     </div>
   );
 };
+
+// export const Checkbox: React.FC<CheckboxProps> = ({
+//   title,
+//   state,
+//   darkText,
+//   children,
+//   checked,
+//   groupName,
+//   noCheckbox,
+// }) => {
+//   const [internalIsChecked, setInternalIsChecked] = useState(checked || false);
+
+//   const isChecked = state ? state.isChecked : internalIsChecked;
+//   const setIsChecked = state ? state.setIsChecked : setInternalIsChecked;
+
+//   const handleClick = () => {
+//     if (groupName) {
+//       setIsChecked(true);
+//     } else {
+//       setIsChecked(!isChecked);
+//     }
+//   };
+
+//   // Effect to synchronize state with group
+//   useEffect(() => {
+//     if (groupName && isChecked) {
+//     }
+//   }, [isChecked, groupName]);
+
+//   return (
+//     <div className="flex w-full hover:bg-[#f2f2f2] dark:hover:bg-darkText-primary">
+//       <button
+//         className="flex gap-3 text-start rounded-full"
+//         onClick={handleClick}
+//       >
+//         {!noCheckbox && (
+//           <div
+//             className={`rounded-full p-[2px] flex items-center justify-center ${
+//               isChecked ? "border border-blue-600" : ""
+//             }`}
+//           >
+//             <div
+//               className={`rounded-full w-5 h-5 border min-w-2 min-h-2  border-darkText-2 ${
+//                 isChecked ? "bg-blue-600 " : ""
+//               }`}
+//             ></div>
+//           </div>
+//         )}
+//         <div
+//           className={`custom-flex-col gap-[2px] ${
+//             noCheckbox
+//               ? "hover:cursor-pointer hover:darkText-2 hover:text-white"
+//               : ""
+//           }`}
+//         >
+//           {title && (
+//             <p className="text-text-black dark:text-darkText-1 text-base font-medium capitalize">
+//               {title}
+//             </p>
+//           )}
+//           <p className="text-sm font-normal text-text-disabled dark:text-darkText-disabled">
+//             {children}
+//           </p>
+//         </div>
+//       </button>
+//     </div>
+//   );
+// };

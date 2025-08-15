@@ -5,6 +5,7 @@ import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { WalletLegalProcedureIcon } from "@/public/icons/icons";
 import Image from "next/image";
+import { formatNumber } from "@/utils/number-formatter";
 
 const PaymentMethod: React.FC<{
   title: string;
@@ -40,7 +41,7 @@ const AddFundsModalOptions: React.FC<{
         <h3>{title}</h3>
         <div className="flex gap-2 w-full flex-row justify-center items-center">
           <p className="not-italic leading-[30px] font-bold text-brand-9 text-[20px]">
-            ₦ {price * quantity}.00
+            ₦ {formatNumber(price * quantity)}
           </p>
           {counter && (
             <div className="flex items-center gap-2">
@@ -64,7 +65,7 @@ const AddFundsModalOptions: React.FC<{
         </div>
       </div>
 
-      <WalletFunding title={title} />
+      {/* <WalletFunding title={title} /> */}
     </div>
   );
 };
@@ -74,32 +75,7 @@ export const CounterButton: React.FC<{
   icon: string;
   alt: string;
 }> = ({ onClick = () => {}, icon, alt }) => (
-  <button className="text-white rounded-md" onClick={onClick}>
+  <button type="button" className="text-white rounded-md" onClick={onClick}>
     <Image src={icon} alt={alt} width={20} height={20} />
   </button>
 );
-
-const WalletFunding: React.FC<{
-  title: string;
-}> = ({ title }) => {
-  return (
-    <div className="p-[18px] rounded-2xl overflow-hidden bg-neutral-2 dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-2">
-      <div className="w-full flex gap-2">
-        <WalletLegalProcedureIcon />
-        <div className="flex flex-col">
-          <h3> {title} </h3>
-          <p className="text-[12px] font-medium tracking-[0px]">
-            Wallet Balance: ₦ 50,000 (Sufficient funds){" "}
-          </p>
-        </div>
-      </div>
-      <div className="custom-flex-col gap-6">
-        <div className="flex justify-end">
-          <Button size="xs_medium" className="py-1 px-2">
-            proceed
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-};

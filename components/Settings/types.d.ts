@@ -18,7 +18,7 @@ export type SettingsLinkTab = (typeof settings_link_tabs)[number];
 
 export interface SettingsLinkTabProps {
   active?: boolean;
-  type: SettingsLinkTab
+  type: SettingsLinkTab | user_settings_link_tabs;
 }
 
 export interface SettingsSectionProps {
@@ -30,6 +30,7 @@ export interface SettingsSectionProps {
 export interface SettingsTitleProps {
   title?: string;
   desc?: string;
+  required?: boolean;
 }
 
 export type WebsiteColorScheme = (typeof website_color_schemes)[number];
@@ -50,6 +51,8 @@ export interface SettingsTenantOccupantTierProps {
 export interface SettingsServicesTagProps {
   active?: boolean;
   children: React.ReactNode;
+  onClick: () => void;
+  isSelected: boolean;
 }
 
 export type SettingsServiceOwners = keyof typeof services;
@@ -72,6 +75,7 @@ export interface DefaultSettingsModalProps {
   saveOtp?: boolean;
   resetPass?: boolean;
   changePassword?: boolean;
+  addBank?: boolean;
 }
 
 export interface SettingsAnnumSwitcherProps {
@@ -118,6 +122,8 @@ interface SettingsOthersCheckBoxProps {
   desc: string;
 }
 export interface SettingsOthersProps {
+  onClick?: () => void;
+  id?: number;
   title: string;
   desc: string;
   icon: string | React.ReactNode;
@@ -125,6 +131,12 @@ export interface SettingsOthersProps {
   groupName?: string;
   selectedGroup?: string | null;
   setSelectedGroup?: (value: string | null) => void;
+  name?: string;
+  state?: {
+    isChecked: boolean;
+    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  onChange?: (name: string, checked: boolean) => void;
 }
 
 export interface GroupRadioProps {
@@ -147,8 +159,18 @@ export interface SettingsOthersCheckBoxProps {
   title: string;
   desc: string;
   checked?: boolean;
-  value: string;
-  onChange: (value: string, checked: boolean) => void;
+  value: string; // Keeping this for your use case, though name might be sufficient
+  onChange: (name: string, checked: boolean) => void; // Changed to use name
+  plan?: string;
+  state?: {
+    isChecked: boolean;
+    setIsChecked: React.Dispatch<React.SetStateAction<boolean>>;
+  };
+  name?: string; // Made required for consistency
+  onClick?: () => void;
+  forceChecked?: boolean; // Force the checkbox to a specific state (true/false)
+  isToggleable?: boolean; // Allow or prevent toggling
+  restrictedMessage?: string;
 }
 
 export interface SettingsThemeTypes {
@@ -174,8 +196,9 @@ export interface CheckboxProps {
 }
 
 interface ThemeCardProps {
-  img: string;
+  img: any;
   value: string;
+  plan?: string;
   isSelected: boolean;
   onSelect: (value: string) => void;
   className?: string;
@@ -236,4 +259,52 @@ export interface SelectedOptions {
   navbar: string;
   mode: string;
   font: string;
+}
+
+export interface SponsorListingsResponse {
+  status: string;
+  message: string;
+  data: {
+    value: string;
+    listings: Listings;
+  };
+}
+
+export interface Listings {
+  current_page: number;
+  data: SponsoredListing[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  links: PaginationLink[];
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
+export interface SponsoredListing {
+  id: number;
+  company_id: number;
+  transaction_id: number;
+  amount: string;
+  units: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ISponsoredListing {
+  transaction_id: number;
+  date: string;
+  units: number;
+  amount: string;
+}
+
+export interface PaginationLink {
+  url: string | null;
+  label: string;
+  active: boolean;
 }

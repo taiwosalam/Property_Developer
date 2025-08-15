@@ -1,13 +1,13 @@
 // Imports
-import type { PropertyFormStateType, AllStaffResponse } from './types';
-import api, { handleAxiosError } from '@/services/api';
-import toast from 'sonner';
+import type { PropertyFormStateType, AllStaffResponse } from "./types";
+import api, { handleAxiosError } from "@/services/api";
+import toast from "sonner";
 
 export const property_form_state_data: PropertyFormStateType = {
-  state: '',
-  city: '',
-  lga: '',
-  selectedBranch: { value: '', label: '' },
+  state: "",
+  city: "",
+  lga: "",
+  selectedBranch: { value: "", label: "" },
   staff: [],
   staffOptions: [],
   accountOfficerOptions: [],
@@ -28,19 +28,20 @@ export const getAllStaffByBranch = async (branchId: string) => {
 export const transformPropertyFormData = (
   data: Record<string, any>,
   imageFiles: (File | string)[],
-  company_id: string
+  company_id: string,
+  selectedStaffs: any
+  // selectedLandlord: any,
+  // selectedOfficer: any,
 ) => {
-  console.log('Data', data);
-  // Collect staff IDs
-  const staffIds = Object.entries(data)
-    .filter(([key]) => key.startsWith('staff') && key.endsWith('_id'))
-    .map(([_, value]) => value as string)
-    .filter(Boolean);
+  const staffIds = [...selectedStaffs];
   // Add account officer if present
   if (data.account_officer_id) {
     staffIds.push(data.account_officer_id);
   }
 
+  // Set default image (first image) and filter it out from images list
+  const default_image = imageFiles.length > 0 ? imageFiles[0] : null;
+  const filteredImages = imageFiles.filter((img) => img !== default_image);
   const payload = {
     title: data.title,
     state: data.state,
@@ -52,8 +53,9 @@ export const transformPropertyFormData = (
     video_link: data.video_link,
     property_type: data.property_type,
     branch_id: data.branch_id,
-    inventory_id: data.inventory_id,
-    land_lord_id: data.land_lord_id,
+    is_inventory: data.is_inventory,
+    landlord_id: data.land_lord_id,
+    // land_lord_id: landlord_id,
     company_id,
     agency_fee: isNaN(parseFloat(data.agency_fee))
       ? null
@@ -73,9 +75,8 @@ export const transformPropertyFormData = (
     active_vat: data.active_vat,
     currency: data.currency,
     coordinate: data.coordinate,
-    images: imageFiles,
-    // images: imageFiles.slice(1),
-    default_image: imageFiles[0] || null,
+    images: filteredImages, // Exclude default image from images list
+    default_image,
     staff: staffIds,
   };
 
@@ -85,13 +86,12 @@ export const transformPropertyFormData = (
 export const transformUnitFormData = (
   formData: Record<string, any>,
   images: (File | string)[],
-  property_id: string
+  property_id: string,
+  originalImages: { id: string; path: string }[] = []
 ) => {
   const parseFee = (value: string | undefined) => {
-    if (!value) {
-      return 0;
-    }
-    return parseFloat(value.replace(/,/g, ''));
+    if (!value) return 0;
+    return parseFloat(value.replace(/,/g, ""));
   };
 
   const parseIntOrNull = (value: string | undefined | null) => {
@@ -99,6 +99,28 @@ export const transformUnitFormData = (
     const parsed = parseInt(value, 10);
     return isNaN(parsed) ? null : parsed;
   };
+
+  console.log("images passed to ", images);
+
+  // Determine the default image (first image in the list)
+  let defaultImage: string | File | null = null;
+  let defaultImageId: string | null = null;
+
+  if (images.length > 0) {
+    const firstImage = images[0];
+    if (typeof firstImage === "string") {
+      defaultImage = firstImage;
+      const matchingImage = originalImages.find((img) => img.path === firstImage);
+      if (matchingImage) {
+        defaultImageId = matchingImage.id;
+      }
+    } else {
+      defaultImage = firstImage; // File object
+    }
+  }
+
+  // Filter images, excluding the default image by index (not reference)
+  const filteredImages = images.slice(1); // Take all images after the first one
 
   const payload = {
     unit_name: formData.unit_name,
@@ -112,7 +134,7 @@ export const transformUnitFormData = (
     bathroom: parseIntOrNull(formData.bathroom),
     toilet: parseIntOrNull(formData.toilet),
     facilities: formData.facilities
-      ? formData.facilities.split(',').map(decodeURIComponent)
+      ? formData.facilities.split(",").map(decodeURIComponent)
       : [],
     en_suit: formData.en_suit ?? null,
     prepaid: formData.prepaid ?? null,
@@ -135,12 +157,16 @@ export const transformUnitFormData = (
     renew_other_charge: parseFee(formData.renew_other_charge),
     renew_total_package: parseFee(formData.renew_total_package),
     property_id,
-    images,
+    images: filteredImages, // All images except the first one
+    default_image: defaultImage, // Keep as File or string
+    vat_amount: parseFee(formData.vat_amount),
+    renew_vat_amount: parseFee(formData.renew_vat_amount),
+    renew_agency_fee: parseFee(formData.renew_agency_fee),
+    renew_security_fee: parseFee(formData.renew_security_fee),
   };
 
   return payload;
 };
-
 export const addPropertyWithId = async (
   property_id: string,
   company_id: string

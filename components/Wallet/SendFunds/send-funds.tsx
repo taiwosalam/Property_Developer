@@ -44,6 +44,7 @@ const SendFunds: React.FC<SendFundsProps> = ({ changeStep, setRecipient }) => {
           : data.tier
           ? tierColorMap[data.tier]
           : undefined,
+        company_name: data.company_name,
       });
     }
     setLoading(false);
@@ -57,6 +58,8 @@ const SendFunds: React.FC<SendFundsProps> = ({ changeStep, setRecipient }) => {
           placeholder="Recipient Wallet ID"
           label="Recipient Wallet ID"
           value={walletId}
+          type="number"
+          maxLength={8}
           onChange={(value) => setWalletId(value)}
         />
         <div className="custom-flex-col gap-4 py-[18px] rounded-2xl bg-neutral-2 dark:bg-darkText-primary">

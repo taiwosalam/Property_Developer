@@ -8,6 +8,8 @@ export interface Beneficiary {
   wallet_id: string;
   badge_color?: BadgeIconColors;
   branch?: boolean;
+  noBackBtn?: boolean;
+  company_name?: string;
 }
 
 export interface Transaction {
@@ -18,19 +20,33 @@ export interface Transaction {
   status: string;
   date: string;
   time: string;
+  transaction_type:
+    | "withdrawal"
+    | "sponsor_listing"
+    | "transfer_out"
+    | "transfer_in"
+    | "debit"
+    | "funding";
   type: "credit" | "debit" | "DVA";
 }
 
 interface WalletStore {
+  id: string | null;
   walletId: string | null;
   current_pin: string;
   new_pin: string;
   confirm_pin: string;
   otp?: string;
-  amount: number,
-  desc: string,
-  pin: number,
+  amount: number;
+  desc: string;
+  pin: number;
   walletPinStatus: boolean;
+  bank_details: {
+    bank_code: string;
+    account_number: string;
+    account_name: string;
+    bank_name: string;
+  };
   balance: {
     my_balance: string;
     caution_deposit: string;
@@ -38,14 +54,14 @@ interface WalletStore {
   };
   beneficiaries: Beneficiary[];
   recentTransactions: Transaction[];
- transactions: Transaction[];
+  transactions: Transaction[];
   stats: {
     current_day: {
       total_funds: string;
       total_credit: string;
       total_debit: string;
     };
-    before_current_day: {
+    previous_month: {
       total_funds: string;
       total_credit: string;
       total_debit: string;
@@ -57,11 +73,11 @@ interface WalletStore {
     bank: string;
     customer_code: string;
   };
-  sub_wallet:{
+  sub_wallet: {
     status: string;
     wallet_id: number | undefined;
     is_active?: boolean;
-  }
+  };
   setWalletStore: <K extends keyof Omit<WalletStore, "setWalletStore">>(
     key: K,
     value: WalletStore[K]
@@ -70,6 +86,7 @@ interface WalletStore {
 
 export const useWalletStore = create<WalletStore>((set) => ({
   walletId: null,
+  id: null,
   walletPinStatus: false,
   amount: 0,
   desc: "",
@@ -78,6 +95,12 @@ export const useWalletStore = create<WalletStore>((set) => ({
   new_pin: "",
   confirm_pin: "",
   otp: "",
+  bank_details: {
+    bank_code: "",
+    account_number: "",
+    account_name: "",
+    bank_name: "",
+  },
   balance: {
     my_balance: "0",
     caution_deposit: "0",
@@ -92,7 +115,7 @@ export const useWalletStore = create<WalletStore>((set) => ({
       total_credit: "0",
       total_debit: "0",
     },
-    before_current_day: {
+    previous_month: {
       total_funds: "0",
       total_credit: "0",
       total_debit: "0",

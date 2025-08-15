@@ -3,19 +3,21 @@ import type { BadgeIconColors } from "../BadgeIcon/badge-icon";
 import type { SettingsServiceOwners, TenantOccupantTier } from "./types";
 
 export const settings_link_tabs = [
-  "profile",
+  "company",
   "management",
-  "subscription",
   "services",
-  "security",
-  "enrollment",
   "appearance",
-  "preference",
+  "subscription",
+  "add-on",
+  // "enrollment",
+
+  "security",
+  // "preference",
   "others",
 ] as const;
 
 export const manager_settings_link_tabs = [
-  "profile",
+  "company",
   "security",
   "others",
 ] as const;
@@ -39,8 +41,8 @@ export const staff_settings_link_tabs = [
 ] as const;
 
 export const website_color_schemes = [
-  "#2563EB",
   "#0033C4",
+  "#2563EB",
   "#0FA7E2",
   "#377FC1",
   "#005623",
@@ -59,13 +61,21 @@ export const website_color_schemes = [
   "#000000",
 ] as const;
 
+export const tenant_occupant_options = [
+  { label: "tier 1", value: 1 },
+  { label: "tier 2", value: 2 },
+  { label: "tier 3", value: 3 },
+  { label: "tier 4", value: 4 },
+  { label: "tier 5", value: 5 },
+] as const;
+
 export const tenant_occupant_tiers = [
   "tier 1",
   "tier 2",
   "tier 3",
   "tier 4",
   "tier 5",
-] as const;
+];
 
 export const tenant_occupant_level_types: Record<
   TenantOccupantTier,

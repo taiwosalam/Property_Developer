@@ -2,6 +2,11 @@
 import type { Field } from "@/components/Table/types";
 import { BadgeIconColors } from "@/components/BadgeIcon/badge-icon";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
+import { UserCardProps } from "@/components/Management/landlord-and-tenant-card";
+import { PersonalDataProps } from "@/components/tasks/vehicles-record/form-sections";
+import api, { handleAxiosError } from "@/services/api";
+import { toast } from "sonner";
+import { empty } from "@/app/config";
 
 interface LandlordCardProps {
   id: string;
@@ -11,6 +16,7 @@ interface LandlordCardProps {
   phone_number: string | null;
   picture_url: string | null;
   badge_color?: BadgeIconColors;
+  note?: boolean;
 }
 
 export interface LandlordsPageData {
@@ -118,11 +124,19 @@ export interface LandlordApiResponse {
       id: string;
       name: string;
       email: string | null;
-      phone: string | null;
+      // phone: string | null;
+      phone: {
+        user_phone: string | null;
+        profile_phone: string | null;
+      };
       username: string | null;
       picture: string;
       agent: string;
       tier_id?: 1 | 2 | 3 | 4 | 5;
+      user_tier?: 1 | 2 | 3 | 4 | 5;
+      note: {
+        note: string | null;
+      };
     }[];
     pagination: {
       current_page: number;
@@ -141,6 +155,7 @@ export interface LandlordApiResponse {
 export const transformLandlordApiResponse = (
   response: LandlordApiResponse
 ): LandlordsPageData => {
+  // console.log("res", response)
   const {
     data: { landlords, pagination },
     mobile_landlord_count,
@@ -163,11 +178,18 @@ export const transformLandlordApiResponse = (
       id: landlord.id,
       name: landlord.name,
       email: landlord.email,
-      phone_number: landlord.phone,
+      phone_number: `${landlord?.phone?.profile_phone || ""}${
+        landlord?.phone?.user_phone && landlord?.phone?.profile_phone
+          ? " / " + landlord?.phone?.user_phone
+          : ""
+      }`,
+      // phone_number: landlord.phone,
       user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-      picture_url: landlord.picture,
-      badge_color: landlord.tier_id
-        ? tierColorMap[landlord.tier_id]
+      picture_url: landlord?.picture,
+      note: landlord?.note?.note !== null && landlord?.note?.note !== "",
+
+      badge_color: landlord?.user_tier
+        ? tierColorMap[landlord?.user_tier]
         : undefined,
     })),
   };
@@ -178,8 +200,78 @@ export interface LandlordRequestParams {
   search?: string;
   sort_order?: "asc" | "desc";
   states?: string;
+  state?: string;
   start_date?: string;
   end_date?: string;
+  date_from?: string;
+  date_to?: string;
   agent?: string;
   branch_ids?: string;
+  property_ids?: string;
+  status?: string;
+  tenant_ids?: string;
 }
+
+export const transformMobileUseData = (res: any): UserCardProps => {
+  const { data } = res;
+  const badgeColor =
+    tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  return {
+    id: data.id,
+    name: data.name,
+    picture_url: data.profile.picture,
+    email: data.email,
+    phone_number: data.profile.phone,
+    user_tag: "mobile",
+    badge_color: badgeColor,
+  };
+};
+
+export const transformCardData = (data: any): UserCardProps => {
+  console.log("data", data);
+  // const badgeColor =
+  // tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  return {
+    name: data.name,
+    picture_url: data.picture,
+    email: data.email,
+    phone_number: data.phone_number,
+    user_tag: "web",
+    badge_color: "green",
+  };
+};
+
+export const transformMobileUseDataForVehicleRecord = (
+  res: any
+): PersonalDataProps => {
+  const { data } = res;
+  // console.log("res", data)
+  const badgeColor =
+    tierColorMap[data.tier.id as keyof typeof tierColorMap] || "green";
+  return {
+    id: data.id,
+    full_name: data.name,
+    state: data.profile.state,
+    local_government: data.profile.lga,
+    avatar: data.profile.picture,
+    city: data.profile.city,
+    phone_number: data.phone,
+    address: data.profile.address,
+  };
+};
+
+export const transformTenantUserData = (res: any): UserCardProps => {
+  const { data } = res;
+  // console.log("res", data);
+  const badgeColor =
+    tierColorMap[data.user_tier as keyof typeof tierColorMap] || "green";
+  return {
+    id: data?.id || "",
+    name: data?.name || "",
+    picture_url: data?.picture || empty,
+    email: data?.email || "",
+    phone_number: data?.phone?.profile_phone || data?.phone?.user_phone || "",
+    user_tag: "mobile",
+    badge_color: badgeColor,
+  };
+};

@@ -1,64 +1,218 @@
 "use client";
 
-import { useState } from "react";
-
-// Types
-import type { CustomTableProps, DataItem } from "@/components/Table/types";
-
-// Imports
-import Input from "@/components/Form/Input/input";
-import Button from "@/components/Form/Button/button";
+import React, { useState, useEffect, useCallback } from "react";
 import SettingsSection from "@/components/Settings/settings-section";
-
-import {
-  SettingsSectionTitle,
-  SettingsUpdateButton,
-} from "@/components/Settings/settings-components";
-
-import {
-  added_units,
-  current_subscriptions,
-  personalized_domain,
-} from "./data";
-
-import clsx from "clsx";
-import Modal from "@mui/material/Modal";
-import Box from "@mui/material/Box";
-import Select from "@/components/Form/Select/select";
+import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/settings-enrollment-card";
+import Link from "next/link";
+import { SettingsSectionTitle } from "@/components/Settings/settings-components";
 import CustomTable from "@/components/Table/table";
-import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
-import { Drawer, MenuItem } from "@mui/material";
-import SettingsLegalDrawer from "@/components/Settings/Modals/settings-legal-drawer";
-import { CounterButton } from "@/components/Settings/SettingsEnrollment/settings-enrollment-components";
-import TableMenu from "@/components/Table/table-menu";
-import PaymentMethod from "@/components/Wallet/AddFunds/payment-method";
-import { ConfirmModal, EditModal, SuccessModal } from "./components";
-import useSubscriptionStore from "@/store/subscriptionStore";
+import { CustomTableProps } from "@/components/Table/types";
+import clsx from "clsx";
+import { ChevronRight } from "lucide-react";
+import { enrollment_subscriptions } from "../add-on/data";
+import useFetch from "@/hooks/useFetch";
+import {
+  EnrollmentApiResponse,
+  PropertyManagerSubsApiResponseTypes,
+  PropertyManagerSubsTransformedPlan,
+} from "./types";
+import {
+  calculatePrice,
+  transformPropertyManagerSubsApiData,
+  activatePlan,
+  extendPropertyManagerPlan,
+  upgradePropertyManagerPlan,
+  transformEnrollmentHistory,
+} from "./data";
+import SettingsEnrollmentCardSkeleton from "@/components/Settings/SettingsEnrollment/enrolllment-card-skeleton";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { cleanPricingValue } from "@/utils/cleanPrice";
+import ProfessionalPlanComponent from "./professional-plan";
+import ProfessionalPlanCard from "./professional-card";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-};
+const Enrollment = () => {
+  const [showFeatures, setShowFeatures] = useState(false);
+  const { company_id } = usePersonalInfoStore();
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const [autoRenew, setAutoRenew] = useState(false);
+  const [pageData, setPageData] = useState<
+    PropertyManagerSubsTransformedPlan[]
+  >([]);
+  const { data, loading, error, refetch } =
+    useFetch<PropertyManagerSubsApiResponseTypes>(
+      "/property-manager-subscription-plan"
+    );
+  useRefetchOnEvent("refetchSubscriptionPlan", () => refetch({ silent: true }));
 
-const Subscriptions = () => {
   const {
-    openSuccessModal,
-    openSuccess,
-    openWarningModal,
-    openWarning,
-    closeWarning,
-    closeSuccess,
-    openEditModal,
-    openEdit,
-    closeEdit,
-  } = useSubscriptionStore();
+    data: companyEnrollments,
+    error: enrollmentErr,
+    loading: enrollmentLoading,
+    refetch: refetchEnrollments,
+  } = useFetch<EnrollmentApiResponse>(`/enrollments/${company_id}`);
+  useRefetchOnEvent("refetchEnrollments", () =>
+    refetchEnrollments({ silent: true })
+  );
+
+  useEffect(() => {
+    if (companyEnrollments?.data) {
+      setAutoRenew(companyEnrollments.data.auto_renew === 1);
+    }
+  }, [companyEnrollments]);
+
+  const enrollments_subs = companyEnrollments
+    ? transformEnrollmentHistory(companyEnrollments.data.enrollments)
+    : null;
+
+  // Transform API data and set pageData
+  useEffect(() => {
+    if (data?.data) {
+      const transformed = transformPropertyManagerSubsApiData(data.data);
+      // Filter out Free plan if user is not on Free plan
+      const filtered = transformed.filter(
+        (plan) => !plan.isFree || currentPlanKeyword === "free"
+      );
+      setPageData(filtered);
+    }
+  }, [data, currentPlanKeyword]);
+
+  const handleBillingTypeChange = useCallback(
+    (planId: number, type: "monthly" | "yearly") => {
+      setPageData((prevData) =>
+        prevData.map((plan) => {
+          if (plan.id === planId) {
+            const newQuantity = 1; // Reset quantity to 1
+            const priceDetails = plan.isFree
+              ? {
+                  price: "LIFE TIME",
+                  discount: "",
+                  discountText: "",
+                  duration: "lifetime",
+                  isLifeTimePlan: false,
+                }
+              : calculatePrice(
+                  type,
+                  newQuantity,
+                  plan.baseMonthlyPrice,
+                  plan.baseYearlyPrice,
+                  plan.lifetimePrice,
+                  plan.planTitle.toLowerCase().includes("premium")
+                    ? "premium"
+                    : "basic"
+                );
+            return {
+              ...plan,
+              billingType: type,
+              quantity: newQuantity,
+              ...priceDetails,
+            };
+          }
+          return plan;
+        })
+      );
+    },
+    []
+  );
+
+  const incrementQuantity = useCallback(
+    (planId: number, billingType: "monthly" | "yearly") => {
+      setPageData((prevData) =>
+        prevData.map((plan) => {
+          if (plan.id === planId && !plan.isFree) {
+            const newQuantity = Math.min(
+              plan.quantity + 1,
+              billingType === "yearly" ? 6 : 11
+            );
+            const priceDetails = calculatePrice(
+              billingType,
+              newQuantity,
+              plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
+              plan.planTitle.toLowerCase().includes("premium")
+                ? "premium"
+                : "basic"
+            );
+            return {
+              ...plan,
+              quantity: newQuantity,
+              ...priceDetails,
+            };
+          }
+          return plan;
+        })
+      );
+    },
+    []
+  );
+
+  // Handle quantity decrement for a specific plan
+  const decrementQuantity = useCallback(
+    (planId: number, billingType: "monthly" | "yearly") => {
+      setPageData((prevData) =>
+        prevData.map((plan) => {
+          if (plan.id === planId && !plan.isFree) {
+            const newQuantity = Math.max(1, plan.quantity - 1);
+            const priceDetails = calculatePrice(
+              billingType,
+              newQuantity,
+              plan.baseMonthlyPrice,
+              plan.baseYearlyPrice,
+              plan.lifetimePrice,
+              plan.planTitle.toLowerCase().includes("premium")
+                ? "premium"
+                : "basic"
+            );
+            return {
+              ...plan,
+              quantity: newQuantity,
+              ...priceDetails,
+            };
+          }
+          return plan;
+        })
+      );
+    },
+    []
+  );
+
+  // Handle select plan
+  const handleSelectPlan = useCallback(
+    async (plan: PropertyManagerSubsTransformedPlan) => {
+      const thisPlanKeyword = plan.planTitle?.split(" ")[0]?.toLowerCase();
+      // Determine if it's an upgrade or extension
+      const isExtend = currentPlanKeyword === thisPlanKeyword;
+      const isUpgrade =
+        (currentPlanKeyword === "free" &&
+          (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+        (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
+
+      const payload = {
+        plan_id: plan?.id || 0,
+        payment_method: "wallet",
+        quantity:  plan.isLifeTimePlan ? 1 : plan.quantity,
+        duration: plan.isLifeTimePlan ? "lifetime" : plan.billingType,
+        amount: plan.isLifeTimePlan ? plan.lifetimePrice : cleanPricingValue(plan.price),
+      };
+
+      if (isExtend) {
+        return await extendPropertyManagerPlan(payload);
+      } else if (isUpgrade) {
+        return await upgradePropertyManagerPlan(payload);
+      } else {
+        return await activatePlan(payload);
+      }
+    },
+    [currentPlanKeyword]
+  );
+
   const table_style_props: Partial<CustomTableProps> = {
     tableHeadClassName: "h-[45px]",
   };
 
-  const transformedSubscriptions = current_subscriptions.data.map((data) => ({
+  const transformedSubscriptions = enrollments_subs?.map((data) => ({
     ...data,
     status: (
       <p
@@ -72,366 +226,96 @@ const Subscriptions = () => {
     ),
   }));
 
-  const transformedPersonalizedDomain = personalized_domain.data.map(
-    (data) => ({
-      ...data,
-      status: (
-        <div className="flex">
-          <p className="p-2 bg-brand-1 rounded-[4px] text-brand-9">
-            {data.status}
-          </p>
-        </div>
-      ),
-    })
-  );
-
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const handleOpenDrawer = () => {
-    setIsDrawerOpen(true); // Function to open the drawer
-  };
-
-  const [count, setCount] = useState<number>(1);
-
-  const handleIncrement = () => {
-    setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
-  };
-
-  const handleDecrement = () => {
-    setCount((prevCount) => (prevCount > 1 ? prevCount - 1 : prevCount));
-  };
-
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-
-  const handleMenuOpen = (item: DataItem, e: React.MouseEvent<HTMLElement>) => {
-    e.stopPropagation();
-    setSelectedItemId(String(item.id));
-    setAnchorEl(e.currentTarget);
-  };
-  const handleMenuClose = () => {
-    setAnchorEl(null);
-    setSelectedItemId(null);
-  };
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const ACTIVE_PLAN_EXPIRY_DATE = enrollments_subs?.[0].due_date;
 
   return (
     <>
-      <SettingsSection title="Current Subscription/Ads-on">
-        <div className="custom-flex-col gap-7">
-          <SettingsSectionTitle desc="Current Subscription and Ads-on Plan are business model where you pay a recurring fee at regular intervals either monthly or annually to access a dashboard modules, data, information and menu. Here's a breakdown of your current subscriptions." />
-          <CustomTable
-            data={transformedSubscriptions}
-            fields={current_subscriptions.fields}
-            {...table_style_props}
-          />
+      <SettingsSection title="Subscription Plan">
+        <h4 className="text-[14px] text-text-disabled">
+          This subscription plan is for Property Manager module only. To view
+          other subscription plans, go to the respective module or switch from
+          the top left of the dashboard header.
+        </h4>
+        <div
+          className={clsx(
+            "mb-4 pb-10 flex items-center justfiy-center gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
+            currentPlanKeyword !== "free" ? "flex-row" : "flex-col"
+          )}
+        >
+          <div className="flex gap-4">
+            {loading
+              ? Array(3)
+                  .fill(0)
+                  .map((_, index) => (
+                    <SettingsEnrollmentCardSkeleton key={index} />
+                  ))
+              : pageData.map((plan) => (
+                  <SettingsEnrollmentCard
+                    key={plan.id}
+                    {...plan}
+                    autoRenew={autoRenew}
+                    expiry_date={ACTIVE_PLAN_EXPIRY_DATE}
+                    showFeatures={showFeatures}
+                    setShowFeatures={setShowFeatures}
+                    incrementQuantity={() =>
+                      incrementQuantity(plan.id, plan.billingType)
+                    }
+                    decrementQuantity={() =>
+                      decrementQuantity(plan.id, plan.billingType)
+                    }
+                    onBillingTypeChange={(type) =>
+                      handleBillingTypeChange(plan.id, type)
+                    }
+                    onSelectPlan={() => handleSelectPlan(plan)}
+                  />
+                ))}
+          </div>
+          {currentPlanKeyword !== "free" && (
+            <ProfessionalPlanCard
+              showFeatures={showFeatures}
+              setShowFeatures={setShowFeatures}
+              autoRenew={autoRenew}
+            />
+          )}
         </div>
+        {currentPlanKeyword === "free" && <ProfessionalPlanComponent />}
       </SettingsSection>
-      <div
-        className="line h-[1px] border border-dashed border-brand-9 opacity-50 w-full !px-0"
-        style={{ paddingLeft: 0, paddingRight: 0 }}
-      ></div>
-      <div className="custom-flex-col gap-[18px]">
-        <h2 className="text-primary-navy dark:text-white text-base font-medium">
-          Adds On Subscriptions
-        </h2>
-        <div className="custom-flex-col gap-8">
-          <SettingsSection title="Personalized Domain">
-            <div className="custom-flex-col gap-8">
-              <div className="custom-flex-col gap-6">
-                <SettingsSectionTitle desc="A personalized domain is used for forwarding one URL to another, especially if your company has a website and you want this current landing page to have the same URL as your company website. You can create a sub-domain under your website for this landing page or purchase your preferred domain name and redirect this domain to it." />
-                <div className="custom-flex-col gap-10">
-                  <div className="custom-flex-col gap-4">
-                    <SettingsSectionTitle title="Domain" />
-                    <CustomTable
-                      fields={personalized_domain.fields}
-                      data={transformedPersonalizedDomain}
-                      {...table_style_props}
-                      onActionClick={(item, e) => {
-                        handleMenuOpen(
-                          item,
-                          e as React.MouseEvent<HTMLElement>
-                        );
-                      }}
-                    />
-                    <TableMenu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleMenuClose}
-                    >
-                      <MenuItem onClick={handleOpen}>
-                        <button type="button">Extend</button>
-                      </MenuItem>
-                      <MenuItem onClick={openWarning}>
-                        <button type="button">Delete</button>
-                      </MenuItem>
-                      <MenuItem onClick={openEdit}>
-                        <button type="button">Edit</button>
-                      </MenuItem>
-                    </TableMenu>
-                    <Modal
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        <PaymentMethod
-                          title="Personalized Domain Price"
-                          price={2000}
-                          counter={true}
-                        />
-                      </Box>
-                    </Modal>
-                    <Modal
-                      open={openWarningModal}
-                      onClose={closeWarning}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        <ConfirmModal />
-                      </Box>
-                    </Modal>
-                    <Modal
-                      open={openSuccessModal}
-                      onClose={closeSuccess}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        <SuccessModal />
-                      </Box>
-                    </Modal>
-                    <Modal
-                      open={openEditModal}
-                      onClose={closeEdit}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
-                    >
-                      <Box sx={style}>
-                        <EditModal />
-                      </Box>
-                    </Modal>
-                  </div>
-                  <div className="custom-flex-col gap-8">
-                    <SettingsSectionTitle
-                      title="Add Domain"
-                      desc="Cool! You're about to make domain name! make this site accessible using your own for that to work, you'll need to create a new CNAME record pointing to wp-ultimo-v2.local on your DNS manager. After you finish that step, come back to this screen and click the button below."
-                    />
-                    <div className="flex">
-                      <Input
-                        id="domain_name"
-                        label="domain name"
-                        placeholder="yourdomainname.com"
-                        className="w-[277px]"
-                      />
+
+      {transformedSubscriptions &&
+        transformedSubscriptions.length > 0 &&
+        currentPlanKeyword !== "free" && (
+          <SettingsSection title="Subscription/Renewal History">
+            {transformedSubscriptions &&
+              transformedSubscriptions.length > 0 && (
+                <div className="custom-flex-col gap-7 scroll-m-8" id="table">
+                  <SettingsSectionTitle desc="Easily track and manage your active and past enrollments. Below is a detailed overview of your current subscription plan and a history of all previously paid fees." />
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h2 className="text-black dark:text-white text-lg font-medium">
+                        Subscription Overview
+                      </h2>
+                    </div>
+                    <div className="flex gap-2 items-center">
+                      <Link
+                        href="/reports/subscription-history?b=true"
+                        className="text-text-label dark:text-white font-medium"
+                      >
+                        See All
+                      </Link>
+                      <ChevronRight className="text-sm font-medium" />
                     </div>
                   </div>
-                </div>
-              </div>
-              <SettingsUpdateButton text="add domain" type="add domain" />
-            </div>
-          </SettingsSection>
-          <SettingsSection title="listing">
-            <div className="custom-flex-col gap-8">
-              <div className="custom-flex-col gap-[30px]">
-                <div className="flex flex-col gap-4">
-                  <DocumentCheckbox darkText>
-                    Automatically list vacant units.
-                  </DocumentCheckbox>
-                  <DocumentCheckbox darkText>
-                    Automatically renew and update property listings.
-                  </DocumentCheckbox>
-                  <div className="flex gap-4 flex-col md:flex-row">
-                    <div className="flex flex-col gap-4 md:flex-row">
-                      <Input
-                        placeholder="123"
-                        id="sponsor_unit_available"
-                        label="Listing sponsor Unit Available"
-                        className="flex-1"
-                      />
-                      <div className="flex items-end">
-                        <Button
-                          variant="change"
-                          size="xs_normal"
-                          className="py-2 px-3"
-                        >
-                          Buy More Unit
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-4 md:flex-row">
-                      <Input
-                        id="sponsor-proprty"
-                        label="Sponsor Proprty"
-                        placeholder="Insert unit ID"
-                        className="flex-1"
-                      />
-                      <div className="flex items-end">
-                        <Button
-                          variant="change"
-                          size="xs_normal"
-                          className="py-2 px-3"
-                        >
-                          Add Unit ID
-                        </Button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <CustomTable
-                  data={added_units.data}
-                  fields={added_units.fields}
-                  {...table_style_props}
-                />
-              </div>
-              <SettingsUpdateButton />
-            </div>
-          </SettingsSection>
-          <SettingsSection title="SMS unit">
-            <div className="custom-flex-col gap-6">
-              <SettingsSectionTitle desc="SMS Credit Balance refers to the amount of credit or balance remaining in your account that can be used to send SMS messages. You have the option to purchase additional credits to increase your capacity for sending SMS messages to your users." />
-              <div className="flex">
-                <div className="w-[164px] py-2 px-3 rounded-[4px] bg-neutral-2 text-center">
-                  <p className="text-brand-9 text-xs font-normal">
-                    Unit Balance: <span className="font-medium">400</span>
-                  </p>
-                </div>
-              </div>
-              <div className="custom-flex-col gap-4">
-                <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
-                  Purchase SMS Credit{" "}
-                  <span className="text-xs font-normal">(₦4/unit)</span>
-                </p>
-                <div className="flex">
-                  <Input
-                    id="amount"
-                    label="Enter amount of SMS to purchase"
-                    className="w-[277px]"
+                  <CustomTable
+                    data={transformedSubscriptions}
+                    fields={enrollment_subscriptions.fields}
+                    {...table_style_props}
                   />
                 </div>
-              </div>
-              <SettingsUpdateButton text="purchase unit" type="purchase unit" />
-            </div>
+              )}
           </SettingsSection>
-          <SettingsSection title="Feature Your Company">
-            <div className="custom-flex-col gap-6">
-              <SettingsSectionTitle desc="Promote your company by showcasing your company logo prominently on the initial screen of the user app, the landing page, and the homepage of the general website. This enhances visibility, allowing potential customers to easily recognize your brand and company. Clicking on your logo directs site visitors to your company page, providing them with more information about your brand and offerings." />
-              <div className="custom-flex-col gap-4">
-                <p className="text-text-quaternary dark:text-darkText-1 text-base font-medium">
-                  The Cost{" "}
-                  <span className="text-xs font-normal">
-                    (₦1,000/per month)
-                  </span>
-                </p>
-                <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
-                  {/* <Select
-                    required
-                    id="months"
-                    options={[
-                      "1",
-                      "2",
-                      "3",
-                      "4",
-                      "5",
-                      "6",
-                      "7",
-                      "8",
-                      "9",
-                      "10",
-                      "11",
-                      "12",
-                    ]}
-                    inputContainerClassName="w-[277px] bg-neutral-2"
-                    label="Choose the number of months from the available options."
-                  /> */}
-                  <input
-                    type="number"
-                    value={count}
-                    onChange={(e) => setCount(Number(e.target.value))}
-                    className="w-2/3 px-2 py-2 border-transparent focus:outline-none"
-                  />
-                  <div className="btn flex flex-col items-end justify-end">
-                    <CounterButton
-                      onClick={handleIncrement}
-                      icon="/icons/plus.svg"
-                      alt="plus"
-                    />
-                    <CounterButton
-                      onClick={handleDecrement}
-                      icon="/icons/minus.svg"
-                      alt="minus"
-                    />
-                  </div>
-                </div>
-              </div>
-              <SettingsUpdateButton text="feature now" type="feature" />
-            </div>
-          </SettingsSection>
-          <SettingsSection title="Legal Process">
-            <div className="custom-flex-col gap-6">
-              <SettingsSectionTitle desc="Property legal process encompasses the various legal procedures and steps involved in matters related to real estate and property ownership. These procedures are governed by laws and regulations established at local, state, and national levels." />
-              <div className="flex gap-2">
-                <Select
-                  options={["property 1", "property 2", "property 3"]}
-                  id="legal_process_property"
-                  value={""}
-                  label="Select property"
-                  className="w-full sm:w-1/2"
-                />
-                <Select
-                  options={["Unit 1", "Unit 2", "Unit 3"]}
-                  id="legal_process_unit"
-                  value={""}
-                  label="Select property Unit"
-                  className="w-full sm:w-1/2"
-                />
-              </div>
-              <div className="flex items-end justify-end mt-4">
-                <Button
-                  type="button"
-                  className="bg-brand-9 rounded-md text-white"
-                  onClick={handleOpenDrawer}
-                >
-                  Proceed
-                </Button>
-              </div>
-            </div>
-          </SettingsSection>
-          <SettingsSection title="Subscription History">
-            <div className="custom-flex-col gap-8">
-              <CustomTable
-                data={transformedSubscriptions}
-                fields={current_subscriptions.fields}
-                {...table_style_props}
-              />
-            </div>
-          </SettingsSection>
-        </div>
-      </div>
-      <Drawer
-        anchor="bottom"
-        open={isDrawerOpen}
-        onClose={() => setIsDrawerOpen(false)}
-        classes={{ paper: "custom-round-scrollbar" }}
-        sx={{
-          "& .MuiPaper-root": {
-            borderTopLeftRadius: "32px",
-            borderTopRightRadius: "32px",
-            overflow: "auto",
-            height: "80vh",
-            zIndex: 1,
-          },
-        }}
-      >
-        <SettingsLegalDrawer onClose={() => setIsDrawerOpen(false)} />
-      </Drawer>
+        )}
     </>
   );
 };
 
-export default Subscriptions;
+export default Enrollment;

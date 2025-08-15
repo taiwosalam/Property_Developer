@@ -1,5 +1,6 @@
 // Imports
 import { calendar_events } from "@/components/Calendar/events";
+import { CalendarEventProps } from "@/components/Calendar/types";
 import {
   format,
   addDays,
@@ -77,7 +78,8 @@ const mapHourTo24 = (hourString: string): number => {
 
 export const filterEventsByDayAndHourRange = (
   targetDayString: string, // Expecting a date string
-  targetHourString: string // Hour string from event_calendar_hours
+  targetHourString: string,
+  events: CalendarEventProps[], // Hour string from event_calendar_hours
 ) => {
   // Parse the string into a Date object
   const targetDay = parseISO(targetDayString);
@@ -86,7 +88,7 @@ export const filterEventsByDayAndHourRange = (
   const startHour = targetHour - 1; // Previous hour
   const endHour = targetHour; // The target hour itself
 
-  return calendar_events.filter((event) => {
+  return events.filter((event) => {
     const eventHour = getHours(event.date);
 
     return (

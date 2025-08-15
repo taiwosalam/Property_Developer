@@ -42,6 +42,9 @@ const Input: React.FC<InputProps> = ({
   isPinField,
   minLength,
   name,
+  prefix,
+  endAdornment,
+  autoComplete = "on",
 }) => {
   // State to control password visibility
   const [isPasswordVisible, setIsPasswordVisible] = useState<boolean>(false);
@@ -100,6 +103,11 @@ const Input: React.FC<InputProps> = ({
           </p>
         )}
 
+        {prefix && (
+          <span className="absolute left-3 text-xs md:text-sm font-medium opacity-70 pointer-events-none z-10">
+            {prefix}
+          </span>
+        )}
         <input
           id={id}
           name={name ? name : id}
@@ -109,6 +117,7 @@ const Input: React.FC<InputProps> = ({
           readOnly={readOnly}
           disabled={disabled}
           placeholder={placeholder}
+          autoComplete={autoComplete}
           defaultValue={defaultValue ? defaultValue : undefined}
           minLength={minLength}
           // Add min and max attributes for number type
@@ -151,12 +160,20 @@ const Input: React.FC<InputProps> = ({
               "pl-11": leftIcon, // Add padding-left if leftIcon is provided
               "pl-10": CURRENCY_SYMBOL,
               "cursor-not-allowed": disabled,
+              "pl-[65px]": prefix,
+              "pr-[45px]": endAdornment,
             },
 
             inputClassName
           )}
           style={style} // Add custom border color
         />
+        {endAdornment && (
+          <div className="absolute right-3 flex items-center z-10">
+            {endAdornment}
+          </div>
+        )}
+
         {/* Toggle button for showing/hiding password */}
         {type === "password" && (
           <button

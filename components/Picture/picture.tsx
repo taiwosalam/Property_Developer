@@ -7,6 +7,7 @@ import type { PictureProps } from "./types";
 import clsx from "clsx";
 import { empty } from "@/app/config";
 
+
 const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",
@@ -40,7 +41,7 @@ const Picture: React.FC<PictureProps> = ({
         height={imageHeight * resolutionMultiplier}
         className={clsx(
           {
-            "rounded-full": rounded,
+            "rounded-full custom-secondary-bg": rounded,
           },
           className
         )}
@@ -62,7 +63,9 @@ const Picture: React.FC<PictureProps> = ({
       />
       {status && (
         <div
-          className="absolute right-[5%] bottom-[5%] rounded-full bg-status-success-primary border border-solid border-white"
+          className={`absolute right-[5%] bottom-[5%] rounded-full custom- ${
+            status ? "bg-status-success-primary" : "bg-yellow-500"
+          } border border-solid border-white`}
           style={{ width: status_wh, height: status_wh }}
         />
       )}

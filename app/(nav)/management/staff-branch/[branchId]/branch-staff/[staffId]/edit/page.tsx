@@ -14,22 +14,31 @@ import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import Button from "@/components/Form/Button/button";
 import { StaffEditContext } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-edit-context";
-import { useParams } from "next/navigation";
+import { useParams, usePathname } from "next/navigation";
 import useBranchStore from "@/store/branch-store";
 import { useEffect, useState } from "react";
 import useFetch from "@/hooks/useFetch";
 import { StaffAPIResponse } from "../type";
-import { staffData, transformStaffAPIResponse, yesNoToActiveInactive } from "../data";
+import {
+  staffData,
+  transformStaffAPIResponse,
+  yesNoToActiveInactive,
+} from "../data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { deleteStaff } from "./data";
 import { useRouter } from "next/navigation";
+import ServerError from "@/components/Error/ServerError";
+import SettingsBank from "@/components/Settings/settings-bank";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
+import { cleanPathname } from "@/tour/steps/page-steps";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch } = useBranchStore();
-  const router = useRouter()
+  const router = useRouter();
 
   const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
   const {
@@ -44,45 +53,66 @@ const EditStaffProfile = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData(
-        {
-          id: apiData.data.id,
-          branch_id: branchId as string,
-          personal_title: apiData.data.title,
-          real_estate_title: apiData.data.real_estate_title,
-          full_name: apiData.data.name,
-          email: apiData.data.email,
-          phone_number: apiData.data.phone,
-          gender: apiData.data.gender,
-          position: apiData.data.position,
-          picture: apiData.data.picture,
-          about: apiData.data.about_staff,
-          status: yesNoToActiveInactive(apiData.data.status),
-        }
-      )
+      setPageData({
+        id: apiData.data.id,
+        branch_id: branchId as string,
+        personal_title: apiData.data.title,
+        real_estate_title: apiData.data.professional_title,
+        full_name: apiData.data.name,
+        email: apiData.data.email,
+        phone_number: apiData.data.phone,
+        gender: apiData.data.gender,
+        position: apiData.data.position,
+        picture: apiData.data.picture,
+        about: apiData.data.about_staff,
+        experience: apiData.data.years_experience,
+        status: yesNoToActiveInactive(apiData.data.status),
+        isVerified: apiData.data.tier_id >= 2,
+      });
     }
   }, [apiData, branchId]);
 
-  const handleDeleteStaffAccount = () => {
-    try{
-    }catch(error){
-      console.log(error);
-    }
-  }
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
 
-  console.log("data -", apiData);
-  // console.log("page -", pageData);
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditStaffTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (!apiData) return null;
+
+
 
   return (
     <StaffEditContext.Provider value={{ data: pageData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-        <BackButton>Edit Staff</BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton>Edit Staff</BackButton>
+          <button
+            onClick={() => restartTour(cleanPathname(pathname))}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
             <StaffEditProfileInfoSection />
@@ -100,7 +130,8 @@ const EditStaffProfile = () => {
             <ModalTrigger asChild>
               <Button
                 size="base_medium"
-                className="py-2 px-6"
+                className="delete-account-button
+                py-2 px-6"
                 variant="light_red"
               >
                 delete account
@@ -108,15 +139,15 @@ const EditStaffProfile = () => {
             </ModalTrigger>
             <ModalContent>
               <DeleteAccountModal
-               action={async () => await deleteStaff(pageData.id)}
-               afterAction={() => router.push("/management/staff-branch")}
-               />
+                action={async () => await deleteStaff(pageData.id)}
+                afterAction={() => router.push("/management/staff-branch")}
+              />
             </ModalContent>
           </Modal>
 
-          <Button 
-            size="base_medium" 
-            className="py-2 px-6" 
+          <Button
+            size="base_medium"
+            className="save-button py-2 px-6"
             onClick={() => router.back()}
           >
             save

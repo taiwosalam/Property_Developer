@@ -17,36 +17,77 @@ import Picture from "@/components/Picture/picture";
 import Avatars from "@/components/Avatars/avatars";
 import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
 import LockOTPModal from "./lock-otp-modal";
-import { checkFormDataForImageOrAvatar, cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import {
+  checkFormDataForImageOrAvatar,
+  cleanPhoneNumber,
+  objectToFormData,
+} from "@/utils/checkFormDataForImageOrAvatar";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import Image from "next/image";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { moveStaffToAnotherBranch, updateStaffAbout, updateStaffPicture, updateStaffProfile, updateStaffRole } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
+import {
+  moveStaffToAnotherBranch,
+  updateStaffAbout,
+  updateStaffPicture,
+  updateStaffProfile,
+  updateStaffRole,
+} from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/edit/data";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
-import { lockStaffAccount, sendVerifyStaffOTP } from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
+import {
+  lockStaffAccount,
+  sendVerifyStaffOTP,
+} from "@/app/(nav)/management/staff-branch/[branchId]/branch-staff/[staffId]/data";
 import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
-
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
+import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 export const StaffEditProfileInfoSection = () => {
   const { data: staff } = useStaffEditContext();
   const [reqLoading, setReqLoading] = useState(false);
 
+  const yearsOptions = Array.from({ length: 10 }, (_, i) => {
+    const yearValue = i + 1;
+    return { label: `${yearValue} years +`, value: `${yearValue}+` };
+  });
+
   const handleUpdateProfile = async (data: Record<string, string>) => {
-    const payload = {
+    // Calculate years_experience from selected date
+    let yearsExperience = 0;
+    if (data.years_experience) {
+      const selectedDate = dayjs(data.years_experience as string);
+      const selectedYear = selectedDate.year();
+      const currentYear = dayjs().year();
+      yearsExperience = Math.max(0, currentYear - selectedYear);
+    }
+
+    const payload: Record<string, string> = {
       full_name: data.fullname,
       title: data.personal_title,
-      estate_title: data.real_estate_title,
-      // email: data.email,
-      phone_number: data.phone_number,
+      professional_title: data.real_estate_title,
+      years_experience: yearsExperience.toString(),
       gender: data.gender,
     };
-    cleanPhoneNumber(payload);
-    if (!payload.phone_number) {
-      payload.phone_number = "";
+
+    // Create a temp object with a proper type
+    const phoneObj: { phone_number: string } = {
+      phone_number: data.phone_number,
+    };
+
+    cleanPhoneNumber(phoneObj);
+
+    if (
+      phoneObj.phone_number &&
+      phoneObj.phone_number !== staff?.phone_number
+    ) {
+      payload.phone_number = phoneObj.phone_number;
     }
+
     if (staff?.id) {
       setReqLoading(true);
       const status = await updateStaffProfile(
@@ -59,65 +100,89 @@ export const StaffEditProfileInfoSection = () => {
       setReqLoading(false);
     }
   };
+
+  // Convert staffExperience (number of years) to a year for DateInput
+  const experienceDate = staff?.experience
+    ? dayjs(`${dayjs().year() - Number(staff?.experience)}-01-01`)
+    : null;
+
   return (
-    <LandlordTenantInfoEditSection title='profile'>
-      <AuthForm
-        onFormSubmit={handleUpdateProfile}
-        skipValidation
-      >
+    <LandlordTenantInfoEditSection title="profile">
+      <AuthForm onFormSubmit={handleUpdateProfile} skipValidation>
         <LandlordTenantInfoEditGrid>
-          <Select
-            isSearchable={false}
-            id='personal_title'
-            label='personal title / qualifiction'
-            inputContainerClassName='bg-neutral-2'
-            options={titles}
-            defaultValue={staff?.personal_title}
-          />
-          <Select
-            isSearchable={false}
-            id='real_estate_title'
-            label='real estate title'
-            inputContainerClassName='bg-neutral-2'
-            options={industryOptions}
-            defaultValue={staff?.real_estate_title}
-          />
+          <div className="personal-title-dropdown">
+            <Select
+              isSearchable={false}
+              id="personal_title"
+              label="personal title / qualification"
+              inputContainerClassName="bg-neutral-2"
+              options={titles}
+              defaultValue={staff?.personal_title}
+            />
+          </div>
+          <div className="real-estate-title-dropdown">
+            <Select
+              isSearchable={false}
+              id="real_estate_title"
+              label="real estate title"
+              inputContainerClassName="bg-neutral-2"
+              options={industryOptions}
+              defaultValue={staff?.real_estate_title}
+            />
+          </div>
+
           <Input
-            id='fullname'
-            label='full name'
+            className="staff-name-input"
+            id="fullname"
+            label="full name"
             required
+            readOnly={staff?.isVerified}
             defaultValue={staff?.full_name}
           />
           <Input
-            id='email'
-            type='email'
-            label='email'
+            className="staff-email-input"
+            id="email"
+            type="email"
+            label="email"
             disabled
             defaultValue={staff?.email}
           />
-          <Select
-            id='gender'
-            label='gender'
-            isSearchable={false}
-            options={genderTypes}
-            inputContainerClassName='bg-neutral-2'
-            defaultValue={staff?.gender}
+
+          <DateInput
+            id="years_experience"
+            label="years of experience (since)"
+            className="experience-year-dropdown"
+            inputClassName="setup-f required"
+            disableFuture
+            views={["year"]}
+            value={experienceDate}
           />
+          <div className="gender-dropdown">
+            <Select
+              id="gender"
+              label="gender"
+              isSearchable={false}
+              options={genderTypes}
+              inputContainerClassName="bg-neutral-2"
+              defaultValue={staff?.gender}
+            />
+          </div>
           <PhoneNumberInput
-            id='phone_number'
-            label='phone number'
+            id="phone_number"
+            label="WhatsApp number"
             required
+            className="phone-number-input"
             defaultValue={staff?.phone_number}
           />
 
-          <div className='md:col-span-2 flex justify-end'>
+          <div className="md:col-span-2 flex justify-end">
             <Button
-              size='base_medium'
-              className='py-2 px-6'
-              type='submit'
+              size="base_medium"
+              className="py-2 px-6"
+              type="submit"
               disabled={reqLoading}
             >
-              {reqLoading ? 'updating...' : 'update'}
+              {reqLoading ? "updating..." : "update"}
             </Button>
           </div>
         </LandlordTenantInfoEditGrid>
@@ -128,16 +193,12 @@ export const StaffEditProfileInfoSection = () => {
 
 export const StaffEditMoveToAnotherBranchSection = () => {
   const { data: staff } = useStaffEditContext();
-  const [branchId, setBranchId] = useState("");
+  const router = useRouter();
+  // const [branchId, setBranchId] = useState("");
   const [moving, setMoving] = useState(false);
   const name = staff?.full_name;
   const position = staff?.position;
-
-  useEffect(() => {
-    if (staff) {
-      setBranchId(staff.branch_id)
-    }
-  }, [staff, branchId])
+  const branchId = Number(staff?.branch_id);
 
   const {
     data: branchesData,
@@ -149,30 +210,38 @@ export const StaffEditMoveToAnotherBranchSection = () => {
     data: staffsData,
     loading: staffsLoading,
     error: staffsError,
-  } = useFetch<any>(`/staffs/${branchId}`);
-  const staffs = staffsData?.data.staff;
-
-  // console.log("id", staff?.branch_id);
-  // console.log("staff data", staffsData);
+  } = useFetch<any>(`/branch/${branchId}/staff`);
+  // } = useFetch<any>(`/staffs/${branchId}`);
+  const staffs = staffsData?.data;
 
   const branchOptions =
     branchesData?.data
-      .filter((branch) => branch.id !== branchId)
+      .filter((branch) => Number(branch.id) !== branchId)
       .map((branch) => ({
         value: branch.id,
         label: branch.branch_name,
       })) || [];
 
-  const staffOptions = staffs
-    ?.filter((staffItem: any) => staffItem.id !== staff?.id)
-    .map((staff: any) => ({
-      value: staff.id,
-      label: `${staff.title} ${staff.name}`,
-    })) || [];
+  const staffOptions =
+    staffs
+      ?.filter((staffItem: any) => staffItem.id !== staff?.id)
+      .map((staff: any) => ({
+        value: staff.id,
+        label: `${staff.title} ${staff.user.name}`,
+      })) || [];
 
   const hasManager = staff?.position === "manager";
 
   const handleMoveStaff = async (data: Record<string, string>) => {
+    if (!data.select_new_branch) {
+      toast.warning("Please select a branch to move to");
+      return;
+    }
+
+    if (data.select_new_branch_position === "manager") {
+      toast.warning("Please select a new position for the new branch");
+      return;
+    }
     const payload = {
       new_branch_id: data.select_new_branch,
       new_position: data.select_new_branch_position,
@@ -181,9 +250,13 @@ export const StaffEditMoveToAnotherBranchSection = () => {
     if (staff?.id) {
       try {
         setMoving(true);
-        const status = await moveStaffToAnotherBranch(staff.id, objectToFormData(payload));
+        const status = await moveStaffToAnotherBranch(
+          staff.id,
+          objectToFormData(payload)
+        );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
+          router.push(`/management/staff-branch/${data.select_new_branch}`);
         }
       } finally {
         setMoving(false);
@@ -192,56 +265,54 @@ export const StaffEditMoveToAnotherBranchSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title={`move ${name} to another branch`}>
-      <AuthForm onFormSubmit={handleMoveStaff} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="current_position"
-            label="Current Position"
-            inputContainerClassName="bg-neutral-2"
-            options={[]}
-            defaultValue={position}
-            disabled
-          />
-          <Select
-            id="select_new_branch"
-            label="select new branch"
-            inputContainerClassName="bg-neutral-2"
-            options={branchOptions}
-            placeholder={
-              branchesLoading
-                ? "Loading branches..."
-                : branchesError
+    <div className="move-staff-section">
+      <LandlordTenantInfoEditSection title={`move ${name} to another branch`}>
+        <AuthForm onFormSubmit={handleMoveStaff} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Select
+              id="current_position"
+              label="Current Role"
+              inputContainerClassName="bg-neutral-2"
+              options={[]}
+              defaultValue={position}
+              disabled
+            />
+            <Select
+              id="select_new_branch"
+              label="select new branch"
+              inputContainerClassName="bg-neutral-2"
+              options={branchOptions}
+              placeholder={
+                branchesLoading
+                  ? "Loading branches..."
+                  : branchesError
                   ? "Error loading branches"
                   : "Select branch"
-            }
-          //   defaultValue={staff?.real_estate_title}
-          />
-          <Select
-            id="transfer_current_position_to"
-            label="transfer current position to"
-            options={staffOptions}
-            inputContainerClassName="bg-neutral-2"
-          />
-          <Select
-            id="select_new_branch_position"
-            label="select new branch position"
-            inputContainerClassName="bg-neutral-2"
-            options={[
-              "manager",
-              "account officer",
-              "staff",
-            ]}
-          //   defaultValue={staff?.real_estate_title}
-          />
-          <div className="md:col-span-2 flex justify-end">
-            <Button type="submit" size="base_medium" className="py-2 px-6">
-              {moving ? "Updating..." : "update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection>
+              }
+              //   defaultValue={staff?.real_estate_title}
+            />
+            <Select
+              id="transfer_current_position_to"
+              label="transfer current role to"
+              options={staffOptions}
+              inputContainerClassName="bg-neutral-2"
+            />
+            <Select
+              id="select_new_branch_position"
+              label="select new branch role"
+              inputContainerClassName="bg-neutral-2"
+              options={["manager", "account manager", "staff"]}
+              //   defaultValue={staff?.real_estate_title}
+            />
+            <div className="md:col-span-2 flex justify-end">
+              <Button type="submit" size="base_medium" className="py-2 px-6">
+                {moving ? "Updating..." : "update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -254,34 +325,32 @@ export const StaffEditChangePositionSection = () => {
 
   useEffect(() => {
     if (staff) {
-      setBranchId(staff.branch_id)
+      setBranchId(staff.branch_id);
     }
-  }, [staff, branchId])
+  }, [staff, branchId]);
 
   const {
     data: staffsData,
     loading: staffsLoading,
     error: staffsError,
-  } = useFetch<any>(`/staffs/${branchId}`);
-  const staffs = staffsData?.data.staff;
+  } = useFetch<any>(`/branch/${branchId}/staff`);
+  // } = useFetch<any>(`/staffs/${branchId}`);
+  const staffs = staffsData?.data;
 
-  const staffOptions = staffs
-    ?.filter((staffItem: any) => staffItem.id !== staff?.id)
-    .map((staff: any) => ({
-      value: staff.id,
-      label: `${staff.title} ${staff.name}`,
-    })) || [];
+  const staffOptions =
+    staffs
+      ?.filter((staffItem: any) => staffItem.id !== staff?.id)
+      .map((staff: any) => ({
+        value: staff.id,
+        label: `${staff.title} ${staff.user.name}`,
+      })) || [];
 
   const hasManager = staff?.position === "manager";
   const positionOptions = [
-    ...(hasManager
-      ? []
-      : [{ value: "manager", label: "branch manager" }]),
-    { value: "account officer", label: "account officer" },
+    ...(hasManager ? [] : [{ value: "manager", label: "branch manager" }]),
+    { value: "account officer", label: "account manager" },
     { value: "staff", label: "staff" },
   ].filter((option) => option.value !== position);
-
-
 
   const handleUpdateStaffPosition = async (data: Record<string, string>) => {
     const payload = {
@@ -291,7 +360,10 @@ export const StaffEditChangePositionSection = () => {
     if (staff?.id) {
       try {
         setUpdating(true);
-        const status = await updateStaffRole(staff.id, objectToFormData(payload));
+        const status = await updateStaffRole(
+          staff.id,
+          objectToFormData(payload)
+        );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
         }
@@ -302,31 +374,33 @@ export const StaffEditChangePositionSection = () => {
   };
 
   return (
-    <LandlordTenantInfoEditSection title={`change ${name} position`}>
-      <AuthForm onFormSubmit={handleUpdateStaffPosition} skipValidation>
-        <LandlordTenantInfoEditGrid>
-          <Select
-            id="assign_current_position_to"
-            label="assign current position to"
-            inputContainerClassName="bg-neutral-2"
-            options={staffOptions}
-          />
-          <Select
-            id="new_position"
-            label="new position"
-            inputContainerClassName="bg-neutral-2"
-            options={positionOptions}
-          //   defaultValue={staff?.real_estate_title}
-          />
+    <div className="change-role-section">
+      <LandlordTenantInfoEditSection title={`change ${name} role`}>
+        <AuthForm onFormSubmit={handleUpdateStaffPosition} skipValidation>
+          <LandlordTenantInfoEditGrid>
+            <Select
+              id="assign_current_position_to"
+              label="assign current role to"
+              inputContainerClassName="bg-neutral-2"
+              options={staffOptions}
+            />
+            <Select
+              id="new_position"
+              label="new role"
+              inputContainerClassName="bg-neutral-2"
+              options={positionOptions}
+              //   defaultValue={staff?.real_estate_title}
+            />
 
-          <div className="md:col-span-2 flex justify-end">
-            <Button type="submit" size="base_medium" className="py-2 px-6">
-              {updating ? "Updating..." : "Update"}
-            </Button>
-          </div>
-        </LandlordTenantInfoEditGrid>
-      </AuthForm>
-    </LandlordTenantInfoEditSection >
+            <div className="md:col-span-2 flex justify-end">
+              <Button type="submit" size="base_medium" className="py-2 px-6">
+                {updating ? "Updating..." : "Update"}
+              </Button>
+            </div>
+          </LandlordTenantInfoEditGrid>
+        </AuthForm>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -346,7 +420,10 @@ export const StaffEditAboutSection = () => {
     if (staff?.id) {
       try {
         setUpdating(true);
-        const status = await updateStaffAbout(staff.id, objectToFormData(payload));
+        const status = await updateStaffAbout(
+          staff.id,
+          objectToFormData(payload)
+        );
         if (status) {
           window.dispatchEvent(new Event("staff-updated"));
         }
@@ -359,7 +436,11 @@ export const StaffEditAboutSection = () => {
   };
 
   return (
-    <AuthForm onFormSubmit={handleUpdateAboutStaff} skipValidation>
+    <AuthForm
+      onFormSubmit={handleUpdateAboutStaff}
+      skipValidation
+      className="about-staff-textarea"
+    >
       <LandlordTenantInfoEditSection
         title="about staff"
         style={{ position: "relative" }}
@@ -375,8 +456,13 @@ export const StaffEditAboutSection = () => {
           id="note"
           value={about}
           onChange={(value) => setAbout(value)}
+          className="about-staff-textarea"
         />
-        <Button type="submit" size="base_medium" className="!w-fit ml-auto py-2 px-6">
+        <Button
+          type="submit"
+          size="base_medium"
+          className="update-button !w-fit ml-auto py-2 px-6"
+        >
           {updating ? "Updating..." : "Update"}
         </Button>
       </LandlordTenantInfoEditSection>
@@ -390,7 +476,7 @@ export const StaffLockAccountSection = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [isLocking, setIsLocking] = useState(false);
-  const [next, setNext] = useState(false)
+  const [next, setNext] = useState(false);
   const [otp, setOtp] = useState("");
 
   const handleLockClicked = async () => {
@@ -402,7 +488,7 @@ export const StaffLockAccountSection = () => {
       }
     } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setLoading(false);
     }
   };
@@ -410,57 +496,57 @@ export const StaffLockAccountSection = () => {
   const handleLockAccount = async () => {
     try {
       setIsLocking(true);
-      if(staff?.id){
-      const res = await lockStaffAccount(staff?.id, otp);
-      if (res) {
-        toast.success("Staff Locked Successfully")
-        window.dispatchEvent(new Event("staff-updated"));
-        setNext(true)
+      if (staff?.id) {
+        const res = await lockStaffAccount(staff?.id, otp);
+        if (res) {
+          toast.success("Staff Locked Successfully");
+          window.dispatchEvent(new Event("staff-updated"));
+          setNext(true);
+        }
       }
-    }
     } catch (error) {
       console.error(error);
-    }finally{
+    } finally {
       setIsLocking(false);
     }
   };
 
-  const inactive = staff?.status === 'inactive';
-  console.log("inactive", inactive)
+  const inactive = staff?.status === "inactive";
+  console.log("inactive", inactive);
 
   return (
-    <LandlordTenantInfoEditSection title={`lock ${name} account`}>
-      <div className="space-y-4">
-        <p>
-          This will prevent account users from accessing the account. Access
-          cannot be regained until the account is unlocked from your end
-        </p>
-        <div className="flex justify-end">
-          <Button
-            size="base_medium"
-            className="py-2 px-6 w-fit"
-            variant={inactive ? "default" : "red"}
-            disabled={loading}
-            onClick={handleLockClicked}
-          >
-            {loading ? "Please wait..." : inactive ? "Unlock" : "lock"}
-          </Button>
-          <Modal
-            state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}
-          >
-            <ModalContent>
-              <LockOTPModal 
-               action={handleLockAccount}
-               otp={otp}
-               setOtp={setOtp}
-               loading={isLocking}
-               next={next}
-              />
-            </ModalContent>
-          </Modal>
+    <div className="lock-account-toggle">
+      <LandlordTenantInfoEditSection title={`lock ${name} account`}>
+        <div className="space-y-4">
+          <p>
+            This will prevent account users from accessing the account. Access
+            cannot be regained until the account is unlocked from your end
+          </p>
+          <div className="flex justify-end">
+            <Button
+              size="base_medium"
+              className="py-2 px-6 w-fit"
+              variant={inactive ? "default" : "red"}
+              disabled={loading}
+              onClick={handleLockClicked}
+            >
+              {loading ? "Please wait..." : inactive ? "Unlock" : "lock"}
+            </Button>
+            <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
+              <ModalContent>
+                <LockOTPModal
+                  action={handleLockAccount}
+                  otp={otp}
+                  setOtp={setOtp}
+                  loading={isLocking}
+                  next={next}
+                />
+              </ModalContent>
+            </Modal>
+          </div>
         </div>
-      </div>
-    </LandlordTenantInfoEditSection>
+      </LandlordTenantInfoEditSection>
+    </div>
   );
 };
 
@@ -514,6 +600,7 @@ export const StaffEditAvatarInfoSection = () => {
       setReqLoading(true);
       const status = await updateStaffPicture(data.id, formData);
       if (status) {
+        toast.success("Profile picture updated successfully");
         window.dispatchEvent(new Event("staff-updated"));
       }
       setReqLoading(false);
@@ -526,12 +613,12 @@ export const StaffEditAvatarInfoSection = () => {
     }
   }, [data?.picture, setPreview]);
 
-
   return (
     <AuthForm
       onFormSubmit={handleUpdatePicture}
       skipValidation
       returnType="form-data"
+      className="profile-picture-upload"
     >
       <LandlordTenantInfoEditSection title="Edit Picture">
         <input type="hidden" name="avatar" value={selectedAvatar} />
@@ -563,7 +650,9 @@ export const StaffEditAvatarInfoSection = () => {
         </label>
 
         <div className="custom-flex-col gap-3">
-          <p className="text-black text-base font-medium">Choose Avatar</p>
+          <p className="text-black dark:text-white text-base font-medium">
+            Choose Avatar
+          </p>
           <Modal
             state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >
@@ -612,7 +701,7 @@ export const StaffEditAvatarInfoSection = () => {
           type="submit"
           disabled={reqLoading}
         >
-          {reqLoading ? "updating..." : "save"}
+          {reqLoading ? "updating..." : "Update"}
         </Button>
       </LandlordTenantInfoEditSection>
     </AuthForm>

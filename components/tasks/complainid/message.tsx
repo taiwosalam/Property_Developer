@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import Image from "next/image";
 import SamplePic from "@/public/empty/SampleLandlord.jpeg";
+import { getColorClass } from "@/lib/utils";
 
 interface MessageProps {
   text: string;
@@ -39,13 +40,8 @@ const Message: React.FC<MessageProps> = ({
         {!isOwnMessage && (
           <>
             {isLastInSequence ? (
-              <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0">
-                <Image
-                  src={SamplePic}
-                  alt={user}
-                  fill
-                  className="object-cover"
-                />
+              <div className="rounded-full overflow-hidden w-[30px] h-[30px] relative flex-shrink-0 custom-secondary-bg">
+                <Image src={avatar} alt={user} fill className="object-cover" />
               </div>
             ) : (
               <div className="w-[30px] flex-shrink-0"></div>
@@ -71,7 +67,13 @@ const Message: React.FC<MessageProps> = ({
           )}
         >
           {!isOwnMessage && !isConsecutive && (
-            <p className="text-brand-10 mb-1">{user}</p>
+            <p
+              className={`text-brand-10 mb-1 font-medium capitalize ${getColorClass(
+                user || ""
+              )}`}
+            >
+              {user}
+            </p>
           )}
           <p className="text-text-quaternary">{text}</p>
           <time className="mt-1 font-normal text-[10px] text-text-disabled self-end">

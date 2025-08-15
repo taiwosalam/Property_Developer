@@ -4,11 +4,14 @@ import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 interface TenantCardProps {
   id: string;
   name: string;
+  title: string;
   email: string;
   phone_number: string;
   user_tag: "mobile" | "web";
   picture_url: string;
   badge_color?: BadgeIconColors;
+  note?: boolean;
+  flagged?: boolean;
 }
 
 export const defaultTenantPageData: TenantPageData = {
@@ -81,11 +84,24 @@ export interface TenantApiResponse {
     tenants: {
       id: string;
       name: string;
+      title: string;
       email: string;
-      phone: string;
+      // phone: string;
+      phone: {
+        profile_phone: string | null;
+        user_phone: string | null;
+      };
       picture: string;
       agent: string;
-      tier_id?: 1 | 2 | 3 | 4 | 5;
+      user_tier: 1 | 2 | 3 | 4 | 5;
+      note: {
+        note: string | null;
+      };
+      flags: {
+        is_flagged: boolean;
+        flagged_by: string;
+        reason: string | null;
+      }[];
     }[];
   };
   mobile_tenant_count: number;
@@ -99,6 +115,7 @@ export interface TenantApiResponse {
 export const transformTenantApiResponse = (
   response: TenantApiResponse
 ): TenantPageData => {
+  // console.log("res", response)
   const {
     data: { pagination, tenants },
     mobile_tenant_count,
@@ -120,11 +137,22 @@ export const transformTenantApiResponse = (
     tenants: tenants.map((tenant) => ({
       id: tenant.id,
       name: tenant.name,
+      title: tenant.title,
       email: tenant.email,
-      phone_number: tenant.phone,
+      phone_number: `${tenant.phone.profile_phone ?? ""}${
+        tenant.phone.user_phone && tenant.phone.profile_phone
+          ? " / " + tenant.phone.user_phone
+          : ""
+      }`,
+      // phone_number: tenant.phone,
       user_tag: tenant.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
       picture_url: tenant.picture,
-      badge_color: tenant.tier_id ? tierColorMap[tenant.tier_id] : undefined,
+      note: tenant.note.note !== null && tenant.note.note !== "",
+      // flagged: tenant?.is_flagged,
+      flagged: tenant.flags?.some(flag => flag.is_flagged) ?? false,
+      badge_color: tenant.user_tier
+        ? tierColorMap[tenant.user_tier]
+        : undefined,
     })),
   };
 };
@@ -139,3 +167,25 @@ export interface TenantRequestParams {
   agent?: string;
   branch_ids?: string;
 }
+
+export const tenantRejectOptions = [
+  "Consistent Late Rent Payments: Frequent failure to pay rent on time, causing disruptions to the payment schedule.",
+  "Non-Payment of Rent: Missed rent payments without resolution.",
+  "Property Damage: Intentional or careless damage caused to the property.",
+  "Violation of Lease Terms: Breach of rules outlined in the lease agreement.",
+  "Noise Complaints from Neighbors: Reports of excessive or disruptive noise from neighboring residents.",
+  "Unauthorized Occupants: Unapproved individuals residing in the unit without management's consent.",
+  "Subletting Without Permission: Subletting of the property without prior landlord approval.",
+  "Illegal Activities on Property: Suspicion or evidence of unlawful behavior occurring on the premises.",
+  "Harassment or Threats to Neighbors or Staff: Aggressive, threatening, or inappropriate conduct toward others.",
+  "Tampering with Utilities or Safety Equipment: Interference with systems such as smoke detectors, water meters, or electrical panels.",
+  "Unauthorized Pets: Keeping pets in the unit without permission, violating lease terms.",
+  "Unauthorized Pets: Keeping pets in the unit without permission, violating lease terms.",
+  "Refusing Property Inspections or Maintenance Access: Repeated denial of access for inspections or maintenance services.",
+  "Hosting Large Parties or Events Without Notice: Unapproved gatherings causing disturbances or policy violations.",
+  "Improper Disposal of Waste: Incorrect disposal of garbage, leading to hygiene or pest issues.",
+  "Neglecting Property Cleanliness: Maintaining the property in an unclean or hazardous condition.",
+  "Use of Property for Commercial Purposes Without Approval: Operating a business from the unit without appropriate approval.",
+  "Repeated Complaints from Other Occupants or Neighbors: Ongoing or multiple complaints reported by others.",
+  "Providing False Information During Application or Lease Renewal: Submission of inaccurate or misleading details during application or renewal.",
+];

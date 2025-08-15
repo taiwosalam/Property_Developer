@@ -5,6 +5,7 @@ import "keen-slider/keen-slider.min.css";
 import ReactPlayer from "react-player";
 import { CameraIcon, ChevronLeft } from "@/public/icons/icons";
 import { PropertyImageSliderProps } from "../Management/Rent And Unit/types";
+import { empty } from "@/app/config";
 
 export const CommunitySlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -57,7 +58,7 @@ export const CommunitySlider: React.FC<PropertyImageSliderProps> = ({
               },
             }}
           />
-          {!isVideoPlaying && (
+          {/* {!isVideoPlaying && (
             <button
               aria-label="Play Video"
               onClick={() => setIsVideoPlaying(true)}
@@ -65,13 +66,13 @@ export const CommunitySlider: React.FC<PropertyImageSliderProps> = ({
             >
               ▶ Play Video
             </button>
-          )}
+          )} */}
         </div>
       )}
       {images.map((image, index) => (
         <div key={index} className="keen-slider__slide h-full relative w-full">
           <Image
-            src={image.path}
+            src={image.path || empty}
             alt={`Property image ${index + 1}`}
             fill
             sizes="auto"

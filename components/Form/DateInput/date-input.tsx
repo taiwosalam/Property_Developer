@@ -21,9 +21,11 @@ const DateInput: React.FC<DateInputProps> = ({
   maxDate,
   disableFuture,
   disablePast,
+  lastYear,
   containerClassName,
   labelclassName,
   disabled,
+  views,
 }) => {
   const handleDateChange = (date: Dayjs | null) => {
     if (onChange) {
@@ -33,13 +35,13 @@ const DateInput: React.FC<DateInputProps> = ({
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
-      {/* Render the label if provided */}
       {label && (
         <Label id={id} required={required} labelclassName={labelclassName}>
           {label}
         </Label>
       )}
       <DatePicker
+        views={views}
         inputId={id}
         inputClassName={inputClassName}
         onChange={handleDateChange}
@@ -48,11 +50,12 @@ const DateInput: React.FC<DateInputProps> = ({
         maxDate={maxDate}
         disableFuture={disableFuture}
         disablePast={disablePast}
+        lastYear={lastYear}
         containerClassName={containerClassName}
         disabled={disabled}
       />
     </div>
   );
 };
-// F3F6F9
+
 export default DateInput;

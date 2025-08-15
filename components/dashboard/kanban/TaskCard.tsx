@@ -23,14 +23,26 @@ import TaskModal from "./task-action-modal";
 import { usePathname, useRouter } from "next/navigation";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import clsx from "clsx";
+import useFetch from "@/hooks/useFetch";
+import {
+  ComplaintDetailResponse,
+  ComplaintDetailsPageData,
+} from "@/app/(nav)/tasks/complaints/types";
+import { transformComplaintDetails } from "@/app/(nav)/tasks/complaints/data";
+import { getBadgeColor } from "@/lib/utils";
+import { empty } from "@/app/config";
+import PendingTaskModal from "./pending-tsak-card-modal";
+import { useRole } from "@/hooks/roleContext";
+import Picture from "@/components/Picture/picture";
 
 export interface Task {
   id: UniqueIdentifier;
-  columnId: ColumnId;
+  tier?: number;
+  columnId: ColumnId | string;
   content: {
     messageCount: number;
     linkCount: number;
-    userAvatars: [string, string, string];
+    userAvatars: string[];
     date: string;
     status?: string;
     progress?: number;
@@ -49,6 +61,12 @@ interface TaskCardProps {
   statusChanger?: boolean;
   viewOnly?: boolean;
   styles?: string;
+  taskStatus?: string | null;
+  onConfirm?: (
+    note: string,
+    status?: "completed" | "rejected" | "processing"
+  ) => void;
+  onClick?: () => void;
 }
 
 export type TaskType = "Task";
@@ -66,11 +84,54 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   statusChanger,
   viewOnly,
   styles,
+  taskStatus,
+  onConfirm,
+  onClick,
 }) => {
   const [isModalOpen, setModalOpen] = useState(false);
   const wasRecentlyDragged = useRef(false);
   const router = useRouter();
   const pathname = usePathname();
+  const [cardData, setCardData] = useState<ComplaintDetailsPageData | null>(
+    null
+  );
+
+  const { role } = useRole();
+
+  console.log(role)
+
+  const gotoPage = (id: string | number) => {
+    switch (role) {
+      case "director":
+        router.push(`/tasks/complaints/${id}/manage-complain/`);
+        break;
+      case "manager":
+        router.push(`/manager/tasks/complaints/${id}/manage-complain/`);
+        break;
+      case "account":
+        router.push(`/accountant/tasks/complaints/${id}/manage-complain/`);
+        break;
+      case "staff":
+        router.push(`/staff/tasks/complaints/${id}/manage-complain/`);
+        break;
+      default:
+        return "/unauthorized";
+    }
+  };
+
+  const {
+    data: complaintDataResponse,
+    loading,
+    error,
+    refetch,
+  } = useFetch<ComplaintDetailResponse>(`complaint/${task.id}`);
+
+  useEffect(() => {
+    if (complaintDataResponse) {
+      const transformDetails = transformComplaintDetails(complaintDataResponse);
+      setCardData(transformDetails);
+    }
+  }, [complaintDataResponse]);
 
   const {
     setNodeRef,
@@ -108,7 +169,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   const bg =
     task.content.status === "processing"
       ? "#FDB82C"
-      : task.content.status === "approved"
+      : task.content.status === "completed"
       ? "#01BA4C"
       : "#E9212E";
 
@@ -129,12 +190,21 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   }, [isDragging, noDrag, viewOnly]);
 
   const handleCardClick = () => {
+    console.log("Clicked..")
     if (viewOnly) return;
+    if (noDrag && onClick) {
+      onClick();
+    }
     if (!isDragging && !wasRecentlyDragged.current && noDrag) {
       setModalOpen(true);
     } else {
-      router.push("/tasks/complaints/1/manage-complain/");
+      gotoPage(task.id);
     }
+  };
+
+  const handleSubmit = (notes: string) => {
+    onConfirm?.(notes);
+    setModalOpen(false);
   };
 
   return (
@@ -149,18 +219,20 @@ export const TaskCard: React.FC<TaskCardProps> = ({
       >
         <CardHeader className="px-3 py-3 space-between flex flex-row border-secondary relative">
           <div className="w-full flex items-center space-x-2">
-            <Avatar className="hidden h-9 w-9 rounded-full sm:flex overflow-hidden">
-              <AvatarImage
-                src={task.avatarSrc}
-                alt="Avatar"
-                className="group-hover:scale-125 transition-all duration-700 ease-in-out"
-              />
-              <AvatarFallback>{task.name.charAt(0)}</AvatarFallback>
-            </Avatar>
+            {/* <div className="h-9 w-9 rounded-full custom-secondary-bg"> */}
+            <Picture
+              src={task.avatarSrc}
+              alt="Avatar"
+              rounded
+              size={36}
+              className="group-hover:scale-125 transition-all duration-700 ease-in-out"
+            />
+            {/* <AvatarFallback>{task.name.charAt(0)}</AvatarFallback> */}
+            {/* </div> */}
             <div className="space-x-1">
-              <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5">
+              <p className="text-sm font-medium text-text-primary dark:text-darkText-1 flex items-center space-x-0.5 capitalize">
                 {task.name}
-                <BadgeIcon color="black" />
+                <BadgeIcon color={getBadgeColor(task?.tier) ?? "gray"} />
               </p>
               <p className="text-xs text-brand-9 font-medium capitalize">
                 {task.title}
@@ -201,74 +273,107 @@ export const TaskCard: React.FC<TaskCardProps> = ({
                   {task.content.status}
                 </p>
               </div>
-              <p
-                className="text-text-tertiary dark-text-darkText-1 font-normal"
-                hidden={isNew}
-              >
-                {task.content.progress}/100%
-              </p>
+              {task?.content?.status !== "rejected" && (
+                <p
+                  className="text-text-tertiary dark-text-darkText-1 font-normal"
+                  hidden={isNew}
+                >
+                  {task?.content?.status === "completed"
+                    ? 100
+                    : task.content.progress}
+                  /100%
+                </p>
+              )}
             </div>
             <div className="py-2">
               <Progress
-                value={task.content.progress}
+                value={
+                  task?.content?.status === "rejected" ||
+                  task?.content?.status === "completed"
+                    ? 100
+                    : task?.content?.progress
+                }
                 fillColor={isNew ? "" : bg}
               />
             </div>
           </div>
           <div className="flex gap-2 justify-between">
-            <div className="flex gap-2.5 items-center">
-              <MailIcon size={20} />
-              <ClipIcon />
-              <div className="flex itema-center">
-                {task.content.userAvatars.map((avatar, index) => (
-                  <Avatar
-                    key={index}
-                    className={clsx(
-                      "h-6 w-6 rounded-full border-2 border-white",
-                      index !== 0 && "-ml-2.5"
-                    )}
-                    style={{
-                      boxShadow:
-                        index !== task.content.userAvatars.length - 1
-                          ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
-                          : undefined,
-                      zIndex: index,
-                    }}
-                  >
-                    <AvatarImage src={avatar} alt="Avatar" />
-                    <AvatarFallback>{avatar.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                ))}
+            <div className="flex gap-4 items-center py-2">
+              <div className="relative">
+                <MailIcon size={20} />
+                {/* Mail badge with green background */}
+                {task?.content?.messageCount > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-green-700 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
+                    {task.content.messageCount > 9
+                      ? "9+"
+                      : task?.content?.messageCount}
+                  </div>
+                )}
+              </div>
+              <div className="relative">
+                <ClipIcon />
+                {/* Clip badge with red background */}
+                {cardData && cardData.attachment > 0 && (
+                  <div className="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-4 w-4 flex items-center justify-center min-w-4">
+                    {cardData?.attachment > 9 ? "9+" : cardData?.attachment}
+                  </div>
+                )}
+              </div>
+              {/* MAKE THE IMAGES UNIQUE */}
+              <div className="flex item-center">
+                {[...new Set(task?.content?.userAvatars)]?.map(
+                  (avatar, index) => (
+                    <Avatar
+                      key={index}
+                      className={clsx(
+                        "h-6 w-6 rounded-full border-2 border-brand-1 flex items-center custom-secondary-bg",
+                        index !== 0 && "-ml-2.5"
+                      )}
+                      style={{
+                        width: "20px",
+                        height: "20px",
+                        boxShadow:
+                          index !==
+                          [...new Set(task?.content?.userAvatars)].length - 1
+                            ? "3px 4px 8px 0px rgba(53, 37, 19, 0.31)"
+                            : undefined,
+                        zIndex: index,
+                      }}
+                    >
+                      <AvatarImage
+                        src={avatar || empty}
+                        alt="Avatar"
+                        className="rounded-full h-full w-full flex items-center custom-secondary-bg"
+                        style={{
+                          backgroundColor: "var(--secondary-color)",
+                        }}
+                      />
+                    </Avatar>
+                  )
+                )}
               </div>
             </div>
 
-            <p className="bg-[var(--secondary-color)] bg-opacity-10 text-xs rounded-md py-2 px-4">
+            <p className="bg-[var(--secondary-color) bg-red-500 flex items-center justify-center text-center bg-opacity-10 text-xs rounded-md py-2 px-4">
               {task.content.date}
             </p>
           </div>
         </CardContent>
       </Card>
 
-      <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
-        <ModalContent>
-          <TaskModal
-            statusChanger={statusChanger}
-            complaintData={complaintData}
-          />
-        </ModalContent>
-      </Modal>
+      {cardData && task?.content?.status === "pending" && (
+        <Modal state={{ isOpen: isModalOpen, setIsOpen: setModalOpen }}>
+          <ModalContent>
+            <PendingTaskModal
+              onConfirm={handleSubmit}
+              statusChanger={statusChanger}
+              complaintData={cardData}
+              setModalOpen={setModalOpen}
+              targetStatus={taskStatus}
+            />
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
-};
-
-const complaintData = {
-  senderName: "Muibi Saheed",
-  senderVerified: true,
-  complaintTitle: "Door complain",
-  propertyName: "David Hall",
-  propertyAddress: "Olorishaoko, Moniya",
-  accountOfficer: "Ajala David",
-  branch: "Akinyele",
-  brief:
-    "Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius fugiat provident porro sunt atque deserunt dicta voluptatem ipsum hic. Repellat est, totam eos sed magni distinctio laudantium exercitationem molestiae aliquid.",
 };

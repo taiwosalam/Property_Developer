@@ -6,11 +6,25 @@ import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { deleteProperty } from "@/app/(nav)/management/properties/[id]/edit-property/data";
 import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
 
 const DeletePropertyModal = ({ propertyId }: { propertyId: string }) => {
   const { activeStep, changeStep } = useStep(2);
   const router = useRouter();
+  const { role } = useRole();
   const [isDeleting, setIsDeleting] = useState(false);
+
+  // switch case for properties page redirect
+  const getPropertyPage = () => {
+    switch (role) {
+      case "manager":
+        return "/manager/management/properties";
+      case "account":
+        return "/accountant/management/properties";
+      default:
+        return "/management/properties";
+    }
+  };
 
   const handleDelete = async () => {
     setIsDeleting(true);
@@ -18,7 +32,7 @@ const DeletePropertyModal = ({ propertyId }: { propertyId: string }) => {
     if (success) {
       changeStep("next");
       setTimeout(() => {
-        router.push("/management/properties");
+        router.push(getPropertyPage());
       }, 2500);
     }
     setIsDeleting(false);

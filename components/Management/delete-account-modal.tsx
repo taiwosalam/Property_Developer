@@ -6,6 +6,7 @@ import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";
+import { toast } from "sonner";
 
 const DeleteAccountModal: React.FC<{
   accountType?: string;
@@ -19,9 +20,11 @@ const DeleteAccountModal: React.FC<{
     setReqLoading(true);
     const success = action ? await action?.() : true;
     if (success) {
-      changeStep("next");
-      setTimeout(() => afterAction?.(), 1000);
-    }
+      toast.success("Account deleted successfully");
+      afterAction?.();
+      // changeStep("next");
+      // setTimeout(() => afterAction?.(), 1000);
+    } 
     setReqLoading(false);
   };
 

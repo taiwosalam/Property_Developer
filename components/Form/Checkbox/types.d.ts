@@ -6,5 +6,9 @@ export interface CheckboxProps {
   className?: string;
   hoverContent?: React.ReactNode;
   radio?: boolean;
+  disabled?: boolean;
   defaultChecked?: boolean;
+  id?: string;
+  name?: string;
+  value?: string;
 }

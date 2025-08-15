@@ -10,6 +10,7 @@ const initialState = {
   propertySettings: null,
   canDelete: false,
   addedUnits: [],
+  editMode: false,
 };
 
 type PropertyType = "rental" | "facility" | null;
@@ -21,6 +22,7 @@ interface PropertyDetails {
   local_govt: string;
   city: string;
   full_address: string;
+  is_inventory?: any;
   branch_name?: string;
   branch_id?: string;
   account_officer?: string;
@@ -29,13 +31,17 @@ interface PropertyDetails {
   description: string;
   images: { path: string; id: string }[];
   land_lord_id?: string;
+  staff_id?: string[];
+  officer_id?: string[];
 }
+
 interface PropertySettings {
   agency_fee?: number;
   management_fee?: number;
   who_to_charge_new_tenant?: string;
   who_to_charge_renew_tenant?: string;
   book_visitors?: "Yes" | "No";
+  is_inventory?: "Yes" | "No";
   VAT?: "Yes" | "No";
   caution_deposit?: string;
   group_chat?: "Yes" | "No";
@@ -45,12 +51,16 @@ interface PropertySettings {
   vehicle_record?: "Yes" | "No";
   currency?: keyof typeof currencySymbols | null;
   coordinate?: string;
+  vat?: string | number;
+  renew_vat?: string | number;
 }
 
 export interface AddUnitStore {
   property_id: string | null;
   propertyType: PropertyType;
   canDelete: boolean;
+  editMode?: boolean;
+  newForm?: boolean;
   propertyDetails: null | PropertyDetails;
   propertySettings: null | PropertySettings;
   addedUnits: (UnitDataObject & { notYetUploaded?: boolean })[];

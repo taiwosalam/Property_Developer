@@ -8,6 +8,11 @@ import dynamic from "next/dynamic";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { type PropertyDetailsSettingsOthersCardProps } from "./property-details-settings-others-card";
 import { type UnitItemProps } from "./unit-item";
+import DOMPurify from "dompurify";
+import TruncatedText from "@/components/TruncatedText/truncated-text";
+import parse from "html-react-parser";
+import Button from "@/components/Form/Button/button";
+import { useRole } from "@/hooks/roleContext";
 
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
@@ -26,11 +31,18 @@ export interface PropertyPreviewProps
   id: string;
   property_name: string;
   address: string;
-  propertyType: "rental" | "facility";
+  // propertyType: "rental" | "facility";
+  propertyType: string;
   total_units: number;
   images: string[];
   video_link?: string;
+  landlord?: boolean;
+  landlordData?: any;
+  rent_penalty?: string;
+  fee_period?: string;
+  description?: string;
   units: UnitItemProps[];
+  page?: "manager" | "account";
 }
 
 const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
@@ -43,15 +55,34 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     total_units,
     video_link,
     isRental,
+    landlord,
     units,
+    description,
+    page,
     ...others
   } = props;
+  const { role } = useRole();
+  const sanitizedDescription = DOMPurify.sanitize(description ?? "");
 
   const [isClient, setIsClient] = useState(false);
   useEffect(() => {
     setIsClient(true);
   }, []);
 
+  const getManagePropertyLink = () => {
+    switch (role) {
+      case "manager":
+        return `/manager/management/properties/${id}/edit-property`;
+      case "account": 
+        return `/accountant/management/properties/${id}/edit-property`;
+      case "director":
+        return `/management/properties/${id}/edit-property`;
+      case "staff":
+        return `/staff/management/properties/${id}/edit-property`;
+      default:
+        return `/unauthorized`;
+    }
+  };
   return (
     <div className="space-y-5">
       <BackButton as="p" bold>
@@ -59,39 +90,38 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
       </BackButton>
 
       {/* Heading */}
-      <div className="text-black dark:text-white">
-        <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
-        <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
-          {property_name} ({total_units} Unit{total_units > 1 ? "s" : ""})
-        </h1>
-        <p className="text-sm text-text-label font-normal flex items-center gap-1">
-          <LocationIcon />
-          {address}
-        </p>
+      <div className="flex justify-between items-center">
+        <div className="text-black dark:text-white">
+          <p className="text-base font-medium dark:text-darkText-1">ID: {id}</p>
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold">
+            {property_name} ({total_units} Unit{total_units > 1 ? "s" : ""})
+          </h1>
+          <p className="text-sm text-text-label font-normal flex items-center gap-1">
+            <LocationIcon />
+            {address}
+          </p>
+        </div>
+        <Button href={getManagePropertyLink()}>Manage</Button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-x-[30px] gap-y-5">
         <div className="lg:w-[60%] space-y-6">
           {/* Main Image */}
-          <ImageSlider images={images} className="aspect-[1.4] rounded-lg" />
+          <ImageSlider
+            videoLink={isRental ? video_link : undefined}
+            images={images}
+            className="aspect-[1.4] rounded-lg"
+          />
 
-          {/* Videos */}
-          {isRental && isClient && video_link && (
-            <div className="space-y-4">
-              <p className="text-black text-lg md:text-xl lg:text-2xl font-bold">
-                Video
-              </p>
-              <div className="relative aspect-[1.85] overflow-hidden rounded-xl max-w-[330px] max-h-[180px]">
-                <DynamicReactPlayer
-                  url={video_link}
-                  width="100%"
-                  height="100%"
-                  pip
-                  controls
-                />
-              </div>
-            </div>
-          )}
+          {/* Description */}
+          <div className="space-y-4">
+            <p className="text-black dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
+              Property Description
+            </p>
+            <TruncatedText lines={5} as="div" className="dark:text-darkText-1">
+              {parse(sanitizedDescription)}
+            </TruncatedText>
+          </div>
         </div>
 
         <div className="lg:flex-1 space-y-4">
@@ -117,9 +147,11 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
         </div>
       </div>
 
+      {landlord && <section>Progress Card here</section>}
+
       <section className="space-y-4">
         {units.map((unit) => (
-          <UnitItem key={unit.unitId} {...unit} />
+          <UnitItem key={unit.unitId} {...unit} page={page} />
         ))}
       </section>
     </div>

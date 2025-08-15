@@ -53,6 +53,7 @@ const eventToComponentMap = {
   "Branch Details": (
     <div className="min-w-[285px] max-w-full pb-7 dark:border dark:border-[#3C3D37] dark:rounded-lg dark:shadow-md">
       <BranchCard
+        is_active={1}
         id="1"
         branch_title="Branch 1"
         branch_full_address="123 Main St, Anytown, USA"
@@ -85,7 +86,7 @@ const eventToComponentMap = {
           created_at: "2021-01-01",
           last_edited: "2021-01-01",
           inventory_id: "1",
-          property_name: "Property 1",
+          // property_name: "Property 1",
         }}
         viewOnly={true}
       />
@@ -170,17 +171,18 @@ const eventToComponentMap = {
     </div>
   ),
   Maintenance: (
-    <MaintenanceCard
-      viewOnly={true}
-      dateCreated="12/12/12"
-      serviceProvider="John Doe"
-      startEndDate="12/12/12"
-      priority="High"
-      serviceType="Plumbing"
-      maintenanceId="1"
-      status="not started"
-      propertyName="Property 1"
-    />
+    <div></div>
+    // <MaintenanceCard
+    //   viewOnly={true}
+    //   dateCreated="12/12/12"
+    //   serviceProvider="John Doe"
+    //   startEndDate="12/12/12"
+    //   priority="High"
+    //   serviceType="Plumbing"
+    //   maintenanceId="1"
+    //   status="not started"
+    //   propertyName="Property 1"
+    // />
   ),
 
   Announcement: (
@@ -196,8 +198,9 @@ const eventToComponentMap = {
         likes={10}
         dislikes={10}
         imageUrls={[empty, empty, empty, empty]}
-        mediaCount={10}
+        mediaCount={{ image: 10, video: 0 }}
         announcementId="1"
+        video={null}
       />
     </div>
   ),

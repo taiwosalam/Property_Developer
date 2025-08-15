@@ -1,4 +1,5 @@
 // Imports
+import { StaticImageData } from "next/image";
 import { inventory_conditions } from "./data";
 
 export interface InventoryCardDataProps {
@@ -7,12 +8,19 @@ export interface InventoryCardDataProps {
   created_at?: string;
   last_edited: string;
   updated_at?: string;
-  property_name: string;
+  // property_name: string;
   branch_name: string;
-  account_officer: any;
+  account_manager?: any;
+  account_officer?: any;
   branch_id?: string;
   title?: string;
   id?: string;
+  total_unit: number;
+  imgSrc?: string;
+  property_id?: number;
+  property_image?: {
+    path: string;
+  }[];
 }
 
 export interface AccountOfficer {
@@ -23,6 +31,7 @@ export interface AccountOfficer {
 export interface InventoryCardProps {
   data: Partial<InventoryCardDataProps>;
   viewOnly?: boolean;
+  page?: "manager" | "account";
 }
 
 export interface InventoryListProps extends InventoryCardProps {}
@@ -54,6 +63,7 @@ export interface InventoryItemProps {
 
 export interface InventoryFieldProps {
   children: React.ReactNode;
+  heading?: string;
 }
 
 
@@ -89,4 +99,64 @@ export interface InventoryData {
   account_officer: string;
   branch_id: string;
   video?: string;
+}
+
+export interface PropertyDetailsProps {
+  rent: number;
+  cautionDeposit: number;
+  serviceCharge: number;
+}
+
+export interface ActionButtonProps {
+  label: string;
+  color: string;
+  route?: string;
+  modal?: string;
+}
+
+interface PropertyImageSliderProps {
+  images: StaticImageData[] | string[];
+  showOverlay?: boolean;
+  thread?: boolean;
+}
+export interface UnitDetails {
+  //   id: string;
+  title: string;
+  location: string;
+  categories: string;
+  unitNumber: string;
+  unitPreference: string;
+  unitType: string;
+  unitSubType: string;
+  state: string;
+  localGovernment: string;
+  accountOfficer: string;
+  bedrooms: number;
+  bathrooms: number;
+  toilets: number;
+  newTenantPrice: number;
+  renewalTenantPrice: number;
+  images: string[];
+}
+
+export interface Occupant {
+  id: string;
+  name: string;
+  email: string;
+  userTag: "mobile" | "web";
+  avatar: string;
+  gender: string;
+  birthday: string;
+  religion: string;
+  phone: string;
+  maritalStatus: string;
+  address: string;
+  city: string;
+  state: string;
+  lg: string;
+}
+
+export interface FeeDetail {
+  name: string;
+  amount: number;
 }

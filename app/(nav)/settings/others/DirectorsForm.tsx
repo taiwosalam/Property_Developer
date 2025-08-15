@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import Select from "@/components/Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -18,14 +18,23 @@ import {
 import Avatars from "@/components/Avatars/avatars";
 import TextArea from "@/components/Form/TextArea/textarea";
 import Image from "next/image";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
+import { deleteDirector, lockDirector } from "./data";
+import { toast } from "sonner";
 
 interface DirectorsFormProps {
   submitAction: (data: any) => void;
   chooseAvatar: () => void;
+  isProcessing?: boolean;
   avatar: string | null;
   setAvatar: React.Dispatch<React.SetStateAction<string | null>>;
-  // setFormStep: React.Dispatch<React.SetStateAction<number>>;
-  // formStep: number;
+  setIsCloseUpdate?: React.Dispatch<React.SetStateAction<boolean>>;
+  formData?: Record<string, string>;
+  onFormChange?: (field: string, value: string) => void;
+  isEditing?: boolean;
+  initialImage?: string | null;
+  is_active?: boolean;
 }
 
 type Address = "selectedState" | "selectedLGA" | "selectedCity";
@@ -35,12 +44,20 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
   chooseAvatar,
   avatar,
   setAvatar,
+  isProcessing,
+  formData,
+  onFormChange,
+  isEditing,
+  initialImage,
+  setIsCloseUpdate,
+  is_active,
 }) => {
   const {
     preview: imagePreview,
     inputFileRef,
     handleImageChange: originalHandleImageChange,
     clearSelection: clearImageSelection,
+    setPreview,
   } = useImageUploader();
 
   const [state, setState] = useState({
@@ -52,10 +69,30 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
 
+  useEffect(() => {
+    if (initialImage) {
+      setPreview(initialImage);
+    }
+  }, [initialImage, setPreview]);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setAvatar(null); // Clear the avatar when an image is selected
     originalHandleImageChange(e);
   };
+
+  const handleAvatarSelect = () => {
+    clearImageSelection(); // Clear the image preview when choosing avatar
+    chooseAvatar();
+  };
+
+  useEffect(() => {
+    if (avatar) {
+      clearImageSelection();
+    }
+  }, [avatar]);
+
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [isLocking, setIsLocking] = useState(false);
 
   const handleAddressChange = (field: Address, value: string) => {
     setState((prevState) => ({
@@ -64,6 +101,38 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
       ...(field === "selectedState" && { selectedLGA: "", selectedCity: "" }),
       ...(field === "selectedLGA" && { selectedCity: "" }),
     }));
+  };
+
+  const handleDeleteDirector = async () => {
+    try {
+      setIsDeleting(true);
+      if (isEditing && formData?.id) {
+        const res = await deleteDirector(formData?.id || "");
+        if (res) {
+          toast.success("Director deleted");
+          setIsCloseUpdate?.(false);
+        }
+      }
+    } catch (error) {
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  const handleLockDirector = async () => {
+    try {
+      setIsLocking(true);
+      if (isEditing && formData?.id) {
+        const res = await lockDirector(formData?.id || "");
+        if (res) {
+          toast.success("Director Locked");
+          setIsCloseUpdate?.(false);
+        }
+      }
+    } catch (error) {
+    } finally {
+      setIsLocking(false);
+    }
   };
 
   return (
@@ -77,87 +146,99 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
     >
       <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
         <Select
+          disabled={!is_active}
           options={titles}
           id="title"
-          label="Profile Tilte/Qualification"
+          name="title"
+          label="Profile Title/Qualification"
           placeholder="Select options"
           inputContainerClassName="bg-neutral-2"
-          value={selectedState}
-          onChange={(value) => handleAddressChange("selectedState", value)}
+          value={formData?.title || ""}
+          onChange={(value) => onFormChange?.("title", value)}
         />
         <Select
+          disabled={!is_active}
           isSearchable={false}
-          id="real-estate-title"
+          id="professional_title"
           label="real estate title"
+          required
           inputContainerClassName="bg-neutral-2"
           options={industryOptions}
+          value={formData?.professional_title || ""}
+          onChange={(value) => onFormChange?.("professional_title", value)}
         />
+
         <Input
+          disabled={!is_active}
           id="full_name"
           label="Full Name"
+          value={formData?.full_name || ""}
+          onChange={(value) => onFormChange?.("full_name", value)}
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
           required
         />
+        <input id="alt_email" name="alt_email" hidden />
         <Input
+          disabled={!is_active}
           id="email"
           label="email"
           type="email"
+          name="email"
+          value={formData?.email}
+          onChange={(value) => onFormChange?.("email", value)}
           inputClassName="rounded-[8px]"
           validationErrors={errorMsgs}
           required
         />
-        <Select
-          validationErrors={errorMsgs}
-          options={["1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"]}
-          id="experience"
-          label="Years of Experience"
-          placeholder="Select options"
-          inputContainerClassName="bg-neutral-2"
-          value={selectedState}
-          onChange={(value) => handleAddressChange("selectedState", value)}
+        <DateInput
+          disabled={!is_active}
+          id="years_in_business"
+          label=" Years of Experience (Since)"
+          onChange={(value) =>
+            onFormChange?.("years_in_business", value ? value.toString() : "")
+          }
+          value={
+            formData?.years_in_business
+              ? dayjs(formData.years_in_business)
+              : null
+          }
         />
+
         <PhoneNumberInput
+          required
+          disabled={!is_active}
           id="phone_number"
           label="phone number"
-          inputClassName="!bg-neutral-2"
+          inputClassName="!bg-neutral-2 dark:!bg-transparent"
+          value={formData?.phone_number || ""}
+          onChange={(value) => onFormChange?.("phone_number", value)}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-        <div className="flex flex-col gap-4 md:gap-5 md:justify-between">
-          <Input
-            id="password"
-            type="password"
-            label="Create password"
-            placeholder="Create password"
-            validationErrors={errorMsgs}
-            required
-          />
-          <Input
-            id="confirm-password"
-            type="password"
-            label="Confirm password"
-            placeholder="Confirm password"
-            validationErrors={errorMsgs}
-            required
-          />
-        </div>
-        <div className="md:col-span-2">
+        <div className="md:col-span-3 w-full">
           <TextArea
-            id="about"
+            readOnly={!is_active}
+            id="about_director"
             label="About Director"
             placeholder=""
             inputSpaceClassName="md:!h-[120px]"
+            value={formData?.about_director || ""}
+            onChange={(value) => onFormChange?.("about_director", value)}
           />
         </div>
       </div>
       <div className="flex justify-between items-end flex-wrap gap-4 md:gap-5">
         <div className="custom-flex-col gap-3">
-          <p className="text-black dark:text-darkText-1 text-base font-medium">
-            Upload picture or select an avatar.
-          </p>
+          <div className="flex gap-1">
+            <span className="text-red-600">*</span>
+            <p className="text-black dark:text-darkText-1 text-base font-medium">
+              Upload picture or select an avatar.
+            </p>
+          </div>
           <div className="flex items-end gap-3">
             <button
+              disabled={!is_active}
               type="button"
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="upload picture"
@@ -189,13 +270,15 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
               )}
             </button>
             <button
+              disabled={!is_active}
               type="button"
-              onClick={chooseAvatar}
+              onClick={() => handleAvatarSelect()}
               className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
               aria-label="choose avatar"
             >
+              {avatar && <input hidden name="avatar" value={avatar} />}
               {avatar ? (
-                <>
+                <div>
                   <Image
                     src={avatar}
                     alt="selected avatar"
@@ -214,7 +297,7 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
                   >
                     <DeleteIconOrange size={20} />
                   </div>
-                </>
+                </div>
               ) : (
                 <PersonIcon />
               )}
@@ -224,17 +307,66 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
         <input
           type="file"
           ref={inputFileRef}
-          name="picture"
+          id="profile_picture"
+          name="profile_picture"
           style={{ display: "none" }}
           accept="image/*"
           onChange={handleImageChange}
         />
-        <Button type="submit" size="base_medium" className="py-2 px-8 ml-auto">
-          create
-        </Button>
+        {isEditing ? (
+          <div className="flex gap-4">
+            <Button
+              onClick={handleDeleteDirector}
+              size="base_medium"
+              className={`py-2 px-8 ml-auto font-semibold ${
+                isDeleting ? "opacity-70" : "opacity-100"
+              }`}
+              variant="red"
+              disabled={isDeleting || !is_active}
+            >
+              {isDeleting ? "Please wait..." : "Delete"}
+            </Button>
+
+            <Button
+              onClick={handleLockDirector}
+              size="base_medium"
+              className={`py-2 px-8 ml-auto font-semibold ${
+                isLocking ? "opacity-70" : "opacity-100"
+              }`}
+              variant="light_red"
+              disabled={isDeleting}
+            >
+              {isLocking
+                ? "Please wait..."
+                : is_active
+                ? "Lock"
+                : "UnLock"}
+            </Button>
+            <Button
+              type="submit"
+              size="base_medium"
+              className={`py-2 px-8 ml-auto font-bold ${
+                isProcessing ? "opacity-70" : "opacity-100"
+              }`}
+              disabled={isProcessing || !is_active}
+            >
+              {isProcessing ? "Please wait..." : "Update"}
+            </Button>
+          </div>
+        ) : (
+          <Button
+            type="submit"
+            size="base_medium"
+            className={`py-2 px-8 ml-auto ${
+              isProcessing ? "opacity-70" : "opacity-100"
+            }`}
+            disabled={isProcessing}
+          >
+            {isProcessing ? "Creating..." : "Create"}
+          </Button>
+        )}
       </div>
     </AuthForm>
   );
 };
-
 export default DirectorsForm;

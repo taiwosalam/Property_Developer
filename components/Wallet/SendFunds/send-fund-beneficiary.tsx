@@ -11,21 +11,28 @@ import Checkbox from "@/components/Form/Checkbox/checkbox";
 import { useWalletStore, type Beneficiary } from "@/store/wallet-store";
 import { AuthPinField } from "@/components/Auth/auth-components";
 import { useModal } from "@/components/Modal/modal";
-import { addBeneficiary, branchFundWallet, transferFunds } from "@/components/Wallet/data";
+import {
+  addBeneficiary,
+  branchFundWallet,
+  transferFunds,
+} from "@/components/Wallet/data";
 import { empty } from "@/app/config";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
+import { ArrowLeftIcon } from "@/public/icons/icons";
 
-const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
+const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   picture,
   name,
   wallet_id,
   badge_color,
   branch,
+  noBackBtn,
+  company_name,
 }) => {
   const { setIsOpen } = useModal();
   const balance = useWalletStore((s) => s.balance);
-  const {branch:branchData} = useBranchStore()
+  const { branch: branchData } = useBranchStore();
   const [activeStep, setActiveStep] = useState<"send funds" | "confirm pin">(
     "send funds"
   );
@@ -39,6 +46,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   const isAlreadyBeneficiary = beneficiaries.some(
     (beneficiary) => beneficiary.wallet_id === wallet_id
   );
+
   const handleClickSend = async () => {
     if (activeStep === "send funds") {
       if (!description) {
@@ -61,7 +69,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
       }
       setLoading(true);
       const action = branch
-        ? branchFundWallet(branchData.branch_id, {amount, pin, description })
+        ? branchFundWallet(branchData.branch_id, { amount, pin, description })
         : transferFunds(wallet_id, amount, description, pin);
       const status = await action;
       if (status) {
@@ -71,12 +79,14 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
             noToast: true,
           });
         }
-        if (branch){
-          toast.success("Branch Wallet Funded Successfully")
+        if (branch) {
+          toast.success("Branch Wallet Funded Successfully");
           window.dispatchEvent(new Event("refetch-wallet"));
-          window.dispatchEvent(new Event("refetch-wallet"));
-        }
+          window.dispatchEvent(new Event("refetch-branch-data"));
+        };
         window.dispatchEvent(new Event("refetch_staff"));
+        window.dispatchEvent(new Event("refetch-wallet"));
+        window.dispatchEvent(new Event("refetch-branch-data"));
       }
       setLoading(false);
     }
@@ -98,7 +108,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
             <div className="flex flex-col items-center">
               <div className="flex items-center">
                 <p className="text-[#010A23] dark:text-white text-base font-medium capitalize">
-                  {name}
+                  {name} {company_name && `- ${company_name}`}
                 </p>
                 {/* FIX BADGE LATER */}
                 {/* {badge_color && <BadgeIcon color={badge_color} />} */}
@@ -119,7 +129,7 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
                 })}`}
               </p>
             </div>
-          )}            
+          )}
           <div className="h-[1px] border border-dashed border-brand-9"></div>
           <div className="custom-flex-col gap-4">
             <Input
@@ -155,12 +165,15 @@ const  SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         </div>
       ) : (
         <div className="custom-flex-col gap-8">
-          <button
-            onClick={() => setActiveStep("send funds")}
-            className="w-6 h-6 flex items-center justify-center text-brand-9"
-          >
-            Back
-          </button>
+          {!noBackBtn && (
+            <button
+              onClick={() => setActiveStep("send funds")}
+              className="w-6 h-6 flex gap-2 items-center justify-start text-brand-9"
+            >
+              <ArrowLeftIcon />
+              Back
+            </button>
+          )}
           <p className="text-center">Please enter your PIN to confirm.</p>
           <AuthPinField onChange={setPin} key="confirm-pin" />
         </div>

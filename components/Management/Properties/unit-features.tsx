@@ -7,6 +7,9 @@ import { useUnitForm } from "./unit-form-context";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
+import { usePathname } from "next/navigation";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
@@ -16,18 +19,21 @@ const UnitFeatures = () => {
     (state) => state.propertyDetails?.category
   );
 
+  const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+
   const [selectedAreaUnit, setSelectedAreaUnit] = useState(
     unitData?.measurement || "sqm"
   );
 
   const areaUnits = ["sqm", "half plot", "plot", "acre", "hectare"];
 
-  // const facilitiesOptions =
-  //   unitType === "land" ? unitFacilities.lands : unitFacilities.buildings;
   const facilitiesOptions =
     propertyCategory?.toLowerCase() === "commercial"
       ? unitFacilities.lands
       : unitFacilities.buildings;
+
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
 
   useEffect(() => {
     if (formResetKey !== 0) {
@@ -35,13 +41,48 @@ const UnitFeatures = () => {
     }
   }, [formResetKey, unitData?.measurement]);
 
+  const bedroomTitle =
+    propertyDetails?.category?.toLowerCase() === "commercial"
+      ? "Room"
+      : "Bedroom";
+
   const isRental = propertyType === "rental";
 
+  const handleGoToTourStep = (stepIndex: number) => {
+    goToStep(stepIndex, pathname);
+  };
+
+  const handleTourSection = () => {
+    if (!isRental && pathname.startsWith("/manager")) {
+      handleGoToTourStep(26);
+    } else if (isRental && pathname.startsWith("/accountant")) {
+      handleGoToTourStep(30);
+    } else if (!isRental && pathname.startsWith("/accountant")) {
+      handleGoToTourStep(25);
+    } else if (!isRental) {
+      handleGoToTourStep(27);
+    } else if (isRental && pathname.startsWith("/manager")) {
+      handleGoToTourStep(31);
+    } else if (isRental) {
+      handleGoToTourStep(32);
+    }
+  };
+
   return (
-    <div>
-      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Units Features
-      </h4>
+    <div className="unit-measurement-form unit-features-wrapper">
+      <div className="flex items-center gap-2">
+        <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
+          Units Features
+        </h4>
+
+        <button
+          onClick={handleTourSection}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-4 md:mb-5">
         <Select
@@ -90,7 +131,7 @@ const UnitFeatures = () => {
               required={
                 isRental && propertyCategory?.toLowerCase() !== "commercial"
               }
-              label="Bedroom"
+              label={bedroomTitle}
               inputClassName="bg-white keep-spinner unit-form-input"
               type="number"
               min={0}
@@ -129,7 +170,7 @@ const UnitFeatures = () => {
             />
           </>
         )}
-        {isRental && (
+        {isRental && unitType?.toLowerCase() !== "land" && (
           <MultiSelect
             options={facilitiesOptions}
             maxSelections={
@@ -146,7 +187,7 @@ const UnitFeatures = () => {
           />
         )}
       </div>
-      {unitType.toLowerCase() !== "land" &&
+      {unitType?.toLowerCase() !== "land" &&
         isRental &&
         propertyCategory?.toLowerCase() !== "commercial" && (
           <div className="flex gap-4 md:gap-5 flex-wrap">

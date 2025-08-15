@@ -2,7 +2,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Select from "../Form/Select/select";
-import { getAllStates, getLocalGovernments } from "@/utils/states";
+import { getAllCities, getAllLocalGovernments, getAllStates, getLocalGovernments } from "@/utils/states";
 import { tenantTypes, landlordTypes, genderTypes } from "@/data";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
@@ -16,6 +16,8 @@ import Avatars from "@/components/Avatars/avatars";
 import Picture from "@/components/Picture/picture";
 import CameraCircle from "@/public/icons/camera-circle.svg";
 import { cleanPhoneNumber } from "@/utils/checkFormDataForImageOrAvatar";
+import RestrictInput from "../Form/Input/InputWIthRestrict";
+import { useBranchInfoStore } from "@/store/branch-info-store";
 
 interface AddLandLordOrTenantFormProps {
   type: "landlord" | "tenant";
@@ -30,6 +32,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
   setFormStep,
   formStep,
 }) => {
+  const branchID = useBranchInfoStore((state) => state.branch_id);
   const [isLoading, setIsLoading] = useState(false);
   const {
     preview,
@@ -99,6 +102,7 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
       >
         <input type="hidden" name="avatar" value={avatar} />
         <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+          <input type="hidden" name="branch_id" value={branchID || ""} />
           <Input
             required
             id="first_name"
@@ -140,7 +144,19 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
             onChange={(value) => handleAddressChange("selectedLGA", value)}
             value={selectedLGA}
           />
-          <Input id="address" label="address" inputClassName="rounded-[8px]" />
+          {/* <Input id="address" label="address" inputClassName="rounded-[8px]" /> */}
+          <RestrictInput
+            id="address"
+            label="address"
+            inputClassName="rounded-[8px]"
+            restrictedWordsOptions={{
+              words: [
+                ...getAllStates(),
+                ...getAllLocalGovernments(),
+                ...getAllCities(),
+              ],
+            }}
+          />
           <Select
             options={type === "landlord" ? landlordTypes : tenantTypes}
             id={`${type === "landlord" ? "owner" : "tenant"}_type`}

@@ -8,7 +8,7 @@ import CreateStaffModal from "@/components/Management/Staff-And-Branches/create-
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import Pagination from "@/components/Pagination/pagination";
 import { LocationIcon } from "@/public/icons/icons";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
@@ -32,6 +32,8 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import ServerError from "@/components/Error/ServerError";
+import CustomLoader from "@/components/Loader/CustomLoader";
 
 const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const { branchId } = params;
@@ -39,11 +41,22 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
   const companyVerified = usePersonalInfoStore((state) => state.is_verified);
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
+  const gridSectionRef = useRef<HTMLDivElement>(null);
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-    } as BranchStaffRequestParams,
+  // const [config, setConfig] = useState<AxiosRequestConfig>({
+  //   params: {
+  //     page: 1,
+  //   } as BranchStaffRequestParams,
+  // });
+
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    // Retrieve saved page from sessionStorage on mount
+    const savedPage = sessionStorage.getItem(`staff_page_${branchId}`);
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+      } as BranchStaffRequestParams,
+    };
   });
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -63,12 +76,33 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     );
   };
 
-  const [state, setState] = useState<BranchStaffPageState | null>(null);
+  const [state, setState] = useState<BranchStaffPageState>({
+    total_pages: 0,
+    // current_page: 1,
+    current_page: parseInt(
+      sessionStorage.getItem(`staff_page_${branchId}`) || "1",
+      10
+    ),
+    branch_name: "",
+    branch_address: "",
+    staffs: [],
+  });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem(
+      `staff_page_${branchId}`,
+      state.current_page.toString()
+    );
+  }, [state.current_page, branchId]);
 
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    if (view === "grid" && gridSectionRef.current) {
+      gridSectionRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -79,8 +113,9 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
 
   const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, current_page: 1 },
     });
+    sessionStorage.setItem(`staff_page_${branchId}`, "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
@@ -92,17 +127,17 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
       search: "",
     };
     if (position) {
-      queryParams.staff_positiion = position;
+      queryParams.position = position;
     }
-    // if (startDate) {
-    //   queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
-    // }
-    // if (endDate) {
-    //   queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
-    // }
     setConfig({
       params: queryParams,
     });
+    setState((prevState) => ({
+      ...prevState,
+      staffs: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem(`staff_page_${branchId}`, "1");
   };
 
   const {
@@ -113,24 +148,61 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     silentLoading,
     refetch,
   } = useFetch<StaffListResponse>(`staffs?branch_id=${branchId}`, config);
+  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+  // IF VIEW CHANGE., REFETCH DATA FROM PAGE 1
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setState((prevData) => ({
+      ...prevData,
+      staffs: [],
+      current_page: 1,
+    }));
+    window.dispatchEvent(new Event("refetch_staff"));
+  }, [view]);
 
   useEffect(() => {
-    console.log("apiData", apiData);
     if (apiData) {
-      setState((x) => ({
-        ...x,
-        ...transformStaffListResponse(apiData),
-      }));
+      const transformedData = transformStaffListResponse(apiData);
+      setState((prevState) => {
+        const newStaffs =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.staffs
+            : [...prevState?.staffs, ...transformedData.staffs];
+        return {
+          ...transformedData,
+          staffs: newStaffs,
+        };
+      });
     }
-  }, [apiData]);
+  }, [apiData, view]);
 
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
 
-  useRefetchOnEvent("refetch_staff", () => refetch({ silent: true }));
+  // Intersection Observer for infinite scroll
+  const observer = useRef<IntersectionObserver | null>(null);
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (loading || silentLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          state.current_page < state.total_pages
+        ) {
+          handlePageChange(state.current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [loading, silentLoading, state.current_page, state.total_pages]
+  );
 
-  const transformedTableData = state?.staffs.map((item) => ({
+  const transformedTableData = state.staffs.map((item, index) => ({
     ...item,
     gender: ["male", "female"].includes(item.gender?.toLowerCase() || "") ? (
       <p
@@ -146,18 +218,19 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
     ) : (
       ""
     ),
+    ref:
+      index === state.staffs.length - 1 &&
+      state.current_page < state.total_pages
+        ? lastRowRef
+        : undefined,
   }));
 
   const handleSelectTableItem = (item: DataItem) => {
     router.push(`/management/staff-branch/${branchId}/branch-staff/${item.id}`);
   };
 
-  // console.log("staff", state)
-
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-6">
@@ -195,94 +268,104 @@ const BranchStaffPage = ({ params }: { params: { branchId: string } }) => {
           </Modal>
         </div>
       </div>
-      <FilterBar
-        pageTitle="Branch Staff"
-        searchInputPlaceholder="Search within Branch"
-        azFilter
-        filterOptionsMenu={[
-          {
-            label: "Position",
-            radio: true,
-            value: [
-              { label: "Account Officer", value: "account_officer" },
-              { label: "Staff", value: "staff" },
-              { label: "Branch Manager", value: "manager" },
-            ],
-          },
-        ]}
-        handleFilterApply={handleFilterApply}
-        gridView={view === "grid"}
-        setGridView={() => setView("grid")}
-        setListView={() => setView("list")}
-        appliedFilters={appliedFilters}
-        handleSearch={handleSearch}
-        onSort={handleSort}
-      />
-      <section>
-        {loading || silentLoading ? (
-          view === "grid" ? (
-            <AutoResizingGrid minWidth={284} gap={16} key="loading">
-              <CardsLoading />
+      <div ref={gridSectionRef}>
+        <FilterBar
+          pageTitle="Branch Staff"
+          searchInputPlaceholder="Search within Branch"
+          azFilter
+          filterOptionsMenu={[
+            {
+              label: "Position",
+              radio: true,
+              value: [
+                { label: "Account Manager", value: "account_officer" },
+                { label: "Staff", value: "staff" },
+                { label: "Branch Manager", value: "manager" },
+              ],
+            },
+          ]}
+          handleFilterApply={handleFilterApply}
+          gridView={view === "grid"}
+          setGridView={() => setView("grid")}
+          setListView={() => setView("list")}
+          appliedFilters={appliedFilters}
+          handleSearch={handleSearch}
+          onSort={handleSort}
+        />
+        <section className="mt-8">
+          {loading || silentLoading ? (
+            view === "grid" ? (
+              <AutoResizingGrid minWidth={284} gap={16} key="loading">
+                <CardsLoading />
+              </AutoResizingGrid>
+            ) : (
+              <TableLoading />
+            )
+          ) : state?.staffs.length === 0 ? (
+            config.params.search || isFilterApplied() ? (
+              <SearchError />
+            ) : (
+              <EmptyList
+                buttonText="+ Create New Staff"
+                modalContent={
+                  <CreateStaffModal
+                    branchId={branchId as string}
+                    hasManager={true}
+                  />
+                }
+                title="The branch staff is empty"
+                body={
+                  <p>
+                    You can create a staff by clicking on the &quot;Create
+                    Staff&quot; button.
+                  </p>
+                }
+              />
+            )
+          ) : view === "grid" ? (
+            <AutoResizingGrid minWidth={284} gap={16} key="data">
+              {state?.staffs.map((staff) => (
+                <Link
+                  key={staff.id}
+                  href={`/management/staff-branch/${branchId}/branch-staff/${staff.id}`}
+                >
+                  <UserCard
+                    badge_color={staff.badge_color}
+                    email={staff.email}
+                    name={staff.name}
+                    phone_number={staff.phone_number}
+                    user_tag={staff.position}
+                    picture_url={staff.picture}
+                    isOnline={staff.isOnline}
+                  />
+                </Link>
+              ))}
             </AutoResizingGrid>
           ) : (
-            <TableLoading />
-          )
-        ) : state?.staffs.length === 0 ? (
-          config.params.search || isFilterApplied() ? (
-           <SearchError />
-          ) : (
-            <EmptyList
-              buttonText="+ Create New Staff"
-              modalContent={
-                <CreateStaffModal
-                  branchId={branchId as string}
-                  hasManager={true}
-                />
-              }
-              title="The branch staff is empty"
-              body={
-                <p>
-                  You can create a staff by clicking on the &quot;Create
-                  Staff&quot; button.
-                </p>
-              }
+            <>
+              <CustomTable
+                fields={branchStaffTableFields}
+                data={transformedTableData || []}
+                tableBodyCellSx={{ fontSize: "1rem" }}
+                tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
+                handleSelect={handleSelectTableItem}
+              />
+              {silentLoading && state.current_page > 1 && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="loader" />
+                </div>
+              )}
+            </>
+          )}
+          {state && state.staffs.length && (
+            <Pagination
+              totalPages={state.total_pages}
+              currentPage={state.current_page}
+              onPageChange={handlePageChange}
             />
-          )
-        ) : view === "grid" ? (
-          <AutoResizingGrid minWidth={284} gap={16} key="data">
-            {state?.staffs.map((staff) => (
-              <Link
-                key={staff.id}
-                href={`/management/staff-branch/${branchId}/branch-staff/${staff.id}`}
-              >
-                <UserCard
-                  badge_color={companyVerified ? "gray" : undefined}
-                  email={staff.email}
-                  name={staff.name}
-                  phone_number={staff.phone_number}
-                  user_tag={staff.position}
-                  picture_url={staff.picture}
-                />
-              </Link>
-            ))}
-          </AutoResizingGrid>
-        ) : (
-          <CustomTable
-            fields={branchStaffTableFields}
-            data={transformedTableData || []}
-            tableBodyCellSx={{ fontSize: "1rem" }}
-            tableHeadCellSx={{ fontSize: "1rem", height: 70 }}
-            handleSelect={handleSelectTableItem}
-          />
-        )}
-        {state && state.staffs.length && (
-          <Pagination
-            totalPages={state.total_pages}
-            currentPage={state.current_page}
-            onPageChange={handlePageChange}
-          />
-        )}
-      </section>
+          )}
+        </section>
+      </div>
     </div>
   );
 };

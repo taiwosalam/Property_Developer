@@ -29,6 +29,8 @@ export interface PropertyDetailsSettingsOthersCardProps {
   owing_units?: number;
   total_returns: number;
   total_income: number;
+  landlord_info?: any;
+  landlord_id?: any;
 }
 
 const DetailItem: React.FC<{ label: string; value?: string | number }> = ({
@@ -49,6 +51,7 @@ const PropeertyDetailsSettingsCard: React.FC<
   isRental,
   property_name,
   landlord_name,
+  landlord_info,
   category,
   state,
   local_government,
@@ -89,7 +92,7 @@ const PropeertyDetailsSettingsCard: React.FC<
             label={`${isRental ? "Property" : "Facility"} Title`}
             value={property_name}
           />
-          {isRental && <DetailItem label="Landlord" value={landlord_name} />}
+          {isRental && <DetailItem label="Landlord" value={landlord_info.name} />}
           <DetailItem label="Category" value={category} />
           <DetailItem label="State" value={state} />
           <DetailItem label="Local Government" value={local_government} />
@@ -111,8 +114,8 @@ const PropeertyDetailsSettingsCard: React.FC<
             <>
               <DetailItem label="Caution Deposit" value={caution_deposit} />
               <DetailItem
-                label="Charge"
-                value={`New Tenant: ${who_to_charge_new_tenant}, Renewal Tenant: ${who_to_charge_renew_tenant}`}
+                label="Who to pay Agency Fee"
+                value={`New Rent: ${who_to_charge_new_tenant}, Renewal Rent: ${who_to_charge_renew_tenant}`}
               />
               <DetailItem label="Book Visitors" value={book_visitors} />
               <DetailItem label="Request Call Back" value={request_call_back} />
@@ -155,10 +158,12 @@ const PropeertyDetailsSettingsCard: React.FC<
         </div>
         <div>
           <p className="text-label font-normal">
-            {isRental ? "Available Units" : "Owing Units"}
+          Available Units
+            {/* {isRental ? "Available Units" : "Owing Units"} */}
           </p>
           <p className="text-brand-9 font-bold">
-            {isRental ? available_units : owing_units}
+            {available_units}
+            {/* {isRental ? available_units : owing_units} */}
           </p>
         </div>
         <div>

@@ -6,8 +6,16 @@ export interface WalletAnalyticsProps {
   title: "credit" | "debit" | "funds";
   trend: {
     percent: number;
-    type: "up" | "down" | "none";
-    from: "last month" | "last week" | "none";
+    type: "up" | "down" | "none" | "equal";
+    from:
+      | "last month"
+      | "last week"
+      | "none"
+      | "previous day"
+      | "previous 3 months"
+      | "previous 30 days"
+      | "previous 7 days"
+      | "previous period";
   };
 
   className?: string;
@@ -22,7 +30,10 @@ export interface FundingCardProps {
   type: "paystack" | "flutterwave" | "bank transfer" | "sterling";
 }
 
-export type WalletSendFundsOptions = "send funds menu" | "recipient";
+export type WalletSendFundsOptions =
+  | "send funds menu"
+  | "recipient"
+  | "payment";
 
 export type WalletWithdrawFundsOptions = "withdrawal" | "input pin";
 
@@ -32,6 +43,8 @@ export interface WalletModalPresetProps {
   style?: CSSProperties;
   children: React.ReactNode;
   headerClassName?: string;
+  className?: string;
+  noClose?: boolean;
 }
 
 export interface WalletFundsCardsHeadingProps {

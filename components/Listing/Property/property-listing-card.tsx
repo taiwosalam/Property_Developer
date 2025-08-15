@@ -27,26 +27,86 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import Link from "next/link";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import ListingFlow from "@/components/Settings/Modals/listing-otp-flow";
+import { useRouter } from "next/navigation";
+import { deleteProperty } from "@/app/(nav)/management/properties/[id]/edit-property/data";
+import { toast } from "sonner";
+import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
   data,
   status,
   propertyType,
+  page,
 }) => {
   const button_props: ButtonProps = {
     size: "sm_medium",
     className: "py-2 px-8",
   };
 
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const color = property_listing_status[status];
+  const { role } = useRole();
+
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const [isOpened, setIsOpened] = useState(false);
 
-  const hanldeOpen = ()=> {
-    console.log("open modal")
-    setIsOpen(true)
-  }
+  const hanldeOpen = () => {
+    console.log("open modal");
+    setIsOpen(true);
+  };
+
+  const handleDelete = async () => {
+    if (!data.id) {
+      return;
+    }
+    setIsDeleting(true);
+    try {
+      const success = await deleteProperty(data.id);
+      if (success) {
+        toast.success("Property deleted");
+        window.dispatchEvent(new Event("refetchPropertyDraft"));
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
+  // switch case for route
+  const getContinueRoute = () => {
+    switch (role) {
+      case "director":
+        return `/management/properties/${data.id}/edit-property`;
+      case "manager":
+        return `/manager/management/properties/${data.id}/edit-property`;
+      case "account":
+        return `/accountant/management/properties/${data.id}/edit-property`;
+      case "staff":
+        return `/staff/management/properties/${data.id}/edit-property`;
+      default:
+        return `/unauthorized`;
+    }
+  };
+
+  // switch case for preview route
+  const getPreviewRoute = () => {
+    switch (role) {
+      case "director":
+        return `/management/properties/${data.id}`;
+      case "manager":
+        return `/manager/management/properties/${data.id}`;
+      case "account":
+        return `/accountant/management/properties/${data.id}`;
+      case "staff":
+        return `/staff/management/properties/${data.id}`;
+      default:
+        return `/unauthorized`;
+    }
+  };
 
   return (
     <div
@@ -66,7 +126,7 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
           <div className="flex items-center gap-6 justify-between">
             <div className="flex flex-1">
               <KeyValueList
-                chunkSize={5}
+                chunkSize={4}
                 data={data as any}
                 referenceObject={property_listing_data}
               />
@@ -76,17 +136,20 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
               className="relative rounded-2xl overflow-hidden"
             >
               <Picture
-                src={data.images && data.images[0]}
+                src={data.images ? data.images[0] : empty}
                 alt="property preview"
                 width={220}
                 height={204}
               />
               <PopupImageModal
                 isOpen={isOpened}
-                images={data.images && data.images.map((image: any) => ({
-                  src: image,
-                  isVideo: false,
-                }))}
+                images={
+                  data.images &&
+                  data.images.map((image: any) => ({
+                    src: image,
+                    isVideo: false,
+                  }))
+                }
                 onClose={() => setIsOpened(false)}
                 currentIndex={0}
               />
@@ -98,20 +161,22 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
                     <p className="text-black dark:text-white font-medium text-[10px]">
-                      +23
+                      +{data.images?.length ?? 0}
                     </p>
                   </div>
                 </div>
                 <div className="flex gap-3 justify-end">
-                  <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
+                  {/* <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                     <CameraIcon />
                     <p className="text-black dark:text-white font-medium text-[10px]">
-                      2
+                      {data.images?.length ?? 0}
                     </p>
-                  </div>
-                  <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
-                    <VideoIcon />
-                  </div>
+                  </div> */}
+                  {data.video_link && (
+                    <div className="bg-brand-1 dark:bg-darkText-primary dark:text-white rounded py-1 px-1.5 gap-1.5 flex items-center">
+                      <VideoIcon />
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -121,55 +186,72 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
             <div className="custom-flex-col flex-1">
               {status === "draft" ? (
                 <PropertyListingParagraph>
-                  Property creation is not yet complete.
+                  <p className="text-red-500">
+                    Property creation is not yet complete.
+                  </p>
                 </PropertyListingParagraph>
-                // ) : status === "awaiting" || status === "unpublished" ? (
-                //   <PropertyListingParagraph>
-                //     Created By : Ajadi David -- Moniya Branch
-                //   </PropertyListingParagraph>
-                // ) : status === "moderation" ? (
-                //   <PropertyListingRed>
-                //     Please review the property settings and replace the picture,
-                //     as it appears to have been mistakenly used for another
-                //     property.
-                //   </PropertyListingRed>
-              ) : status === "request" ? (
+              ) : // ) : status === "awaiting" || status === "unpublished" ? (
+              //   <PropertyListingParagraph>
+              //     Created By : Ajadi David -- Moniya Branch
+              //   </PropertyListingParagraph>
+              // ) : status === "moderation" ? (
+              //   <PropertyListingRed>
+              //     Please review the property settings and replace the picture,
+              //     as it appears to have been mistakenly used for another
+              //     property.
+              //   </PropertyListingRed>
+              status === "request" ? (
                 <PropertyListingTitleDesc
-                  title="Taiwo Salam & Co. Properties Ltd"
+                  title={
+                    data?.company_name || "Taiwo Salam & Co. Properties Ltd"
+                  }
                   desc="Requests permission to add and manage this property in their portfolio."
                 />
               ) : null}
             </div>
             <div className="flex gap-3 items-center">
               {status === "draft" ? (
-                <Button
-                  {...button_props}
-                  href={`/management/properties/${data.id}/edit-property`}>continue</Button>
-                // ) : status === "unpublished" ? (
-                //   <>
-                //     <Button variant="border" {...button_props}>
-                //       manage
-                //     </Button>
-                //     <Button {...button_props}>publish</Button>
-                //   </>
-                // ) : status === "moderation" ? (
-                //   <Button variant="border" {...button_props}>
-                //     manage
-                //   </Button>
-              ) : status === "request" ? (
                 <>
                   <Button
+                    variant="light_red"
                     {...button_props}
-                    onClick={hanldeOpen}
+                    onClick={handleDelete}
                   >
+                    {isDeleting ? "please wait" : "delete"}
+                  </Button>
+                  <Button
+                    {...button_props}
+                    href={getContinueRoute()}
+                  >
+                    continue
+                  </Button>
+                </>
+              ) : // ) : status === "unpublished" ? (
+              //   <>
+              //     <Button variant="border" {...button_props}>
+              //       manage
+              //     </Button>
+              //     <Button {...button_props}>publish</Button>
+              //   </>
+              // ) : status === "moderation" ? (
+              //   <Button variant="border" {...button_props}>
+              //     manage
+              //   </Button>
+              status === "request" ? (
+                <>
+                  <Button {...button_props} onClick={hanldeOpen}>
                     action
                   </Button>
                   <Modal state={{ isOpen, setIsOpen }}>
                     <ModalContent>
-                      <ListingFlow />
+                      <ListingFlow inviteId={data?.inviteId?.[0]}/>
                     </ModalContent>
                   </Modal>
-                  <Button variant="border" {...button_props}>
+                  <Button
+                    variant="border"
+                    {...button_props}
+                    onClick={() => router.push(getPreviewRoute())}
+                  >
                     preview
                   </Button>
                 </>

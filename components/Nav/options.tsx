@@ -14,6 +14,18 @@ export const profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
+    label: "Company Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
+  {
     label: "Assistance & Support",
     link: {
       href: "https://kb.ourproperty.ng/",
@@ -27,21 +39,22 @@ export const profile_actions: (
   {
     label: "Terms & Conditions",
     link: {
-      href: "",
+      href: "https://ourproperty.com.ng/resources/privacy-policy",
+      target: "_blank",
     },
   },
   {
     label: "Frequently Asked Questions",
     link: {
-      href: "",
+      href: "https://ourproperty.com.ng/resources/faq",
+      target: "_blank",
     },
   },
   {
-    label: "Request Call",
+    label: "Request Call Back",
     modal: <NavRequestCallback />,
   },
 ];
-
 
 export const manager_profile_actions: (
   | {
@@ -55,15 +68,26 @@ export const manager_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
+    label: "Company Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
-  {
-    label: "Request Call",
-    modal: <NavRequestCallback />,
-  },
+  // {
+  //   label: "Request Call",
+  //   modal: <NavRequestCallback />,
+  // },
 ];
-
 
 export const account_profile_actions: (
   | {
@@ -77,15 +101,26 @@ export const account_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
+    label: "Company Reviews",
+    link: {
+      href: "/reviews",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
-  {
-    label: "Request Call",
-    modal: <NavRequestCallback />,
-  },
+  // {
+  //   label: "Request Call",
+  //   modal: <NavRequestCallback />,
+  // },
 ];
-
 
 export const staff_profile_actions: (
   | {
@@ -99,15 +134,20 @@ export const staff_profile_actions: (
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
   {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
+  {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
-  {
-    label: "Request Call",
-    modal: <NavRequestCallback />,
-  },
+  // {
+  //   label: "Request Call",
+  //   modal: <NavRequestCallback />,
+  // },
 ];
-
 
 export const user_profile_actions: (
   | {
@@ -120,6 +160,12 @@ export const user_profile_actions: (
     }
   | { label: string; modal: React.ReactNode; link?: never }
 )[] = [
+  {
+    label: "Homepage",
+    link: {
+      href: "",
+    },
+  },
   {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,

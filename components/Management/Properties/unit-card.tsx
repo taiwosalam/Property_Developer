@@ -1,4 +1,4 @@
- // Images
+// Images
 import { CameraIcon } from "@/public/icons/icons";
 
 // Imports
@@ -13,35 +13,37 @@ import ModalPreset from "@/components/Modal/modal-preset";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { deleteUnit } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
+import { empty } from "@/app/config";
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
   const removeUnit = useAddUnitStore((state) => state.removeUnit);
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canAddOrDeleteBranchProperties =
+    usePermission(role, "Can add/delete branch properties") ||
+    role === "director";
 
   const currency = propertySettings?.currency;
-
+  // console.log("data hereeee", data);
   const referenceObject = {
     unit_details: "",
     "unit no/name": "",
     rent: "",
     ...(data.caution_fee ? { caution_deposit: "" } : {}),
+    total_package: "",
+    unit_type: "",
     service_charge: "",
+    account_officer: "",
   };
 
   const keyValueData = {
-    unit_details:
-      data.unit_type.toLowerCase() === "land"
-        ? `${data.unit_preference} - ${data.unit_type} - ${
-            data.total_area_sqm
-          }${
-            data.number_of && data.number_of !== "0"
-              ? ` - ${data.number_of}`
-              : ""
-          }`
-        : `${data.unit_preference} - ${data.bedroom || 0} bedroom${
-            parseInt(data.bedroom || "0") > 1 ? "s" : ""
-          } - ${data.unit_sub_type} - ${data.unit_type}`,
+    unit_details: transformUnitDetails(data),
     "unit no/name": data.unit_name,
     rent: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(data.fee_amount)
@@ -53,9 +55,14 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
           }${formatNumber(parseFloat(data.caution_fee))}`,
         }
       : {}),
+    total_package: `${currencySymbols[currency || "naira"]}${formatNumber(
+      parseFloat(data.total_package || "0")
+    )}`,
+    unit_type: data.unit_type,
     service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
       parseFloat(data.service_charge || "0")
     )}`,
+    account_officer: data.account_officer || "Not Assigned Yet",
   };
 
   const handleRemove = async () => {
@@ -74,11 +81,23 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     }
   };
 
+  const hasImages = data.images.length > 0;
+  const imageSrc = data.notYetUploaded
+    ? empty // Use placeholder for unsaved units with no images
+    : hasImages
+    ? data.default_image || data.images[0].path
+    : empty; // Fallback to placeholder if no images exist
+
   return (
     <>
       <div className="flex gap-4 flex-wrap items-center justify-between">
-        <p className="text-brand-10 text-base font-bold">
-          Unit ID: {(data.notYetUploaded ? "Not Yet Uploaded" : "") || data.id}
+        <p
+          className={`text-base font-bold ${
+            data.notYetUploaded ? "text-red-500" : "text-brand-10"
+          }`}
+        >
+          <span className="!text-brand-10">Unit ID:</span>{" "}
+          {(data.notYetUploaded ? "Not Yet Updated!" : "") || data.id}
         </p>
         <div className="flex gap-4 sm:gap-8">
           <Button
@@ -88,29 +107,32 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
           >
             edit
           </Button>
-          <Button
-            size="sm_medium"
-            variant="light_red"
-            className="py-2 px-8"
-            onClick={handleRemove}
-          >
-            remove
-          </Button>
+          {canAddOrDeleteBranchProperties && (
+            <Button
+              size="sm_medium"
+              variant="light_red"
+              className="py-2 px-8"
+              onClick={handleRemove}
+            >
+              {data?.notYetUploaded ? "remove" : "delete"}
+            </Button>
+          )}
         </div>
       </div>
       <SectionSeparator />
       <div className="overflow-x-auto custom-round-scrollbar">
         <div className="min-w-[700px] flex py-4 items-center justify-between">
-          <div className="flex-1 flex gap-6">
+          <div className="flex-1 flex gap-6 flex-wrap">
             <KeyValueList
               data={keyValueData}
               referenceObject={referenceObject}
             />
           </div>
           {data.images.length > 0 && (
-            <div className="relative rounded-2xl overflow-hidden">
+            <div className="relative rounded-2xl overflow-hidden min-w-[168px] ml-4">
               <Picture
-                src={data.images[0].path}
+                src={imageSrc}
+                // src={data.default_image || data.images[0].path}
                 alt="property preview"
                 size={168}
               />
@@ -123,7 +145,7 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
                     <div className="bg-brand-1 dark:bg-darkText-primary rounded py-1 px-1.5 flex items-center gap-1.5">
                       <CameraIcon />
                       <p className="text-black dark:text-white font-medium text-[10px]">
-                        +{data.images.length - 1}
+                        +{!data.notYetUploaded ? data.images.length - 1 : 0}
                       </p>
                     </div>
                   </div>

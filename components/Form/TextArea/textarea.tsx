@@ -14,10 +14,13 @@ import Label from "../Label/label";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
 import ReactQuill, { type ReactQuillProps } from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { UndoIcon, RedoIcon, } from "@/public/icons/icons";
+import { UndoIcon, RedoIcon } from "@/public/icons/icons";
 import AIPopOver from "./text-area-popover";
 import useTextGenerator from "@/hooks/useAIContentGenerator";
-import Typewriter from 'typewriter-effect';
+import Typewriter from "typewriter-effect";
+import { useMemo } from "react";
+import { useGlobalStore } from "@/store/general-store";
+import AICustomPromptModal from "./ai-custom-prompt";
 
 // Dynamically import ReactQuill with SSR option set to false
 const DynamicReactQuill = dynamic(
@@ -53,28 +56,71 @@ const TextArea: React.FC<TextAreaProps> = ({
   requiredNoStar,
   minChar,
   ai,
+  restrictedWords = [],
+  readOnly,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [mounted, setMounted] = useState(false);
   const quillRef = useRef<ReactQuill>(null);
   const [editorValue, setEditorValue] = useState(defaultValue);
-  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(null);
-  const [showPopover, setShowPopover] = useState(false);
+  const [typingTimeout, setTypingTimeout] = useState<NodeJS.Timeout | null>(
+    null
+  );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [showAiCreator, setShowAiCreator] = useState(false);
-  const [suggestions, setSuggestions] = useState("")
-  const [apiContentValue, setApiContentValue] = useState("");
   const [showSuggestion, setShowSuggestion] = useState(false);
   const [cursorPosition, setCursorPosition] = useState({ top: 0, left: 0 });
-  const { content: apiContent, error: apiError, generateText, loading } = useTextGenerator();
+  const [canSubmit, setCanSubmit] = useState(true); // Local canSubmit state
+  const { setGlobalInfoStore } = useGlobalStore();
 
+  // Reset canSubmit on mount to ensure clean state
   useEffect(() => {
-    if (apiContent?.length) {
-      setSuggestions(apiContent);
-      setShowSuggestion(true); // Show suggestions when they exist
-    } else {
-      setShowSuggestion(false); // Hide suggestions if the list is empty
+    setCanSubmit(true);
+    setGlobalInfoStore("canSubmit", true);
+    return () => {
+      // Optional: Cleanup on unmount if needed
+      setCanSubmit(true);
+      setGlobalInfoStore("canSubmit", true);
+    };
+  }, []);
+
+  const lowerCaseRestrictedWords = useMemo(
+    () => restrictedWords.map((w) => w.toLowerCase()),
+    [restrictedWords]
+  );
+
+  // Helper function to check for restricted words
+  const checkForRestrictedWords = (htmlContent: string): string | null => {
+    // Strip HTML tags and normalize whitespace
+    const plainText = htmlContent
+      .replace(/<[^>]+>/g, " ") // Remove HTML tags
+      .toLowerCase()
+      .replace(/[\r\n\s]+/g, " ") // Replace newlines and multiple spaces with single space
+      .trim();
+
+    // Split into words
+    const words = plainText
+      .split(" ")
+      .filter((word) => word && word.length > 0);
+
+    // Find restricted words
+    const matchedWords = words.filter((word) =>
+      lowerCaseRestrictedWords.includes(word)
+    );
+
+    const hasRestricted = matchedWords.length > 0;
+    setCanSubmit(!hasRestricted); // Update local state
+    setGlobalInfoStore("canSubmit", !hasRestricted);
+
+    if (matchedWords.length > 0) {
+      const uniqueMatches = [...new Set(matchedWords)];
+      const formattedWords = uniqueMatches.map((w) => `"${w}"`).join(", ");
+      const message = `Please don’t include ${formattedWords} as it restricted`;
+      return message;
     }
-  }, [apiContent]);
+
+    return null;
+  };
 
   const updateCursorPosition = () => {
     const editor = quillRef.current?.getEditor();
@@ -89,70 +135,41 @@ const TextArea: React.FC<TextAreaProps> = ({
     }
   };
 
-  const insertSuggestionAtCursor = (text: string) => {
-    const editor = quillRef.current?.getEditor();
-    if (editor) {
-      const range = editor.getSelection();
-      if (range) {
-        editor.deleteText(range.index, range.length);
-        editor.insertText(range.index, text);
-      }
-    }
-  };
-
-  // const handleKeyDown = (e: KeyboardEvent) => {
-  //   const editor = quillRef.current?.getEditor();
-  //   if (!editor) return;
-
-  //   if (e.key === "Tab" || e.key === "ArrowRight") {
-  //     e.preventDefault(); // Prevent default tab behavior (focus switch)
-  //     if (suggestions.length > 0) {
-  //       const selectedSuggestion = suggestions; // For simplicity, select the first suggestion
-  //       insertSuggestionAtCursor(selectedSuggestion);
-  //       setShowPopover(false); // Hide suggestions after selection
-  //     }
-  //   }
-  //   updateCursorPosition();// Update position on key press
-  // };
-
-  // Function to simulate typewriter effect
-  // const typeWriterEffect = (text: string) => {
-  //   let i = 0;
-  //   const editor = quillRef.current?.getEditor();
-  //   if (editor) {
-  //     editor.setText(""); // Clear existing text
-  //     const interval = setInterval(() => {
-  //       if (i < text.length) {
-  //         editor.insertText(i, text.charAt(i));
-  //         i++;
-  //       } else {
-  //         clearInterval(interval); // Stop the interval when the text is completely typed
-  //       }
-  //     }, 5); // Adjust typing speed here
-  //   }
-  // };
-  
-
-  const handleChange = (content: string) => {
+  const handleChange = (
+    content: string,
+    delta: any,
+    source: string,
+    editor: any
+  ) => {
     setEditorValue(content);
     updateCursorPosition();
     if (onChange) onChange(content);
 
     if (typingTimeout) clearTimeout(typingTimeout);
-
     const newTimeout = setTimeout(() => {
       if (content && content.length >= 20) {
-        generateText("Autocomplete", content);
         setShowSuggestion(true);
       } else {
         setShowSuggestion(false);
       }
     }, 1000);
-
     setTypingTimeout(newTimeout);
+
+    // Check for restricted words on user input
+    if (source === "user" && restrictedWords.length > 0) {
+      const error = checkForRestrictedWords(content);
+      setErrorMessage(error);
+      if (error) {
+        // Delay clearing the input to allow error message to render
+        setTimeout(() => {
+          if (onChange) {
+            onChange("");
+          }
+        }, 100);
+      }
+    }
   };
 
-  // Handle undo and redo
   const handleUndo = () => {
     const editor = quillRef.current?.getEditor();
     if (editor) {
@@ -171,7 +188,6 @@ const TextArea: React.FC<TextAreaProps> = ({
     setMounted(true);
   }, []);
 
-  // For Flow Progress
   useEffect(() => {
     handleInputChange && handleInputChange();
   }, [handleInputChange, editorValue]);
@@ -180,11 +196,13 @@ const TextArea: React.FC<TextAreaProps> = ({
     setEditorValue(value || defaultValue);
   }, [value, defaultValue, resetKey]);
 
-  // useEffect(() => {
-  //   if (apiContentValue && quillRef.current) {
-  //     typeWriterEffect(apiContentValue);
-  //   }
-  // }, [apiContentValue]);
+  useEffect(() => {
+    return () => {
+      if (typingTimeout) clearTimeout(typingTimeout);
+    };
+  }, [typingTimeout]);
+
+  const inputRef = useRef<HTMLInputElement | null>(null);
 
   return (
     <div className={clsx("custom-flex-col gap-2", className)}>
@@ -193,15 +211,25 @@ const TextArea: React.FC<TextAreaProps> = ({
           {label}
         </Label>
       )}
+
+      {errorMessage && (
+        <div
+          style={{ color: "red", marginTop: "8px", fontSize: "14px" }}
+          className="text-red-500 mt-2 text-sm"
+        >
+          {errorMessage}
+        </div>
+      )}
+
       <div className="flex flex-col dark:border dark:border-darkText-1 dark:rounded-lg relative">
         {mounted && (
           <Fragment>
             <DynamicReactQuill
+              readOnly={readOnly}
               forwardedRef={quillRef}
               value={editorValue}
               onChange={handleChange}
               placeholder={placeholder}
-              // onKeyDown={handleKeyDown}
               className={clsx("quill-editor", inputSpaceClassName)}
               modules={{
                 toolbar: {
@@ -215,6 +243,7 @@ const TextArea: React.FC<TextAreaProps> = ({
               }}
             />
             <input
+              ref={inputRef}
               type="hidden"
               name={id}
               id={id}
@@ -283,30 +312,14 @@ const TextArea: React.FC<TextAreaProps> = ({
                 setEditorValue={setEditorValue}
                 showAiCreator={showAiCreator}
                 setShowAiCreator={setShowAiCreator}
-                // apiContentValue={apiContentValue}
-                // setApiContentValue={setApiContentValue}
+              />
+              <AICustomPromptModal
+                editorValue={editorValue as string}
+                setEditorValue={setEditorValue}
               />
             </div>
           </Fragment>
         )}
-        {/* Inline Suggestion */}
-        {/* {!showAiCreator && showSuggestion && suggestions.length > 0 && (
-          <div
-            className="absolute bg-white dark:bg-darkText-primary border border-gray-300 rounded shadow-md p-1"
-            style={{
-              top: cursorPosition.top + 25, // Adjust for spacing below the cursor
-              left: cursorPosition.left,
-            }}
-          >
-            <div
-              className="cursor-pointer hover:bg-gray-100 dark:hover:bg-darkText-2 text-xs"
-              onClick={() => insertSuggestionAtCursor(suggestions)}
-            >
-              {suggestions}
-            </div>
-          </div>
-        )} */}
-
       </div>
     </div>
   );

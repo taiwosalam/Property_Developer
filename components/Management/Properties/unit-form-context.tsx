@@ -7,6 +7,7 @@ import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
 interface UnitFormContextType extends UnitFormState {
   setImages: (a: { images: string[]; imageFiles: (File | string)[] }) => void;
   submitLoading: boolean;
+  setSubmitLoading?: (loading: boolean) => void;
   setSaveClick: (saveClick: boolean) => void;
   setUnitType: (unitType: "" | UnitTypeKey) => void;
   resetForm: () => void;
@@ -18,6 +19,16 @@ interface UnitFormContextType extends UnitFormState {
   isEditing?: boolean;
   setIsEditing?: (isEditing: boolean) => void;
   unitData?: UnitDataObject;
+  index?: number;
+  clickedNo?: boolean;
+  formSubmitted?: boolean;
+  setFormSubmitted?: (formSubmitted: boolean) => void;
+  setClickedNo?: (clicked: boolean) => void;
+
+  // Added types for shouldRedirect state
+  shouldRedirect: boolean;
+  setShouldRedirect: (shouldRedirect: boolean) => void;
+  notYetUploaded?: boolean;
 }
 
 export const UnitFormContext = createContext<UnitFormContextType | undefined>(

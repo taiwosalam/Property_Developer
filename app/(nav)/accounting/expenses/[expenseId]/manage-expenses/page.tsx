@@ -6,7 +6,12 @@ import Button from "@/components/Form/Button/button";
 import DateInput from "@/components/Form/DateInput/date-input";
 import { DeleteIconX } from "@/public/icons/icons";
 import KeyValueList from "@/components/KeyValueList/key-value-list";
-import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTrigger,
+  useModal,
+} from "@/components/Modal/modal";
 import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
 import ExportPageHeader from "@/components/reports/export-page-header";
 import DeleteExpenseModal from "@/components/Accounting/expenses/delete-expense-modal";
@@ -16,44 +21,67 @@ import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { SectionSeparator } from "@/components/Section/section-components";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { currencySymbols } from "@/utils/number-formatter";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { Dayjs } from "dayjs";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import dayjs, { Dayjs } from "dayjs";
 import { format } from "date-fns";
 import DeleteItemWarningModal from "@/components/Accounting/expenses/delete-item-warning-modal";
+import useFetch from "@/hooks/useFetch";
+import {
+  addPayment,
+  deductPayment,
+  deleteExpense,
+  ManageExpenseApiResponse,
+  ManageExpensePageData,
+  transformManageExpenseData,
+} from "./data";
+import { toast } from "sonner";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useRole } from "@/hooks/roleContext";
 
 const ManageExpenses = () => {
   const router = useRouter();
-
-  const CURRENCY_SYMBOL = currencySymbols.naira;
-
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
-    [
-      {
-        title: "Annual Fee",
-        amount: 1000000,
-      },
-      {
-        title: "Service Charge",
-        amount: 1000000,
-      },
-      {
-        title: "Refundable Caution Fee",
-        amount: 1000000,
-      },
-      {
-        title: "Tax Charges",
-        amount: 1000000,
-      },
-      {
-        title: "Security Fee",
-        amount: 1000000,
-      },
-    ]
-  );
+  // const { setIsOpen } = useModal()
+  const { expenseId } = useParams();
+  const { role } = useRole();
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
-  const handleAddPaymentClick = () => {
+  const [reqLoading, setReqLoading] = useState(false);
+  const CURRENCY_SYMBOL = currencySymbols.naira;
+  const [pageData, setPageData] = useState<ManageExpensePageData | null>(null);
+  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
+    pageData?.payments || []
+  );
+  const [deductions, setDeductions] = useState<
+    { date: Dayjs; amount: number }[]
+  >(pageData?.deductions || []);
+  const { data, error, loading, refetch } = useFetch<ManageExpenseApiResponse>(
+    `/expenses/${expenseId}`
+  );
+  useRefetchOnEvent("fetch-expenses", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (data) {
+      setPageData(transformManageExpenseData(data));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (pageData && pageData.payments) {
+      setPayments(pageData.payments);
+    }
+  }, [pageData]);
+
+  // Update deductions when pageData changes
+  useEffect(() => {
+    if (pageData?.deductions) {
+      setDeductions(pageData.deductions);
+    }
+  }, [pageData]);
+
+  const handleAddPaymentClick = async () => {
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
       const parsedAmount = parseFloat(paymentAmount.replace(/,/g, ""));
@@ -65,8 +93,50 @@ const ManageExpenses = () => {
         setPaymentTitle("");
         setPaymentAmount("");
       }
+
+      const payload = {
+        amount: parsedAmount,
+        payment_title: paymentTitle,
+      };
+      console.log(paymentTitle, paymentAmount);
+      try {
+        setReqLoading(true);
+        const res = await addPayment(
+          objectToFormData(payload),
+          Number(expenseId)
+        );
+        if (res) {
+          toast.success("Payment Added successfully");
+          window.dispatchEvent(new Event("fetch-expenses"));
+        }
+      } catch (error) {
+        toast.error("Failed to add payment. Please try again!");
+      } finally {
+        setReqLoading(false);
+      }
     }
   };
+
+  const getRoute = () => {
+    switch (role?.trim()) {
+      case "director":
+        router.push("/accounting/expenses");
+        break;
+      case "manager":
+        router.push("/manager/accounting/expenses");
+        break;
+      case "account":
+        router.push("/accountant/accounting/expenses");
+        break;
+      case "staff":
+        router.push("/manager/accounting/expenses");
+        break;
+      default:
+        router.push("/accountant/accounting/expenses");
+        break;
+    }
+  };
+
   const handleDeletePayment = (index: number) => {
     setPayments(payments.filter((_, i) => i !== index));
   };
@@ -76,14 +146,10 @@ const ManageExpenses = () => {
     0
   );
 
-  // deducted payment
-  const [deductions, setDeductions] = useState<
-    { date: Dayjs; amount: number }[]
-  >([]);
   const [deductionDate, setDeductionDate] = useState<Dayjs | null>(null);
   const [deductionAmount, setDeductionAmount] = useState<string>("");
 
-  const handleDeductClick = () => {
+  const handleDeductClick = async () => {
     if (deductionDate && deductionAmount) {
       const parsedAmount = parseFloat(deductionAmount.replace(/,/g, ""));
       if (!isNaN(parsedAmount)) {
@@ -94,10 +160,50 @@ const ManageExpenses = () => {
         setDeductionDate(null);
         setDeductionAmount("");
       }
+
+      const payload = {
+        amount: parsedAmount,
+        date: dayjs(deductionDate).format("YYYY-MM-DD"),
+      };
+      // console.log("deduction", payload)
+      try {
+        setReqLoading(true);
+        const res = await deductPayment(
+          objectToFormData(payload),
+          Number(expenseId)
+        );
+        if (res) {
+          toast.success("Deducted successfully");
+          window.dispatchEvent(new Event("fetch-expenses"));
+        }
+      } catch (error) {
+        toast.error("Failed to deduct payment. Please try again!");
+      } finally {
+        setReqLoading(false);
+      }
     }
   };
+
   const handleDeleteDeduction = (index: number) => {
     setDeductions(deductions.filter((_, i) => i !== index));
+  };
+
+  const handleDeleteExpense = async () => {
+    const paymentId = pageData?.expenseDetails?.paymentId || expenseId;
+    if (!paymentId) return toast.warning("Cannot Find Expense ID");
+    // setDeductions(deductions.filter((_, i) => i !== index));
+    try {
+      setReqLoading(true);
+      const res = await deleteExpense(Number(paymentId));
+      if (res) {
+        toast.success("Expense deleted successfully");
+        router.push("/accounting/expenses");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setReqLoading(false);
+    }
   };
 
   const totalDeductions = deductions.reduce(
@@ -107,6 +213,10 @@ const ManageExpenses = () => {
 
   const totalBalance = totalExpenses - totalDeductions;
 
+  if (loading) return <PageCircleLoader />;
+  if (error) return <div>Error loading expense data.</div>;
+  if (!pageData) return <div>No data available.</div>;
+
   return (
     <div className="custom-flex-col gap-10 pb-[150px] sm:pb-[100px]">
       <div className="custom-flex-col gap-[18px]">
@@ -114,22 +224,28 @@ const ManageExpenses = () => {
         <ExportPageHeader />
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
-            data={{}}
+            data={{
+              "payment id": pageData?.expenseDetails.paymentId,
+              "account officer": pageData?.expenseDetails.customerName,
+              "property name": pageData?.expenseDetails.propertyName,
+              date: pageData?.expenseDetails.date,
+              "unit ID": pageData?.expenseDetails.unitId,
+            }}
             chunkSize={2}
             direction="column"
             referenceObject={{
               "payment id": "",
-              "customer name": "",
-              "property name": "",
               date: "",
+              "property name": "",
+              landlord: "",
               "account officer": "",
-              "unit id": "",
+              "unit ID": "",
             }}
           />
         </div>
         <AccountingTitleSection title="Description">
           <p className="text-sm text-text-secondary dark:text-darkText-2">
-            New rent payment for 3 bedroom at Ajibade road 2, Lekki Lagos
+            {pageData?.description}
           </p>
         </AccountingTitleSection>
         <AccountingTitleSection title="Add Expense">
@@ -145,7 +261,7 @@ const ManageExpenses = () => {
                 id="payment_amount"
                 label="amount"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
+                // placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
                 value={paymentAmount}
@@ -156,9 +272,10 @@ const ManageExpenses = () => {
               <Button
                 size="base_medium"
                 className="py-2 px-14"
+                disabled={reqLoading}
                 onClick={handleAddPaymentClick}
               >
-                add
+                {reqLoading ? "Please wait..." : "Add"}
               </Button>
             </div>
           </div>
@@ -179,9 +296,9 @@ const ManageExpenses = () => {
                       }).format(payment.amount)}
                     </p>
                     <Modal>
-                      <ModalTrigger aria-label={`Delete ${payment.title}`}>
+                      {/* <ModalTrigger aria-label={`Delete ${payment.title}`}>
                         <DeleteIconX />
-                      </ModalTrigger>
+                      </ModalTrigger> */}
                       <ModalContent>
                         <DeleteItemWarningModal
                           item={payment.title}
@@ -215,6 +332,7 @@ const ManageExpenses = () => {
               <DateInput
                 id="payment-date"
                 label="Select Date"
+                disablePast
                 value={deductionDate}
                 onChange={(date) => setDeductionDate(date)}
               />
@@ -222,7 +340,6 @@ const ManageExpenses = () => {
                 id="amount"
                 label="amount"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                placeholder="300,000"
                 inputClassName="bg-white"
                 formatNumber
                 value={deductionAmount}
@@ -234,8 +351,9 @@ const ManageExpenses = () => {
                 size="base_medium"
                 className="py-2 px-14"
                 onClick={handleDeductClick}
+                disabled={reqLoading}
               >
-                deduct
+                {reqLoading ? "Please wait..." : "Deduct"}
               </Button>
             </div>
           </div>
@@ -257,9 +375,9 @@ const ManageExpenses = () => {
                         }).format(deduction.amount)}
                       </p>
                       <Modal>
-                        <ModalTrigger aria-label={`Delete ${deduction.date}`}>
+                        {/* <ModalTrigger aria-label={`Delete ${deduction.date}`}>
                           <DeleteIconX />
-                        </ModalTrigger>
+                        </ModalTrigger> */}
                         <ModalContent>
                           <DeleteItemWarningModal
                             item={deduction.date.toDate().toLocaleDateString()}
@@ -282,7 +400,7 @@ const ManageExpenses = () => {
                   {new Intl.NumberFormat("en-NG", {
                     style: "currency",
                     currency: "NGN",
-                  }).format(totalDeductions)}
+                  }).format(pageData?.stats?.totalDeducted)}
                 </p>
               </div>
             </div>
@@ -294,7 +412,7 @@ const ManageExpenses = () => {
                 {new Intl.NumberFormat("en-NG", {
                   style: "currency",
                   currency: "NGN",
-                }).format(totalBalance)}
+                }).format(pageData?.stats?.totalBalance)}
               </p>
             </div>
           </AccountingTitleSection>
@@ -308,17 +426,20 @@ const ManageExpenses = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DeleteExpenseModal />
+            <DeleteExpenseModal
+              action={handleDeleteExpense}
+              loading={loading}
+            />
           </ModalContent>
         </Modal>
         <div className="flex justify-end">
           <Modal>
-            <ModalTrigger asChild>
-              <Button size="base_bold" className="py-2 px-8">
-                save
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
+            {/* <ModalTrigger asChild> */}
+            <Button onClick={getRoute} size="base_bold" className="py-2 px-8">
+              save
+            </Button>
+            {/* </ModalTrigger> */}
+            {/* <ModalContent>
               <ModalPreset className="w-full" type="success">
                 <div className="flex flex-col gap-8">
                   <p className="text-[14px] text-text-secondary dark:text-darkText-2">
@@ -333,7 +454,7 @@ const ManageExpenses = () => {
                   </Button>
                 </div>
               </ModalPreset>
-            </ModalContent>
+            </ModalContent> */}
           </Modal>
         </div>
       </FixedFooter>

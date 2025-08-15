@@ -12,6 +12,64 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import { formatNumber } from "@/utils/number-formatter";
+import { type DashboardBranchDataResponse, type CardData } from "./types";
+
+// ========== INTEGRATION DATA ==========
+export const getDashboardCardData = (
+  data: DashboardBranchDataResponse
+): CardData[] => [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: formatNumber(data.data.property_count),
+    subValue: formatNumber(data.data.month_count),
+    link: "/accountant/management/properties",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+    value: formatNumber(data.data.landlord_count),
+    subValue: formatNumber(data.data.month_landlord_count),
+    link: "/accountant/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: formatNumber(data.data.tenant_count),
+    subValue: formatNumber(data.data.month_tenant_count),
+    link: "/accountant/management/tenants",
+  },
+  {
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
+    icon: ExpiredIcon,
+    value: formatNumber(parseInt(data.data.expired_unit)),
+    subValue: formatNumber(parseInt(data.data.month_expired_unit)),
+    link: "/accountant/management/rent-unit?is_active=expired",
+  },
+  {
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
+    icon: InvoiceIcon,
+    value: formatNumber(data.data.invoice_count),
+    subValue: formatNumber(data.data.month_invoice_count),
+    link: "/accountant/accounting/invoice?status=pending",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: formatNumber(data.data.complaint_count),
+    subValue: formatNumber(data.data.month_complaint_count),
+    link: "/accountant/tasks/complaints",
+  },
+];
+
+// ========== INTEGRATION DATA ==========
 
 function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -128,59 +186,57 @@ export const dashboardCardData = [
   },
 ];
 
-
 export const accountantDashboardCardData = [
   {
-    title: 'Properties',
-    bg: getBackgroundColor('properties'),
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
     icon: BuildingIcon,
     value: 10,
     subValue: 20,
-    link: '/management/staff-branch/',
+    link: "/management/staff-branch/",
   },
   {
-    title: 'Landlords',
-    bg: getBackgroundColor('landlords'),
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
     value: 15,
     subValue: 20,
-    link: '/management/landlord',
+    link: "/management/landlord",
   },
   {
-    title: 'Tenants & Occupants',
-    bg: getBackgroundColor('tenants & occupants'),
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
     icon: TenantIcon,
     value: 25,
     subValue: 20,
-    link: '/management/tenants',
+    link: "/management/tenants",
   },
   {
-    title: 'Expired',
-    bg: getBackgroundColor('expired'),
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
     icon: ExpiredIcon,
     value: 3,
     subValue: 20,
-    link: '/management/rent-unit',
+    link: "/management/rent-unit",
   },
   {
-    title: 'Invoices',
-    bg: getBackgroundColor('invoices'),
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
     icon: InvoiceIcon,
     value: 12,
     subValue: 20,
-    link: '/accounting/invoice',
+    link: "/accounting/invoice",
   },
 
   {
-    title: 'Complaints',
-    bg: getBackgroundColor('complaints'),
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
     icon: ComplaintsIcon,
     value: 8,
     subValue: 20,
-    link: '/tasks/complaints',
+    link: "/tasks/complaints",
   },
 ];
-
 
 export const walletBalanceCardData = {
   mainBalance: 1000,
@@ -298,9 +354,9 @@ export const dashboardListingsChartConfig = {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
 
@@ -329,13 +385,13 @@ export const invoiceTableFields: Field[] = [
   {
     id: "2",
     label: "Name",
-    accessor: "name",
+    accessor: "client_name",
   },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
     id: "4",
     label: "Details",
-    accessor: "details",
+    accessor: "reason",
     cellStyle: {
       textOverflow: "ellipsis",
       overflow: "hidden",

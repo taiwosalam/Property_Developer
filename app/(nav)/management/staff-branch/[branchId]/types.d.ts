@@ -22,6 +22,16 @@ export interface SingleBranchPageData {
   picture: string | null;
   recent_transactions: Transactions[];
   transactions: Transactions[];
+  receipt_statistics: receipt_statistics | null;
+}
+
+interface receipt_statistics {
+  total_receipt: string;
+  total_paid_receipt: string;
+  total_pending_receipt: string;
+  percentage_change_paid: number;
+  percentage_change_total: number;
+  percentage_change_pending: number;
 }
 
 interface SubWallet {
@@ -37,7 +47,6 @@ interface SubWallet {
   last_week_balance: number;
 }
 
-
 export interface EditBranchFormData {
   id: string;
   isActive: 1 | 0;
@@ -49,12 +58,22 @@ export interface EditBranchFormData {
   wallet: "yes" | "no";
   description: string;
   picture: string | null;
+  hasMoney?: boolean;
+  account_name?: string;
+  account_number?: string;
+  bank_name?: string;
 }
 
-export interface Transactions{
+export interface Transactions {
   id: number;
   amount: string;
-  transaction_type: "credit" | "debit" | "DVA" | "transfer_in" | "transfer_out";
+  transaction_type:
+    | "debit"
+    | "transfer_in"
+    | "transfer_out"
+    | "withdrawal"
+    | "sponsor_listing"
+    | "funding";
   reference: string;
   description: string;
   status: string;
@@ -64,6 +83,7 @@ export interface Transactions{
   source?: string;
   date: string;
   time: string;
+  type: string;
 }
 
 export type SingleBranchResponseType = {
@@ -80,6 +100,9 @@ export type SingleBranchResponseType = {
       // branch_wallet: string; //to be added later
       branch_desc: string;
       landlords_count: number;
+      account_name: string;
+      account_number: string;
+      bank_name: string;
       current_month_landlords_count: number;
       tenants_count: number;
       current_month_tenants_count: number;
@@ -88,22 +111,33 @@ export type SingleBranchResponseType = {
       units_count: number;
       complaints_count: number;
       current_month_complaints_count: number;
+      vacant_unit: number;
+      vacant_month_unit: number;
+      expired_unit: number;
+      expired_month_unit: number;
+      invoice_count: number;
+      current_month_invoice_count: number;
+      listing: number;
+      listing_month: number;
       staffs_count: number; // do d monthly/this month stuff
       properties_count: number; // do d monthly/this month stuff
+      receipt_statistic: receipt_statistics | null;
       staffs: {
         id: string;
         picture: string;
         // user_id: string;
         is_active: 1 | 0;
         title: string | null;
+        user_id: string;
+        tier: 1 | 2 | 3 | 4 | 5;
         // estate_title: string | null;
         staff_role: "manager" | "staff" | "account officer";
         name: string;
       }[];
     };
-    sub_wallet: SubWallet | null,
-    recent_transactions: Transactions[],
-    transactions: Transactions[],
+    sub_wallet: SubWallet | null;
+    recent_transactions: Transactions[];
+    transactions: Transactions[];
     manager: {
       id: string;
       is_active: 1 | 0;

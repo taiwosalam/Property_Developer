@@ -9,6 +9,7 @@ import { LocationIcon, CameraIcon, VideoIcon } from "@/public/icons/icons";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { empty } from "@/app/config";
 import Link from "next/link";
+import { useRole } from "@/hooks/roleContext";
 
 export interface PropertyCardProps {
   id: string;
@@ -30,26 +31,29 @@ export interface PropertyCardProps {
   available_units?: number;
   currency?: keyof typeof currencySymbols;
   isClickable?: boolean;
-  viewOnly?: boolean;
+  viewOnly?: boolean; 
   total: number;
+  page?: "manager" | "account";
 }
 
-const VehicleCard: React.FC<any> = ({ data }) => {
+const VehicleCard: React.FC<any> = ({ data, page }) => {
   const {
-    id = 12133,
+    id,
     images,
-    property_name = 'Property Name',
+    property_name = "Property Name",
     units_count,
     vehicle_records_count,
     address,
     total_unit_pictures,
     hasVideo = true,
-    property_type = 'rental',
+    property_type = "rental",
     isClickable = 0,
-    viewOnly = 0, } = data
+    viewOnly = 0,
+  } = data;
 
   const isRental = property_type === "rental";
-  // const symbol =
+  
+  const { role } = useRole()
   // isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const [isModalActive, setIsModalActive] = useState(false);
@@ -59,6 +63,22 @@ const VehicleCard: React.FC<any> = ({ data }) => {
       setIsModalActive(false);
     }
   });
+
+  const getPreviewRoute = () => {
+    switch (role) {
+      case "director":
+        return `/management/vehicles-record/${id}`;
+      case "manager":
+        return `/manager/management/vehicles-record/${id}`;
+      case "account":
+        return `/accountant/management/vehicles-record/${id}`;
+      case "staff":
+        return `/staff/management/vehicles-record/${id}`;
+      default:
+        return `/unauthorized`;
+    }
+  };
+
   return (
     <div
       className="rounded-2xl relative overflow-hidden bg-white dark:bg-darkText-primary "
@@ -86,7 +106,7 @@ const VehicleCard: React.FC<any> = ({ data }) => {
         </div>
       </ImageSlider>
 
-      <Link href={`/management/vehicles-record/${id}`}>
+      <Link href={getPreviewRoute()}>
         <div
           className="relative rounded-b-2xl p-4"
           role={isClickable && !viewOnly ? "button" : undefined}
@@ -94,7 +114,7 @@ const VehicleCard: React.FC<any> = ({ data }) => {
             isClickable && !viewOnly ? () => setIsModalActive(true) : undefined
           }
         >
-          <p className="text-brand-5 text-xs lg:text-sm font-bold">ID: {id} </p>
+          <p className="text-brand-9 text-xs lg:text-sm font-bold">ID: {id} </p>
           <p className="text-[#374151] dark:text-white text-lg md:text-xl lg:text-2xl font-bold">
             <span className="text-ellipsis line-clamp-1 break-all">
               {property_name}
@@ -103,15 +123,19 @@ const VehicleCard: React.FC<any> = ({ data }) => {
               ({units_count} Units)
             </span>
           </p>
-          <p className="flex items-center gap-1 text-brand-tertiary text-xs lg:text-sm font-normal text-ellipsis line-clamp-1 break-all">
+          <p className="flex items-center gap-1 text-brand-9 text-xs lg:text-sm font-normal text-ellipsis line-clamp-1 break-all">
             <LocationIcon />
             <span className="text-ellipsis line-clamp-1 break-all">
               {address}
             </span>
           </p>
           <div className="flex flex-wrap justify-between items-center mt-1">
-            <p className="text-black text-xs lg:text-sm font-normal"> Total Vehicles Record </p>
-            <h3 className="text-brand-9 text-xl lg:text-2xl font-bold"> {vehicle_records_count} </h3>
+            <p className="text-black dark:text-white text-xs lg:text-sm font-normal">
+              Total Vehicles Record
+            </p>
+            <h3 className="text-brand-9 text-xl lg:text-2xl font-bold">
+              {vehicle_records_count}
+            </h3>
           </div>
         </div>
       </Link>

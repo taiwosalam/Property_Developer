@@ -1,4 +1,5 @@
 import type { Field } from "@/components/Table/types";
+import dayjs from "dayjs";
 
 export const reportsLandlordsFilterOptionsWithDropdown = [
   {
@@ -30,26 +31,109 @@ export const reportsLandlordsFilterOptionsWithDropdown = [
 export const landlordsReportTableFields: Field[] = [
   { id: "0", label: "S/N", accessor: "S/N" },
   { id: "1", label: "ID", accessor: "id" },
+  { id: "7", label: "Landlord / Landlady", accessor: "landlord" },
   {
     id: "2",
     label: "Property",
     accessor: "property",
   },
-  { id: "3", label: "Branch", accessor: "branch" },
-  { id: "5", label: "Account Officer", accessor: "account_officer" },
-  { id: "6", label: "Date Created", accessor: "date_created" },
-  { id: "7", label: "Landlord / Landlady", accessor: "landlord" },
+  { id: "3", label: "Phone", accessor: "phone" },
+  { id: "5", label: "User Type", accessor: "agent"},
+  { id: "6", label: "Date & Time Created", accessor: "date_created" },
+  
 ];
 
 const generateTableData = (numItems: number) => {
   return Array.from({ length: numItems }, (_, index) => ({
     id: (index + 1).toString(),
     property: `Property ${index + 1}`,
-    branch: `Branch ${index + 1}`,
-    account_officer: `Account Officer ${index + 1}`,
+    phone: `Phone ${index + 1}`,
+    agent: `Status ${index + 1}`,
     date_created: `6/10/2024`,
     landlord: `John Doe`,
   }));
 };
 
 export const landlordsReportTableData = generateTableData(10);
+
+
+// Original API interfaces
+export interface Landlord {
+  landlord_id: number;
+  landlord_name: string;
+  property_name: string;
+  phone: string;
+  agent: string;
+  created_at: string;
+}
+
+export interface LandlordsOriginalData {
+  total_landlords: number;
+  monthly_landlords: number;
+  landlords: Landlord[];
+}
+
+export interface LandlordsApiResponse {
+  status: string;
+  message: string;
+  data: {
+    headers: Record<string, unknown>;
+    original: {
+      status: string;
+      message: string;
+      data: LandlordsOriginalData;
+    };
+    exception: any;
+  };
+}
+
+// Transformed data interfaces
+export interface LandlordReportEntry {
+  id: number;
+  property: string;
+  phone: string;
+  agent: string;
+  date_created: string;
+  landlord: string;
+}
+
+export interface LandlordsReport {
+  total_landlords: number;
+  monthly_landlords: number;
+  landlords: LandlordReportEntry[];
+}
+
+const formatPropertyName = (propertyName?: string | null): string => {
+  return !propertyName || propertyName === "N/A" ? "__ __" : propertyName;
+};
+
+// Transformation function
+export const transformLandlordsData = (apiResponse: LandlordsApiResponse): LandlordsReport => {
+  const { total_landlords, monthly_landlords, landlords } = apiResponse.data.original.data;
+  return {
+    total_landlords,
+    monthly_landlords,
+    landlords: landlords.map((item) => ({
+      id: item.landlord_id ?? "___ ___",
+      property: formatPropertyName(item.property_name),
+      phone: item.phone || "___ ___",
+      agent: item.agent || "___ ___",
+      date_created: item.created_at ?  dayjs(item.created_at, 'YYYY-MM-DD HH:mm:ss').format('YYYY-MM-DD hh:mm A') : "___ ___",
+      landlord: item.landlord_name || "___ ___",
+    })),
+  };
+};
+
+// // You might also have your table fields and filter options defined here
+// export const landlordsReportTableFields = [
+//   { key: "id", label: "ID" },
+//   { key: "property", label: "Property" },
+//   { key: "branch", label: "Branch" },
+//   { key: "account_officer", label: "Account Officer" },
+//   { key: "date_created", label: "Date Created" },
+//   { key: "landlord", label: "Landlord" },
+// ];
+
+// export const reportsLandlordsFilterOptionsWithDropdown = [
+//   // ... your filter options
+// ];

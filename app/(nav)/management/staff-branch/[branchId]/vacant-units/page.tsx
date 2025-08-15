@@ -35,27 +35,12 @@ import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import BackButton from "@/components/BackButton/back-button";
 import useBranchStore from "@/store/branch-store";
 
-const RentAndUnit = () => {
+const VacantUnits = () => {
   const view = useView();
   const { branch } = useBranchStore();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
-  const {
-    total_unit,
-    total_occupied,
-    total_vacant,
-    total_active,
-    total_expired,
-    total_relocate,
-    month_unit,
-    month_occupied,
-    month_vacant,
-    month_active,
-    month_expired,
-    month_relocate,
-    unit: [],
-  } = pageData;
 
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
@@ -146,7 +131,7 @@ const RentAndUnit = () => {
     })) || [];
 
   // console.log("Braches", branchOptions)
-// endpoint - /branch/8/vacant_units
+  // endpoint - /branch/8/vacant_units
   const {
     data: apiData,
     loading,
@@ -158,9 +143,11 @@ const RentAndUnit = () => {
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
+      setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData, true) }));
       setState((prevState) => ({
         ...prevState,
+        current_page: apiData.data.current_page || 1,
+        last_page: apiData.data.last_page || 1,
       }));
     }
   }, [apiData]);
@@ -189,7 +176,7 @@ const RentAndUnit = () => {
       <CustomLoader
         layout="page"
         statsCardCount={3}
-        pageTitle="Rent & Units"
+        pageTitle="Vacant Units"
       />
     );
 
@@ -217,11 +204,7 @@ const RentAndUnit = () => {
         setGridView={setGridView}
         setListView={setListView}
         pageTitle="Vacant Units"
-        aboutPageModalData={{
-          title: "Vacant Units",
-          description:
-            "This page contains a list of vacant units on the platform.",
-        }}
+        noExclamationMark
         searchInputPlaceholder="Search for vacant units"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
@@ -242,7 +225,7 @@ const RentAndUnit = () => {
         ]}
       />
       <section className="capitalize">
-        {pageData?.unit.length === 0 && !silentLoading ? (
+        {pageData?.unit?.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
             <div className="col-span-full text-center py-8 text-gray-500">
               No Search/Filter Result Found
@@ -251,30 +234,10 @@ const RentAndUnit = () => {
             <EmptyList
               buttonText="Create New Unit"
               buttonLink="/management/rent-unit/create"
-              title="No Unit Found"
+              title="There are no vacant units available in this branch."
               body={
                 <p>
-                  You can create a Unit by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
-                  <br />
-                  <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
-                  <br />
-                  <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
+                  This may be because no units have been created yet or all existing units have been assigned to tenants or occupants. To add units, you can create new properties or update existing ones under this branch. Once a unit becomes available, it will automatically be displayed in this section.
                 </p>
               }
             />
@@ -284,43 +247,19 @@ const RentAndUnit = () => {
             <section className="capitalize space-y-4 px-4 w-full">
               {view === "grid" || gridView ? (
                 <AutoResizingGrid minWidth={315}>
-                  {pageData?.unit.map((unit, index) => (
+                  {pageData?.unit?.map((unit, index) => (
                     <RentalPropertyCard
                       key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
+                      {...unit}
                     />
                   ))}
                 </AutoResizingGrid>
               ) : (
                 <div className="space-y-4">
-                  {pageData?.unit.map((unit, index) => (
+                  {pageData?.unit?.map((unit, index) => (
                     <RentalPropertyListCard
                       key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
+                      {...unit}
                     />
                   ))}
                 </div>
@@ -338,4 +277,4 @@ const RentAndUnit = () => {
   );
 };
 
-export default RentAndUnit;
+export default VacantUnits;

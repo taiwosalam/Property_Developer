@@ -2,7 +2,7 @@ import clsx from "clsx";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers";
-import { Dayjs } from "dayjs";
+import dayjs, { Dayjs } from "dayjs";
 import { CalendarIcon } from "@/public/icons/icons";
 import { styled } from "@mui/system";
 import useDarkMode from "@/hooks/useCheckDarkMode";
@@ -25,6 +25,12 @@ const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
     borderColor: "#0033C4",
     borderWidth: "2px",
   },
+  "& .MuiOutlinedInput-root.Mui-error .MuiOutlinedInput-notchedOutline": {
+    border: "1px solid #C1C2C366",
+  },
+  "& .Mui-disabled": {
+    color: "#FFF",
+  },
 }));
 
 interface CustomDatePickerProps {
@@ -35,9 +41,11 @@ interface CustomDatePickerProps {
   containerClassName?: string;
   disableFuture?: boolean;
   disablePast?: boolean;
+  lastYear?: boolean;
   minDate?: Dayjs;
   maxDate?: Dayjs;
   disabled?: boolean;
+  views?: ("year" | "month" | "day")[];
 }
 
 export default function CustomDatePicker({
@@ -51,27 +59,37 @@ export default function CustomDatePicker({
   minDate,
   maxDate,
   disabled,
+  lastYear,
+  views = ["year", "month", "day"],
 }: CustomDatePickerProps) {
   const isDarkMode = useDarkMode();
   const CustomCalendarIcon = () => (
     <CalendarIcon {...(isDarkMode && { color: "#fff" })} />
   );
+  // If lastYear is true, set minDate to one year ago from today, unless minDate is provided
+  const computedMinDate = lastYear
+    ? minDate || dayjs().subtract(1, "year")
+    : minDate;
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <div
         className={clsx(
           "text-xs md:text-sm font-normal dark:bg-darkText-primary dark:hover:border-darkText-1",
+          disabled && "cursor-not-allowed opacity-30",
           containerClassName
         )}
       >
         <CustomStyledDatePicker
           disabled={disabled}
           disableFuture={disableFuture}
-          disablePast={disablePast}
-          minDate={minDate}
+          // disablePast={disablePast}
+          disablePast={lastYear ? false : disablePast}
+          // minDate={minDate}
+          minDate={computedMinDate}
           maxDate={maxDate}
           openTo="year"
-          views={["year", "month", "day"]}
+          views={views}
+          // views={["year", "month", "day"]}
           value={value}
           onChange={(date) => {
             onChange?.(date);
@@ -85,11 +103,17 @@ export default function CustomDatePicker({
               name: inputId,
               id: inputId,
               inputProps: {
-                className: `date-input dark:bg-darkText-primary ${inputClassName}`,
+                className: `date-input text-black dark:text-white ${inputClassName}`,
                 sx: {
                   height: "unset",
                   paddingTop: "13px",
                   paddingBottom: "13px",
+                  ...(disabled && {
+                    color: isDarkMode ? "#FFF !important" : "#000 !important",
+                    WebkitTextFillColor: isDarkMode
+                      ? "#FFF !important"
+                      : "#000 !important",
+                  }),
                 },
               },
             },

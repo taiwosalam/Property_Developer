@@ -99,7 +99,7 @@ const CreateInvoicePage = () => {
             onChange={() => setIsAddPaymentChecked(true)}
           />
         </div>
-        {isAddPaymentChecked && (
+        {/* {isAddPaymentChecked && ( */}
           <div className="bg-white dark:bg-darkText-primary rounded-[8px] space-y-4 p-6">
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
               <Input
@@ -107,7 +107,7 @@ const CreateInvoicePage = () => {
                 id="payment_title"
                 label="Payment Title"
                 value={paymentTitle}
-                onChange={(value) => setPaymentTitle(value)}
+                onChange={(value) => setPaymentTitle(value as string)}
               />
               <Input
                 type="text"
@@ -117,7 +117,7 @@ const CreateInvoicePage = () => {
                 CURRENCY_SYMBOL={"₦"}
                 formatNumber
                 value={paymentAmount}
-                onChange={(value) => setPaymentAmount(value)}
+                onChange={(value) => setPaymentAmount(value as string)}
               />
             </div>
             <div className="flex items-center justify-end">
@@ -130,10 +130,10 @@ const CreateInvoicePage = () => {
               </Button>
             </div>
           </div>
-        )}
+        {/* )} */}
       </div>
 
-      <div className="space-y-6">
+      {/* <div className="space-y-6">
         <div className="flex items-center gap-4">
           <h1 className="text-[#092C4C] font-bold text-xl dark:text-white">
             Gnerated Rent Breakdown
@@ -145,7 +145,7 @@ const CreateInvoicePage = () => {
           />
         </div>
         {!isAddPaymentChecked && <Breakdown />}
-      </div>
+      </div> */}
 
       {payments.length > 0 && (
         <div className="space-y-6">

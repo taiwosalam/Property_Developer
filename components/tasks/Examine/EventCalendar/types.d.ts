@@ -16,6 +16,7 @@ export interface EventCalendarContextProps extends CalendarClassData {
   weekData: EventCalendarWeekData;
   openModal: () => void;
   openActivityModal: (date: Date) => void;
+  openReminderModal?: (date: Date) => void;
 }
 
 export interface EventCalendarDayProps extends CalendarDayProps {
@@ -30,4 +31,5 @@ export interface EventCalendarDayProps extends CalendarDayProps {
 
 export interface EventCalendarEventProps extends CalendarEventProps {
   color: Color;
+  showTime?: boolean
 }

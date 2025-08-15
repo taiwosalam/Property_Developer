@@ -182,9 +182,7 @@ export const services: Record<string, { name: string; active?: boolean }[]> = {
     {
       name: "Value Engineering",
     },
-    {
-      name: "Renovation and Remodeling",
-    },
+
     {
       name: "Environmental Engineering",
     },
@@ -282,12 +280,6 @@ export const services: Record<string, { name: string; active?: boolean }[]> = {
       },
       {
         name: "Legal Consultation",
-      },
-      {
-        name: "Contract Drafting and Review",
-      },
-      {
-        name: "Litigation and Dispute Resolution",
       },
       {
         name: "Dispute Resolution",

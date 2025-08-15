@@ -1,86 +1,120 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { roleBasedRoutes } from './data';
-import jwt from 'jsonwebtoken';
-
-const JWT_SECRET =
-  process.env.NEXT_PUBLIC_SESSION_SESSION || 'json-web-token-secret-key';
-
-function verifyToken(token: string) {
-  if (!token) {
-    console.log('No token provided');
-    return null; // No token means unauthenticated
-  }
-  try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch (error) {
-    console.log('JWT verification failed:', error);
-    return null;
-  }
-}
+import { NextRequest, NextResponse } from "next/server";
+import { roleBasedRoutes } from "./data";
 
 export async function middleware(req: NextRequest) {
-  const emailVerified = req.cookies.get('emailVerified')?.value;
-  // const role = req.cookies.get('role')?.value;
   const currentPath = req.nextUrl.pathname;
-  const role = req.cookies.get('role')?.value;
-  // const role = decoded?.role;
+  const role = req.cookies.get("role")?.value;
+  const company_status = req.cookies.get("company_status")?.value;
+  const subscription_status = req.cookies.get("subscription_status")?.value;
 
-  console.log('server role', role);
+  console.log("role", role);
+  console.log("subscription_status", subscription_status);
+  console.log("currentPath", currentPath);
+
   // Public routes accessible without authentication
   const publicRoutes = [
-    '/auth/user/sign-in',
-    '/auth/sign-in',
-    '/auth/sign-up',
-    '/auth/forgot-password',
+    "/auth/user/sign-in",
+    "/notifications",
+    "/reviews",
+    "/auth/sign-in",
+    "/auth/sign-up",
+    "/auth/setup",
+    "/auth/forgot-password",
+    "/management/agent-community",
+    "/messages",
+    "/management/service-providers",
   ];
 
-  // Allow public routes if no authToken or role exists
-  if (publicRoutes.includes(currentPath) && !role) {
+  // Define dashboard paths that bypass company_status check
+  const dashboardPaths = [
+    "/dashboard",
+    "/accountant/dashboard",
+    "/manager/dashboard",
+    "/staff/dashboard",
+    "/user/dashboard",
+  ];
+
+  // Allow public routes to proceed without checks
+  if (publicRoutes.includes(currentPath)) {
     return NextResponse.next();
   }
 
-  // Allow access to `/auth/user/sign-in` if there's no authToken
-  if (currentPath === '/auth/user/sign-in') {
-    return NextResponse.next();
+  // check for company subscription status :: TODOD - UNCOMMENT AFTER LOGIN RESPONSE IS CORRECT
+  if (
+    !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+    subscription_status === "expired"
+  ) {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
-  // Special case: Allow `/auth/sign-up` for unverified users or users without a role
-  if (currentPath === '/auth/sign-up' && !role) {
+  // If role is 'user', redirect to /setup unless already on an auth/setup page
+  if (
+    role === "user" &&
+    !currentPath.startsWith("/auth") &&
+    currentPath !== "/setup"
+  ) {
+    return NextResponse.redirect(new URL("/setup", req.url));
+  }
+
+  // Allow `/auth/user/sign-in`
+  if (currentPath === "/auth/user/sign-in") {
     return NextResponse.next();
   }
 
   // Allow `/auth/sign-in` for directors; redirect others to `/auth/user/sign-in`
-  if (currentPath === '/auth/sign-in') {
-    if (role === 'director') return NextResponse.next();
-    return NextResponse.redirect(new URL('/auth/user/sign-in', req.url));
+  if (currentPath === "/auth/sign-in") {
+    if (role === "director") return NextResponse.next();
+    return NextResponse.redirect(new URL("/auth/user/sign-in", req.url));
   }
 
-  // Role-based route restrictions
+  // Company status check: if currentPath does NOT start with a dashboard path,
+  // and company_status is "pending" or "rejected", redirect to unauthorized
+  if (
+    !dashboardPaths.some((path) => currentPath.startsWith(path)) &&
+    (company_status === "pending" || company_status === "rejected")
+  ) {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
+  }
+
+  // Role-based route restrictions for non-'user' roles
+  // Allow root path to pass through to page component for redirection logic
+  if (currentPath === "/") {
+    return NextResponse.next();
+  }
+  
   const allowedRoutes =
     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
-  if (!allowedRoutes.some((route) => currentPath.startsWith(route))) {
-    return NextResponse.redirect(new URL('/unauthorized', req.url));
+  const isAllowed = allowedRoutes.some((route) =>
+    currentPath.startsWith(route)
+  );
+  if (!isAllowed) {
+    return NextResponse.redirect(new URL("/unauthorized", req.url));
   }
 
-  // Allow access and set headers for debugging or downstream use
+  // Allow access and set headers
   const response = NextResponse.next();
-  response.headers.set('x-authorization-status', 'authorized');
+  response.headers.set("x-authorization-status", "authorized");
   return response;
 }
 
 export const config = {
   matcher: [
-    '/dashboard/:path*',
-    '/wallet/:path*',
-    '/auth/:path*',
-    '/manager/:path*',
-    '/management/:path*',
-    '/tasks/:path*',
-    '/reports/:path*',
-    '/listing/:path*',
-    '/accounting/:path*',
-    '/applications/:path*',
-    '/documents/:path*',
-    '/settings/:path*',
+    "/",
+    "/dashboard/:path*",
+    "/wallet/:path*",
+    "/auth/:path*",
+    "/manager/:path*",
+    "/management/:path*",
+    "/tasks/:path*",
+    "/reports/:path*",
+    "/listing/:path*",
+    "/accounting/:path*",
+    "/accountant/:path",
+    "/applications/:path*",
+    "/documents/:path*",
+    "/settings/:path*",
+    "/messages/:path*",
+    "/notifications/:path*",
+    "/reviews/:path*",
   ],
 };

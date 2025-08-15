@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 
 // Images
@@ -10,15 +10,32 @@ import ChevronLeft from "@/public/icons/chevron-left.svg";
 import Review from "@/components/Review/review";
 import Picture from "@/components/Picture/picture";
 import { message_card_data } from "@/components/Message/data";
+import useFetch from "@/hooks/useFetch";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { ReviewResponseApi } from "./types";
+import { ISingleReview, transformSingleReview } from "../data";
+import ReplyComment from "@/components/Review/reply-comments";
+import ReviewCard from "@/components/Review/review-card";
+import { ReviewCardSkeleton } from "@/components/Loader/review-skeleton";
 
 const ReviewChat = () => {
   const router = useRouter();
-
   const { id } = useParams();
+  const clony = message_card_data.find((item) => item.id === id);
+  const [review, setReview] = useState<ISingleReview | null>(null);
 
-  const data = message_card_data.find((item) => item.id === id);
+  const { data, refetch, loading } = useFetch<ReviewResponseApi>(
+    `/property/review/${id}`
+  );
+  useRefetchOnEvent("refetchReview", () => refetch({ silent: true }));
 
-  if (!data) return router.replace("/reviews");
+  useEffect(() => {
+    if (data) {
+      const transData = transformSingleReview(data);
+      setReview(transData);
+    }
+  }, [data]);
 
   return (
     <>
@@ -33,10 +50,14 @@ const ReviewChat = () => {
         </div>
       </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col">
-        <Review {...data} main />
-        <Review />
-        <Review />
-        <Review />
+        {loading ? <ReviewCardSkeleton /> : <Review {...review?.main} main />}
+
+        {review?.replies?.comments?.map((comment) => (
+          <ReplyComment key={comment.id} {...comment} />
+        ))}
+        {/* {message_card_data.map((item, index) => {
+          return <Review {...item} key={index}/>;
+        })} */}
       </div>
     </>
   );

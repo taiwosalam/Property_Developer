@@ -13,20 +13,31 @@ import useStep from "@/hooks/useStep";
 import type { FormSteps } from "@/app/(onboarding)/auth/types";
 import Button from "../Form/Button/button";
 import SearchInput from "../SearchInput/search-input";
+import { AllBranchesResponse } from "../Management/Properties/types";
+import useFetch from "@/hooks/useFetch";
 
 type FilterOption = {
   label: string;
+  value?: string | number;
   bgColor?: string;
 };
 
 interface MessagesFilterMenuProps extends MenuProps {
   filterOptions: FilterOption[];
+  onFilterApply?: any;
+  setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
+  selectedFilters?: string[];
+  setSelectedFilters?: React.Dispatch<React.SetStateAction<string[]>>;
+  allowMultiple?: boolean; // New prop to control single/multiple selection
 }
 
 const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   onClose,
   open,
   filterOptions,
+  onFilterApply,
+  setSelectedLabel,
+  allowMultiple = true,
   ...props
 }) => {
   const isDarkMode = useDarkMode();
@@ -44,7 +55,7 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
   };
 
   const commonClasses =
-    "flex items-center justify-between bg-neutral-3 rounded-[3px] py-2 px-4 w-full";
+    "flex items-center justify-between bg-neutral-3 dark:bg-darkText-primary rounded-[3px] py-2 px-4 w-full";
 
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
@@ -122,6 +133,9 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
             filterOptions={filterOptions}
             selectedFilters={selectedFilters}
             setSelectedFilters={setSelectedFilters}
+            onFilterApply={onFilterApply}
+            setSelectedLabel={setSelectedLabel}
+            allowMultiple={allowMultiple}
           />
         ) : (
           <Step2Menu
@@ -130,9 +144,9 @@ const MessagesFilterMenu: React.FC<MessagesFilterMenuProps> = ({
             setSelectedBranches={setSelectedBranches}
           />
         )}
-        <Button size="base_medium" className="!mt-8 w-full py-2 px-8">
+        {/* <Button size="base_medium" onClick={applyFilters} className="!mt-8 w-full py-2 px-8">
           Apply Filter
-        </Button>
+        </Button> */}
       </div>
     </Menu>
   );
@@ -146,7 +160,10 @@ const Step1Menu: React.FC<{
   hasSelectedBranches: boolean;
   filterOptions: FilterOption[];
   selectedFilters: string[];
+  onFilterApply: (selectedFilters: string[]) => void;
+  setSelectedLabel?: React.Dispatch<React.SetStateAction<string | null>>;
   setSelectedFilters: React.Dispatch<React.SetStateAction<string[]>>;
+  allowMultiple?: boolean; // Add allowMultiple prop
 }> = ({
   changeStep,
   commonClasses,
@@ -154,17 +171,36 @@ const Step1Menu: React.FC<{
   filterOptions,
   selectedFilters,
   setSelectedFilters,
+  onFilterApply,
+  setSelectedLabel,
+  allowMultiple,
 }) => {
   const handleFilterToggle = (label: string) => {
-    setSelectedFilters((prev) =>
-      prev.includes(label)
-        ? prev.filter((item) => item !== label)
-        : [...prev, label]
-    );
+    if (allowMultiple) {
+      // Multiple selection logic
+      setSelectedFilters((prev) =>
+        prev.includes(label)
+          ? prev.filter((item) => item !== label)
+          : [...prev, label]
+      );
+    } else {
+      // Single selection logic
+      setSelectedFilters([label]);
+      if (setSelectedLabel) {
+        setSelectedLabel(label);
+      }
+    }
   };
+
+  const applyFilters = () => {
+    if (onFilterApply) {
+      onFilterApply(selectedFilters);
+    }
+  };
+
   return (
     <>
-      <button
+      {/* <button
         type="button"
         className={commonClasses}
         onClick={() => changeStep("next")}
@@ -175,45 +211,63 @@ const Step1Menu: React.FC<{
         ) : (
           <CheckboxDefault size={18} />
         )}
-      </button>
+      </button> */}
       {filterOptions.map((option, index) => (
         <button
           type="button"
           className={`${commonClasses} ${
-            selectedFilters.includes(option.label) ? "!bg-[#bfb3b3]" : ""
+            selectedFilters.includes(option.label)
+              ? "!bg-[#bfb3b3] dark:!border dark:!border-gray-600 dark:!bg-darkText-primary"
+              : ""
           }`}
           key={index}
           onClick={() => handleFilterToggle(option.label)}
         >
           <span>{option.label}</span>
           <span
-            style={{ backgroundColor: option.bgColor || "#01BA4C" }}
+            style={{
+              backgroundColor: option.bgColor || "var(--primary-color)",
+            }}
             className="text-white rounded-full p-1 flex items-center justify-center w-5 h-5"
           >
-            12
+            {option.value}
           </span>
         </button>
       ))}
+      <Button
+        size="base_medium"
+        onClick={applyFilters}
+        className="!mt-8 w-full py-2 px-8"
+      >
+        Apply Filter
+      </Button>
     </>
   );
 };
-
 const Step2Menu: React.FC<{
   commonClasses: string;
   selectedBranches: string[];
   setSelectedBranches: React.Dispatch<React.SetStateAction<string[]>>;
 }> = ({ commonClasses, selectedBranches, setSelectedBranches }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const branches = ["Branch 1", "Branch 2", "Branch 3"];
-  const filteredBranches = branches.filter((branch) =>
-    branch.toLowerCase().includes(searchQuery.toLowerCase())
+  const { data: branchesData, loading } =
+    useFetch<AllBranchesResponse>("/branches/select");
+
+  const branchOptions =
+    branchesData?.data.map((branch) => ({
+      label: branch.branch_name,
+      value: branch.id,
+    })) || [];
+
+  const filteredBranches = branchOptions.filter((branch) =>
+    branch.label.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleBranchToggle = (branch: string) => {
+  const handleBranchToggle = (branchId: string) => {
     setSelectedBranches((prev) =>
-      prev.includes(branch)
-        ? prev.filter((b) => b !== branch)
-        : [...prev, branch]
+      prev.includes(branchId)
+        ? prev.filter((id) => id !== branchId)
+        : [...prev, branchId]
     );
   };
 
@@ -230,17 +284,28 @@ const Step2Menu: React.FC<{
         placeholder="Search"
         onChange={(e) => setSearchQuery(e.target.value)}
       />
-      {filteredBranches.map((branch, index) => (
-        <Checkbox
-          key={index}
-          sm
-          className={`${commonClasses} w-full flex-row-reverse`}
-          checked={selectedBranches.includes(branch)}
-          onChange={() => handleBranchToggle(branch)}
-        >
-          {branch}
-        </Checkbox>
-      ))}
+      {loading ? (
+        <div className="space-y-2">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <div
+              key={index}
+              className={`${commonClasses} animate-pulse bg-gray-300 h-10`}
+            />
+          ))}
+        </div>
+      ) : (
+        filteredBranches.map((branch, index) => (
+          <Checkbox
+            key={index}
+            sm
+            className={`${commonClasses} w-full flex-row-reverse`}
+            checked={selectedBranches.includes(branch.value)}
+            onChange={() => handleBranchToggle(branch.value)}
+          >
+            {branch.label}
+          </Checkbox>
+        ))
+      )}
     </>
   );
 };

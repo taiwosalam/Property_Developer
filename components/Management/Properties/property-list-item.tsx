@@ -6,6 +6,8 @@ import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import { VideoIcon, CameraIcon } from "@/public/icons/icons";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
 import PropertyTag from "@/components/Tags/property-tag";
+import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 interface PropertyListItemProps {
   id: string;
@@ -50,8 +52,29 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
 }) => {
   const [screenModal, setScreenModal] = useState(false);
   const isRental = property_type === "rental";
-  const symbol =
-    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  const { role } = useRole();
+  // const symbol =
+  //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
+
+  const baseRoute =
+    role === "manager"
+      ? "/manager/management"
+      : role === "account"
+      ? "/accountant/management"
+      : "/management";
+
+  const getRoute = (action: "edit" | "preview") => {
+    switch (action) {
+      case "edit":
+        return `${baseRoute}/properties/${id}/edit-property`;
+      case "preview":
+        return `${baseRoute}/properties/${id}`;
+      default:
+        return "#";
+    }
+  };
+
   return (
     <div
       className="p-6 rounded-2xl bg-white dark:bg-darkText-primary"
@@ -104,20 +127,24 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             <p className="text-black dark:text-darkText-2">{branch}</p>
           </div>
           <div>
-            <p className="text-[#747474] dark:text-white">Mobile Tenants</p>
+            <p className="text-[#747474] dark:text-white">
+              {isRental ? "Mobile Tenants" : "Mobile Occupants"}
+            </p>
             <p className="text-black dark:text-darkText-2">{mobile_tenants}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Account Officer</p>
-            <p className="text-black dark:text-darkText-2">{accountOfficer}</p>
+            <p className="text-black dark:text-darkText-2 truncate">{accountOfficer}</p>
           </div>
           <div>
-            <p className="text-[#747474] dark:text-white">Web Tenants</p>
+            <p className="text-[#747474] dark:text-white">
+              {isRental ? "Web Tenants" : "Web Occupants"}
+            </p>
             <p className="text-black dark:text-darkText-2">{web_tenants}</p>
           </div>
           <div>
             <p className="text-[#747474] dark:text-white">Address</p>
-            <p className="text-black dark:text-darkText-2">{address}</p>
+            <p className="text-black dark:text-darkText-2 truncate ellipsis">{address}</p>
           </div>
         </div>
 
@@ -146,7 +173,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             </div>
           </div>
           <Image
-            src={images[0]}
+            src={images[0] ?? empty}
             alt={property_name}
             fill
             className="object-cover"
@@ -157,7 +184,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
       <hr className="my-4" />
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="flex items-center gap-2">
-          <PropertyTag propertyType={property_type} />
+          <PropertyTag propertyType={property_type} list />
           <p className="font-bold text-sm md:text-base text-brand-10">
             ID: {id}
           </p>
@@ -167,7 +194,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             type="button"
             size="mid"
             className="!py-[5px] !px-5 md:!py-[8px] md:!px-8 !font-bold !bg-white !border-2 !border-brand-9 !text-brand-9 hover:opacity-70"
-            href={`/management/properties/${id}/edit-property`}
+            href={getRoute("edit")}
           >
             Manage
           </Button>
@@ -175,7 +202,7 @@ const PropertyListItem: React.FC<PropertyListItemProps> = ({
             type="button"
             size="mid"
             className="!py-[5px] !px-5 md:!py-[8px] md:!px-8 !font-bold"
-            href={`/management/properties/${id}`}
+            href={getRoute("preview")}
           >
             Preview
           </Button>

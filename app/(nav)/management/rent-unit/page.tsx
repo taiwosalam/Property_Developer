@@ -1,7 +1,5 @@
-
-
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import {
   initialState,
@@ -33,47 +31,71 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark } from "@/public/icons/icons";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import AddPropertyModal from "@/components/Management/Properties/add-property-modal";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
+import useStaffRoles from "@/hooks/getStaffs";
+import ServerError from "@/components/Error/ServerError";
+import { PropertyListResponse } from "./[id]/edit-rent/type";
+import { useSearchParams } from "next/navigation";
 
 const RentAndUnit = () => {
   const view = useView();
+  const searchParams = useSearchParams();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
-  const [pageData, setPageData] = useState<UnitPageState>(initialState);
-
   const {
-    total_unit,
-    total_occupied,
-    total_vacant,
-    total_active,
-    total_expired,
-    total_relocate,
-    month_unit,
-    month_occupied,
-    month_vacant,
-    month_active,
-    month_expired,
-    month_relocate,
-    unit: [],
-  } = pageData;
+    getManagers,
+    getStaffs,
+    getAccountOfficers,
+    loading: loadingStaffs,
+    error: staffsError,
+  } = useStaffRoles();
+  const accountOfficers = getAccountOfficers();
+
+  // Initialize appliedFilters with is_active from URL
+  const initialFilters: FilterResult = {
+    options: [],
+    menuOptions: searchParams.get("is_active")
+      ? { Status: [searchParams.get("is_active")!] }
+      : {},
+    startDate: null,
+    endDate: null,
+  };
+
+  const [pageData, setPageData] = useState<UnitPageState>(initialState);
 
   const [selectedView, setSelectedView] = useState<string | null>(
     selectedOptions.view
   );
-  const [state, setState] = useState<RentAndUnitState>({
-    gridView: selectedView === "grid",
-    total_pages: 1,
-    current_page: 1,
-    last_page: 1,
+  const [state, setState] = useState<RentAndUnitState>(() => {
+    const savedPage = sessionStorage.getItem("rent_and_unit_page");
+    return {
+      gridView: view === "grid",
+      total_pages: 1,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+      last_page: 1,
+    };
   });
-
 
   const { gridView, total_pages, current_page, last_page } = state;
 
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
-    options: [],
-    menuOptions: {},
-    startDate: null,
-    endDate: null,
-  });
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("rent_and_unit_page", current_page.toString());
+  }, [current_page]);
+
+  useEffect(() => {
+    const tenantIdFromUrl = searchParams.get("tenant_id");
+    if (tenantIdFromUrl && tenantIdFromUrl.trim() !== "") {
+      localStorage.setItem("selectedTenantId", tenantIdFromUrl);
+    } else {
+      localStorage.removeItem("selectedTenantId");
+    }
+  }, []);
+
+  const [appliedFilters, setAppliedFilters] =
+    useState<FilterResult>(initialFilters);
+  const isInitialMount = useRef(true);
 
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -86,8 +108,20 @@ const RentAndUnit = () => {
   };
 
   const handleFilterApply = (filters: FilterResult) => {
-    setAppliedFilters(filters);
-    setPage(1);
+    setAppliedFilters((prev) => ({
+      ...filters,
+      menuOptions: {
+        ...prev.menuOptions, // Preserve existing filters like Status from URL
+        ...filters.menuOptions,
+      },
+    }));
+    // setPage(1);
+    setState((prev) => ({
+      ...prev,
+      current_page: 1,
+      unit: [],
+    }));
+    sessionStorage.setItem("rent_and_unit_page", "1");
   };
 
   const { menuOptions, startDate, endDate } = appliedFilters;
@@ -98,52 +132,145 @@ const RentAndUnit = () => {
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState<"asc" | "desc" | "">("");
 
-  const endpoint =
-    isFilterApplied() || search || sort ? "/unit/filter" : "/unit/list";
+  // const endpoint =
+  //   isFilterApplied() || search || sort ? "/unit/filter" : "/unit/list";
 
+  const endpoint = "/unit/list";
   const config: AxiosRequestConfig = useMemo(() => {
-    return {
-      params: {
-        page,
-        date_from: appliedFilters.startDate
-          ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-          : undefined,
-        date_to: appliedFilters.endDate
-          ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-          : undefined,
-        search: search,
-        branch_id: appliedFilters.menuOptions["Branch"] || [],
-        state: appliedFilters.menuOptions["State"] || [],
-        property_type: appliedFilters.menuOptions["Property Type"]?.[0],
-        sort_by: sort,
-      } as RentUnitFilterParams,
+    const params: RentUnitFilterParams = {
+      page: current_page,
+      date_from: appliedFilters.startDate
+        ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+        : undefined,
+      date_to: appliedFilters.endDate
+        ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+        : undefined,
+      search: search || undefined,
+      branch_id: appliedFilters.menuOptions["Branch"]?.length
+        ? appliedFilters.menuOptions["Branch"]
+        : undefined,
+      state: appliedFilters.menuOptions["State"]?.length
+        ? appliedFilters.menuOptions["State"]
+        : undefined,
+      property_type: appliedFilters.menuOptions["Property Type"]?.[0] as
+        | "rental"
+        | "facility"
+        | undefined,
+      // appliedFilters.menuOptions["Property Type"]?.[0] || undefined,
+      is_active: appliedFilters.menuOptions["Status"]?.[0] || undefined,
+      staff_id: appliedFilters.menuOptions["Account Officer"]?.length
+        ? appliedFilters.menuOptions["Account Officer"]
+        : undefined,
+      sort_by: sort || undefined,
     };
-  }, [appliedFilters, search, sort, page]);
+    // Clean undefined params
+    const cleanedParams = Object.fromEntries(
+      Object.entries(params).filter(([_, v]) => v !== undefined)
+    );
+    return { params: cleanedParams };
+  }, [appliedFilters, search, sort, current_page]);
 
-  // console.log("config", config)
-
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const handlePageChange = (page: number) => {
-    setPage(page);
+    // setPage(page);
+    setState((prev) => ({
+      ...prev,
+      current_page: page,
+      // unit: view === "grid" ? [] : prev.unit,
+    }));
+    setPageData((prev) => ({
+      ...prev,
+      unit: view === "grid" ? [] : prev.unit,
+    }));
+    // Scroll to the top where cards start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
     setSort(order);
+    setState((prev) => ({
+      ...prev,
+      current_page: 1,
+      unit: [],
+    }));
+    setPageData((prev) => ({
+      ...prev,
+      unit: [],
+    }));
+    sessionStorage.setItem("rent_and_unit_page", "1");
   };
 
   const handleSearch = (query: string) => {
     setSearch(query);
+    setState((prev) => ({
+      ...prev,
+      current_page: 1,
+      unit: [],
+    }));
+    setPageData((prev) => ({
+      ...prev,
+      unit: [],
+    }));
+    sessionStorage.setItem("rent_and_unit_page", "1");
   };
 
+  // Remove redundant useEffect for is_active
+  // Moved to initialFilters
+  useEffect(() => {
+    const isActiveFromUrl = searchParams.get("is_active");
+    if (isActiveFromUrl && !appliedFilters.menuOptions["Status"]?.length) {
+      setAppliedFilters((prev) => ({
+        ...prev,
+        menuOptions: {
+          ...prev.menuOptions,
+          Status: [isActiveFromUrl],
+        },
+      }));
+    }
+    isInitialMount.current = false; // Mark initial mount complete
+  }, [searchParams]);
+
+  const {
+    data: propertyData,
+    error: propertyError,
+    loading: propertyLoading,
+  } = useFetch<PropertyListResponse>("/property/all");
+
   const { data: branchesData } =
-  useFetch<AllBranchesResponse>("/branches/select");
+    useFetch<AllBranchesResponse>("/branches/select");
 
-const branchOptions =
-  branchesData?.data.map((branch) => ({
-    label: branch.branch_name,
-    value: branch.id,
-  })) || [];
+  const branchOptions = Array.isArray(branchesData?.data)
+    ? [
+        ...new Map(
+          branchesData.data.map((branch) => [
+            branch.branch_name.toLowerCase(),
+            {
+              label: branch.branch_name.toLowerCase(),
+              value: branch.id,
+            },
+          ])
+        ).values(),
+      ]
+    : [];
 
-  // console.log("Braches", branchOptions)
+  const propertyOptions = Array.isArray(propertyData?.data)
+    ? [
+        ...new Map(
+          propertyData.data
+            .filter((property: any) => property.units.length > 0)
+            .map((property: any) => [
+              property.title.toLowerCase(),
+              {
+                label: property.title.toLowerCase(),
+                value: property.id.toString(),
+              },
+            ])
+        ).values(),
+      ]
+    : [];
 
   const {
     data: apiData,
@@ -159,8 +286,9 @@ const branchOptions =
       setPageData((x) => ({ ...x, ...transformRentUnitApiResponse(apiData) }));
       setState((prevState) => ({
         ...prevState,
-        // current_page: apiData.data.unit?.current_page,
-        // last_page: apiData.data.unit?.last_page,
+        current_page: apiData.data.pagination?.current_page,
+        last_page: apiData.data.pagination?.total_pages,
+        // total_pages: apiData.data.pagination.
       }));
     }
   }, [apiData]);
@@ -184,29 +312,33 @@ const branchOptions =
     setSelectedView("list");
   };
 
+  const accountOfficersOptions =
+    accountOfficers?.map((o) => ({
+      label: o.name,
+      value: `${o.id}`,
+    })) || [];
+
   if (loading)
     return (
       <CustomLoader
         layout="page"
         statsCardCount={3}
-        pageTitle="Rent & Units"
+        pageTitle="Rent & Management"
       />
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
         <ManagementStatistcsCard
           title="Total Units"
           newData={pageData?.month_unit}
           total={pageData?.total_unit}
           className="w-[240px]"
-        colorScheme={1}
+          colorScheme={1}
         />
         <ManagementStatistcsCard
           title="Occupied Units"
@@ -235,63 +367,68 @@ const branchOptions =
         gridView={view === "grid" || gridView}
         setGridView={setGridView}
         setListView={setListView}
-        pageTitle="Rent & Unit"
+        pageTitle="Rent & Management"
         aboutPageModalData={{
-          title: "Rent & Unit",
+          title: "Rent & Management",
           description:
-            "This page contains a list of Rent & Unit on the platform.",
+            "This page contains a list of Rent & Management on the platform.",
         }}
-        searchInputPlaceholder="Search for Rent and Unit"
+        searchInputPlaceholder="Search for Rent and Management"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
         onSort={handleSort}
         appliedFilters={appliedFilters}
         isDateTrue
-        filterOptions={RentAndUnitFilters}
         filterOptionsMenu={[
           ...RentAndUnitFiltersWithDropdown,
+          ...(propertyOptions.length > 0
+            ? [
+                {
+                  label: "Properties",
+                  value: propertyOptions,
+                },
+              ]
+            : []),
           ...(branchOptions.length > 0
             ? [
-              {
-                label: "Branch",
-                value: branchOptions,
-              },
-            ]
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
+          ...(accountOfficersOptions.length > 0
+            ? [
+                {
+                  label: "Account Manager",
+                  value: accountOfficersOptions,
+                },
+              ]
             : []),
         ]}
       />
       <section className="capitalize">
-        {pageData?.unit.length === 0 && !silentLoading ? (
+        {pageData?.unit?.length === 0 && !silentLoading ? (
           isFilterApplied() || search ? (
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="Create New Unit"
-              buttonLink="/management/rent-unit/create"
+              noButton
               title="No Unit Found"
               body={
                 <p>
-                  You can create a Unit by clicking on the &quot;Add
-                  Property&quot; button. You can create two types of properties:
-                  rental and facility properties. Rental properties are mainly
-                  tailored for managing properties for rent, including landlord
-                  and tenant management processes. Facility properties are
-                  designed for managing occupants in gated estates, overseeing
-                  their due payments, visitor access, and vehicle records.{" "}
+                  You can create a unit when adding a property. Whether creating
+                  or editing a rental or facility property, units can be added
+                  during the process. Each property is registered as a whole,
+                  while individual flats or sections within it are considered
+                  units.
                   <br />
                   <br />
-                  Once a property is added to this page, this guide will
-                  disappear. To learn more about this page in the future, you
-                  can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
+                  To manage occupants and tenants, they are assigned to specific
+                  units within the property. Each unit is created separately
+                  under the main property.
                   <br />
                   <br />
-                  Property creation involves several segments: property
-                  settings, details, what to showcase on the dashboard or user
-                  app, unit creation, permissions, and assigning staff.
                 </p>
               }
             />
@@ -301,60 +438,38 @@ const branchOptions =
             <section className="capitalize space-y-4 px-4 w-full">
               <div className="w-full flex items-center justify-end">
                 <div className="flex gap-4 flex-wrap">
-                  <StatusIndicator statusTitle="vacant" />
+                  <StatusIndicator statusTitle="vacant/pending" />
                   <StatusIndicator statusTitle="occupied" />
                   <StatusIndicator statusTitle="active" />
                   <StatusIndicator statusTitle="expired" />
-                  <StatusIndicator statusTitle="relocate" />
+                  <StatusIndicator statusTitle="relocate/move out" />
                 </div>
               </div>
               {view === "grid" || gridView ? (
                 <AutoResizingGrid minWidth={315}>
-                  {pageData?.unit.map((unit, index) => (
-                    <RentalPropertyCard
-                      key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
-                    />
-                  ))}
+                  {silentLoading ? (
+                    <CardsLoading />
+                  ) : (
+                    pageData?.unit?.map((unit, index) => (
+                      <RentalPropertyCard key={index} {...unit} />
+                    ))
+                  )}
                 </AutoResizingGrid>
               ) : (
                 <div className="space-y-4">
-                  {pageData?.unit.map((unit, index) => (
-                    <RentalPropertyListCard
-                      key={index}
-                      propertyType={unit.propertyType as 'rental' | 'facility'}
-                      unitId={unit.unitId || ""}
-                      images={unit.images}
-                      unit_title={unit.unit_title}
-                      unit_name={unit.unit_name}
-                      unit_type={unit.unit_type}
-                      tenant_name={unit.tenant_name || ""}
-                      expiry_date={unit.expiry_date || ""}
-                      rent={unit.rent || ""}
-                      caution_deposit={unit.caution_deposit || ""}
-                      service_charge={unit.service_charge}
-                      status={unit.status || ""}
-                      property_type={unit.propertyType || ""}
-                    />
-                  ))}
+                  {silentLoading ? (
+                    <CardsLoading />
+                  ) : (
+                    pageData?.unit.map((unit, index) => (
+                      <RentalPropertyListCard key={index} {...unit} />
+                    ))
+                  )}
                 </div>
               )}
             </section>
             <Pagination
-              totalPages={last_page}
-              currentPage={current_page}
+              totalPages={state.last_page}
+              currentPage={state.current_page}
               onPageChange={handlePageChange}
             />
           </>

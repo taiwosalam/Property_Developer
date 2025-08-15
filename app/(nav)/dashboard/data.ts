@@ -12,8 +12,11 @@ import {
 } from "@/public/icons/dashboard-cards/icons";
 import { subDays, format } from "date-fns";
 import type { Field } from "@/components/Table/types";
+import api, { handleAxiosError } from "@/services/api";
+import { Task } from "@/components/dashboard/kanban/TaskCard";
+import { formatNumber } from "@/utils/number-formatter";
 
-function getBackgroundColor(title: string): string {
+export function getBackgroundColor(title: string): string {
   let backgroundColor: string;
 
   switch (title) {
@@ -52,81 +55,261 @@ function getBackgroundColor(title: string): string {
   return backgroundColor;
 }
 
-export const dashboardCardData = [
+export const getDashboardCardData = (data: Record<string, any>) => [
   {
     title: "Properties",
     bg: getBackgroundColor("properties"),
     icon: BuildingIcon,
-    value: 10,
-    subValue: 20,
-    link: "/management/staff-branch/",
+    value: formatNumber(data.data.property_count),
+    subValue: formatNumber(data.data.month_count),
+    link: "/management/properties/",
   },
   {
     title: "Landlords",
     bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
-    value: 15,
-    subValue: 20,
+    value: formatNumber(data.data.landlord_count),
+    subValue: formatNumber(data.data.month_landlord_count),
     link: "/management/landlord",
   },
   {
     title: "Tenants & Occupants",
     bg: getBackgroundColor("tenants & occupants"),
     icon: TenantIcon,
-    value: 25,
-    subValue: 20,
+    value: formatNumber(data.data.tenant_count),
+    subValue: formatNumber(data.data.month_tenant_count),
     link: "/management/tenants",
   },
   {
     title: "Vacant Unit",
     bg: getBackgroundColor("vacant unit"),
     icon: BedIcon,
-    value: 5,
-    subValue: 20,
-    link: "/management/rent-unit",
+    value: formatNumber(data.data.vacant_unit),
+    subValue: formatNumber(data.data.month_vacant_unit),
+    link: "/management/rent-unit?is_active=vacant",
   },
   {
     title: "Expired",
     bg: getBackgroundColor("expired"),
     icon: ExpiredIcon,
-    value: 3,
-    subValue: 20,
-    link: "/management/rent-unit",
+    value: formatNumber(data.data.expired_unit),
+    subValue: formatNumber(data.data.month_expired_unit),
+    link: "/management/rent-unit?is_active=expired",
   },
   {
     title: "Invoices",
     bg: getBackgroundColor("invoices"),
     icon: InvoiceIcon,
-    value: 12,
-    subValue: 20,
-    link: "/accounting/invoice",
+    value: formatNumber(data.data.invoice_count),
+    subValue: formatNumber(data.data.month_invoice_count),
+    link: "/accounting/invoice?status=pending",
   },
   {
     title: "Inquiries",
     bg: getBackgroundColor("inquiries"),
     icon: InquiriesIcon,
-    value: 20,
-    subValue: 20,
-    link: "/tasks/inquires",
+    value: formatNumber(data.data.inquiry_count),
+    subValue: formatNumber(data.data.month_inquiry_count),
+    link: "/tasks/inquires?status=pending",
   },
-
   {
     title: "Complaints",
     bg: getBackgroundColor("complaints"),
     icon: ComplaintsIcon,
-    value: 8,
-    subValue: 20,
+    value: formatNumber(data.data.complaint_count),
+    subValue: formatNumber(data.data.month_complaint_count),
     link: "/tasks/complaints",
   },
   {
     title: "Listings",
     bg: getBackgroundColor("listings"),
     icon: ListingsIcon,
-    value: 7,
-    subValue: 20,
+    value: formatNumber(data.data.listing_count),
+    subValue: formatNumber(data.data.month_listing_count),
     link: "/listing/units",
   },
 ];
+
+export const initialDashboardStats = [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/properties/",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/tenants",
+  },
+  {
+    title: "Vacant Unit",
+    bg: getBackgroundColor("vacant unit"),
+    icon: BedIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
+    icon: ExpiredIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
+    icon: InvoiceIcon,
+    value: "0",
+    subValue: "0",
+    link: "/accounting/invoice",
+  },
+  {
+    title: "Inquiries",
+    bg: getBackgroundColor("inquiries"),
+    icon: InquiriesIcon,
+    value: "0",
+    subValue: "0",
+    link: "/tasks/inquires",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: "0",
+    subValue: "0",
+    link: "/tasks/complaints",
+  },
+  {
+    title: "Listings",
+    bg: getBackgroundColor("listings"),
+    icon: ListingsIcon,
+    value: "0",
+    subValue: "0",
+    link: "/listing/units",
+  },
+];
+
+export const dashboardCardData = [
+  {
+    title: "Properties",
+    bg: getBackgroundColor("properties"),
+    icon: BuildingIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/staff-branch/",
+  },
+  {
+    title: "Landlords",
+    bg: getBackgroundColor("landlords"),
+    icon: LandlordIcon,
+      value: "0",
+    subValue: "0",
+    link: "/management/landlord",
+  },
+  {
+    title: "Tenants & Occupants",
+    bg: getBackgroundColor("tenants & occupants"),
+    icon: TenantIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/tenants",
+  },
+  {
+    title: "Vacant Unit",
+    bg: getBackgroundColor("vacant unit"),
+    icon: BedIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Expired",
+    bg: getBackgroundColor("expired"),
+    icon: ExpiredIcon,
+    value: "0",
+    subValue: "0",
+    link: "/management/rent-unit",
+  },
+  {
+    title: "Invoices",
+    bg: getBackgroundColor("invoices"),
+    icon: InvoiceIcon,
+    value: "0",
+    subValue: "0",
+    link: "/accounting/invoice",
+  },
+  {
+    title: "Inquiries",
+    bg: getBackgroundColor("inquiries"),
+    icon: InquiriesIcon,
+    value: "0",
+    subValue: "0",
+    link: "/tasks/inquires",
+  },
+  {
+    title: "Complaints",
+    bg: getBackgroundColor("complaints"),
+    icon: ComplaintsIcon,
+    value: "0",
+    subValue: "0",
+    link: "/tasks/complaints",
+  },
+  {
+    title: "Listings",
+    bg: getBackgroundColor("listings"),
+    icon: ListingsIcon,
+    value: "0",
+    subValue: "0",
+    link: "/listing/units",
+  },
+];
+
+export const transformWalletChartData = (transactions:any) => {
+  return transactions.map((t:any) => ({
+    date: t.date,
+    totalfunds:
+      (t.type === "credit" ||
+      t.transaction_type === "funding" ||
+      t.transaction_type === "transfer_in"
+        ? Number(t.amount)
+        : 0) +
+      (t.type === "debit" ||
+      t.transaction_type === "withdrawal" ||
+      t.transaction_type === "sponsor_listing" ||
+      t.transaction_type === "transfer_out"
+        ? Number(t.amount)
+        : 0),
+    credit:
+      t.type === "credit" ||
+      t.transaction_type === "funding" ||
+      t.transaction_type === "transfer_in"
+        ? Number(t.amount)
+        : 0,
+    debit:
+      t.type === "debit" ||
+      t.transaction_type === "withdrawal" ||
+      t.transaction_type === "sponsor_listing" ||
+      t.transaction_type === "transfer_out"
+        ? Number(t.amount)
+        : 0,
+  }));
+};
 
 export const walletBalanceCardData = {
   mainBalance: 1000,
@@ -166,42 +349,58 @@ export const recentMessagesData = [
   },
 ];
 
+export const getRecentMessages = (data: any) => {
+  return data
+    ?.slice(0, 7) // Limit to the first 7 messages
+    .map((m: any) => ({
+      id: m?.id,
+      avatarSrc: m?.pfp,
+      name: m?.fullname,
+      message: m?.desc,
+      time: m?.time,
+      count: m?.unread_count,
+      content_type: m?.content_type,
+      online: m?.online,
+      badgeColor: m.badgeColor,
+    }));
+};
+
 export const complaintsData = [
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Door complain",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Visitor door and water",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Water complain",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Door complain",
-  },
-  {
-    avatarSrc: "/empty/avatar.png",
-    name: "Amori Ademakinwa",
-    message: "Hello, this is Makinwa, and i want to ask you how",
-    time: "2:30pm",
-    title: "Door complain",
-  },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Door complain",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Visitor door and water",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Water complain",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Door complain",
+  // },
+  // {
+  //   avatarSrc: "/empty/avatar.png",
+  //   name: "Amori Ademakinwa",
+  //   message: "Hello, this is Makinwa, and i want to ask you how",
+  //   time: "2:30pm",
+  //   title: "Door complain",
+  // },
 ];
 
 export const getDashboardData = async (access_token: string | null) => {
@@ -231,7 +430,7 @@ export const dashboardPerformanceChartConfig = {
   },
   credit: {
     label: "Credit",
-    color: "#2DD4BF ",
+    color: "#2DD4BF",
   },
   debit: {
     label: "Debit",
@@ -244,9 +443,9 @@ export const dashboardListingsChartConfig = {
     label: "Views",
     color: "#01BA4C",
   },
-  enquiries: {
-    label: "Enquiries",
-    color: "#315EE7",
+  bookmarks: {
+    label: "Bookmarked",
+    color: "#2DD4BF",
   },
 };
 
@@ -271,17 +470,22 @@ export const dashboardListingsChartData = Array.from({ length: 90 }, (_, i) => {
 }).reverse();
 
 export const invoiceTableFields: Field[] = [
-  { id: "1", accessor: "picture", isImage: true, picSize: 40 },
+  {
+    id: "1",
+    accessor: "client_picture",
+    isImage: true,
+    picSize: 40,
+  },
   {
     id: "2",
     label: "Name",
-    accessor: "name",
+    accessor: "client_name",
   },
   { id: "3", label: "Invoice ID", accessor: "invoice_id" },
   {
     id: "4",
     label: "Details",
-    accessor: "details",
+    accessor: "payment_reason",
     cellStyle: {
       textOverflow: "ellipsis",
       overflow: "hidden",
@@ -290,7 +494,7 @@ export const invoiceTableFields: Field[] = [
     },
   },
   { id: "5", label: "Total Amount", accessor: "total_amount" },
-  { id: "6", label: "Date", accessor: "date" },
+  { id: "6", label: "Date", accessor: "invoice_date" },
 ];
 
 export const dashboardInvoiceTableData = Array.from(
@@ -315,3 +519,315 @@ export const dashboardInvoiceTableData = Array.from(
     };
   }
 );
+
+export const sendDemoRequest = async (data: FormData) => {
+  try {
+    const res = await api.post("/request-demos", data);
+    console.log("res", res);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const dummyTasks: Task[] = [
+  // {
+  //   id: "1",
+  //   columnId: "rejected",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "rejected",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "2",
+  //   columnId: "rejected",
+  //   // email: "email@gmail.com",
+  //   // officer: "John Doe",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "rejected",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "3",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   columnId: "rejected",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "rejected",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "4",
+  //   columnId: "processing",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "processing",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "5",
+  //   columnId: "processing",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "processing",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "6",
+  //   // officer: "John Doe",
+  //   columnId: "approved",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "7",
+  //   columnId: "approved",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "8",
+  //   columnId: "approved",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "9",
+  //   columnId: "approved",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "10",
+  //   columnId: "approved",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "11",
+  //   columnId: "approved",
+  //   // email: "email@gmail.com",
+  //   // officer: "John Doe",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "12",
+  //   // officer: "John Doe",
+  //   // email: "email@gmail.com",
+  //   columnId: "approved",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+  // {
+  //   id: "13",
+  //   // officer: "John Doe",
+  //   columnId: "approved",
+  //   // email: "email@gmail.com",
+  //   content: {
+  //     messageCount: 2,
+  //     linkCount: 1,
+  //     userAvatars: [
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //       "/empty/avatar.png",
+  //     ],
+  //     // date_time: "25 Jan 2024 (02:30pm)",
+  //     date: "25 Jan 2024",
+  //     status: "approved",
+  //     progress: 50,
+  //   },
+  //   name: "John Doe",
+  //   title: "Project Manager",
+  //   message: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+  //   avatarSrc: "/empty/avatar.png",
+  // },
+];

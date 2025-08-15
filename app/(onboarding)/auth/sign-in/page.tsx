@@ -1,5 +1,6 @@
 'use client';
 
+
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -31,7 +32,6 @@ const SignIn = () => {
 
     const logo = company_logo || empty;
 
-
   const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (formData: Record<string, any>) => {
@@ -45,6 +45,7 @@ const SignIn = () => {
         if (currentRole) {
           clearInterval(interval);
           router.push(getDashboardPage(currentRole));
+          // window.location.href = getDashboardPage(currentRole);
         }
       }, 50);
     } else if (a === 'redirect to setup') {
@@ -90,7 +91,7 @@ const SignIn = () => {
             </Checkbox>
             <Link
               href='/auth/forgot-password'
-              className='custom-primary-color text-sm font-medium'
+              className='custom-primary-color dark:text-darkText-1 text-sm font-medium'
             >
               Forgot Password?
             </Link>

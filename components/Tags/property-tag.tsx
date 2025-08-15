@@ -5,6 +5,7 @@ const PropertyTag: React.FC<PropertyTagProps> = ({
   className,
   propertyType,
   sm,
+  list,
 }) => {
   return (
     <p
@@ -19,7 +20,11 @@ const PropertyTag: React.FC<PropertyTagProps> = ({
         className
       )}
     >
-      {propertyType === "rental" ? "Rental Property" : "Facility Property"}
+      {propertyType === "rental"
+        ? "Rental Property"
+        : list
+        ? "Estate/Facility Property"
+        : "Facility Property"}
     </p>
   );
 };

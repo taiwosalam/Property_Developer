@@ -24,6 +24,33 @@ export const inviteLandlordEmail = async (formData: any) => {
   }
 };
 
+export const addLandlordWithEmail = async (formData: any) => {
+  try {
+    const res = await api.post("/landlord-add/email", formData);
+    if (res.status === 201){
+      toast.success("Landlord created successfully");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to create landlord");
+    return false;
+  }
+};
+
+
+export const addTenantWithEmail = async (formData: any) => {
+  try {
+    const res = await api.post("/tenant-add/email", formData);
+    if (res.status === 201){
+      toast.success("Tenant created successfully");
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to create landlord");
+    return false;
+  }
+};
+
 export const multipleCreateLandlord = async (formData: FormData) => {
   try {
     const { data } = await api.post("/landlord/multiple/creation", formData);

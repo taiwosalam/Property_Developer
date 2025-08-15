@@ -4,6 +4,7 @@ import Picture from "@/components/Picture/picture";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { CallRequestModalProps } from "./types";
 import ModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { getBadgeColor } from "@/lib/utils";
 
 const CallRequestModal: React.FC<CallRequestModalProps> = ({
   requesterName,
@@ -16,6 +17,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
   accountOfficer,
   resolvedBy,
   resolvedDateTime,
+  tier_id,
 }) => {
   return (
     <ModalPreset title="Request for Call">
@@ -25,8 +27,10 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             <Picture size={50} src={requesterPicture} rounded />
           </div>
           <div className="flex items-center gap-0.5 justify-center">
-            <span className="text-[16px] font-medium">{requesterName}</span>
-            <BadgeIcon color="blue" />
+            <span className="text-[16px] font-medium capitalize">
+              {requesterName}
+            </span>
+            <BadgeIcon color={getBadgeColor(tier_id) || "gray"} />
           </div>
           <div className="flex items-center space-x-1">
             <p className="font-medium text-[16px] text-text-tertiary">
@@ -61,7 +65,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
               Property Address
             </p>
-            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
+            <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2 capitalize">
               {propertyAddress}
             </p>
           </div>
@@ -75,7 +79,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
           </div>
           <div className="flex items-center justify-between">
             <p className="text-text-tertiary font-medium text-[16px] dark:text-darkText-1">
-              Account Officer
+              Account Manager
             </p>
             <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">
               {accountOfficer}
@@ -93,7 +97,7 @@ const CallRequestModal: React.FC<CallRequestModalProps> = ({
             </p>
           </div>
           <div className="flex items-center justify-between">
-            <p className="text-text-secondary font-medium text-[14px] dark:text-darkText-1">
+            <p className="text-text-secondary font-medium text-[14px] dark:text-darkText-1 capitalize">
               {resolvedBy}
             </p>
             <p className="text-text-secondary font-medium text-[14px] text-right dark:text-darkText-2">

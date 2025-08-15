@@ -1,6 +1,18 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
-const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY as string);
+import { GoogleGenAI } from "@google/genai";
+
+import { groq } from "@ai-sdk/groq";
+
+import { createGroq } from "@ai-sdk/groq";
+import { streamText, generateText } from "ai";
+
+const cg = createGroq({
+  // custom settings
+  apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY as string,
+});
+
+const groqModel = cg("llama-3.3-70b-versatile");
 
 /**
  * Generates content based on the provided feature and user input.
@@ -9,10 +21,12 @@ const genAI = new GoogleGenerativeAI(process.env.NEXT_PUBLIC_GEMINI_API_KEY as s
  * @param {string} userInput - The user-provided text.
  * @returns {Promise<string>} - The generated text content.
  */
-export async function generateTextContent(aiFeature: string, userInput: string): Promise<string> {
+export async function generateTextContent(
+  aiFeature: string,
+  userInput: string
+): Promise<string | undefined> {
   try {
     // Initialize the generative model
-    const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
     let prompt = "";
 
@@ -26,7 +40,6 @@ export async function generateTextContent(aiFeature: string, userInput: string):
         Provide suggestions that could complete or extend the user's input. The suggestions should be clear, concise, and fit naturally with the input provided. The suggestion should be a short phrase or a sentence that could be used to complete the user's input and should not contain what user already input, it should only be what should be next to the input to make a sentence.
       `;
     } else {
-      // Default prompt for other AI features
       prompt = `
         Task: ${aiFeature}
 
@@ -38,17 +51,23 @@ export async function generateTextContent(aiFeature: string, userInput: string):
       `;
     }
 
-    // Generate content using the model
-    const result = await model.generateContent(prompt);
+    const { textStream } = await streamText({
+      model: groqModel,
+      prompt,
+    });
 
-    // Parse the response text
-    const responseText = await result.response.text();
+    let concatText = ""
 
-    return responseText;
+    console.log(textStream);
+
+    for await (const text of textStream){
+      concatText += text;
+      process.stdout.write(text);
+    }
+
+    return concatText;
   } catch (error) {
     console.error("Error generating content:", error);
-    throw new Error("Failed to generate content. Please try again.");
+    throw new Error("Failed to generate content. Please try again." + error);
   }
 }
-
-

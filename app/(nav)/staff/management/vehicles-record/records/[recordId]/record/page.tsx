@@ -39,7 +39,13 @@ import { checkInVehicle } from "@/components/tasks/vehicles-record/data";
 import { toast } from "sonner";
 import { Box as MuiBox, Modal as MuiModal } from "@mui/material";
 import { UseerSkeletonVehicleRecord } from "@/components/Skeleton/vehicle-record";
-
+import ServerError from "@/components/Error/ServerError";
+import UpdateVehicleWithEmail from "@/components/Modal/update-vehicle-record";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { NotepadTextDashed } from "lucide-react";
+import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 interface TransformedData {
   userData: UserData | null;
@@ -68,11 +74,17 @@ interface Notes {
 const RecordPage = () => {
   const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
-  const [updateUserModal, setUpdateUserModal] = useState(false)
-  const [updateVehicleModal, setUpdateVehicleModal] = useState(false)
+  const [updateUserModal, setUpdateUserModal] = useState(false);
+  const [updateVehicleModal, setUpdateVehicleModal] = useState(false);
   const { recordId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [checking, setChecking] = useState(false);
+
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCheckInAndManageVehicleRec =
+    usePermission(role, "Can check in and manage vehicle records") ||
+    role === "director";
 
   const initialState: TransformedData = {
     userData: null,
@@ -83,26 +95,24 @@ const RecordPage = () => {
 
   const [states, setStates] = useState<TransformedData>(initialState);
 
-    const handlePageChange = (page: number) => {
-      setSearchQuery("");
-      setStates((prevState) => ({
-        ...prevState,
-        checkInsOutData: {
-          ...prevState.checkInsOutData,
-          current_page: page,
-          check_ins: prevState.checkInsOutData?.check_ins || [],
-          total: prevState.checkInsOutData?.total || 0,
-          prev_page_url: prevState.checkInsOutData?.prev_page_url || "",
-          last_page: prevState.checkInsOutData?.last_page || 0,
-          next_page_url: prevState.checkInsOutData?.next_page_url || "",
-          first_page_url: prevState.checkInsOutData?.first_page_url || "",
-          last_page_url: prevState.checkInsOutData?.last_page_url || "",
-          per_page: prevState.checkInsOutData?.per_page || 0,
-        },
-      }));
-    };
-
-
+  const handlePageChange = (page: number) => {
+    setSearchQuery("");
+    setStates((prevState) => ({
+      ...prevState,
+      checkInsOutData: {
+        ...prevState.checkInsOutData,
+        current_page: page,
+        check_ins: prevState.checkInsOutData?.check_ins || [],
+        total: prevState.checkInsOutData?.total || 0,
+        prev_page_url: prevState.checkInsOutData?.prev_page_url || "",
+        last_page: prevState.checkInsOutData?.last_page || 0,
+        next_page_url: prevState.checkInsOutData?.next_page_url || "",
+        first_page_url: prevState.checkInsOutData?.first_page_url || "",
+        last_page_url: prevState.checkInsOutData?.last_page_url || "",
+        per_page: prevState.checkInsOutData?.per_page || 0,
+      },
+    }));
+  };
 
   const config = useMemo(
     () => ({
@@ -121,7 +131,10 @@ const RecordPage = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<SingleVehicleRecordApiResponse>(`vehicle-records/${recordId}/show-details`, config);
+  } = useFetch<SingleVehicleRecordApiResponse>(
+    `vehicle-records/${recordId}/show-details`,
+    config
+  );
 
   useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
@@ -143,9 +156,8 @@ const RecordPage = () => {
       console.error("Invalid API data format:", apiData);
     }
   }, [apiData, loading]);
-  
-  const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
+  const { userData, vehicleDetails, webContactInfo, checkInsOutData } = states;
 
   if (loading)
     return (
@@ -155,9 +167,7 @@ const RecordPage = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
-
+  if (error) return <ServerError error={error} />;
   if (!userData || !vehicleDetails || !webContactInfo) {
     return <div>No data available.</div>;
   }
@@ -165,6 +175,7 @@ const RecordPage = () => {
   const {
     user_tag,
     notes,
+    note,
     full_name,
     state: userState,
     address,
@@ -174,6 +185,7 @@ const RecordPage = () => {
     phone_number,
     id: userId,
     pictureSrc,
+    registrationDate,
   } = userData;
 
   const {
@@ -188,39 +200,69 @@ const RecordPage = () => {
     vehicle_type,
   } = vehicleDetails;
 
+  console.log("userData", userData);
 
-    const handleCheckIn = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const formData = new FormData(form);
+  const handleCheckIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
 
-      // Modify keys in formData
-      const data = Object.fromEntries(formData.entries());
-      data.passengers_in = data.passenger;
-      delete data.passenger;
-      data.inventory_in = data.inventory;
-      delete data.inventory;
-      
-      // Add vehicle_record to requestId
-      data.vehicle_record_id = `${recordId}`;
-      
-      
-      try {
-        setChecking(true);
-        const response = await checkInVehicle(data);
-        if (response) {
-          window.dispatchEvent(new Event("refetchVehicleRecord"));
-          toast.success("Vehicle checked in successfully");
-          setModalOpen(false);
-        } else {
-          toast.error("Failed to check in vehicle");
-        }
-      } catch (error) {
-        console.error(error);
-      } finally { 
-        setChecking(false);
+    // Modify keys in formData
+    const data = Object.fromEntries(formData.entries());
+    data.passengers_in = data.passenger;
+    delete data.passenger;
+    data.inventory_in = data.inventory;
+    delete data.inventory;
+
+    // Add vehicle_record to requestId
+    data.vehicle_record_id = `${recordId}`;
+
+    try {
+      setChecking(true);
+      const response = await checkInVehicle(data);
+      if (response) {
+        window.dispatchEvent(new Event("refetchVehicleRecord"));
+        toast.success("Vehicle checked in successfully");
+        setModalOpen(false);
+      } else {
+        toast.error("Failed to check in vehicle");
       }
-    };
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setChecking(false);
+    }
+  };
+
+  // Check if there's a record
+  const hasRecords = (checkInsOutData?.check_ins ?? []).length > 0;
+
+  // Handle Edit Vehicle button click
+  const handleEditVehicleClick = () => {
+    if (hasRecords) {
+      toast.warning("Cannot update details if there's a record.");
+      return;
+    }
+    setUpdateVehicleModal(true);
+  };
+
+  // Check if there's a pending record
+  const hasPendingRecord =
+    checkInsOutData?.check_ins?.some((record) => record.status === "pending") ||
+    false;
+
+  // Handle button click when there's a pending record
+  const handleCreateNewRecordClick = () => {
+    if (hasPendingRecord) {
+      toast.warning(
+        "There’s a pending record that needs to be checked out before creating a new record."
+      );
+      return;
+    }
+    setModalOpen(true);
+  };
+
+  console.log("phone_number", phone_number);
 
   return (
     <div className="space-y-5 pb-[100px]">
@@ -232,10 +274,11 @@ const RecordPage = () => {
         >
           <div className="flex flex-col xl:flex-row gap-5">
             <Picture
-              src={avatar || DefaultLandlordAvatar}
+              src={avatar || empty}
               alt="profile picture"
               size={120}
               rounded
+              className="custom-secondary-bg"
             />
             <div className="custom-flex-col gap-4">
               <div className="custom-flex-col">
@@ -243,7 +286,7 @@ const RecordPage = () => {
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
                     {full_name}
                   </p>
-                  <BadgeIcon color="blue" />
+                  {/* <BadgeIcon color="blue" /> */}
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm dark:text-darkText-2 font-normal`}
@@ -252,7 +295,12 @@ const RecordPage = () => {
                 </p>
               </div>
               <div className="custom-flex-col gap-2">
-                <UserTag type={user_tag} />
+                <div className="flex gap-2 items-center">
+                  <UserTag type={user_tag} />
+                  {note && (
+                    <NoteBlinkingIcon size={20} className="blink-color" />
+                  )}
+                </div>
                 {user_tag === "mobile" && (
                   <p className="text-neutral-800 dark:text-darkText-2 text-base font-medium">
                     ID: {userId}
@@ -269,19 +317,20 @@ const RecordPage = () => {
                 </Button>
               </>
             ) : (
-              <>
-                <Modal
-                  state={{
-                    isOpen: updateUserModal,
-                    setIsOpen: setUpdateUserModal,
-                  }}
-                >
-                  <ModalTrigger asChild>
-                    <Button size="base_medium" className="py-2 px-8">
-                      Edit
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
+              canCheckInAndManageVehicleRec && (
+                <>
+                  <Modal
+                    state={{
+                      isOpen: updateUserModal,
+                      setIsOpen: setUpdateUserModal,
+                    }}
+                  >
+                    <ModalTrigger asChild>
+                      <Button size="base_medium" className="py-2 px-8">
+                        Edit
+                      </Button>
+                    </ModalTrigger>
+                    {/* <ModalContent>
                     <EditPersonalDetailsFormModal
                       data={{
                         id: vehicleDetails.id,
@@ -296,32 +345,41 @@ const RecordPage = () => {
                       isOpen={updateUserModal}
                       setIsOpen={setUpdateUserModal}
                     />
-                  </ModalContent>
-                </Modal>
-                <Button size="base_medium" className="py-2 px-8">
-                  Update with ID
-                </Button>
-              </>
+                  </ModalContent> */}
+                  </Modal>
+                  <Modal>
+                    <ModalTrigger asChild>
+                      <Button size="base_medium" className="py-2 px-8">
+                        Update with Email
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <UpdateVehicleWithEmail recordId={recordId.toString()} />
+                    </ModalContent>
+                  </Modal>
+                </>
+              )
             )}
-            <Modal>
-              <ModalTrigger asChild>
-                <Button
-                  variant="sky_blue"
-                  size="base_medium"
-                  className="py-2 px-8"
-                >
-                  Note
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                <MobileNotesModal
-                  notes={{
-                    last_updated: notes?.last_updated || "",
-                    write_up: notes?.write_up ?? "",
-                  }}
-                />
-              </ModalContent>
-            </Modal>
+            {canCheckInAndManageVehicleRec && (
+              <Modal>
+                <ModalTrigger asChild>
+                  <Button
+                    variant="sky_blue"
+                    size="base_medium"
+                    className="py-2 px-8"
+                  >
+                    Note
+                  </Button>
+                </ModalTrigger>
+                <ModalContent>
+                  <MobileNotesModal
+                    page="vehicle-record"
+                    id={recordId.toString()}
+                    defaultNote={note}
+                  />
+                </ModalContent>
+              </Modal>
+            )}
           </div>
         </InfoBox>
 
@@ -371,17 +429,21 @@ const RecordPage = () => {
             <Detail label="Color" value={color || "N/A"} />
             <Detail label="Manufacture Year" value={manufacture_year} />
           </div>
+          {canCheckInAndManageVehicleRec && (
+            <Button
+              size="base_medium"
+              className="py-2 px-8 ml-auto self-end"
+              onClick={handleEditVehicleClick}
+            >
+              Edit
+            </Button>
+          )}
           <Modal
             state={{
               isOpen: updateVehicleModal,
               setIsOpen: setUpdateVehicleModal,
             }}
           >
-            <ModalTrigger asChild>
-              <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
-                Edit
-              </Button>
-            </ModalTrigger>
             <ModalContent>
               <EditVehicleDetailsFormModal
                 data={{
@@ -391,7 +453,7 @@ const RecordPage = () => {
                   state: vehicleState,
                   model: model,
                   vehicle_type: vehicle_type,
-                  color: color || "N/A",
+                  color: color || "",
                   manufacturer_year: manufacture_year,
                   visitor_category: category,
                 }}
@@ -426,28 +488,42 @@ const RecordPage = () => {
         currentPage={checkInsOutData?.current_page || 1}
         onPageChange={handlePageChange}
       />
-      <FixedFooter className="flex items-center justify-end">
-        <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
-          <ModalTrigger asChild>
-            <Button size="sm_normal" className="py-2 px-8">
-              Create New Record
+      {canCheckInAndManageVehicleRec && (
+        <FixedFooter className="flex items-center justify-end">
+          {hasPendingRecord ? (
+            <Button
+              size="base_medium"
+              className="py-2 px-8"
+              onClick={() => router.back()}
+            >
+              Ok
             </Button>
-          </ModalTrigger>
-          <ModalContent>
-              <CheckInOutForm
-                onSubmit={handleCheckIn}
-                loading={checking}
-                useCase="vehicle"
-                type="check-in"
-                pictureSrc={pictureSrc}
-                userName={full_name}
-                id={userId}
-                category={category}
-                registrationDate="12/01/2024 (08:09pm)" // Replace with dynamic data if available
-              />
-          </ModalContent>
-        </Modal>
-      </FixedFooter>
+          ) : (
+            <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
+              <Button
+                onClick={handleCreateNewRecordClick}
+                size="sm_normal"
+                className="py-2 px-8"
+              >
+                Create New Record
+              </Button>
+              <ModalContent>
+                <CheckInOutForm
+                  onSubmit={handleCheckIn}
+                  loading={checking}
+                  useCase="vehicle"
+                  type="check-in"
+                  pictureSrc={pictureSrc}
+                  userName={full_name}
+                  id={userId}
+                  category={category}
+                  registrationDate={registrationDate}
+                />
+              </ModalContent>
+            </Modal>
+          )}
+        </FixedFooter>
+      )}
     </div>
   );
 };

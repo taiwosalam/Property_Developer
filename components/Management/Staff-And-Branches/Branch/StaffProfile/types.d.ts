@@ -4,9 +4,11 @@ import { StaticImageData } from "next/image";
 export interface StaffProfilePortfolioProps {
   title: string;
   items: StaffProfilePortfolioItemProps[];
+  branchId?: string;
 }
 
 export interface StaffProfilePortfolioItemProps {
+  link?: string;
   image: string | StaticImageData;
   property?: {
     name: string;
@@ -17,6 +19,7 @@ export interface StaffProfilePortfolioItemProps {
     email: string;
     verified?: boolean;
     phone_number: string;
+    badge_color?: "green" | "black" | "blue" | "red" | "yellow" | "gray";
   };
 }
 
@@ -34,4 +37,6 @@ export interface StaffProfileProps {
   picture?: string;
   about:any;
   status: string;
+  experience: number | string;
+  isVerified?: boolean;
 }

@@ -9,4 +9,7 @@ export interface DocumentCheckboxProps {
   };
   alignCheckboxCenter?: boolean;
   className?: string;
+  onClick?: () => void;
+  onChange?: (name: string, checked: boolean) => void; // Added onChange
+  name?: string; //
 }

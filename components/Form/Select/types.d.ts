@@ -1,6 +1,7 @@
 export interface SelectOptionObject {
   value: string | number;
   label: string;
+  icon?: string;
 }
 
 export interface SelectProps {
@@ -10,6 +11,7 @@ export interface SelectProps {
   options: (string | SelectOptionObject)[];
   value?: string | SelectOptionObject;
   label?: string;
+  desc?: string;
   className?: string;
   required?: boolean;
   placeholder?: string;
@@ -25,4 +27,5 @@ export interface SelectProps {
   requiredNoStar?: boolean;
   disabled?: boolean;
   error?: string | null;
+  renderValue?: (value: string) => string;
 }

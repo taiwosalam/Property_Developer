@@ -18,12 +18,14 @@ export interface NavButtonProps {
   isOpen?: boolean;
   isCollapsed?: boolean;
   topNav?: boolean;
+  className?: string;
 }
 
 export interface NavDropdownProps extends NavButtonProps {
   onContentClick?: () => void;
   content: { label: string; href: string }[];
   onToggle?: () => void;
+  className?: string; 
 }
 
 export type NavItemsProps = {
@@ -35,7 +37,9 @@ export type NavItemsProps = {
 
 export interface NavIconProps {
   alt?: string;
+  count?: number;
   href?: string;
+  badgeColor?: string;
   icon: React.ReactNode;
   onClick?: () => void;
 }
@@ -73,4 +77,14 @@ export interface NavModalLayoutProps {
 
 export interface NavGlobalSearchItemProps {
   icon: SVGType;
+  title?: string;
+  subtitle?: string;
+  extra?: string;
+  query?: string;
+  isVerified?: boolean;
+  tier_id?: number;
+  type?: string;
+  link: string;
+  query: string
+  setIsOpen: (isOpen: boolean) => void;
 }

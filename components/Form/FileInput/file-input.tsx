@@ -8,6 +8,8 @@ import Label from "../Label/label";
 import Button from "../Button/button";
 import { DeleteIconX, EyeShowIcon } from "@/public/icons/icons";
 import { FlowProgressContext } from "@/components/FlowProgress/flow-progress";
+import { SettingsVerifiedBadge } from "@/components/Settings/settings-components";
+import { getImageNameFromUrl } from "@/components/Settings/sponsor_data";
 
 const FileInput: React.FC<FileInputProps> = ({
   id,
@@ -16,12 +18,17 @@ const FileInput: React.FC<FileInputProps> = ({
   hiddenInputClassName,
   textStyles,
   required,
-  placeholder,
+  placeholder = "Click to upload document",
   buttonName,
   fileType,
   size,
   sizeUnit,
   settingsPage,
+  defaultValue,
+  noUpload,
+  membership_status,
+  endAdornment,
+  isSvg,
 }) => {
   const { handleInputChange } = useContext(FlowProgressContext);
   const [file, setFile] = useState<File | null>(null);
@@ -30,6 +37,7 @@ const FileInput: React.FC<FileInputProps> = ({
   const [fileURL, setFileURL] = useState("");
   const { width } = useWindowDimensions();
   const [isLgScreen, setIsLgScreen] = useState(true);
+  const [defaultFile, setDefaultFile] = useState<string>(defaultValue || "");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const previousFileRef = useRef<File | null>(null);
@@ -39,6 +47,12 @@ const FileInput: React.FC<FileInputProps> = ({
       fileInputRef.current.click();
     }
   };
+
+  useEffect(() => {
+    if (defaultValue) {
+      setDefaultFile(defaultValue);
+    }
+  }, [defaultValue]);
 
   const restorePreviousFile = () => {
     if (previousFileRef.current) {
@@ -62,13 +76,20 @@ const FileInput: React.FC<FileInputProps> = ({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newFile = event.target.files?.[0];
     if (!newFile) {
-      restorePreviousFile();
+      //restorePreviousFile();
       return;
+    }
+    if (isSvg) {
+      if (newFile.type !== "image/svg+xml") {
+        toast.warning("Only SVG files are supported.");
+        restorePreviousFile();
+        return;
+      }
     }
     if (!fileType) {
       if (!newFile.type.startsWith("image/")) {
         toast.warning("Please upload an image file.");
-        restorePreviousFile();
+        //restorePreviousFile();
         return;
       }
     } else {
@@ -79,7 +100,7 @@ const FileInput: React.FC<FileInputProps> = ({
         fileExtension !== fileType.toLowerCase()
       ) {
         toast.warning(`Please upload a ${fileType} or image file.`);
-        restorePreviousFile();
+        //restorePreviousFile();
         // setShowVerifyBtn(true);
         return;
       }
@@ -90,16 +111,23 @@ const FileInput: React.FC<FileInputProps> = ({
     // Validate file size
     if (newFile.size > sizeInBytes) {
       toast.warning(`File size should not exceed ${size} ${sizeUnit}.`);
-      restorePreviousFile();
+      //restorePreviousFile();
       return;
     }
     setFile(newFile);
+    setDefaultFile("");
     // setShowVerifyBtn(true);
   };
 
   const handleViewFile = () => {
     if (fileURL) {
       window.open(fileURL, "_blank");
+    }
+  };
+
+  const handleView = () => {
+    if (defaultValue) {
+      window.open(defaultValue, "_blank");
     }
   };
 
@@ -113,6 +141,8 @@ const FileInput: React.FC<FileInputProps> = ({
   useEffect(() => {
     setIsLgScreen(width >= 1024);
   }, [width]);
+
+  console.log(fileName);
 
   useEffect(() => {
     if (file) {
@@ -129,95 +159,149 @@ const FileInput: React.FC<FileInputProps> = ({
   }, [file, handleInputChange]);
 
   return (
-    <div className={clsx("custom-flex-col gap-2", className)}>
+    <div className={clsx("custom-flex-col gap-2 w-full overflow-hidden", className)}>
       {label && (
-        <Label id={id} required={required}>
+        <Label
+          labelclassName={clsx("!opacity-100", {
+            "!text-opacity-50 !opacity-50": noUpload,
+          })}
+          id={id}
+          required={required}
+        >
           {label}
         </Label>
       )}
-      <div className={`relative ${settingsPage && "flex"} `}>
-        <input
-          id={id}
-          name={id}
-          type="file"
-          // required={required}
-          className={clsx(
-            "absolute w-0 h-0 opacity-0 pointer-events-none",
-            hiddenInputClassName
-          )}
-          ref={fileInputRef}
-          onChange={handleFileChange}
-        />
+      <div className="relative flex gap-2 items-center w-full">
         <div
-          role="button"
-          aria-label="upload"
-          onClick={handleClick}
-          className={clsx(
-            "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
-            textStyles,
-            fileName ? "bg-neutral-2" : "bg-none"
-          )}
+          className={`relative w-full ${
+            settingsPage && "flex"
+          }  ${clsx(
+            noUpload ? "cursor-not-allowed opacity-50" : "cursor-pointer"
+          )}`}
         >
-          {!settingsPage ? (
-            <span
-              className={clsx(
-                "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
-              )}
-            >
-              {fileName
-                ? fileName
-                : `Click ${isLgScreen ? "the side button" : "here"} to upload ${placeholder || "file"
-                }`}
-            </span>
-          ) : (
-            <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap">
-              Click to upload document
-            </span>
-          )}
+          <input
+            id={id}
+            name={id}
+            type="file"
+            disabled={noUpload}
+            // required={required}
+            className={clsx(
+              "absolute w-0 h-0 opacity-0 pointer-events-none",
+              hiddenInputClassName,
+              noUpload && "cursor-not-allowed"
+            )}
+            ref={fileInputRef}
+            onChange={handleFileChange}
+          />
 
-          {fileName && (
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                aria-label="View File"
-                onClick={(e) => {
-                  handleViewFile();
-                  e.stopPropagation();
-                }}
+          <div
+            role="button"
+            aria-label="upload"
+            onClick={handleClick}
+            className={`relative  ${clsx(
+              "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
+              textStyles
+              //fileName ? "bg-neutral-2" : "bg-none"
+            )}`}
+          >
+            {!settingsPage ? (
+              <span
+                className={clsx(
+                  "flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
+                )}
               >
-                <EyeShowIcon />
-              </button>
-              <button
+                {fileName
+                  ? fileName
+                  : `Click ${
+                      isLgScreen ? "the side button" : "here"
+                    } to upload ${placeholder || "file"}`}
+              </span>
+            ) : (
+              <span className="flex-1 overflow-hidden text-ellipsis whitespace-nowrap max-w-60 w-full">
+                {defaultFile
+                  ? getImageNameFromUrl(defaultFile)
+                  : fileName
+                  ? fileName
+                  : !defaultFile && noUpload
+                  ? "Click eye icon to view document"
+                  : `Click ${
+                      isLgScreen ? "the side button" : "here"
+                    } to upload ${placeholder || "file"}`}
+              </span>
+            )}
+
+            {fileName && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="View File"
+                  onClick={(e) => {
+                    handleViewFile();
+                    e.stopPropagation();
+                  }}
+                >
+                  <EyeShowIcon />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Delete File"
+                  onClick={(e) => {
+                    setDefaultFile("");
+                    handleDeleteFile();
+                    e.stopPropagation();
+                  }}
+                >
+                  <DeleteIconX />
+                </button>
+              </div>
+            )}
+
+            {defaultFile && !fileURL && (
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  aria-label="View File"
+                  onClick={(e) => {
+                    handleView();
+                    e.stopPropagation();
+                  }}
+                >
+                  <EyeShowIcon />
+                </button>
+              </div>
+            )}
+
+            {endAdornment && !fileName && (
+              <div className="absolute right-3 flex items-center z-10">
+                {endAdornment}
+              </div>
+            )}
+          </div>
+          {!settingsPage && (
+            <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
+              <Button
+                variant="change"
+                size="sm"
+                className="whitespace-nowrap text-ellipsis"
+                style={{ background: fileName ? "" : "none" }}
                 type="button"
-                aria-label="Delete File"
-                onClick={(e) => {
-                  handleDeleteFile();
-                  e.stopPropagation();
-                }}
+                onClick={handleClick}
               >
-                <DeleteIconX />
-              </button>
+                {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
+              </Button>
             </div>
           )}
-        </div>
-        {!settingsPage && (
-          <div className="hidden lg:block absolute left-[calc(100%+8px)] top-1/2 transform -translate-y-1/2">
-            <Button
-              variant="change"
-              size="sm"
-              className="whitespace-nowrap text-ellipsis"
-              style={{ background: fileName ? "" : "none" }}
-              type="button"
-              onClick={handleClick}
-            >
-              {fileName ? `Change ${buttonName}` : `Upload ${buttonName}`}
-            </Button>
-          </div>
-        )}
-        {settingsPage && showVerifyBtn && (
+
+          {/* {settingsPage && showVerifyBtn && (
           <button className="text-xs w-1/2 sm:w-auto sm:mt-0 text-brand-9">
             Verify Document
           </button>
+        )} */}
+        </div>
+        {defaultFile && membership_status && (
+          <div className="flex pt-2 sm:pt-7 ml-3">
+            <SettingsVerifiedBadge status={membership_status} />
+          </div>
         )}
       </div>
     </div>

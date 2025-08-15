@@ -5,7 +5,7 @@ const useGoogleFonts = () => {
 
   const fetchGoogleFonts = async () => {
       const apikey = process.env.NEXT_PUBLIC_GOOGLE_FONT_API_KEY || "AIzaSyAbk2ZtRpeEZgqhQ8kwMQqrJNsIBJfzHa8";
-      console.log("apikey = ", apikey);
+      // console.log("apikey = ", apikey);
       try {
         const response = await fetch(
           `https://www.googleapis.com/webfonts/v1/webfonts?key=${apikey}`

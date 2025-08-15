@@ -3,17 +3,23 @@ import Select from "@/components/Form/Select/select";
 import { rentPeriods } from "@/data";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useState, useEffect, useMemo } from "react";
-import { DeleteIconX } from "@/public/icons/icons";
+import { DeleteIconX, ExclamationMark } from "@/public/icons/icons";
 import {
   formatNumber,
   currencySymbols,
   formatCostInputValue,
 } from "@/utils/number-formatter";
 import { useUnitForm } from "./unit-form-context";
+import { usePathname } from "next/navigation";
+import { useTourStore } from "@/store/tour-store";
 
 const UnitBreakdownFacility = () => {
   const { formResetKey, unitData } = useUnitForm();
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
+  const agencyFeePercentage = parseFloat(
+    String(propertySettings?.management_fee || "0")
+  );
+
   const CURRENCY_SYMBOL =
     currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(
@@ -24,6 +30,9 @@ const UnitBreakdownFacility = () => {
     return {
       rentAmount: unitData?.fee_amount
         ? formatNumber(parseFloat(unitData.fee_amount))
+        : "", // Empty string if null/undefined
+      agencyFee: unitData?.agency_fee
+        ? formatNumber(parseFloat(unitData.agency_fee))
         : "",
       securityFee: unitData?.security_fee
         ? formatNumber(parseFloat(unitData.security_fee))
@@ -34,24 +43,36 @@ const UnitBreakdownFacility = () => {
       otherCharges: unitData?.other_charge
         ? formatNumber(parseFloat(unitData.other_charge))
         : "",
+      vat: unitData?.renew_vat
+        ? formatNumber(parseFloat(unitData.renew_vat as string))
+        : "0", // Default to "0" for VAT
       totalPackage: unitData?.total_package
         ? formatNumber(parseFloat(unitData.total_package))
         : "",
     };
   }, [
     unitData?.fee_amount,
+    unitData?.agency_fee,
     unitData?.security_fee,
     unitData?.service_charge,
     unitData?.other_charge,
+    unitData?.renew_vat,
     unitData?.total_package,
   ]);
 
   const [formValues, setFormValues] = useState(initialFormValues);
-  const { rentAmount, securityFee, serviceCharge, otherCharges, totalPackage } =
-    formValues;
+  const {
+    rentAmount,
+    agencyFee,
+    securityFee,
+    serviceCharge,
+    otherCharges,
+    vat,
+    totalPackage,
+  } = formValues;
 
   type FormField = keyof typeof formValues;
-  // Update formValues based on input changes
+
   const handleInputChange = (field: FormField, value: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
@@ -71,33 +92,78 @@ const UnitBreakdownFacility = () => {
     }));
   };
 
-  // Calculate the total package
+  // Calculate VAT
   useEffect(() => {
-    const total =
-      (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
-      (parseFloat(securityFee.replace(/,/g, "")) || 0) +
-      (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
-      (parseFloat(otherCharges.replace(/,/g, "")) || 0);
+    const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
+    const agencyFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
+    const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
+    const rentTenPercent = rentAmountValue * 0.1;
+    const calculatedVAT = shouldCalculateVAT ? rentTenPercent * 0.075 : 0;
 
     setFormValues((prevValues) => ({
       ...prevValues,
-      totalPackage: formatNumber(parseFloat(total.toFixed(2))),
+      vat: formatNumber(calculatedVAT.toFixed(2)),
+      agencyFee: formatNumber(agencyFeeValue.toFixed(2)),
     }));
-  }, [rentAmount, securityFee, serviceCharge, otherCharges]);
+  }, [rentAmount, propertySettings, agencyFeePercentage]);
 
-  // reset form
+  // Calculate Total Package
+  useEffect(() => {
+    const total =
+      (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
+      (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
+      (parseFloat(securityFee.replace(/,/g, "")) || 0) +
+      (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
+      (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
+      (parseFloat(vat.replace(/,/g, "")) || 0);
+
+    setFormValues((prevValues) => ({
+      ...prevValues,
+      totalPackage: formatNumber(total.toFixed(2)),
+    }));
+  }, [rentAmount, securityFee, serviceCharge, otherCharges, vat, agencyFee]);
+
+  // Reset form when formResetKey changes
   useEffect(() => {
     if (formResetKey !== 0) {
-      setOtherChargesInput(!!unitData?.other_charge);
+      setOtherChargesInput(!!parseFloat(unitData?.other_charge || "0"));
       setFormValues(initialFormValues);
     }
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
 
+  const { goToStep, restartTour } = useTourStore();
+  const pathname = usePathname();
+
+  const handleGoToTourStep = (stepIndex: number) => {
+    goToStep(stepIndex, pathname);
+  };
+
+  const [defaultPeriod, setDefaultPeriod] = useState(
+    unitData?.renew_fee_period || "yearly"
+  );
+
   return (
-    <div>
-      <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
-        Unit Fee Breakdown
-      </h4>
+    <div className="unit-fee-breakdown-new-tenant">
+      <div className="flex gap-2 items-center">
+        <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
+          Unit Fee Breakdown
+        </h4>
+        <button
+          onClick={() => {
+            if (pathname.startsWith("/manager")) {
+              handleGoToTourStep(27);
+            } else if (pathname.startsWith("/accountant")) {
+              handleGoToTourStep(26);
+            } else {
+              handleGoToTourStep(28);
+            }
+          }}
+          type="button"
+          className="text-orange-normal"
+        >
+          <ExclamationMark />
+        </button>
+      </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">
         <Select
@@ -106,8 +172,9 @@ const UnitBreakdownFacility = () => {
           options={rentPeriods}
           label="Fee Period"
           inputContainerClassName="bg-white"
-          resetKey={formResetKey}
+          onChange={setDefaultPeriod}
           hiddenInputClassName="unit-form-input"
+          resetKey={formResetKey}
           defaultValue={unitData?.fee_period || "yearly"}
         />
         <Input
@@ -119,56 +186,60 @@ const UnitBreakdownFacility = () => {
           value={rentAmount}
           onChange={(value) => handleInputChange("rentAmount", value)}
           type="text"
+          autoComplete="off"
+        />
+        <Input
+          id="agency_fee"
+          label="Management Fee"
+          inputClassName="bg-white"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={agencyFee}
+          readOnly
+          type="text"
+          autoComplete="off"
         />
         <Input
           id="security_fee"
-          label="Security Fee"
-          inputClassName="bg-white"
+          label={`Security Fee (${defaultPeriod})`}
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={securityFee}
           onChange={(value) => handleInputChange("securityFee", value)}
           type="text"
+          autoComplete="off"
         />
         <Input
           id="service_charge"
-          label="Service Charge"
-          inputClassName="bg-white"
+          label={`Service Charge (${defaultPeriod})`}
+          inputClassName="bg-white unit-form-input"
           CURRENCY_SYMBOL={CURRENCY_SYMBOL}
           value={serviceCharge}
           onChange={(value) => handleInputChange("serviceCharge", value)}
           type="text"
+          autoComplete="off"
         />
-
-        {otherChargesInput && (
-          <div className="relative">
-            <Input
-              id="other_charge"
-              label="Other Charges"
-              inputClassName="bg-white"
-              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-              value={otherCharges}
-              onChange={(value) => handleInputChange("otherCharges", value)}
-              type="text"
-            />
-            <button
-              type="button"
-              aria-label="Remove Other Charges"
-              onClick={handleRemoveOtherCharges}
-              className="absolute top-0 right-0 w-[18px] h-[18px]"
-            >
-              <DeleteIconX size={20} />
-            </button>
-          </div>
+        {propertySettings?.VAT?.toLowerCase() === "yes" && (
+          <Input
+            id="vat_amount"
+            label="Value Added Tax (VAT)"
+            inputClassName="bg-white unit-form-input"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={vat}
+            readOnly
+            type="text"
+            autoComplete="off"
+          />
         )}
-        {!otherChargesInput && (
-          <button
-            type="button"
-            onClick={addOtherCharges}
-            className="text-brand-9 text-xs md:text-sm font-normal md:self-end md:justify-self-start"
-          >
-            Add Other Charges
-          </button>
-        )}
+        <Input
+          id="other_charge"
+          label="Other Charges"
+          inputClassName="bg-white unit-form-input"
+          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+          value={otherCharges}
+          onChange={(value) => handleInputChange("otherCharges", value)}
+          type="text"
+          autoComplete="off"
+        />
         <Input
           required
           id="total_package"
@@ -178,6 +249,7 @@ const UnitBreakdownFacility = () => {
           value={totalPackage}
           readOnly
           type="text"
+          autoComplete="off"
         />
       </div>
     </div>

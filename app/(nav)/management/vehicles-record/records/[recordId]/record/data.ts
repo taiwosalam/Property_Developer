@@ -1,9 +1,13 @@
+import api, { handleAxiosError } from "@/services/api";
+import dayjs from "dayjs";
+
 export interface SingleVehicleRecordApiResponse {
   data: {
     vehicle_record: {
       address: string;
       avatar: string;
       city: string;
+      note: string;
       created_at: string;
       id: number;
       lga: string;
@@ -22,10 +26,12 @@ export interface SingleVehicleRecordApiResponse {
       visitor_category: string;
       deleted_at: string | "";
       color?: string;
-      notes: {
-        last_updated: string;
-        write_up: string;
-      } | undefined;
+      notes:
+        | {
+            last_updated: string;
+            write_up: string;
+          }
+        | undefined;
       user_tag: "web" | "mobile";
     };
     check_ins: {
@@ -71,20 +77,22 @@ export interface VehicleDetails {
 }
 
 export interface UserData {
-    user_tag: "web" | "mobile";
-    id: string | number;
-    pictureSrc: string;
-    full_name: string;
-    state: string;
-    local_government: string;
-    city: string;
-    address: string;
-    phone_number: string;
-    avatar: string;
-    notes?: {
-      last_updated: string;
-      write_up?: string;
-    };
+  user_tag: "web" | "mobile";
+  id: string | number;
+  pictureSrc: string;
+  full_name: string;
+  state: string;
+  local_government: string;
+  city: string;
+  address: string;
+  phone_number: string;
+  avatar: string;
+  notes?: {
+    last_updated: string;
+    write_up?: string;
+  };
+  note?: string;
+  registrationDate: string;
 }
 
 export interface WebContactInfo {
@@ -133,7 +141,7 @@ export const transformSingleVehicleRecordApiResponse = (
   checkInsOutData: checkInsOutData;
 } => {
   const vehicleRecord = response.data.vehicle_record;
-  console.log("vehicle", vehicleRecord);
+  // console.log("response", response);
 
   // Check if vehicleRecord exists
   if (!vehicleRecord) {
@@ -152,6 +160,10 @@ export const transformSingleVehicleRecordApiResponse = (
       address: vehicleRecord.address,
       phone_number: vehicleRecord.phone,
       avatar: vehicleRecord.avatar,
+      note: vehicleRecord.note,
+      registrationDate: dayjs(vehicleRecord.created_at).format(
+        "MM/DD/YYYY (hh:mm a)"
+      ),
       notes: vehicleRecord.notes
         ? {
             last_updated: vehicleRecord.updated_at,
@@ -179,7 +191,7 @@ export const transformSingleVehicleRecordApiResponse = (
       },
     },
     checkInsOutData: {
-      check_ins: response.data.check_ins.data.map((checkIn) => ({
+      check_ins: [...response.data.check_ins.data].reverse().map((checkIn) => ({
         check_in_time: checkIn.check_in_time,
         check_out_time: checkIn.check_out_time,
         created_at: checkIn.created_at,
@@ -206,4 +218,17 @@ export const transformSingleVehicleRecordApiResponse = (
       per_page: response.data.check_ins.per_page,
     },
   };
+};
+
+// /vehicle-records/1/email?user_id
+export const updateVehicle = async (recordId: string, payload: FormData) => {
+  try {
+    const res = await api.post(`/vehicle-records/${recordId}/email`, payload);
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
 };

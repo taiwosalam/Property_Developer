@@ -13,10 +13,12 @@ import { useAuthStore } from "@/store/authStore";
 import { getEmailVerificationOTP, lockBranch, verifyEmailOTP } from "../data";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
+import { useRouter } from "next/navigation";
 
 const LockBranchModal: React.FC<{
   branchId: string;
 }> = ({ branchId }) => {
+  const router = useRouter();
   const { activeStep, changeStep } = useStep(3);
   const [canResend, setCanResend] = useState(false);
    const { branch } = useBranchStore()
@@ -27,8 +29,9 @@ const LockBranchModal: React.FC<{
   const [countdown, setCountdown] = useState(40);
   const [otp, setOtp] = useState("");
 
-  const branch_id = branch.branch_id;
+  // const branch_id = branch.branch_id;
 
+  console.log("id", branchId)
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (countdown > 0) {
@@ -50,7 +53,7 @@ const LockBranchModal: React.FC<{
       toast.error("Can't Send OTP, Please try again!")
     } finally {
       setLoading(false);
-    }
+    } 
   };
 
   const handleResendCode = async () => {
@@ -69,10 +72,12 @@ const LockBranchModal: React.FC<{
   const handleLockVerfiyLock = async () => {
     try {
       setRequestLoading(true);
-      const res = await lockBranch(branch_id, otp);
+      const res = await lockBranch(branchId, otp);
       if (res) {
         toast.success("Branch Locked Successfully")
         changeStep(3);
+        window.dispatchEvent(new Event("refectch-branch"));
+        router.push("/management/staff-branch");
       }
     } catch (err) {
       toast.error("Failed to Lock Branch");

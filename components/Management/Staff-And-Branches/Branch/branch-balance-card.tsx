@@ -14,21 +14,46 @@ import {
   BlueLockIcon,
   CheckIcon,
   BlueUnlockIcon,
+  BlueSendIcon,
 } from "@/public/icons/dashboard-cards/icons";
 import { CautionIcon } from "@/public/icons/icons";
 import { useWalletStore } from "@/store/wallet-store";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
 import ActivateWalletModal from "@/components/Wallet/activate-wallet-modal";
 import WithdrawFundsModal from "@/components/Wallet/Withdraw/withdraw-funds-modal";
+import SendFundsModal from "@/components/Wallet/SendFunds/send-funds-modal";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { WalletDataResponse } from "@/app/(nav)/wallet/data";
 import useFetch from "@/hooks/useFetch";
-import Link from "next/link";
 import useBranchStore from "@/store/branch-store";
 import { toast } from "sonner";
 import { holdBranchWallet } from "@/app/(nav)/management/staff-branch/[branchId]/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import CautionDepositModal from "@/components/Modal/caution-deposit-modal";
+
+// Utility function to normalize walletPinStatus and is_active
+const normalizeWalletStatus = (
+  status: string | boolean | undefined
+): string => {
+  if (typeof status === "boolean") {
+    return status ? "active" : "inactive";
+  }
+  return status === "active" ? "active" : "inactive";
+};
+
+export const normalizeIsActive = (
+  status: string | boolean | undefined
+): boolean => {
+  if (typeof status === "boolean") {
+    return status;
+  }
+  return status === "Yes" || status === "active";
+};
 
 const BranchBalanceCard = ({
   mainBalance,
@@ -39,18 +64,42 @@ const BranchBalanceCard = ({
   cautionDeposit: number;
   className?: string;
 }) => {
-  const walletPinStatus = useWalletStore((s) => s.sub_wallet.status);
-  const is_active = useWalletStore((s) => s.sub_wallet.is_active);
+  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
   const [hideBalance, setHideBalance] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const setWalletStore = useWalletStore((s) => s.setWalletStore);
-  const { branch } = useBranchStore()
+  const { role, setRole } = useRole();
+
+  const isCompanyOwner =
+    usePersonalInfoStore((state) => state.is_owner) || role === "manager";
+
+  // Wallet Pin status for default wallet & manager wallet
+  const defaultWalletPinStatus = useWalletStore((s) => s.sub_wallet.status);
+  const ManagerWalletPinStatus = branchWallet?.pin_status;
+  const defaultWalletIsActive = useWalletStore((s) => s.sub_wallet.is_active);
+  const managerWalletIsActive = branchWallet?.is_active;
+
+  console.log("managerWalletIsActive", managerWalletIsActive);
+  // Normalize statuses
+  const walletPinStatus =
+    role === "manager"
+      ? normalizeWalletStatus(ManagerWalletPinStatus)
+      : normalizeWalletStatus(defaultWalletPinStatus);
+  const is_active =
+    role === "manager"
+      ? normalizeIsActive(managerWalletIsActive as any)
+      : normalizeIsActive(defaultWalletIsActive);
+
+  console.log("is_active", is_active);
+  const hasWalletAccess =
+    usePermission(role, "Full Wallet Access") || isCompanyOwner;
+  const { branch } = useBranchStore();
 
   const { data, error, refetch } =
     useFetch<WalletDataResponse>("/wallets/dashboard");
-    useRefetchOnEvent("refetch-wallet", () => {
-      refetch({ silent: true });
-    });  
+  useRefetchOnEvent("refetch-wallet", () => {
+    refetch({ silent: true });
+  });
 
   useEffect(() => {
     if (data) {
@@ -60,24 +109,64 @@ const BranchBalanceCard = ({
         earned_bonus: data.balance.earned_bonus,
       });
     }
-  }, [data])
+  }, [data, setWalletStore]);
 
-  const options = [
-    {
-      name: walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
-      icon: walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
-      action: walletPinStatus === "active" ? <AddFundsModal branch /> : <ActivateWalletModal />,
-    },
-    {
-      name: "Withdraw",
-      icon: <BlueBuildingIcon />,
-      action: walletPinStatus === "active" ? <WithdrawFundsModal branch={true} /> : null,
-    },
-    {
-      name: walletPinStatus === "active" && is_active ? "Hold Wallet" : "UnHold Wallet",
-      icon: walletPinStatus === "active" && is_active ? <BlueUnlockIcon /> : <BlueLockIcon />,
-    },
-  ];
+  const options =
+    role === "manager"
+      ? [
+          {
+            name:
+              walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
+            icon:
+              walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
+            action:
+              walletPinStatus === "active" ? (
+                <AddFundsModal />
+              ) : (
+                <ActivateWalletModal />
+              ),
+          },
+          {
+            name: "Send Funds",
+            icon: <BlueSendIcon />,
+            action: walletPinStatus === "active" ? <SendFundsModal /> : null,
+          },
+          {
+            name: "Withdraw",
+            icon: <BlueBuildingIcon />,
+            action:
+              walletPinStatus === "active" ? (
+                <WithdrawFundsModal branch={true} />
+              ) : null,
+          },
+        ]
+      : [
+          {
+            name:
+              walletPinStatus === "active" ? "Add Funds" : "Activate Wallet",
+            icon:
+              walletPinStatus === "active" ? <BluePlusIcon /> : <CheckIcon />,
+            action:
+              walletPinStatus === "active" ? (
+                <AddFundsModal branch />
+              ) : (
+                <ActivateWalletModal />
+              ),
+          },
+          {
+            name: "Withdraw",
+            icon: <BlueBuildingIcon />,
+            action:
+              walletPinStatus === "active" ? (
+                <WithdrawFundsModal branch={true} />
+              ) : null,
+          },
+          {
+            name: is_active ? "Hold Wallet" : "UnHold Wallet",
+            icon: is_active ? <BlueUnlockIcon /> : <BlueLockIcon />,
+            action: null, // No modal action for hold/unhold
+          },
+        ];
 
   useEffect(() => {
     const storedHideBalance = localStorage.getItem("hideBalance");
@@ -94,22 +183,22 @@ const BranchBalanceCard = ({
     });
   };
 
-
-  const handleHoldWallet = async ()=> {
-    try{
-      setLoading(true)
-      const res = await holdBranchWallet(branch.branch_id)
+  const handleHoldWallet = async () => {
+    if (!hasWalletAccess) return;
+    try {
+      setLoading(true);
+      const res = await holdBranchWallet(branch.branch_id);
       if (res) {
-        toast.success("Branch Wallet Hold Successfully")
+        toast.success("Branch Wallet Hold Successfully");
         window.dispatchEvent(new Event("refetch-wallet"));
         window.dispatchEvent(new Event("refetch_staff"));
       }
-    }catch{
-      toast.error("Failed to Hold Branch Wallet")
-    }finally {
-      setLoading(false)
+    } catch {
+      toast.error("Failed to Hold Branch Wallet");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className={clsx("space-y-2", className)}>
@@ -146,13 +235,11 @@ const BranchBalanceCard = ({
               {hideBalance
                 ? "*******"
                 : `${currencySymbols.naira} ${formatNumber(mainBalance, {
-                  forceTwoDecimals: true,
-                })}`}
+                    forceTwoDecimals: true,
+                  })}`}
             </p>
           ) : (
-            <p className="font-extrabold text-xl text-white">
-              Inactive
-            </p>
+            <p className="font-extrabold text-xl text-white">Inactive</p>
           )}
 
           {/* Caution Deposit Section */}
@@ -161,72 +248,95 @@ const BranchBalanceCard = ({
             {walletPinStatus === "active" ? (
               <span>
                 {!hideBalance
-                  ? `${currencySymbols.naira} ${formatNumber(
-                    cautionDeposit,
-                    {
+                  ? `${currencySymbols.naira} ${formatNumber(cautionDeposit, {
                       forceTwoDecimals: true,
-                    }
-                  )}`
+                    })}`
                   : "*******"}
               </span>
             ) : (
               <span>Inactive</span>
             )}
-            <CautionIcon />
+            <Modal>
+              <ModalTrigger>
+                <CautionIcon />
+              </ModalTrigger>
+              <ModalContent>
+                <CautionDepositModal />
+              </ModalContent>
+            </Modal>
           </div>
 
           <div className="w-full flex items-start space-x-4">
             <div className="w-full flex justify-between">
-              {options.map((option, index) => {
-                return option.action && walletPinStatus === "active" ? (
-                  <Modal 
-                    key={index}
-                  >
-                    <ModalTrigger className="space-y-2">
-                      <div className={`bg-white ${!is_active && "opacity-50 cursor-not-allowed"} dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto`}>
-                        <span className="text-brand-9">{option.icon}</span>
-                      </div>
-                      <p className="capitalize text-white dark:text-white text-xs font-normal">
-                        {option.name}
-                      </p>
-                    </ModalTrigger>
-                   {is_active && <ModalContent>{option.action}</ModalContent>}
-                  </Modal>
-                ) : (
-                  option.name === "Activate Wallet" ? (
-                    <Link
-                      href={`/management/staff-branch/${branch.branch_id}/edit-branch`}
-                      className={`space-y-2 ${option.name === "Activate Wallet" ? "opacity-100" : "opacity-50 cursor-not-allowed"}`}
-                      key={index}
-                    >
-                      <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                        <span className="text-brand-9 ">{option.icon}</span>
-                      </div>
-                      <p className="capitalize text-white dark:text-white text-xs font-normal">
-                        {option.name}
-                      </p>
-                    </Link>
+              {options.map((option, index) => (
+                <div key={index} className="space-y-2">
+                  {option.action && hasWalletAccess ? (
+                    <Modal>
+                      <ModalTrigger className="space-y-2">
+                        <div
+                          className={clsx(
+                            "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
+                            !is_active &&
+                              option.name !== "Activate Wallet" &&
+                              "opacity-50 cursor-not-allowed"
+                          )}
+                        >
+                          <span className="text-brand-9">{option.icon}</span>
+                        </div>
+                        <p className="capitalize text-white dark:text-white text-xs font-normal">
+                          {option.name}
+                        </p>
+                      </ModalTrigger>
+                      {(is_active || option.name === "Activate Wallet") && (
+                        <ModalContent>{option.action}</ModalContent>
+                      )}
+                    </Modal>
                   ) : (
-                    <button
-                      className={`space-y-2 ${option.name === "Hold Wallet" || option.name === "UnHold Wallet" && walletPinStatus === "active" ? "opacity-100" : "opacity-50 cursor-not-allowed"}`}
-                      key={index}
-                      type="button"
-                      onClick={handleHoldWallet}
+                    <div
+                      title="Toggle branch access to use company or branch wallet for transactions."
+                      className={clsx(
+                        "space-y-2",
+                        !hasWalletAccess ? "opacity-50 cursor-not-allowed" : ""
+                      )}
                     >
-                      <div className="bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto">
-                        {loading ? (
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
-                        ) : (
-                          <span className="text-brand-9 ">{option.icon}</span>
-                        )}
-                      </div>
-                      <p className="capitalize text-white dark:text-white text-xs font-normal">
-                        {option.name}
-                      </p>
-                    </button>
-                  )
-                );
-              })}
+                      <button
+                        className="space-y-2"
+                        disabled={
+                          !hasWalletAccess ||
+                          loading ||
+                          (option.name !== "Hold Wallet" &&
+                            option.name !== "UnHold Wallet")
+                        }
+                        onClick={
+                          (option.name === "Hold Wallet" ||
+                            option.name === "UnHold Wallet") &&
+                          role === "director"
+                            ? handleHoldWallet
+                            : undefined
+                        }
+                      >
+                        <div
+                          className={clsx(
+                            "bg-white dark:bg-darkText-1 w-[30px] h-[30px] rounded-full flex items-center justify-center mx-auto",
+                            !hasWalletAccess && "opacity-50 cursor-not-allowed"
+                          )}
+                        >
+                          {loading &&
+                          (option.name === "Hold Wallet" ||
+                            option.name === "UnHold Wallet") ? (
+                            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-brand-9"></div>
+                          ) : (
+                            <span className="text-brand-9">{option.icon}</span>
+                          )}
+                        </div>
+                        <p className="capitalize text-white dark:text-white text-xs font-normal">
+                          {option.name}
+                        </p>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </div>
         </div>

@@ -45,41 +45,70 @@ import {
 } from "@/public/icons/icons";
 import Picture from "../Picture/picture";
 import ImageBlue from "@/public/icons/image-blue.svg";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import Switch from "../Form/Switch/switch";
+import { toast } from "sonner";
+import { motion, AnimatePresence } from "framer-motion";
+import { selectCompanyModule } from "@/app/(nav)/settings/others/data";
+import { debounce } from "lodash";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 export const SettingsVerifiedBadge = ({
   status,
 }: {
-  status: "verified" | "unverified";
-}) => (
-  <div
-    className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${
-      status === "verified"
-        ? "bg-status-success-1"
-        : "bg-[#FF8EE] border-[#FFBB53]"
-    }`}
-  >
-    <p
-      className={`text-[10px] ${
-        status === "verified" ? "text-status-success-primary" : "text-[#FFBB53]"
-      } font-normal ${secondaryFont.className}`}
+  status: "verified" | "unverified" | "pending" | "approved";
+}) => {
+  const isVerified = status === "verified" || status === "approved";
+  const isPending = status === "pending" || status === "unverified";
+
+  const bgClass = isVerified
+    ? "bg-status-success-1"
+    : isPending
+    ? "bg-[#C1C2C3]" // light purple background
+    : "bg-[#FF8EE]";
+
+  const borderClass = isVerified
+    ? ""
+    : isPending
+    ? "border-[#A855F7]" // purple border
+    : "border-[#FFBB53]";
+
+  const textClass = isVerified
+    ? "text-status-success-primary"
+    : isPending
+    ? "text-[#A855F7]" // purple text
+    : "text-[#FFBB53]";
+
+  const iconColor = isVerified ? "green" : isPending ? "purple" : "yellow";
+
+  return (
+    <div
+      className={`flex items-center py-[2px] px-2 rounded-full border-[0.1px] ${bgClass} ${borderClass}`}
     >
-      {status}
-    </p>
-    <BadgeIcon color={status === "verified" ? "green" : "yellow"} />
-  </div>
-);
+      <p
+        className={`capitalize text-[10px] font-normal ${textClass} ${secondaryFont.className}`}
+      >
+        {status === "approved" ? "verified" : status}
+      </p>
+      <BadgeIcon color={iconColor} />
+    </div>
+  );
+};
 
 export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
   title,
   desc,
+  required,
 }) => (
   <div className="custom-flex-col gap-[2px]">
-    {title && (
-      <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
-        {title}
-      </p>
-    )}
+    <div className="flex">
+      {required && <p className="text-red-500">*</p>}
+      {title && (
+        <p className="text-text-quaternary dark:text-white text-base font-medium capitalize">
+          {title}
+        </p>
+      )}
+    </div>
     {desc && <p className="text-text-disabled text-sm font-normal">{desc}</p>}
   </div>
 );
@@ -112,15 +141,15 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
 
   const [modalOpen, setModalOpen] = useState(false);
 
-  // useEffect(() => {
-  //   if (next && next === true) {
-  //     setModalOpen(true);
-  //   }
-  // }, [next])
+  useEffect(() => {
+    if (next && next === true) {
+      setModalOpen(true);
+    }
+  }, [next]);
 
-  const handleAction = () => {
+  const handleAction = async () => {
     if (action) {
-      action();
+      await action();
     }
     if (next) {
       setModalOpen(true);
@@ -151,7 +180,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
           </ModalContent>
         </Modal>
       )}
-      <Button {...button_props} onClick={handleAction}>
+      <Button {...button_props} onClick={handleAction} disabled={loading}>
         {loading ? "Please wait..." : text}
       </Button>
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
@@ -159,7 +188,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
           {type === "default" ? (
             <SettingsUpdateModal />
           ) : type === "otp" ? (
-            <SettingsOTPFlow isForgetWallet={false} />
+            <SettingsOTPFlow addBank isForgetWallet={false} />
           ) : type === "add domain" ? (
             <SettingsPaymentModal
               limitTransferFields
@@ -185,6 +214,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
 };
 
 export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
+  id,
   title,
   desc,
   icon,
@@ -192,13 +222,32 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
   groupName,
   selectedGroup,
   setSelectedGroup,
+  name,
+  onChange,
+  state,
+  onClick,
 }) => {
   const isChecked = selectedGroup === groupName;
+  const { company_id } = usePersonalInfoStore();
+
+  // const handleSelectedGroup = useCallback(
+  //   debounce(async () => {
+  //     if (setSelectedGroup && groupName && company_id) {
+  //       setSelectedGroup(groupName);
+
+  //       const payload = {
+  //         company_type_id: id,
+  //       };
+  //       await selectCompanyModule(company_id?.toString(), payload);
+  //     }
+  //   }, 500),
+  //   []
+  // );
 
   return (
     <div className="flex justify-between">
       <div className="first flex gap-1 items-start">
-        <span className="dark:text-white flex-shrink-0 text-black">{icon}</span>
+        <span className="dark:text-white flex-shrink-0 text-black mr-2">{icon}</span>
         <div className="flex flex-col">
           <h4 className="text-text-quaternary dark:text-white text-base">
             {title}
@@ -215,11 +264,16 @@ export const SettingsOthersType: React.FC<SettingsOthersProps> = ({
             <GroupRadio
               checked={isChecked}
               groupName={groupName}
-              onClick={() => setSelectedGroup && setSelectedGroup(groupName)}
+              onClick={onClick ? onClick : () => {}}
             />
           )}
           {!groupName && (
-            <DocumentCheckbox darkText checked={isChecked}>
+            <DocumentCheckbox
+              darkText
+              name={name}
+              onChange={onChange}
+              state={state}
+            >
               {" "}
             </DocumentCheckbox>
           )}
@@ -265,34 +319,50 @@ export const SettingsOthersCheckBox: React.FC<SettingsOthersCheckBoxProps> = ({
   checked = false,
   value,
   onChange,
-}) => (
-  <div className="flex justify-between">
-    <div className="flex flex-col">
-      <h4 className="text-text-quaternary dark:text-white text-base">
-        {title}
-      </h4>
-      <p className="text-text-disabled text-sm font-normal max-w-[900px]">
-        {desc}
-      </p>
-    </div>
+  plan,
+  forceChecked,
+  isToggleable = true,
+  restrictedMessage = "This option is restricted based on your subscription plan.",
+}) => {
+  // const handleToggle = () => {
+  //   // if (plan !== "professional") {
+  //   //   toast.error(
+  //   //     "You cannot toggle the switch until you upgrade to a professional plan."
+  //   //   );
+  //   //   return;
+  //   // } else {
+  //   onChange(value, !checked);
+  //   //}
+  // };
 
-    <div className="second flex justify-end items-center">
-      <label className="relative inline-flex items-center cursor-pointer">
-        <input
-          type="checkbox"
-          className="sr-only peer"
-          checked={checked}
-          onChange={(e) => onChange(value, e.target.checked)} // Call onChange with value and checked state
+  const handleToggle = () => {
+    if (!isToggleable) {
+      toast.warning(restrictedMessage);
+      return;
+    }
+    onChange(value, !checked);
+  };
+
+  return (
+    <div className="flex justify-between">
+      <div className="flex flex-col">
+        <h4 className="text-text-quaternary dark:text-white text-base">
+          {title}
+        </h4>
+        <p className="text-text-disabled text-sm font-normal max-w-[900px]">
+          {desc}
+        </p>
+      </div>
+      <div className="flex justify-end items-center flex-1">
+        {/* <Switch checked={checked} onClick={handleToggle} /> */}
+        <Switch
+          checked={forceChecked !== undefined ? forceChecked : checked}
+          onClick={handleToggle}
         />
-        <div
-          className={`w-11 h-6 ${
-            checked ? "bg-status-success-primary" : "bg-gray-200"
-          } peer-focus:outline-none peer-focus:ring-4 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[1px] after:left-[1px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all`}
-        />
-      </label>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const SettingsTenantOccupantTier: React.FC<
   SettingsTenantOccupantTierProps
@@ -369,28 +439,41 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
   onSelect,
   isSelected,
   profile,
+  plan,
 }) => {
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+
+  const validPlans = plan !== "free";
 
   const handleClick = () => {
-    console.log("value = ", value);
-    if (value === "theme2" || value === "theme3") {
+    if (
+      !validPlans &&
+      (value === "template2" || value === "template3") // Fixed condition
+    ) {
       setShowProfessionalMessage(true);
       setTimeout(() => setShowProfessionalMessage(false), 3000);
     } else {
       onSelect(value);
-      isSelected = false;
-      console.log("isSelected = ", isSelected);
     }
   };
 
+  const previewDemoLink =
+    value === "template1"
+      ? "https://templates.ourlisting.ng/?design=design1"
+      : value === "template2"
+      ? "https://templates.ourlisting.ng/?design=design2"
+      : "https://templates.ourlisting.ng/?design=design3";
+
   return (
     <div
-      className={`themesWrapper flex items-center flex-wrap gap-4 cursor-pointer relative r`}
+      className="themesWrapper shadow-lg rounded-md flex items-center flex-wrap gap-4 cursor-pointer relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
       <div className="flex justify-center items-center">
-        <div className="relative max-h-[218px]">
+        <div className="relative">
           <Image
             src={img}
             alt="Theme"
@@ -400,22 +483,36 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
               isSelected ? "border-4 border-brand-9 rounded-lg" : ""
             }`}
           />
+
+          <AnimatePresence>
+            {isHovered && profile && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
+                className="absolute inset-0 flex items-center justify-center"
+              >
+                <Link
+                  href={previewDemoLink}
+                  target="_blank"
+                  className="bg-brand-9 text-white py-2 px-5 rounded flex items-center justify-center z-20 text-sm sm:text-md"
+                >
+                  Preview Demo
+                </Link>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {showProfessionalMessage && (
+            <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
+              <p className="text-white text-center px-4 py-2 rounded">
+                Sorry, this website template isn&apos;t available on the free
+                plan.
+              </p>
+            </div>
+          )}
         </div>
-        {isSelected && profile && (
-          <Link
-            href="#"
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-brand-9 text-white py-1 px-3 rounded flex items-center justify-center z-20 text-xs sm:text-md"
-          >
-            Preview Demo
-          </Link>
-        )}
-        {showProfessionalMessage && (
-          <div className="absolute inset-0 bg-black bg-opacity-70 flex items-center justify-center z-30">
-            <p className="text-white text-center px-4 py-2 rounded">
-              Sorry, this theme is for Professional Plan subscribers only
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
@@ -515,12 +612,7 @@ export const ProfileUpload: React.FC<ProfileUploadProps> = ({
       className="relative max-w-[100px] rounded-lg overflow-hidden bg-[#F7F7F7] group cursor-pointer"
       onClick={() => document.getElementById("file-input")?.click()}
     >
-      <Picture
-        size={100}
-        fit="contain"
-        src={preview}
-        alt="official signature"
-      />
+      <Picture size={100} fit="contain" src={preview} alt="Picture" />
       <div
         style={{ backgroundColor: "rgba(0, 0, 0, 0.20)" }}
         className="absolute inset-0 flex flex-col gap-2 items-center justify-center opacity-0 group-hover:opacity-100 duration-300"
@@ -553,24 +645,21 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
 }) => {
   return (
     <div className="flex gap-2 mt-4">
-      <button
+      {/* <button
         onClick={resetZoom}
+        type="button"
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ResetZoomIcon />
-      </button>
+      </button> */}
       <button
-        onClick={increaseZoom}
-        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
-      >
-        <ZoomPlusIcon />
-      </button>
-      <button
+        type="button"
         onClick={decreaseZoom}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         <ZoomMinusIcon />
       </button>
+
       <div className="flex items-center justify-center max-w-[120px] rounded-md border border-text-label border-dashed px-4">
         <input
           type="number"
@@ -578,16 +667,25 @@ export const ZoomSettings: React.FC<ZoomSettingsProps> = ({
           onChange={(e) => setZoom(parseInt(e.target.value))}
           className="focus:outline-none dark:bg-darkText-primary w-full flex items-center justify-center"
         />
-        <span className="text-black text-center w-full flex items-start justify-start">
+        <span className="text-black dark:text-white text-center w-full flex items-start justify-start">
           %
         </span>
       </div>
+
       <button
+        type="button"
+        onClick={increaseZoom}
+        className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
+      >
+        <ZoomPlusIcon />
+      </button>
+
+      {/* <button
         onClick={toggleFullscreen}
         className="p-2 rounded-md border border-gray-300 bg-brand-9 text-white w-[52px] h-[52px] flex items-center justify-center"
       >
         {fullScreen ? <ActiveFullScreenIcon /> : <F11MinusIcon />}
-      </button>
+      </button> */}
     </div>
   );
 };

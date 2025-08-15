@@ -10,12 +10,15 @@ import {
   QuantityCounter,
   SelectPlanButton,
 } from "./settings-enrollment-components";
+import { FormSteps } from "@/app/(onboarding)/auth/types";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 interface SettingsEnrollmentCardProps {
   planTitle: string;
   desc: string;
   planFor?: string;
   price: string;
+  lifetimePrice: string | number;
   discount: string;
   discountText: string;
   duration: string;
@@ -29,6 +32,12 @@ interface SettingsEnrollmentCardProps {
   isFree?: boolean;
   onBillingTypeChange: (type: "monthly" | "yearly") => void;
   isLifeTimePlan: boolean;
+  onSelectPlan?: () => Promise<boolean | undefined>;
+  onSelect?: () => void;
+  page?: "modal" | "settings";
+  changeStep?: (step: FormSteps | number) => void;
+  expiry_date?: string;
+  autoRenew?: boolean;
 }
 
 const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
@@ -36,6 +45,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   desc,
   planFor,
   price,
+  lifetimePrice,
   discount,
   discountText,
   duration,
@@ -49,14 +59,22 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
   isFree = false,
   onBillingTypeChange,
   isLifeTimePlan,
+  onSelectPlan,
+  onSelect,
+  page,
+  changeStep,
+  expiry_date,
+  autoRenew,
 }) => {
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
+  const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+  const [isHovered, setIsHovered] = useState(false);
+
+
   const handleBillingTypeChange = (type: "monthly" | "yearly") => {
-    if (!isFree) {
-      if (type === "yearly") {
-        decrementQuantity();
-      }
-      onBillingTypeChange(type);
-    }
+    onBillingTypeChange(type); // Trigger parent handler for all plans
   };
 
   const handleCardClick = () => {
@@ -71,12 +89,13 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         } Features`;
 
   const getThemeColor = () => {
+    const baseClasses = isCurrentPlan ? "border" : "border-none";
     if (isFree) {
-      return "border-[#38BDF8] text-[#38BDF8]";
+      return `${baseClasses} border-[#38BDF8] dark:border-gray-800 text-[#38BDF8]`;
     } else if (planTitle.toLowerCase().includes("premium")) {
-      return "border-[#8C62FF] text-[#8C62FF] bg-[#F4F9FF]";
+      return `${baseClasses} border-[#8C62FF] dark:border-gray-400 text-[#8C62FF] bg-[#F4F9FF]`;
     } else {
-      return "border-brand-9 text-brand-9";
+      return `${baseClasses} border-brand-9 text-brand-9 dark:border-gray-400`;
     }
   };
 
@@ -84,7 +103,9 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
 
   return (
     <div
-      className={`min-w-[344px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className={`min-w-[400px] flex flex-col justify-between pricingCard rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg hover:border hover:border-opacity-100 transition-all duration-300 ease-in-out ${getThemeColor()}`}
     >
       <PlanHeader
         planTitle={planTitle}
@@ -92,6 +113,7 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
         planFor={planFor}
         isFree={isFree}
         themeColor={themeColor}
+        expiry_date={expiry_date}
       />
       <div
         className={`priceWrapper w-full flex items-center justify-center flex-col px-4 mt-5 ${
@@ -110,23 +132,38 @@ const SettingsEnrollmentCard: React.FC<SettingsEnrollmentCardProps> = ({
           isFree={isFree}
           discountText={discountText}
           isLifeTimePlan={isLifeTimePlan}
+          planTitle={planTitle}
         />
-        <QuantityCounter
-          quantity={quantity}
-          incrementQuantity={incrementQuantity}
-          decrementQuantity={decrementQuantity}
-          isFree={isFree}
-          billingType={billingType}
-          isLifeTimePlan={isLifeTimePlan}
-        />
+        {!isFree && (
+          <QuantityCounter
+            quantity={quantity}
+            incrementQuantity={incrementQuantity}
+            decrementQuantity={decrementQuantity}
+            isFree={isFree}
+            billingType={billingType}
+            isLifeTimePlan={isLifeTimePlan}
+          />
+        )}
       </div>
       <FeaturesToggle
         showFeatures={showFeatures}
         getFeaturesText={getFeaturesText}
         handleCardClick={handleCardClick}
+        isFree={isFree}
+        planTitle={planTitle}
+        autoRenew={autoRenew}
       />
       <FeaturesList showFeatures={showFeatures} features={features} />
-      <SelectPlanButton isFree={isFree} />
+      <SelectPlanButton
+        isFree={isFree}
+        price={duration === "lifetime" ? String(lifetimePrice) : price}
+        planTitle={planTitle}
+        onSelectPlan={page === "modal" ? onSelect : (onSelectPlan as any)}
+        page={page}
+        changeStep={changeStep}
+        expiry_date={expiry_date}
+        hovered={isHovered}
+      />
     </div>
   );
 };

@@ -1,22 +1,34 @@
-// Imports
 import { useState } from "react";
 import Input from "../Form/Input/input";
 import Button from "../Form/Button/button";
 import { currencySymbols } from "@/utils/number-formatter";
 import { WalletFundsCardsHeading } from "./wallet-components";
 import { fundWallet } from "./data";
+import { toast } from "sonner";
 
-const WalletOnlineFundingCard = () => {
+interface WalletOnlineFundingCardProps {
+  onPaymentInitiated?: (url: string, reference: string) => void;
+  page?: "manager" | "account";
+}
+
+const WalletOnlineFundingCard = ({
+  onPaymentInitiated,
+  page,
+}: WalletOnlineFundingCardProps) => {
   const [amount, setAmount] = useState(0);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState(false);
 
   const handleProceed = async () => {
     if (amount > 0) {
       setLoading(true);
-      const paymentUrl = await fundWallet(amount);
-      if (paymentUrl) {
-        window.open(paymentUrl, "_blank");
+      const data = await fundWallet(amount);
+      const newPaymentUrl = data?.payment_url?.url;
+      const newReference = data?.reference;
+
+      if (newPaymentUrl && newReference) {
+        onPaymentInitiated?.(newPaymentUrl, newReference); // ✅ Safe function call
       }
+
       setLoading(false);
     }
   };
@@ -27,7 +39,6 @@ const WalletOnlineFundingCard = () => {
         title="online funding"
         desc="We partner with a third party for wallet funding through any local ATM card. They apply a 1.5% VAT rate and ₦100 fee for each debit transaction. The fee is waived for transactions under ₦2500."
       />
-      <div></div>
       <div className="custom-flex-col gap-6">
         <Input
           id="amount"
@@ -36,11 +47,8 @@ const WalletOnlineFundingCard = () => {
           inputClassName="bg-white"
           labelclassName="normal-case"
           formatNumber
-          onChange={(value) => {
-            setAmount(parseFloat(value.replace(/,/g, "")));
-          }}
+          onChange={(value) => setAmount(parseFloat(value.replace(/,/g, "")))}
         />
-
         <div className="flex justify-end">
           <Button
             size="xs_medium"
@@ -48,7 +56,7 @@ const WalletOnlineFundingCard = () => {
             onClick={handleProceed}
             disabled={loading}
           >
-            proceed
+            {loading ? "Please wait..." : "Proceed"}
           </Button>
         </div>
       </div>

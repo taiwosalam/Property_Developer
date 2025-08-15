@@ -11,7 +11,7 @@ const EmptyList: React.FC<{
   modalContent?: React.ReactNode;
 }> = ({ title, body, buttonText, noButton, buttonLink, modalContent }) => {
   return (
-    <div className="mt-[50px] space-y-4">
+    <div className="empty-list mt-[50px] space-y-4">
       <div className="w-full text-brand-9 h-full flex justify-center items-center mb-4">
         <EmptyListIcon />
       </div>
@@ -19,7 +19,7 @@ const EmptyList: React.FC<{
         modalContent ? (
           <Modal>
             <ModalTrigger asChild>
-              <Button className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semiboldbold w-fit mx-auto block">
+              <Button className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semibold w-fit mx-auto block">
                 {buttonText}
               </Button>
             </ModalTrigger>
@@ -28,7 +28,7 @@ const EmptyList: React.FC<{
         ) : (
           <Button
             href={buttonLink}
-            className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semiboldbold w-fit mx-auto block"
+            className="rounded-[8px] py-2 px-6 lg:px-12 text-base font-semibold w-fit mx-auto block"
           >
             {buttonText}
           </Button>

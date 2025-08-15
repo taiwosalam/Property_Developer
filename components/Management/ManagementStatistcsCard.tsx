@@ -1,5 +1,6 @@
 import clsx from "clsx";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { formatNumber } from "@/utils/number-formatter";
 
 interface DonutChartProps {
   oldValue: number;
@@ -70,6 +71,87 @@ const DonutChart: React.FC<DonutChartProps> = ({
   );
 };
 
+// interface ManagementStatistcsCardProps {
+//   total: number;
+//   title: string;
+//   newData: number;
+//   className?: string;
+//   colorScheme: 1 | 2 | 3 | 4;
+// }
+
+// const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
+//   title,
+//   total,
+//   newData,
+//   className,
+//   colorScheme,
+// }) => {
+//   const old = total - newData;
+
+//   let oldColorScheme, newColorScheme;
+
+//   switch (colorScheme) {
+//     case 1:
+//       oldColorScheme = colors.blue;
+//       newColorScheme = colors.green;
+//       break;
+//     case 2:
+//       oldColorScheme = colors.purple;
+//       newColorScheme = colors.green;
+//       break;
+//     case 3:
+//       oldColorScheme = colors.orange;
+//       newColorScheme = colors.green;
+//       break;
+//     case 4:
+//       oldColorScheme = colors.lightBlue;
+//       newColorScheme = colors.green;
+//       break;
+//     default:
+//       oldColorScheme = colors.blue;
+//       newColorScheme = colors.green;
+//   }
+
+//   return (
+//     <Card
+//       className={clsx("w-[250px] h-[160px]", className)}
+//       style={{ boxShadow: "-2px 2px 10px rgba(21, 21, 21, 0.10)" }}
+//     >
+//       <CardContent className="h-full py-5">
+//         <div className="flex flex-col h-full justify-between">
+//           {/* Top section with title and donut */}
+//           <div className="flex gap-4 items-start">
+//             <div className="flex-1 min-h-[60px] flex items-start">
+//               <CardTitle className="text-base font-bold text-brand-10 dark:text-darkText-1">
+//                 {title}
+//               </CardTitle>
+//             </div>
+//             <div className="flex-shrink-0">
+//               <DonutChart
+//                 oldValue={old || 0}
+//                 newValue={newData || 0}
+//                 newColor={newColorScheme}
+//                 oldColor={oldColorScheme}
+//               />
+//             </div>
+//           </div>
+
+//           {/* Bottom section with total and "This month" */}
+//           <div className="flex justify-between items-end">
+//             <p className="text-[32px] font-bold text-text-label dark:text-darkText-1">
+//               {formatNumber(total)}
+//             </p>
+//             <p className="font-normal text-xs text-neutral-6 dark:text-darkText-2 whitespace-nowrap">
+//               This month
+//             </p>
+//           </div>
+//         </div>
+//       </CardContent>
+//     </Card>
+//   );
+// };
+
+
 interface ManagementStatistcsCardProps {
   total: number;
   title: string;
@@ -80,12 +162,15 @@ interface ManagementStatistcsCardProps {
 
 const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
   title,
-  total,
-  newData,
+  total = 0, // Default to 0 if undefined
+  newData = 0, // Default to 0 if undefined
   className,
   colorScheme,
 }) => {
-  const old = total - newData;
+  // Ensure total and newData are valid numbers
+  const safeTotal = isNaN(total) ? 0 : total;
+  const safeNewData = isNaN(newData) ? 0 : newData;
+  const old = safeTotal - safeNewData;
 
   let oldColorScheme, newColorScheme;
 
@@ -127,8 +212,8 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
             </div>
             <div className="flex-shrink-0">
               <DonutChart
-                oldValue={old || 0}
-                newValue={newData || 0}
+                oldValue={old >= 0 ? old : 0} // Ensure non-negative
+                newValue={safeNewData}
                 newColor={newColorScheme}
                 oldColor={oldColorScheme}
               />
@@ -138,7 +223,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
           {/* Bottom section with total and "This month" */}
           <div className="flex justify-between items-end">
             <p className="text-[32px] font-bold text-text-label dark:text-darkText-1">
-              {total}
+              {safeTotal === 0 ? "0" : formatNumber(safeTotal)} 
             </p>
             <p className="font-normal text-xs text-neutral-6 dark:text-darkText-2 whitespace-nowrap">
               This month

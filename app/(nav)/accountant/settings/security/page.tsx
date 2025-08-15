@@ -3,34 +3,17 @@
 import React, { useEffect, useState } from "react";
 
 // Images
-import { Check } from "lucide-react";
-import DangerIcon from "@/public/icons/danger.svg";
-import ImageBlue from "@/public/icons/image-blue.svg";
 import SignatureImage from "@/public/accounting/signature.svg";
 
 // Imports
-import { industryOptions, titles } from "@/data";
-import Input from "@/components/Form/Input/input";
-import Picture from "@/components/Picture/picture";
-import Select from "@/components/Form/Select/select";
 import { useImageUploader } from "@/hooks/useImageUploader";
-import FundingCard from "@/components/Wallet/AddFunds/funding-card";
-import SettingsSection from "@/components/Settings/settings-section";
-import { ProfileUpload } from "@/components/Settings/settings-components";
 import SettingsPasswordSection from "@/components/Settings/settings-password-section";
-import SettingsWalletSection from "@/components/Settings/settings-wallet-section";
 
-import {
-  SettingsSectionTitle,
-  SettingsUpdateButton,
-} from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { FormState, updateUserProfile } from "./data";
 import { toast } from "sonner";
-import { AuthForm } from "@/components/Auth/auth-components";
-import SettingsSignature from "@/components/Settings/settings-signature";
-import SettingsBank from "@/components/Settings/settings-bank";
+import ManagerProfile from "@/components/Settings/settingsBranchManager";
 
 const Security = () => {
   const name = usePersonalInfoStore((state) => state.full_name);
@@ -68,7 +51,7 @@ const Security = () => {
     try {
       setReqLoading(true);
       const res = await updateUserProfile(objectToFormData(payload));
-      if (res && 'status' in res && res.status === 200) {
+      if (res && "status" in res && res.status === 200) {
         // console.log(res);
         toast.success("Profile updated successfully");
         setNext(true);
@@ -81,9 +64,9 @@ const Security = () => {
     }
   };
 
-
   return (
     <>
+      <ManagerProfile />
       <SettingsPasswordSection />
     </>
   );

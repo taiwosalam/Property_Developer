@@ -1,4 +1,18 @@
+import { empty } from "@/app/config";
+import {
+  BadgeIconColors,
+  tierColorMap,
+} from "@/components/BadgeIcon/badge-icon";
+import { RentPeriod } from "@/components/Management/Rent And Unit/data";
+import { propertyCategories } from "@/data";
+import api, { handleAxiosError } from "@/services/api";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
 import { getAllStates } from "@/utils/states";
+import dayjs from "dayjs";
 import { number } from "zod";
 //
 export interface RentAndUnitState {
@@ -10,8 +24,8 @@ export interface RentAndUnitState {
 //
 
 export const RentAndUnitFilters = [
-  { label: "Single Property", value: "single-property" },
-  { label: "Gated Eestate", value: "gated-estate" },
+  { label: "Rental Property", value: "rental-property" },
+  { label: "Facility Property", value: "facility-property" },
 ];
 
 export const initialState: UnitPageState = {
@@ -45,8 +59,10 @@ export interface UnitPageState {
   month_relocate: number;
   published_vacant?: number;
   month_published_vacant?: number;
-  unpublished_vacant?:number;
+  unpublished_vacant?: number;
   month_unpublished_vacant?: number;
+  last_page?: number;
+  current_page?: number;
   unit: RentalPropertyCardProps[];
 }
 
@@ -66,9 +82,20 @@ export interface UnitApiResponse {
     month_relocate: number;
     published_vacant?: number;
     month_published_vacant?: number;
-    unpublished_vacant?:number;
+    unpublished_vacant?: number;
     month_unpublished_vacant?: number;
+    current_page: number;
+    last_page: number;
+    pagination: {
+      current_page: number;
+      total_pages: number;
+    };
     unit: {
+      current_page: number;
+      last_page: number;
+      data: UnitDataObject[];
+    };
+    data: {
       current_page: number;
       last_page: number;
       data: UnitDataObject[];
@@ -76,50 +103,65 @@ export interface UnitApiResponse {
   };
 }
 
-
 export interface UnitFilterResponse {
   data: {
+    data: UnitDataObject[];
+    unit: UnitDataObject[];
     current_page: number;
     last_page: number;
-    data: UnitDataObject[];
+    pagination: {
+      current_page: number;
+      total_pages: number;
+    };
   };
 }
 
 export const transformRentUnitApiResponse = (
-  response: UnitApiResponse | UnitFilterResponse
+  // response: UnitApiResponse
+  response: UnitApiResponse | UnitFilterResponse,
+  isBranch?: boolean
 ): Partial<UnitPageState> => {
-  const isUnitApiResponse = (
-    response: any
-  ): response is UnitApiResponse => {
+  const isUnitApiResponse = (response: any): response is UnitApiResponse => {
     return "total_unit" in response.data;
   };
 
+
+
   const unitData = isUnitApiResponse(response)
-    ? response.data.unit
-    : response.data;
+    ? (response.data.unit as any)
+    : (response.data.unit as any);
 
-  const transformedUnits: RentalPropertyCardProps[] = unitData.data.map(
-    (u) => {
-      return {
-        unitId: u.id.toString(),
-        unit_title: u.property.title,
-        unit_type: u.unit_type,
-        tenant_name: "No Tenant", //TODO
-        expiry_date: "No Expiry", //TODO
-        rent: u.fee_amount,
-        caution_deposit: u.caution_fee,
-        service_charge: u.service_charge,
-        images: u.images.map((image) => image.path),
-        unit_name: u.unit_name,
-        caution_fee: u.caution_fee,
-        status: u.is_active,
-        propertyType: u.property.property_type as "rental" | "facility",
-        address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
-      };
-    }
-  );
+    const unitsArr = isBranch ? response.data.data : unitData;
 
-  // console.log("Transformed unit data", transformedUnits)
+  const transformedUnits: RentalPropertyCardProps[] = unitsArr?.map((u: any) => {
+    return {
+      unitId: u?.id?.toString() || "0",
+      currency: u.property.currency,
+      unit_title: u?.property?.title || "--- ---",
+      unit_type: u?.unit_type || "--- ---",
+      tenant_name: u?.occupant?.name !== null ? u?.occupant?.name : "--- ---", //TODO
+      expiry_date: u?.occupant?.expiry !== null ? u?.occupant?.expiry : "--- ---", //TODO
+      rent: u?.fee_amount || "--- ---",
+      caution_deposit: u?.caution_fee || "--- ---",
+      service_charge: u?.service_charge || "--- ---",
+      images: u.images.map((image: any) => image.path),
+      unit_name: u?.unit_name || "--- ---",
+      caution_fee: u?.caution_fee || "--- ---",
+      status: u.is_active,
+      invoice_status:
+        u?.invoice_status?.toLowerCase() === "pending" ? "pending" : "paid",
+      invoice_id: u.invoice_id,
+      fee_period: u.fee_period,
+      propertyType: u.property.property_type as "rental" | "facility",
+      address: `${u.property.full_address}, ${u.property.local_government}, ${u.property.state}`,
+      badge_color: u?.occupant?.tier
+        ? tierColorMap[u?.occupant?.tier as keyof typeof tierColorMap]
+        : undefined,
+      tenant_id: u?.occupant?.tenant_id || 0,
+      partial_pending: u?.partial_pending ? true : false,
+      occupant: u?.occupant,
+    };
+  });
   if (isUnitApiResponse(response)) {
     // console.log("isUnitApiResponse", response)
     return {
@@ -127,7 +169,7 @@ export const transformRentUnitApiResponse = (
       total_occupied: response.data.total_occupied,
       total_vacant: response.data.total_vacant,
       total_active: response.data.total_active,
-      total_expired: response.data.month_expired,
+      total_expired: response.data.total_expired,
       total_relocate: response.data.total_relocate,
       month_unit: response.data.month_unit,
       month_occupied: response.data.month_occupied,
@@ -143,10 +185,23 @@ export const transformRentUnitApiResponse = (
   } else {
     return {
       unit: transformedUnits,
+      last_page: response.data.last_page || 1,
+      current_page: response.data.current_page || 1,
     };
   }
 };
 
+export const cancelRent = async (id: number, data: any) => {
+  try {
+    const res = await api.post(`/invoice/cancel/${id}`, data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error, "Failed to Cancel Rent");
+    return false;
+  }
+};
 
 export interface UnitDataObject {
   id: number;
@@ -164,6 +219,7 @@ export interface UnitDataObject {
   en_suit: number;
   prepaid: number;
   wardrobe: number;
+  sponsored_count: number;
   pet_allowed: number;
   total_area_sqm: string;
   number_of: string;
@@ -186,6 +242,7 @@ export interface UnitDataObject {
   renew_total_package: string;
   is_active: string;
   published: number;
+  is_sponsored?: boolean;
   status: string;
   reject_reason: string | null;
   created_at: string;
@@ -198,7 +255,6 @@ export interface UnitDataObject {
   property: Property;
   user: User;
 }
-
 
 export interface Property {
   id: number;
@@ -227,7 +283,7 @@ export interface Property {
   book_visitors: number;
   vehicle_record: number;
   active_vat: number;
-  currency: string;
+  currency: Currency;
   coordinate: string | null;
   management_fee: number;
   fee_period: string | null;
@@ -256,16 +312,17 @@ export interface User {
   provider_name: string | null;
 }
 
-
 export interface RentUnitFilterParams {
   date_from?: string;
+  page: number;
   date_to?: string;
   branch_id?: string[];
   state?: string[];
   staff_id?: string[];
   property_type?: "rental" | "facility";
-  sort_by?: "desc";
+  sort_by?: "desc" | "asc";
   search?: string;
+  is_active?: string;
 }
 
 export interface RentalPropertyCardProps {
@@ -281,8 +338,17 @@ export interface RentalPropertyCardProps {
   caution_deposit: string | number;
   service_charge: string | number;
   status: string;
-  property_type?: string;
+  badge_color?: BadgeIconColors;
+  reject_reason?: string;
+  tenant_id?: string;
   is_active?: string;
+  fee_period?: string;
+  currency?: Currency;
+  invoice_status?: string | null;
+  invoice_id?: number | null;
+  partial_pending?: boolean;
+  occupant?: any;
+  page?: "manager" | "account" | "staff";
 }
 
 const allStates = getAllStates() || [];
@@ -295,20 +361,22 @@ export const RentAndUnitFiltersWithDropdown = [
       value: state,
     })),
   },
-  // {
-  //   label: "Branch",
-  //   value: [
-  //     { label: "Branch 1", value: "branch1" },
-  //     { label: "Branch 2", value: "branch2" },
-  //     { label: "Branch 3", value: "branch3" },
-  //   ],
-  // },
   {
-    label: "Account Officer",
+    label: "Status",
+    radio: true,
     value: [
-      { label: "Account Officer 1", value: "account_officer1" },
-      { label: "Account Officer 2", value: "account_officer2" },
-      { label: "Account Officer 3", value: "account_officer3" },
+      // { label: "All", value: "all" },
+      { label: "Vacant", value: "vacant" },
+      { label: "Occupied", value: "occupied" },
+      { label: "Expired", value: "expired" },
+    ],
+  },
+  {
+    label: "Property Type",
+    radio: true,
+    value: [
+      { label: "Rental", value: "rental" },
+      { label: "Facility", value: "facility" },
     ],
   },
 ];
@@ -335,8 +403,8 @@ interface UnitData {
   property: {
     property_type: string;
     title: string;
-  }
-};
+  };
+}
 
 export const initialRentUnitPageData: RentUnitPageData = {
   stats: {
@@ -358,8 +426,7 @@ export const initialRentUnitPageData: RentUnitPageData = {
     last_page: 1,
   },
   unit_data: [],
-
-}
+};
 
 export interface RentUnitPageData {
   stats: StatsData;
@@ -407,7 +474,6 @@ export interface RentUnitApiResponse {
   };
 }
 
-
 export interface RentUnitRequestParams {
   page?: number;
   search?: string;
@@ -424,11 +490,10 @@ export interface RentUnitFilterResponse {
     current_page: number;
     last_page: number;
     unit: UnitData;
-  }
+  };
 }
 
-
-// SINGLE UNIT 
+// SINGLE UNIT
 
 export const initialSingleData: InitialSingleUnitProps = {
   data: [
@@ -463,10 +528,9 @@ export const initialSingleData: InitialSingleUnitProps = {
       group_chat: "",
       rent_penalty: "",
       caution_deposit: "",
-    }
-  ]
-}
-
+    },
+  ],
+};
 
 export interface pageInitialObject {
   title: string;
@@ -536,7 +600,7 @@ export const InitialSingleUnit = {
   group_chat: "",
   rent_penalty: "",
   caution_deposit: "",
-}
+};
 
 export interface singleDataObject {
   unit_id: string;
@@ -570,7 +634,6 @@ export interface singleDataObject {
   group_chat?: string;
   rent_penalty?: string;
 }
-
 
 export interface singleUnitApiResponse {
   data: {
@@ -655,8 +718,9 @@ export interface singleUnitApiResponse {
         updated_at: string;
         branch: {
           branch_name: string;
-        }
+        };
       };
+      occupant: Occupant;
       user: {
         id: number;
         encodedId: string;
@@ -693,7 +757,47 @@ export interface singleUnitApiResponse {
     prev_page_url: string | null;
     to: number;
     total: number;
-  }
+  };
+}
+
+export interface Occupant {
+  id: string;
+  name: string;
+  email: string;
+  userTag: "mobile" | "web";
+  avatar: string;
+  gender: string;
+  birthday: string;
+  religion: string;
+  phone: string;
+  maritalStatus: string;
+  address: string;
+  city: string;
+  state: string;
+  lg: string;
+  tenant_signature?: string;
+}
+
+export interface PreviousRecord {
+  id: string;
+  payment_date: string | null;
+  amount_paid: string;
+  details: string;
+  start_date: string;
+  due_date: string;
+  data?: any;
+}
+
+export interface Pagination {
+  current_page: number;
+  per_page: number;
+  total: number;
+  total_pages: number;
+}
+
+export interface PreviousRecords {
+  data: PreviousRecord[];
+  pagination: Pagination;
 }
 
 export interface UnitDetails {
@@ -725,8 +829,8 @@ export interface UnitDetails {
   property?: {
     branch?: {
       branch_name?: string;
-    }
-  }
+    };
+  };
 }
 
 export const transformSingleUnitData = (
@@ -734,9 +838,9 @@ export const transformSingleUnitData = (
 ): InitialSingleUnitProps => {
   const data = response.data;
   // console.log("res", response)
-  // console.log("single response", data)
+  console.log("single response", data);
   return {
-    data: data.data.map(unit => ({
+    data: data.data.map((unit) => ({
       title: unit.property.title,
       unit_id: unit.id,
       unit_name: `${unit.unit_name} ${unit.unit_type}`,
@@ -774,7 +878,7 @@ export const transformSingleUnitData = (
       caution_deposit: unit.property.caution_deposit,
       location: "",
       fee_amount: "",
-    }))
+    })),
   };
 };
 
@@ -786,6 +890,7 @@ export function convertToYesNo(value: number): string {
 export const initData = {
   title: "",
   unit_id: "",
+  description: "",
   unit_name: "",
   address: "",
   images: [],
@@ -821,34 +926,55 @@ export const initData = {
   service_charge: "",
   renew_service_charge: "",
   renew_other_charge: "",
-}
+  occupant: {
+    id: "",
+    name: "",
+    email: "",
+    userTag: "" as "mobile",
+    avatar: "",
+    gender: "",
+    birthday: "",
+    religion: "",
+    phone: "",
+    maritalStatus: "",
+    address: "",
+    city: "",
+    state: "",
+    lg: "",
+  },
+  property_document: {},
+};
 
-
-export interface initDataProps{
-  title:string;
-  unit_id:string;
-  unit_name:string;
-  address:string;
+export interface initDataProps {
+  id?: string;
+  title: string;
+  management_fee?: string;
+  currency?: Currency;
+  description: string;
+  unit_id: string;
+  unit_name: string;
+  address: string;
   images: string[];
-  categories:string;
-  unitNumber:string;
-  unitPreference:string;
-  unitType: string,
+  categories: string;
+  unitNumber: string;
+  unitPreference: string;
+  unitType: string;
   unitSubType: string;
-  state:string;
-  localGovernment:string;
-  accountOfficer:string;
-  bedrooms:string;
-  bathrooms:string;
-  toilets:string;
-  fee_period:string;
-  newTenantPrice:string;
-  newTenantTotalPrice:string;
-  renew_fee_period:string;
-  renewalTenantPrice:string;
-  renewalTenantTotalPrice:string;
+  state: string;
+  localGovernment: string;
+  accountOfficer: string;
+  bedrooms: string;
+  bathrooms: string;
+  toilets: string;
+  fee_period: string;
+  fee_amount?: string;
+  newTenantPrice: string;
+  newTenantTotalPrice: string;
+  renew_fee_period: string;
+  renewalTenantPrice: string;
+  renewalTenantTotalPrice: string;
   renew_service_charge?: string;
-  branchName?: string,
+  branchName?: string;
   agency_fee?: string;
   whoToCharge?: string;
   caution_deposit?: string;
@@ -860,58 +986,361 @@ export interface initDataProps{
   security_fee?: string;
   other_charge?: string;
   unitAgentFee?: string;
+  legalFee?: string;
+  inspectionFee?: string;
   service_charge?: string;
   renew_other_charge?: string;
+  renew_vat_amount?: string;
+  vat_amount?: string;
+  occupant: Occupant;
+  previous_records?: PreviousRecords[];
+  whoToChargeRenew?: string;
+  property_title?: string;
+  property_state?: string;
+  property_address?: string;
+  previous_tenants?: any;
+  property_document?: any;
+  [key: string]: any;
 }
 
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  console.log("data", data)
-  return {
-    title: data.property.title,
-    unit_id: data.id,
-    unit_name: `${data.unit_name} ${data.unit_type}`,
-    address: data.property.full_address,
+  console.log("unit response", data);
+  const occupant = response?.data?.occupant;
+  const previous_records = response.data.previous_records;
+  const current_records = response.data.current_records;
+  const pending_invoice = response.data.pending_invoice;
+  const unpaid_invoice = response.data.unpaid_invoice;
+
+  // Helper function to format and validate fee amounts
+  const formatFee = (
+    amount: string | number | undefined | null,
+    currency: string
+  ): string | undefined => {
+    if (!amount || amount === "") return undefined; // Skip undefined, null, or empty string
+    const parsedAmount = parseFloat(amount.toString());
+    if (isNaN(parsedAmount) || parsedAmount === 0) return undefined; // Skip NaN or zero
+    const currencySymbol =
+      currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+    return `${currencySymbol}${formatNumber(parsedAmount)}`;
+  };
+
+  // Transform data with conditional inclusion of fee fields
+  const transformedData = {
+    ...data,
+    title: data?.property?.title || "",
+    unit_id: data?.id || 0,
+    description: data?.property?.description || "",
+    unit_name: `${data?.unit_name || ""} ${data?.unit_type || ""}`,
+    address: data?.property?.full_address || "",
     unitNumber: "",
-    images: data.images.map((image: any) => image.path),
-    categories: data.property.category,
-    unitPreference: data.unit_preference,
-    unitType: data.unit_type,
-    unitSubType: data.unit_sub_type,
-    state: data.property.state,
-    localGovernment: data.property.local_government,
-    accountOfficer: "",
-    bedrooms: data.bedroom,
-    bathrooms: data.bathroom,
-    toilets: data.toilet,
-    tenant_name: data.user.name,
-    unit_features: data.facilities,
-    newTenantTotalPrice: data.total_package,
-    newTenantPrice: data.fee_amount,
+    images: data?.images?.map((image: any) => image?.path) || [empty],
+    categories: data?.property?.category || "",
+    unitPreference: data?.unit_preference || "",
+    unitType: data?.unit_type || "",
+    unitSubType: data?.unit_sub_type || "",
+    state: data?.property?.state || "",
+    localGovernment: data?.property?.local_government || "",
+    accountOfficer: data?.property?.account_officer?.name || "",
+    bedrooms: data?.bedroom || "",
+    bathrooms: data?.bathroom || "",
+    landlord_name: data?.landlord?.name || "",
+    landlord_signature: data?.landlord?.signature || "",
+    toilets: data?.toilet || "",
+    tenant_name: data?.user?.name || "",
+    unit_features: data?.facilities || "",
+    newTenantTotalPrice: data?.total_package || "",
+    currency: data.property.currency,
+    fee_amount: data.fee_amount,
     renewalTenantTotalPrice: data.renew_total_package,
     renew_fee_period: data.renew_fee_period,
-    renewalTenantPrice: data.renew_fee_amount,
-    renew_service_charge: data.renew_service_charge,
-    renew_other_charge: data.renew_other_charge,
+    fee_period: data.fee_period,
+    branchName: data?.property?.branch?.branch_name || "",
+    agency_fee: data?.user?.property?.agency_fee || "",
+    group_chat: convertToYesNo(Number(data.property.group_chat)),
+    active_vat: convertToYesNo(Number(data.property.active_vat)),
+    rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
+    fee_penalty: convertToYesNo(Number(data.property.fee_penalty)),
+    chargePenalty: data.property.rent_penalty || data.property.fee_penalty,
+    caution_deposit: data.user.property.caution_deposit,
+    tenant_screening_level: data.property.tenant_screening_level,
+    occupant_screening_level: data.property.occupant_screening_level,
+    propertyType: data.property.property_type as "rental" | "facility",
+    // PROPERTY VALUES
+    property_title: data.property.title,
+    whoToCharge: data.user.property.who_to_charge_new_tenant,
+    whoToChargeRenew: data.user.property.who_to_charge_renew_tenant,
+    property_state: data.property.state,
+    property_address: `${data.property.full_address}, ${data.property.city_area} ${data.property.local_government}, ${data.property.state}`,
+    propertyId: data.property.id,
+    requestCallBack: convertToYesNo(Number(data.property.request_call_back)),
+    vehicleRecord: convertToYesNo(Number(data.property.vehicle_record)),
+    bookVisitor: convertToYesNo(Number(data.property.book_visitors)),
+    total_package: data.total_package,
     en_suit: data.en_suit,
     prepaid: data.prepaid,
     wardrobe: data.wardrobe,
-    fee_period: data.fee_period,
-    branchName: data.property.branch.branch_name,
-    agency_fee: data.property.agency_fee,
-    whoToCharge: data.property.who_to_charge_new_tenant,
-    group_chat: convertToYesNo(Number(data.property.group_chat)),
-    rent_penalty: convertToYesNo(Number(data.property.rent_penalty)),
-    caution_deposit: data.property.caution_deposit,
-    location: "",
-    fee_amount: "",
-    propertyId: data.property.id,
-    total_package: data.total_package,
-    caution_fee: data.caution_fee, 
-    security_fee: data.security_fee,
-    other_charge: data.other_charge,
-    unitAgentFee: data.agency_fee,
-    service_charge: data.service_charge,
-  }
+    property_document: data.property_document || undefined,
+    rent_penalty_setting: data.rent_penalty_setting || undefined,
+    occupant: occupant
+      ? {
+          id: occupant.id,
+          name: occupant.name,
+          email: occupant.email,
+          userTag: occupant.userTag,
+          avatar: occupant.avatar || empty,
+          gender: occupant.gender,
+          birthday: occupant.birthday,
+          religion: occupant.religion,
+          phone: occupant.phone,
+          maritalStatus: occupant.maritalStatus,
+          address: occupant.address,
+          city: occupant.city,
+          state: occupant.state,
+          lg: occupant.lg,
+          badgeColor:
+            occupant.user_tier || occupant.tier
+              ? tierColorMap[
+                  (occupant?.user_tier ||
+                    occupant.tier) as keyof typeof tierColorMap
+                ]
+              : undefined,
+        }
+      : undefined,
+    previous_records: previous_records ? previous_records : undefined,
+    previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
+    pending_invoice: pending_invoice || undefined,
+    unpaid_invoice: unpaid_invoice || undefined,
+  };
+
+  // Conditionally include fee fields only if valid
+  const feeFields: { [key: string]: string | undefined } = {
+    newTenantPrice: formatFee(data.fee_amount, data.property.currency),
+    inspectionFee: formatFee(data.inspection_fee, data.property.currency),
+    legalFee: formatFee(data.legal_fee, data.property.currency),
+    vat_amount: formatFee(data.user.vat_amount, data.property.currency),
+    renew_vat_amount: formatFee(
+      data.user.renew_vat_amount,
+      data.property.currency
+    ),
+    renewalTenantPrice: formatFee(
+      data.renew_fee_amount,
+      data.property.currency
+    ),
+    renew_service_charge: formatFee(
+      data.renew_service_charge,
+      data.property.currency
+    ),
+    renew_other_charge: formatFee(
+      data.renew_other_charge,
+      data.property.currency
+    ),
+    renew_security_fee: formatFee(
+      data.renew_security_fee,
+      data.property.currency
+    ),
+    renew_agency_fee: formatFee(
+      data.renew_agency_fee,
+      data.property.currency
+    ),
+    management_fee: formatFee(data.management_fee, data.property.currency),
+    caution_fee: formatFee(data.caution_fee, data.property.currency),
+    security_fee: formatFee(data.security_fee, data.property.currency),
+    other_charge: formatFee(data.other_charge, data.property.currency),
+    unitAgentFee: formatFee(data.agency_fee, data.property.currency),
+    service_charge: formatFee(data.service_charge, data.property.currency),
+  };
+
+  // Merge only defined fee fields into the transformed data
+  const validFeeFields = Object.fromEntries(
+    Object.entries(feeFields).filter(([_, value]) => value !== undefined)
+  );
+
+  return {
+    ...transformedData,
+    ...validFeeFields,
+  };
+};
+
+// Helper function to format and validate fee amounts
+export const formatFee = (
+  amount: string | number | undefined | null,
+  currency: string
+): string | undefined => {
+  if (!amount || amount === "") return undefined; // Skip undefined, null, or empty string
+  const parsedAmount = parseFloat(amount.toString());
+  if (isNaN(parsedAmount) || parsedAmount === 0) return undefined; // Skip NaN or zero
+  const currencySymbol =
+    currencySymbols[currency as keyof typeof currencySymbols] || "₦";
+  return `${currencySymbol}${formatNumber(parsedAmount)}`;
+};
+
+interface RentPenaltySettings {
+  daily?: number;
+  weekly?: number;
+  monthly?: number;
+  quarterly?: number;
+  yearly?: number;
+  biennially?: number;
+  triennially?: number;
+  quadrennial?: number;
+  quinquennial?: number;
+  sexennial?: number;
+  septennial?: number;
+  octennial?: number;
+  nonennial?: number;
+  decennial?: number;
 }
+
+
+export const calculateRentPenalty = (
+  chargePenalty: boolean,
+  rentPenaltySettings: Record<string, number>,
+  rentAmount: number,
+  feePeriod: RentPeriod,
+  dueDate: string
+): number => {
+  if (
+    !chargePenalty ||
+    !rentPenaltySettings ||
+    !rentAmount ||
+    !feePeriod ||
+    !dueDate
+  ) {
+    console.log("Penalty not applicable:", {
+      chargePenalty,
+      rentPenaltySettings,
+      rentAmount,
+      feePeriod,
+      dueDate,
+    });
+    return 0;
+  }
+
+  const penaltyPeriods = calculatePenaltyPeriods(dueDate, feePeriod);
+  if (penaltyPeriods <= 0) {
+    console.log("No penalty periods:", { penaltyPeriods, dueDate, feePeriod });
+    return 0;
+  }
+
+  const penaltyPercentage = rentPenaltySettings[feePeriod] || 0;
+  if (penaltyPercentage <= 0) {
+    console.log("No penalty percentage for period:", feePeriod);
+    return 0;
+  }
+
+  const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
+  const totalPenalty = penaltyPerPeriod * penaltyPeriods;
+
+  console.log("Penalty calculation:", {
+    penaltyPerPeriod,
+    penaltyPeriods,
+    totalPenalty,
+  });
+
+  return totalPenalty;
+};
+
+export const calculatePenaltyPeriods = (
+  dueDate: string,
+  period: RentPeriod
+): number => {
+  const now = dayjs();
+  const due = dayjs(dueDate, "DD/MM/YYYY");
+
+  if (!due.isValid() || now.isBefore(due) || now.isSame(due, "day")) {
+    return 0;
+  }
+
+  switch (period) {
+    case "daily":
+      return now.diff(due, "hour") > 0 ? 1 : 0;
+    case "weekly":
+      return now.diff(due, "day") > 0 ? 1 : 0;
+    case "monthly":
+      return now.diff(due, "day") > 0 ? 1 : 0;
+    case "quarterly":
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
+    case "yearly":
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
+    case "biennially":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 2));
+    case "triennially":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 3));
+    case "quadrennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 4));
+    case "quinquennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 5));
+    case "sexennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 6));
+    case "septennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 7));
+    case "octennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 8));
+    case "nonennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 9));
+    case "decennial":
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 10));
+    default:
+      return 0;
+  }
+};
+
+export const calculateOverduePeriods = (
+  dueDate: string,
+  period: RentPeriod
+): number => {
+  const now = dayjs();
+  const due = dayjs(dueDate, "DD/MM/YYYY");
+
+  console.log("calculateOverduePeriods inputs:", {
+    dueDate,
+    parsedDue: due.format("DD/MM/YYYY"),
+    now: now.format("DD/MM/YYYY"),
+    period,
+    isOverdue: now.isAfter(due),
+  });
+
+  if (!due.isValid() || now.isBefore(due) || now.isSame(due, "day")) {
+    console.log("Not overdue or invalid date:", {
+      dueDate,
+      isValid: due.isValid(),
+    });
+    return 0;
+  }
+
+  switch (period) {
+    case "daily":
+      return now.diff(due, "day");
+    case "weekly":
+      return now.diff(due, "day") > 0 ? 1 : 0;
+    case "monthly":
+      return now.diff(due, "day") > 0 ? 1 : 0;
+    case "quarterly":
+      return Math.floor(now.diff(due, "month") / 3);
+    case "yearly":
+      return Math.floor(now.diff(due, "month") / 3);
+    case "biennially":
+      return Math.floor(now.diff(due, "year") / 2);
+    case "triennially":
+      return Math.floor(now.diff(due, "year") / 3);
+    // case "quadrennially":
+    //   return Math.floor(now.diff(due, "year") / 4);
+    case "quinquennial":
+      return Math.floor(now.diff(due, "year") / 5);
+    case "sexennial":
+      return Math.floor(now.diff(due, "year") / 6);
+    case "septennial":
+      return Math.floor(now.diff(due, "year") / 7);
+    case "octennial":
+      return Math.floor(now.diff(due, "year") / 8);
+    case "nonennial":
+      return Math.floor(now.diff(due, "year") / 9);
+    case "decennial":
+      return Math.floor(now.diff(due, "year") / 10);
+    default:
+      console.log("Unknown period:", period);
+      return 0;
+  }
+};

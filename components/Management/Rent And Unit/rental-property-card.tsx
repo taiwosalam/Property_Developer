@@ -11,6 +11,10 @@ import PropertyTag from "@/components/Tags/property-tag";
 import { useRouter } from "next/navigation";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { RentalPropertyCardProps } from "@/app/(nav)/management/rent-unit/data";
+import { StatusDots } from "./status-dot";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { capitalizeWords } from "@/hooks/capitalize-words";
+import { useRole } from "@/hooks/roleContext";
 
 export const PropertyImageSlider: React.FC<PropertyImageSliderProps> = ({
   images,
@@ -89,8 +93,11 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   rent,
   cautionDeposit,
   serviceCharge,
+  currency,
 }) => {
-  const CURRENCY = currencySymbols["naira"];
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
   return (
     <div className="flex items-center justify-between flex-wrap space-y-1">
       <div>
@@ -137,70 +144,127 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   caution_deposit,
   service_charge,
   status,
-  property_type,
+  tenant_id,
+  badge_color,
+  currency,
+  fee_period,
+  invoice_status,
+  invoice_id,
+  partial_pending,
+  occupant,
+  page
 }) => {
-
   const [isHovered, setIsHovered] = useState(false);
+  const [isImgHovered, setImgIsHovered] = useState(false);
   const router = useRouter();
+  const { role } = useRole();
+
+  const HAS_INVOICE_PENDING =
+    invoice_status && invoice_status.trim().toLowerCase() === "pending";
+
+  const pendingPart =
+    partial_pending || invoice_status?.trim().toLowerCase() === "pending";
+
+  const NOT_OCCUPIED =
+    status.toLowerCase() === "relocate" || status.toLowerCase() === "vacant";
+
+  const getManageLink = () => {
+    switch (role) {
+      case "director":
+        return `/management/rent-unit/${unitId}`;
+      case "manager":
+        return `/manager/management/rent-unit/${unitId}`;
+      case "account":
+        return `/accountant/management/rent-unit/${unitId}`;
+      case "staff":
+        return `/staff/management/rent-unit/${unitId}`;
+      default:
+        return `/unauthorized`;
+    }
+  };
 
   return (
     <div className="bg-white dark:bg-darkText-primary rounded-2xl overflow-hidden shadow-lg">
-      <div className="h-[200px] relative">
+      <div
+        className="h-[200px] relative"
+        onMouseEnter={() => setImgIsHovered(true)}
+        onMouseLeave={() => setImgIsHovered(false)}
+      >
         <PropertyTag
           propertyType={propertyType}
           className="absolute top-5 right-5 z-10"
         />
-        {/* <PropertyImageSlider images={images} showOverlay={isHovered} /> */}
-        <ImageSlider images={images.map(image => image)} className="h-full" />
+        <ImageSlider images={images.map((image) => image)} className="h-full" />
+
+        {/* Hover text overlay at bottom */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 z-30 bg-black bg-opacity-50 text-white text-xs text-center py-1 transition-opacity duration-300 ${
+            isImgHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          Click the card to view rent history
+        </div>
       </div>
+
       <div
         role="button"
         className="p-2 pb-4 border-b border-[#C0C2C8] space-y-3 cursor-pointer transition-all duration-500"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onClick={() => router.push(`/management/rent-unit/${unitId}`)}
+        onClick={() => router.push(getManageLink())}
       >
         <div className="relative">
           <div className="flex items-center justify-between">
-            <h3 className="text-2xl font-bold text-[#374151] dark:text-white">
-             { unit_title }
+            <h3 className="text-2xl font-bold text-[#374151] dark:text-white truncate">
+              {unit_title}
             </h3>
             <div className="flex items-center space-x-1">
-                <div
-                  key={status}
-                  className="w-[15px] h-[15px] rounded-full"
-                  style={{ backgroundColor: getBackgroundColor(status) }}
-                />
+              <StatusDots
+                status={status}
+                propertyType={propertyType}
+                partial_pending={pendingPart}
+              />
+              {/* <StatusDots status={status} propertyType={propertyType} partial_pending={pendingPart} /> */}
+              {/* <StatusDots status={status} propertyType={propertyType} /> */}
             </div>
           </div>
-          <p className="text-sm font-normal">
-          { unit_name + " " + unit_type }
+          <p className="text-sm font-normal truncate">
+            {unit_name + " " + unit_type}
           </p>
 
           {/* Hover information */}
           <div
-            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
-              }`}
+            className={`absolute inset-0 bg-white dark:bg-darkText-primary py-2 transition-all duration-300 flex items-center justify-between ${
+              isHovered ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
           >
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Unit ID
               </span>
-              <p className="text-brand-primary font-medium"> { unitId } </p>
+              <p className="text-brand-primary font-medium"> {unitId} </p>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
-                Tenant&lsquo;s Name
+                Tenant‘s Name
               </span>
-              <p className="text-brand-primary font-medium">
-                { tenant_name } <span className="text-green-500">●</span>
-              </p>
+              <div className="flex items-center gap-1">
+                <span className="font-medium text-brand-primary capitalize">
+                  {NOT_OCCUPIED ? "--- ---" : capitalizeWords(tenant_name)}
+                </span>
+                {badge_color && !NOT_OCCUPIED && (
+                  <BadgeIcon color={badge_color} />
+                )}
+              </div>
             </div>
             <div className="text-sm">
               <span className="font-semibold text-text-label dark:text-darkText-1 text-xs">
                 Expiry Date
               </span>
-              <p className="text-brand-primary font-medium"> { expiry_date } </p>
+              <p className="text-brand-primary font-medium">
+                {" "}
+                {NOT_OCCUPIED ? "--- ---" : expiry_date}{" "}
+              </p>
             </div>
           </div>
         </div>
@@ -208,28 +272,81 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           rent={Number(rent)}
           cautionDeposit={Number(caution_deposit)}
           serviceCharge={Number(service_charge)}
+          currency={currency}
         />
       </div>
+      {/* BUTTONS ACCORDING TO STATUS */}
       <div className="flex items-center justify-end my-5 gap-2 px-2 flex-wrap">
         {actions
+          // First: skip all other logic if invoice_status is not 'pending' but action is "Pending"
           .filter((action) => {
-            // For rental properties, exclude Relocate
-            if (propertyType === "rental" && action.label === "Relocate") {
+            const label =
+              typeof action.label === "function"
+                ? action.label(propertyType)
+                : action.label;
+
+            // Only allow Pending button if invoice_status is "pending"
+            if (label === "Pending") {
+              return invoice_status?.trim().toLowerCase() === "pending";
+            }
+
+            // Hide all other buttons if invoice_status is "pending"
+            if (invoice_status?.trim().toLowerCase() === "pending") {
               return false;
             }
-            // For facilities, exclude Move Out
-            if (propertyType === "facility" && action.label === "Move Out") {
-              return false;
+
+            // Define button visibility based on status
+            if (status === "vacant" || status === "relocate") {
+              return label === "Start Rent" || label === "Move In";
             }
+            if (status === "occupied") {
+              return (
+                label !== "Start Rent" &&
+                label !== "Move In" &&
+                label !== "Renew Rent" &&
+                label !== "Renew Fee"
+              );
+            }
+            if (status === "expired") {
+              return (
+                label === "Renew Rent" ||
+                label === "Renew Fee" ||
+                label === "Move Out" ||
+                label === "Relocate"
+              );
+            }
+            return false;
+          })
+
+          // Then filter based on propertyType logic
+          .filter((action) => {
+            const label =
+              typeof action.label === "function"
+                ? action.label(propertyType)
+                : action.label;
+
+            if (propertyType === "rental" && label === "Relocate") return false;
+            if (propertyType === "facility" && label === "Move Out")
+              return false;
+
             return true;
           })
+
+          // Finally render the buttons
           .map((action, i) => (
             <ActionButton
+            currency={currency}
+              unit_id={unitId}
+              invoice_id={invoice_id}
               key={i}
+              tenantId={Number(occupant?.tenant_id) || 0}
+              cautionDeposit={Number(caution_deposit)}
+              tenantAgent={occupant?.agent || "web"}
+              propertyType={propertyType}
               {...action}
               route={
                 typeof action.route === "function"
-                  ? action.route(unitId, propertyType)
+                  ? action.route(unitId, propertyType, role)
                   : action.route
               }
               label={

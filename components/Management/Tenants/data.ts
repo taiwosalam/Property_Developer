@@ -60,3 +60,27 @@ export const multipleCreateTenants = async (formData: FormData) => {
     return false;
   }
 };
+
+
+export const deleteTenant = async (id: number) => {
+  try {
+    const { data } = await api.delete(`tenant/${id}`);
+    toast.success(data?.message || "Tenant deleted successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to delete tenant");
+    return false;
+  }
+};
+
+
+export const deleteLanlord = async (id: number) => {
+  try {
+    const { data } = await api.delete(`landlord/${id}`);
+    toast.success(data?.message || "Tenant deleted successfully");
+    return true;
+  } catch (error) {
+    handleAxiosError(error, "Failed to delete tenant");
+    return false;
+  }
+};

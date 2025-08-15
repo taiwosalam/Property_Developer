@@ -1,7 +1,7 @@
 "use client";
 
 // Imports
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@/components/Form/Button/button";
 import TenantCard from "@/components/Management/landlord-and-tenant-card";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
@@ -36,15 +36,28 @@ import { AxiosRequestConfig } from "axios";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import ServerError from "@/components/Error/ServerError";
+import { useSearchParams } from "next/navigation";
 
 const states = getAllStates();
 
 const Tenants = () => {
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
   const storedView = useView();
+  const contentTopRef = useRef<HTMLDivElement>(null);
   const [view, setView] = useState<string | null>(storedView);
-  const [pageData, setPageData] = useState<TenantPageData>(
-    defaultTenantPageData
-  );
+  const [pageData, setPageData] = useState<TenantPageData>(() => {
+    const savedPage = sessionStorage.getItem("tenant_page");
+    return {
+      ...defaultTenantPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
+
   const {
     total_pages,
     current_page,
@@ -57,12 +70,20 @@ const Tenants = () => {
     tenants,
   } = pageData;
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as TenantRequestParams,
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("tenant_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: query ? query.trim() : "",
+      } as TenantRequestParams,
+    };
   });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("tenant_page", current_page.toString());
+  }, [current_page]);
 
   const { data: branchesData } =
     useFetch<AllBranchesResponse>("/branches/select");
@@ -98,7 +119,7 @@ const Tenants = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
     const statesArray = menuOptions["State"] || [];
-    const agent = menuOptions["Tenant Type"]?.[0];
+    const agent = menuOptions["Tenant/Occupants Type"]?.[0];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: TenantRequestParams = {
@@ -123,18 +144,58 @@ const Tenants = () => {
     setConfig({
       params: queryParams,
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("tenant_page", "1");
   };
 
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    // Clear tenants in grid view to ensure fresh data on pagination
+    if (view === "grid") {
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+      }));
+      // Scroll to the top where TenantCards start
+      if (contentTopRef.current) {
+        contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
   };
 
-  const handleSearch = async (query: string) =>
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("tenant_page", "1");
+    }
+  }, [query]);
+
+  const handleSearch = async (searchQuery: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: searchQuery, page: 1 },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("tenant_page", "1");
+  };
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
@@ -151,48 +212,101 @@ const Tenants = () => {
     refetch,
   } = useFetch<TenantApiResponse>("tenants", config);
 
+  // Handle view change with reset and silent refetch
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    refetch({ silent: true });
+  }, [view]);
+
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformTenantApiResponse(apiData),
-      }));
+      const transformedData = transformTenantApiResponse(apiData);
+      setPageData((prevData) => {
+        const updatedTenants =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.tenants
+            : [...prevData.tenants, ...transformedData.tenants];
+        return { ...transformedData, tenants: updatedTenants };
+      });
     }
-  }, [apiData]);
+  }, [apiData, view]);
 
   // Listen for the refetch event
   useRefetchOnEvent("refetchTenants", () => refetch({ silent: true }));
 
-  const transformedTenants = tenants.map((t) => ({
+  // --- Infinite Scroll Logic ---
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < total_pages &&
+          !silentLoading &&
+          view !== "grid" // Only trigger in list view
+        ) {
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, total_pages, silentLoading, view]
+  );
+
+  const transformedTenants = tenants.map((t, index) => ({
     ...t,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
         <span>{t.name}</span>
-        {t.badge_color && <BadgeIcon color={t.badge_color} />}
+        <div className="flex gap-2 items-center">
+          {t.badge_color && <BadgeIcon color={t.badge_color} />}
+          {t.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        </div>
       </p>
     ),
-    user_tag: <UserTag type={t.user_tag} />,
+    user_tag: (
+      <>
+        <div className="flex gap-2 mb-2 items-center">
+          <UserTag type={t.user_tag} />
+        </div>
+      </>
+    ),
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
-          href={`/management/tenants/${t.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2 mx-auto"
-        >
-          Manage
-        </Button>
+      <div className="flex gap-x-[4%] items-center justify-end w-full">
         {t.user_tag === "mobile" && (
           <Button
             variant="sky_blue"
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-          // onClick={() => onClickChat(t)}
+            className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-white"
           >
             Chat
           </Button>
         )}
+        <Button
+          href={`/management/tenants/${t.id}/manage`}
+          size="sm_medium"
+          className="px-8 py-2"
+        >
+          Manage
+        </Button>
       </div>
     ),
+    ref:
+      index === tenants.length - 1 &&
+      current_page < total_pages &&
+      view !== "grid"
+        ? lastRowRef
+        : undefined,
   }));
 
   if (loading)
@@ -205,12 +319,11 @@ const Tenants = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Users"
@@ -270,47 +383,36 @@ const Tenants = () => {
           },
           {
             radio: true,
-            label: "Tenant Type",
+            label: "Tenant/Occupants Type",
             value: [
               { label: "Mobile Tenant", value: "mobile" },
               { label: "Web Tenant", value: "web" },
               { label: "All Tenants", value: "all" },
             ],
-          }
+          },
+          ...(branchOptions.length > 0
+            ? [
+                {
+                  label: "Branch",
+                  value: branchOptions,
+                },
+              ]
+            : []),
         ]}
       />
       <section>
         {tenants.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <div className="col-span-full text-center py-8 text-gray-500">
-              No Search/Filter Found
-            </div>
+            <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New Tenant"
+              noButton
               modalContent={<AddTenantModal />}
               title="The tenants and occupants profile files are empty."
               body={
                 <p>
                   You don&apos;t have any profiles for tenants and occupants
-                  yet. You can create them manually by clicking on the
-                  &quot;Create New User&quot; button or add them using their
-                  profile ID. Tenant profiles are for rental properties, while
-                  occupant profiles are for residents in gated estates. Once you
-                  add profiles to this page, this guide will no longer show. To
-                  learn more about this page later, you can click on this icon{" "}
-                  <span className="inline-block text-brand-10 align-text-top">
-                    <ExclamationMark />
-                  </span>{" "}
-                  at the top left of the dashboard page.
-                  <br />
-                  <br />
-                  Occupants and tenants can be onboarded manually which creates
-                  two types of users: web and mobile profile types. When
-                  creating or managing a rental or gated estate property, adding
-                  tenants and occupants comes last. You can invite them using
-                  their email and phone number for registration. If you already
-                  have their list, you can add them in bulk using an XML file.
+                  yet.
                 </p>
               }
             />
@@ -324,17 +426,20 @@ const Tenants = () => {
                 ) : (
                   tenants.map((t) => (
                     <Link
-                      href={`/management/tenants/${t.id}/manage`}
+                      href={`/manager/management/tenants/${t.id}/manage`}
                       key={t.id}
                     >
                       <TenantCard
                         key={t.id}
                         picture_url={t.picture_url}
                         name={t.name}
+                        title={t.title}
                         user_tag={t.user_tag}
                         badge_color={t.badge_color}
                         email={t.email}
                         phone_number={t.phone_number}
+                        note={t.note}
+                        is_flagged={t.flagged}
                       />
                     </Link>
                   ))
@@ -342,24 +447,26 @@ const Tenants = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <CustomTable
-                    displayTableHead={false}
-                    fields={tenantTableFields}
-                    data={transformedTenants}
-                    tableBodyCellSx={{ color: "#3F4247" }}
-                  />
+                <CustomTable
+                  displayTableHead={false}
+                  fields={tenantTableFields}
+                  data={transformedTenants}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
                 )}
               </>
             )}
-
-            <Pagination
-              totalPages={total_pages}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
+            {view === "grid" && (
+              <Pagination
+                totalPages={total_pages}
+                currentPage={current_page}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </section>

@@ -4,6 +4,7 @@ import { type PropertyCardProps } from "@/components/Management/Properties/prope
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
 import moment from "moment";
 import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+import { ProgressCardStep } from "@/components/Loader/setup-card-loader";
 
 export const initialState: PropertiesPageState = {
   total_pages: 1,
@@ -30,7 +31,7 @@ export const propertyFilterOptionsMenu: FilterOptionMenu[] = [
     radio: true,
     label: "Property Type",
     value: [
-      { label: "All properties", value: "all" },
+      { label: "All properties", value: "all", isChecked: true },
       { label: "Rental Property", value: "rental" },
       { label: "Facility Property", value: "facility" },
     ],
@@ -51,10 +52,13 @@ export interface PropertiesPageState {
 
 export interface UnitDataObject {
   id: string;
+  default_image?: string;
   // user_id: string;
   // property_id: string;
   unit_name: string;
   unit_type: string;
+  vat_amount?: string;
+  renew_vat_amount?: string;
   unit_sub_type: string;
   unit_preference: string;
   measurement: string;
@@ -80,12 +84,18 @@ export interface UnitDataObject {
   other_charge?: string;
   negotiation?: 1 | 0;
   total_package?: string;
+  address?: string;
   renew_fee_period?: string;
   renew_fee_amount?: string;
   renew_service_charge?: string;
   renew_other_charge?: string;
   renew_total_package?: string;
+  renew_security_fee?: string | number;
   is_active: keyof typeof UnitStatusColors;
+  vat?: string | number;
+  renew_vat?: string | number;
+  account_officer?: string;
+  notYetUploaded?: boolean;
   // status: "pending";
   // reject_reason: null;
   // created_at: "2024-12-11T10:02:27.000000Z";
@@ -93,7 +103,12 @@ export interface UnitDataObject {
   images: {
     id: string;
     path: string;
+    is_default?: number;
   }[];
+  tenants_by_agent?: {
+    Web: number;
+    Mobile: number;
+  };
 }
 
 export interface PropertyDataObject {
@@ -106,7 +121,9 @@ export interface PropertyDataObject {
   full_address: string;
   category: string;
   description: string;
+  is_inventory: any;
   property_type: string;
+  fee_period: string;
   updated_at: Date;
   currency?: keyof typeof currencySymbols;
   units_count: number;
@@ -114,12 +131,26 @@ export interface PropertyDataObject {
   images: {
     id: string;
     path: string;
+    is_default: number;
   }[];
   branch: {
     id: string;
     branch_name: string;
   } | null;
-  staff: string[]; //check after adding staff
+  tenants_by_agent: {
+    Mobile: number;
+    Web: number;
+  };
+  staff:
+    | {
+        id: string;
+        staff_role: string;
+        user: any;
+        professional_title: string;
+        title: string;
+      }[]
+    | null;
+  // staff: string[]; //check after adding staff
   agency_fee: number;
   management_fee: number;
   caution_deposit?: string;
@@ -133,8 +164,20 @@ export interface PropertyDataObject {
   rent_penalty: 1 | 0;
   fee_penalty: 1 | 0;
   coordinate: string;
+  vat: string | number;
+  renew_vat: string | number;
   units: UnitDataObject[];
-  land_lord_id: string;
+  landlord_id: string;
+  landlord?: any;
+  landlord_info?: {
+    name: string;
+    email: string | null;
+    phone: string | null;
+    address: string;
+    state: string;
+    lga: string;
+    city: string | null;
+  };
 }
 
 export interface PropertiesApiResponse {
@@ -148,6 +191,7 @@ export interface PropertiesApiResponse {
     properties: {
       current_page: number;
       last_page: number;
+      total: number;
       data: PropertyDataObject[];
     };
   };
@@ -157,6 +201,7 @@ export interface PropertyFilterResponse {
   data: {
     current_page: number;
     last_page: number;
+    total: number;
     data: PropertyDataObject[];
   };
 }
@@ -164,6 +209,16 @@ export interface PropertyFilterResponse {
 export const transformPropertiesApiResponse = (
   response: PropertiesApiResponse | PropertyFilterResponse
 ): Partial<PropertiesPageState> => {
+  // const isPropertiesApiResponse = (
+  //   response: any
+  // ): response is PropertiesApiResponse => {
+  //   return "total_property" in response.data;
+  // };
+
+  if (!response?.data) {
+    return initialState;
+  }
+
   const isPropertiesApiResponse = (
     response: any
   ): response is PropertiesApiResponse => {
@@ -174,6 +229,7 @@ export const transformPropertiesApiResponse = (
     ? response.data.properties
     : response.data;
 
+  // console.log("respin", propertiesData)
   const transformedProperties: PropertyCardProps[] = propertiesData.data.map(
     (p) => {
       const updatedAt = moment(p.updated_at);
@@ -189,9 +245,24 @@ export const transformPropertiesApiResponse = (
       }, 0);
       const feePercentage =
         p.property_type === "rental" ? p.agency_fee : p.management_fee;
+
+      const defaultImage =
+        p.images && p.images.length > 0
+          ? p.images.find((image) => image.is_default === 1)?.path ||
+            p.images[0].path
+          : undefined;
+
+      // Extract the first account officer from the staff array
+      const accountOfficerStaff = p?.staff?.find(
+        (staffMember) => staffMember.staff_role === "account officer"
+      );
+      const accountOfficer = accountOfficerStaff
+        ? `${accountOfficerStaff.title} ${accountOfficerStaff.user.name}`
+        : "";
       return {
         id: p.id,
-        images: p.images.map((image) => image.path),
+        images: p.images.map((image) => image.path) || [],
+        default_image: defaultImage,
         property_name: p.title,
         address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
         total_units: p.units_count,
@@ -203,11 +274,14 @@ export const transformPropertiesApiResponse = (
         branch: p.branch?.branch_name,
         total_returns: totalReturns,
         total_income: (totalReturns * feePercentage) / 100,
-        mobile_tenants: 0,
-        web_tenants: 0,
-        accountOfficer: "",
+        mobile_tenants: p.tenants_by_agent.Mobile || 0,
+        web_tenants: p.tenants_by_agent.Web || 0,
+        accountOfficer: accountOfficer,
         owing_units: 0,
-        available_units: 0,
+        // available_units: 0,
+        available_units: p.units.filter(
+          (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
+        ).length,
         isClickable: true,
         viewOnly: false,
       };
@@ -247,3 +321,38 @@ export interface PropertiesFilterParams {
   search?: string;
   // per_page?: number;
 }
+
+// ================  CREATE UNIT LOADING STEPS ====================
+
+export const CreateUnitLoadsteps: ProgressCardStep[] = [
+  {
+    title: "Setting up unit details to property details",
+    type: "warning",
+    desc: "Adding unit name, type, size, and linking it to the property with complete location and category details.",
+  },
+  {
+    title: "Creating unit breakdown and slots",
+    type: "warning",
+    desc: "Structuring units into sections or groups, creating inventory slots, and defining capacity for clients or tenants.",
+  },
+  {
+    title: "Applying settings, features, and pricing",
+    type: "warning",
+    desc: "Adding amenities, availability status, rent or sale prices, and management preferences for both property and units.",
+  },
+  {
+    title: "Uploading and optimizing images",
+    type: "success",
+    desc: "Preparing high-quality, fast-loading photos for the property and all associated units.",
+  },
+  {
+    title: "Publishing to your website and sending for approval",
+    type: "success",
+    desc: "Finalizing layout, maps, and branding, then making the listing live and submitting it for admin review.",
+  },
+  {
+    title: "Unit creation complete",
+    type: "success",
+    desc: "All steps finished successfully — your unit is now fully set up and ready for use.",
+  },
+];

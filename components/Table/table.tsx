@@ -13,7 +13,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-import { ReactNode } from "react";
+import { ReactNode, RefObject } from "react";
 import { VerticalEllipsisIcon } from "@/public/icons/icons";
 import useDarkMode from "@/hooks/useCheckDarkMode";
 
@@ -37,9 +37,13 @@ const renderValue = (
       <div style={field.contentStyle}>
         <Avatar
           src={value || empty}
-          className="mx-auto"
+          className="mx-auto bg-var(--secondary-color)"
           alt="avatar"
-          sx={{ width: field.picSize || 60, height: field.picSize || 60 }}
+          sx={{
+            width: field.picSize || 60,
+            height: field.picSize || 60,
+            backgroundColor: "var(--secondary-color)",
+          }}
         />
       </div>
     ) : (
@@ -47,7 +51,11 @@ const renderValue = (
         src={value}
         className="mx-auto"
         alt="avatar"
-        sx={{ width: field.picSize || 60, height: field.picSize || 60 }}
+        sx={{
+          width: field.picSize || 60,
+          height: field.picSize || 60,
+          backgroundColor: "var(--secondary-color)",
+        }}
       />
     );
   }
@@ -99,6 +107,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadCellSx,
   tableBodyCellSx,
   onActionClick,
+  lastRowRef
 }) => {
   const isDarkMode = useDarkMode();
 
@@ -124,9 +133,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
             style={tableHeadStyle}
           >
             <TableRow>
-              {fields.map((field) => (
+              {fields.map((field, fieldIndex) => (
                 <TableCell
-                  key={field.id}
+                  key={`${field.id}-${fieldIndex}`}
                   sx={{
                     fontFamily: "unset",
                     textAlign: "left",
@@ -138,6 +147,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     fontWeight: 500,
                     fontSize: "14px",
                     whiteSpace: "nowrap",
+                    maxWidth: "200px",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
                     ...tableHeadCellSx,
                   }}
                 >
@@ -153,9 +165,10 @@ const CustomTable: React.FC<CustomTableProps> = ({
           )} */}
           {data.map((x, index) => (
             <TableRow
-              // key={getUniqueKey(x)}
-              key={index}
-              ref={x.ref}
+              key={getUniqueKey(x)}
+              ref={index === data.length - 1 ? lastRowRef : null}
+              // key={`${field.id}-${Date.now()}`}
+              //ref={x.ref}
               onClick={handleSelect ? (e) => handleSelect(x, e) : undefined}
               className="cursor-pointer"
               sx={{
@@ -167,9 +180,9 @@ const CustomTable: React.FC<CustomTableProps> = ({
                 },
               }}
             >
-              {fields.map((field) => (
+              {fields.map((field, fieldIndex) => (
                 <TableCell
-                  key={field.id}
+                  key={`${getUniqueKey(x)}-${field.id}-${fieldIndex}`}
                   sx={{
                     fontFamily: "unset",
                     paddingTop: "8px",
@@ -178,10 +191,16 @@ const CustomTable: React.FC<CustomTableProps> = ({
                     fontWeight: 500,
                     fontSize: "14px",
                     textAlign: "left",
+                    maxWidth: "200px", // Set a fixed width
+                    whiteSpace: "nowrap", // Prevents text from wrapping
+                    overflow: "hidden", // Hides the overflow
+                    textOverflow: "ellipsis", // Adds "..." when text overflows
                     color: isDarkMode ? "#C1C2C3" : "#050901",
                     ...tableBodyCellSx,
                     ...field.cellStyle,
-                    ...(field.accessor === "email"
+                    ...(field.accessor === "email" ||
+                    field.accessor === "link" ||
+                    field.accessor === "uploaded"
                       ? { textTransform: "lowercase" }
                       : {}),
                     ...(isDarkMode ? { color: "#C1C2C3" } : {}),

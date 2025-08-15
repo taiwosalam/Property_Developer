@@ -1,0 +1,262 @@
+import { transformUnitDetails } from "@/app/(nav)/listing/data";
+import { empty } from "@/app/config";
+import api, { handleAxiosError } from "@/services/api";
+import { currencySymbols, formatNumber } from "@/utils/number-formatter";
+
+export interface Unit {
+  id: number;
+  user_id: number;
+  property_id: number;
+  tenant_id: number | null;
+  unit_name: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  measurement: string;
+  bedroom: string;
+  bathroom: string;
+  toilet: number;
+  facilities: string[];
+  en_suit: number;
+  prepaid: number;
+  wardrobe: number;
+  pet_allowed: number;
+  total_area_sqm: string;
+  number_of: string;
+  fee_period: string;
+  fee_amount: string;
+  security_fee: string;
+  service_charge: string;
+  agency_fee: string;
+  images: {
+    path: string;
+  }[];
+  legal_fee: string;
+  caution_fee: string;
+  inspection_fee: string;
+  management_fee: string | null;
+  other_charge: string;
+  negotiation: number;
+  total_package: string;
+  renew_fee_period: string;
+  renew_fee_amount: string;
+  renew_service_charge: string;
+  renew_other_charge: string;
+  renew_total_package: string;
+  is_active: string;
+  published: number;
+  status: string;
+  reject_reason: string | null;
+  created_at: string;
+  updated_at: string;
+  vat_amount?: string;
+  renew_vat_amount?: string;
+}
+
+export interface UnitOptionTypes {
+  value: number | string;
+  label: string;
+}
+
+export const unitInitialOptions: UnitOptionTypes[] = [{ value: "", label: "" }];
+
+export const transformUnitOptions = (
+  data: UnitsApiResponse
+): UnitOptionTypes[] => {
+  return data.data
+    .filter(
+      (unit) => unit.is_active === "vacant" || unit.is_active === "relocate"
+    )
+    .map((unit) => ({
+      value: unit.unit_name,
+      label: unit.unit_name,
+    }));
+};
+
+// Helper function to format monetary values with Naira as fallback
+export const formatCurrency = (
+  value: string | null | undefined,
+  currency: string = "naira"
+): string => {
+  if (value === null || value === undefined || value === "") return "";
+  const parsed = parseFloat(value);
+  if (isNaN(parsed)) return "";
+  const symbol =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+  return `${symbol}${formatNumber(parsed)}`;
+};
+
+export interface TransferUnit {
+  id: string;
+  cautionDeposit: string;
+  serviceCharge: string;
+  unitDetails: string;
+  totalPackage: string;
+  rent: string;
+  unitName: string;
+  VatAmount: string;
+  otherCharge: string;
+  legalFee: string;
+  inspectionFee: string;
+  agencyFee: string;
+  unitImages: string[];
+}
+
+export const transformTransferUnits = (
+  data: UnitsApiResponse
+): TransferUnit[] => {
+  return data.data
+    .filter(
+      (unit) => unit.is_active === "vacant" || unit.is_active === "relocated"
+    )
+    .map((unit) => ({
+      id: unit.id.toString(),
+      cautionDeposit: formatCurrency(unit.caution_fee, "naira"),
+      serviceCharge: formatCurrency(unit.service_charge),
+      unitDetails: transformUnitDetails(unit),
+      totalPackage: formatCurrency(unit.total_package),
+      rent: formatCurrency(unit.fee_amount),
+      unitName: unit.unit_name,
+      VatAmount: formatCurrency(unit.vat_amount),
+      otherCharge: formatCurrency(unit.other_charge),
+      legalFee: formatCurrency(unit.legal_fee),
+      inspectionFee: formatCurrency(unit.inspection_fee),
+      agencyFee: formatCurrency(unit.agency_fee),
+      unitImages: unit.images.map((i) => i.path),
+      // unitImages: [empty],
+    }));
+};
+
+// export const initialData: Unit = {
+//     id: 0,
+//     user_id: 0,
+//     // property_id: 0,
+//     // tenant_id: null,
+//     // unit_name: "",
+//     // unit_type: "",
+//     // unit_sub_type: "",
+//     // unit_preference: "",
+//     // measurement: "",
+//     // bedroom: "",
+//     // bathroom: "",
+//     // toilet: 0,
+//     // facilities: [],
+//     // en_suit: 0,
+//     // prepaid: 0,
+//     // wardrobe: 0,
+//     // pet_allowed: 0,
+//     // total_area_sqm: "",
+//     // number_of: "",
+//     // fee_period: "",
+//     // fee_amount: "",
+//     // security_fee: "",
+//     // service_charge: "",
+//     // agency_fee: "",
+//     // legal_fee: "",
+//     // caution_fee: "",
+//     // inspection_fee: "",
+//     // management_fee: null,
+//     // other_charge: "",
+//     // negotiation: 0,
+//     // total_package: "",
+//     // renew_fee_period: "",
+//     // renew_fee_amount: "",
+//     // renew_service_charge: "",
+//     // renew_other_charge: "",
+//     // renew_total_package: "",
+//     // is_active: "",
+//     // published: 0,
+//     // status: "",
+//     // reject_reason: null,
+//     // created_at: "",
+//     // updated_at: ""
+// };
+
+export interface UnitsApiResponse {
+  status: string;
+  message: string;
+  data: Unit[];
+}
+
+export const getRentalData = (propertyData: any): any[] => {
+  return [
+    { label: "Property Title", value: propertyData?.property_name },
+    { label: "State", value: propertyData?.state },
+    { label: "Local Government", value: propertyData?.local_government },
+    { label: "Full Address", value: propertyData?.address },
+    { label: "Branch", value: propertyData?.branch },
+    { label: "Account Officer", value: propertyData?.account_officer || "" },
+    { label: "Landlord", value: propertyData?.landlord_name },
+    { label: "Categories", value: propertyData?.category },
+  ];
+};
+
+export const getPropertySettingsData = (propertyData: any): any[] => {
+  return [
+    {
+      label: "Agency Fee",
+      value:
+        propertyData?.agency_fee !== undefined
+          ? `${propertyData.agency_fee}%`
+          : undefined,
+    },
+    { label: "Period", value: propertyData?.fee_period },
+    { label: "Charge", value: propertyData?.rent_penalty },
+    { label: "Caution Deposit", value: propertyData?.caution_deposit },
+    {
+      label: "Group Chat",
+      value:
+        propertyData?.group_chat !== undefined
+          ? `${propertyData.group_chat}`
+          : undefined,
+    },
+    {
+      label: "Rent Penalty",
+      value:
+        propertyData?.who_to_charge_new_tenant !== undefined
+          ? `${propertyData.who_to_charge_new_tenant}`
+          : undefined,
+    },
+  ];
+};
+
+
+export const isValidAmount = (val: any) => {
+  if (val === undefined || val === null || val === "") return false;
+  if (typeof val === "string" && /^_.*,.*,_*$/.test(val)) return false;
+
+  const cleaned = typeof val === "string"
+    ? val.replace(/[^0-9.]/g, "")
+    : val;
+
+  return parseFloat(cleaned) > 0;
+};
+
+
+
+
+// /tenant-rent/move_out
+export const moveOut = async (data: any) => {
+  try {
+    const res = await api.post("/tenant-rent/move_out", data);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+// Helper function to clean and parse amount
+export const parseAmount = (
+  amount: string | number | null | undefined
+): number => {
+  if (!amount) return 0;
+  // Convert to string if it's a number
+  const amountStr = amount.toString();
+  // Remove currency symbols and commas, then parse
+  const cleanAmount = amountStr.replace(/[₦$£,]/g, "");
+  return parseFloat(cleanAmount) || 0;
+};

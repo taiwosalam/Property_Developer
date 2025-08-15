@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import Label from "../Label/label";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import useDarkMode from "@/hooks/useCheckDarkMode";
 
 const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   id,
@@ -22,9 +23,10 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   onChange,
   inputClassName,
   inputContainerClassName,
+  disabled,
 }) => {
   const [phoneValue, setPhoneValue] = useState(defaultValue);
-
+  const isDarkMode = useDarkMode();
   useEffect(() => {
     setPhoneValue(value || defaultValue);
   }, [value, resetKey, defaultValue]);
@@ -45,6 +47,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         </Label>
       )}
       <PhoneInput
+        disabled={disabled}
         country="ng" // Default country code (Nigeria)
         value={phoneValue}
         onChange={handleChange}
@@ -70,6 +73,13 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           paddingTop: "9px",
           paddingBottom: "9px",
         }}
+        dropdownStyle={{
+          borderRadius: "8px",
+          background: isDarkMode ? "#121212" : "#FFFFFF",
+          border: "none", 
+          color: isDarkMode ? "#FFFFFF" : "#000000",
+          fontFamily: "inherit",
+        }}
         buttonStyle={{
           border: "none",
           borderRadius: "8px 0 0 8px",
@@ -82,7 +92,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
           padding: "1px",
         }}
         containerClass={clsx(
-          "font-normal rounded-[8px] border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out custom-primary-outline dark:bg-darkText-primary",
+          "font-normal rounded-[8px] border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out custom-primary-outline dark:!bg-darkText-primary",
           inputContainerClassName
         )}
       />

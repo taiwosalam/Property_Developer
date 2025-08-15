@@ -13,11 +13,13 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
   style,
   children,
   headerClassName,
+  className,
+  noClose,
 }) => {
   return (
     <div
       // Please dont change the styles
-      className="w-[600px] max-w-[80%] max-h-[85%] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar"
+      className={`w-[600px] max-w-[80%] max-h-[85%] bg-white dark:bg-darkText-primary rounded-lg overflow-auto custom-round-scrollbar ${className}`}
       style={{
         boxShadow:
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
@@ -41,11 +43,13 @@ const WalletModalPreset: React.FC<WalletModalPresetProps> = ({
           ) : (
             <div></div>
           )}
-          <ModalTrigger close>
-            <XIcon size="30" />
-          </ModalTrigger>
+          {!noClose && (
+            <ModalTrigger close>
+              <XIcon size="30" />
+            </ModalTrigger>
+          )}
         </div>
-        <p className="text-text-secondary dark:text-white text-base font-medium text-center capitalize">
+        <p className="text-text-secondary dark:text-white font-medium text-center capitalize">
           {title}
         </p>
       </div>

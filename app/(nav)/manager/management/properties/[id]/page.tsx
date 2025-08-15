@@ -1,3 +1,4 @@
+
 "use client";
 import PropertyPreview from "@/components/Management/Properties/property-preview";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
@@ -7,10 +8,12 @@ import {
   transformSinglePropertyData,
 } from "./data";
 import NetworkError from "@/components/Error/NetworkError";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
-  const { data, loading, error, isNetworkError } =
+  const { data, loading, error, isNetworkError, refetch } =
     useFetch<SinglePropertyResponse>(`property/${params.id}/view`);
+    useRefetchOnEvent("property-updated", () => refetch({ silent: true }));
 
   const propertyData = data ? transformSinglePropertyData(data) : null;
 
@@ -19,7 +22,7 @@ const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
   if (error) return <div>{error}</div>;
   if (!propertyData) return <div>No property data found</div>;
 
-  return <PropertyPreview {...propertyData} />;
+  return <PropertyPreview {...propertyData} page="manager" />;
 };
 
 export default PropertyPreviewPage;

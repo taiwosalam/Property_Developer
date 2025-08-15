@@ -1,15 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 // Types
 import type { AddPropertyModalViews } from "./types";
 
 import AddPropertyOptionsView from "./add-property-options";
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import AddPropertyWithId from "./add-property-with-id";
+import { useTourStore } from "@/store/tour-store";
 
-const AddPropertyModal = () => {
+const AddPropertyModal = ({ isOpen, id }: { isOpen?: boolean; id?: number }) => {
   const [view, setView] = useState<AddPropertyModalViews>("options");
+  const { tour: tourState, setTourState } = useTourStore();
+
   const handleBack = () => {
     setView("options");
   };
@@ -22,10 +25,10 @@ const AddPropertyModal = () => {
   > = {
     options: {
       heading: "Add Property",
-      content: <AddPropertyOptionsView setModalView={setView} />,
+      content: <AddPropertyOptionsView id={id} setModalView={setView} />,
     },
     "add-property-with-id": {
-      heading: "Add Property with ID",
+      heading: "Request Property with ID",
       content: <AddPropertyWithId />,
     },
   };

@@ -2,91 +2,176 @@
 import clsx from "clsx";
 import { useState } from "react";
 import { XIcon } from "@/public/icons/icons";
-import { ModalTrigger } from "@/components/Modal/modal";
+import { ModalTrigger, useModal } from "@/components/Modal/modal";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import InputTextarea from "@/components/Form/InputTextarea/inputTextarea";
 import Label from "@/components/Form/Label/label";
 import Button from "@/components/Form/Button/button";
 import DateInput from "@/components/Form/DateInput/date-input";
-// import { SectionSeparator } from "@/components/Section/section-components";
+import TextArea from "@/components/Form/TextArea/textarea";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { AuthForm } from "@/components/Auth/auth-components";
+import { createReminder } from "@/app/(nav)/tasks/complaints/[complainId]/manage-complain/data";
+import { Dayjs } from "dayjs";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
-const CreateReminderMOdal = () => {
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+interface IReminderProps {
+  date?: Date;
+}
+
+const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
   const allTabs = ["event", "task", "reminder", "examine"] as const;
   type Tab = (typeof allTabs)[number];
   const [activeTab, setActiveTab] = useState<Tab>(allTabs[0]);
+  const { setIsOpen } = useModal();
+
+  const [reminderDate, setReminderDate] = useState<Dayjs | null>(
+    date ? dayjs(date) : null
+  );
+
+  const [inputTitle, setInputTitle] = useState("");
+  const [textAreaNote, setTextAreaNote] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  // Helper function to strip HTML tags and get plain text
+  const stripHtmlTags = (html: string): string => {
+    const div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+
+  const handleDateChange = (date?: Dayjs | null) => {
+    if (date && date.isBefore(dayjs().startOf("day"))) {
+      toast.error("Please select a current or future date");
+      return;
+    }
+    setReminderDate(date || null);
+  };
+
+  const handleInputTitle = (value: string) => {
+    if (value.length > 40) {
+      toast.error("Title cannot exceed 40 characters");
+      return;
+    }
+    setInputTitle(value);
+  };
+
+  const handleTextNote = (value: string) => {
+    const plainText = stripHtmlTags(value);
+    if (plainText.length > 400) {
+      toast.error("Note cannot exceed 400 characters");
+      setTextAreaNote(value);
+      return;
+    } else {
+      setTextAreaNote(value);
+    }
+  };
+
+  const handleCreateReminder = async () => {
+    if (!reminderDate || !reminderDate.isValid()) {
+      toast.error("Please select a valid date");
+      return;
+    }
+
+    if (reminderDate.isBefore(dayjs().startOf("day"))) {
+      toast.error("Past dates are not allowed");
+      return;
+    }
+
+    if (!inputTitle.trim()) {
+      toast.error("Please enter the reminder title");
+      return;
+    }
+
+    if (inputTitle.length > 40) {
+      toast.error("Title cannot exceed 40 characters");
+      return;
+    }
+
+    const plainNoteText = stripHtmlTags(textAreaNote);
+    if (!plainNoteText.trim()) {
+      toast.error("Please add a note");
+      return;
+    }
+
+    if (plainNoteText.length > 400) {
+      toast.error("Note cannot exceed 400 characters");
+      return;
+    }
+
+    const utcDate = reminderDate.startOf("day").format("YYYY-MM-DD");
+
+    const params = {
+      title: inputTitle,
+      note: textAreaNote, // Send HTML content to the API
+      date: utcDate,
+    };
+
+    try {
+      setLoading(true);
+      const res = await createReminder(params);
+      if (res) {
+        toast.success("Reminder created successfully");
+        window.dispatchEvent(new Event("CalendarEvents"));
+        setIsOpen(false);
+      }
+    } catch (error) {
+      toast.error("Failed to create reminder");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  console.log(date);
+
   return (
-    <form className="w-[95vw] max-w-[460px] max-h-[90vh] overflow-y-auto custom-round-scrollbar rounded-lg border border-[rgba(193,194,195,0.40)] dark:border-darkText-2 bg-white  dark:bg-darkkText-primary font-medium">
-      {/* Header */}
-      <div className="text-center text-text-secondary pt-10 rounded-t-lg bg-white dark:bg-[#3c3d37] k sticky z-[1] top-0 flex flex-col gap-5">
-        <ModalTrigger asChild close>
-          <button className="absolute top-2 right-4" aria-label="Close">
-            <XIcon />
-          </button>
-        </ModalTrigger>
-        <p className="text-base dark:text-white">Create</p>
-        <div className="flex items-center justify-between gap-4 max-w-[85%] mx-auto">
-          {allTabs.map((tab) => (
-            <button
-              key={tab}
-              type="button"
-              className={clsx(
-                "capitalize text-xs px-4 py-1",
-                {
-                  "bg-brand-2 rounded-[4px] text-brand-primary":
-                    activeTab === tab,
-                },
-                {
-                  "text-text-secondary dark:text-white": activeTab !== tab,
-                }
-              )}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
+    <WalletModalPreset title="Create Reminder">
+      <AuthForm onFormSubmit={handleCreateReminder}>
+        <div className="custom-flex-col gap-10">
+          <Input
+            id="title"
+            placeholder="Add title"
+            label="Add title"
+            inputClassName="bg-white"
+            onChange={handleInputTitle}
+            value={inputTitle}
+          />
+          <DateInput
+            id="reminder_date"
+            label="Reminder Date"
+            lastYear
+            minDate={dayjs(Date.now())}
+            value={reminderDate}
+            //defaultValue={date ? dayjs(date) : null}
+            onChange={handleDateChange}
+          />
+          <TextArea
+            id="note"
+            label="Attach note:"
+            className="md:col-span-2"
+            onChange={handleTextNote}
+            value={textAreaNote}
+          />
+          <Button
+            type="submit"
+            size="sm_medium"
+            className="w-full py-2 px-8"
+            disabled={loading}
+          >
+            {loading ? "Please wait..." : "Add to Calendar"}
+          </Button>
         </div>
-        {/* <SectionSeparator /> */}
-      </div>
-      {/* Body */}
-      <div className="px-[18px] pt-4 pb-8 bg-white dark:bg-black space-y-4">
-        <Input id="title" placeholder="Add title" inputClassName="bg-white" />
-        {activeTab !== "examine" && (
-          <>
-            <div className="space-y-1">
-              <Label id="'">Date Picked:</Label>
-              <p className="text-text-secondary text-sm font-medium">
-                8 January 2024
-              </p>
-            </div>
-            {activeTab !== "reminder" && (
-              <Select id="guest" label="Add Guest" options={[]} />
-            )}
-          </>
-        )}
-        {activeTab === "examine" && (
-          <div className="grid md:grid-cols-2 gap-x-6 gap-y-4">
-            <Select id="branch" label="Branch" options={[]} />
-            <Select id="property" label="Property" options={[]} />
-            <Select id="account_officer" label="Account Officer" options={[]} />
-            <DateInput id="examine_date" label="Examine Date" />
-          </div>
-        )}
-        <InputTextarea label="Attach note:" id="note" placeholder="Type here" />
-        {activeTab === "examine" && (
-          <label className="flex items-center gap-2 text-sm text-text-secondary w-fit ml-auto !mb-8">
-            <input
-              type="checkbox"
-              className="bg-[#F9FAFB] border border-neutral-6 rounded w-[18px] h-[18px]"
-            />
-            <span>Create announcement</span>
-          </label>
-        )}
-        <Button type="submit" size="sm_medium" className="w-full py-2 px-8">
-          Add to Calendar
-        </Button>
-      </div>
-    </form>
+      </AuthForm>
+    </WalletModalPreset>
   );
 };
 

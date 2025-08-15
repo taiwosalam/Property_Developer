@@ -1,13 +1,13 @@
 "use client";
 
-import { comments } from "@/app/(nav)/management/agent-community/data";
+// import { comments } from "@/app/(nav)/management/agent-community/data";
 import TextArea from "../Form/TextArea/textarea";
 import Select from "../Form/Select/select";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
 import { useState, useEffect } from "react";
 import { ValidationErrors } from "@/utils/types";
 import MultiSelect from "./multi-select";
-import Comment from "@/app/(nav)/management/agent-community/threads/[threadId]/preview/comment";
+import Comment from "@/app/(nav)/community/agent-forum/threads/[threadId]/preview/comment";
 import PropertyRequestUnitType from "./UnitType";
 import { PropertyRequestContext } from "./propertyRequest";
 import Input from "../Form/Input/input";
@@ -16,6 +16,10 @@ import { toast } from "sonner";
 import { usePropertyRequestStore } from "@/store/createPropertyStore";
 import { DatePickerWithRange } from "../dashboard/date-picker";
 import { DateRange } from "react-day-picker";
+import AgentRequestLoader from "../Loader/agent-reuest";
+import { RESTRICTED_ARTICLES_WORDS } from "@/app/(nav)/community/agent-forum/my-articles/data";
+import { useGlobalStore } from "@/store/general-store";
+import { comments } from "../tasks/announcements/data";
 
 const SkeletonBox = ({ className }: { className: string }) => (
   <div
@@ -29,25 +33,34 @@ export const PropertyRequestFirstSection = ({
   placeholderText,
   desc,
   loading,
+  noMaxTitle,
 }: {
   data?: any;
   desc?: string;
   title?: string;
   placeholderText: string;
   loading?: boolean;
+  noMaxTitle?: boolean;
 }) => {
   const [inputValue, setInputValue] = useState(data?.title ?? "");
+  const [error, setError] = useState<string | null>(null);
+  const MAX_LENGTH = noMaxTitle ? Infinity : 40;
 
   useEffect(() => {
     if (data?.title) {
-      setInputValue(data.title);
+      setInputValue(data.title.slice(0, MAX_LENGTH));
     }
   }, [data?.title]);
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
+    const newValue = e.target.value;
+    if (newValue.length <= MAX_LENGTH) {
+      setInputValue(newValue);
+      setError(null);
+    } else {
+      setError(`Title cannot exceed ${MAX_LENGTH} characters`);
+    }
   };
-
   if (loading) {
     return (
       <div className="flex flex-col gap-4">
@@ -62,24 +75,26 @@ export const PropertyRequestFirstSection = ({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex flex-col gap-4">
+      <div className="title-input flex flex-col gap-4">
         <label htmlFor="title"> Title </label>
         <input
           type="text"
           id="title"
           name="title"
+          maxLength={!noMaxTitle ? MAX_LENGTH : undefined}
           className="bg-white border border-solid border-[#C1C2C366] rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
           value={inputValue}
           onChange={onChange}
         />
+        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
       </div>
       <TextArea
         id="content"
         label=""
         placeholder={desc ? desc : placeholderText}
-        className="w-full mt-4 min-h-[300px]"
+        className="description-textarea w-full mt-4 min-h-[200px]"
         value={data?.content || data?.description || ""}
-        // minChar={200}
+        restrictedWords={RESTRICTED_ARTICLES_WORDS}
         inputSpaceClassName="!min-h-[400px] text-text-secondary no-italic !leading-60 dark:text-darkText-2"
       />
     </div>
@@ -99,58 +114,43 @@ export const PropertyRequestSecondSection = ({
   const { minBudget, maxBudget, setMinBudget, setMaxBudget } =
     usePropertyRequestStore();
   const [timeRange, setTimeRange] = useState("90d");
+  const stateOptions = getAllStates();
+  const [address, setAddress] = useState({
+    state: "",
+    lga: "",
+    city: "",
+  });
   const CURRENCY_SYMBOL = currencySymbols.naira;
 
-  if (loading) {
-    return (
-      <>
-        <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-          {/* Request Types section */}
-          <SkeletonBox className="h-6 w-24" />
-          <div className="flex flex-wrap gap-3">
-            {[1, 2, 3].map((i) => (
-              <SkeletonBox key={i} className="h-10 w-24" />
-            ))}
-          </div>
+  console.log(data);
 
-          {/* Budget section */}
-          <div className="budget flex flex-col gap-2">
-            <SkeletonBox className="h-6 w-16" />
-            <div className="space-y-4">
-              <SkeletonBox className="h-[72px] w-full" />
-              <SkeletonBox className="h-[72px] w-full" />
-            </div>
-          </div>
+  if (loading) return <AgentRequestLoader />;
 
-          {/* Target Audience & Valid Till section */}
-          <div className="flex flex-col gap-2">
-            <div className="space-y-4">
-              <SkeletonBox className="h-6 w-32" />
-              <SkeletonBox className="h-10 w-full" />
-            </div>
-
-            <div className="space-y-4 mt-4">
-              <SkeletonBox className="h-6 w-20" />
-              <SkeletonBox className="h-10 w-full" />
-            </div>
-          </div>
-        </div>
-      </>
-    );
-  }
+  
 
   // Handle minimum budget change
   const handleMinChange = (value: string) => {
-    // Remove any non-numeric characters except decimal point
+    if (!value) {
+      setMinBudget(null);
+      return;
+    }
+    // Remove all commas and non-numeric characters except decimal
     const cleanValue = value.replace(/[^\d.]/g, "");
-    const numValue = parseFloat(cleanValue) || null;
-    setMinBudget(numValue);
+    // Convert to number, handle invalid input
+    const numValue = Number(cleanValue);
+    if (!isNaN(numValue)) {
+      setMinBudget(numValue);
+    }
   };
 
   // Handle maximum budget change
   const handleMaxChange = (value: string) => {
+    if (!value) {
+      setMaxBudget(null);
+      return;
+    }
     const cleanValue = value.replace(/[^\d.]/g, "");
-    const numValue = parseFloat(cleanValue) || null;
+    const numValue = parseFloat(cleanValue);
     setMaxBudget(numValue);
   };
 
@@ -162,6 +162,15 @@ export const PropertyRequestSecondSection = ({
     }
   };
 
+  const handleAddressChange = (key: keyof typeof address, value: string) => {
+    setAddress((prev) => ({
+      ...prev,
+      [key]: value,
+      ...(key === "state" && { lga: "", city: "" }),
+      ...(key === "lga" && { city: "" }),
+    }));
+  };
+
   const calculateDateRange = (days: number) => {
     const now = new Date();
     const fromDate = new Date();
@@ -171,42 +180,83 @@ export const PropertyRequestSecondSection = ({
 
   return (
     <div className="flex flex-col gap-4 bg-white dark:bg-darkText-primary p-4 rounded-lg">
-      <h2>Request Types</h2>
-      <PropertyRequestUnitType data={data} />
-      <div className="budget flex flex-col gap-2">
-        <h3 className="text-black dark:text-white font-semibold mb-2">
-          Budget
-        </h3>
-        <Input
-          required
-          id="min_budget"
-          placeholder=""
-          label="Minimum Budget"
-          formatNumber
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          inputClassName="bg-white"
-          onChange={handleMinChange}
-          value={
-            minBudget !== null ? minBudget.toString() : data?.min_budget || ""
-          }
-        />
-        <Input
-          required
-          id="max_budget"
-          placeholder=""
-          label="Maximum Budget"
-          formatNumber
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          inputClassName="bg-white"
-          onChange={handleMaxChange}
-          value={
-            maxBudget !== null ? maxBudget.toString() : data?.max_budget || ""
-          }
-        />
+      <div className="">
+        <div className="property-type-selection">
+          <h3 className="text-black dark:text-white font-semibold mb-2">
+            Request Type
+          </h3>
+          <PropertyRequestUnitType data={data} />
+        </div>
+        <div className="client-budget-selection flex flex-col gap-2">
+          <h3 className="text-black dark:text-white font-semibold my-4">
+            Client Budget
+          </h3>
+
+          <div className="space-y-4">
+            <Input
+              required
+              id=""
+              placeholder=""
+              label="Minimum Budget"
+              //formatNumber
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              inputClassName="bg-white"
+              onChange={(value: string) => handleMinChange(value)}
+              value={minBudget ? minBudget.toLocaleString() : ""}
+            />
+            <input
+              id="min_budget"
+              type="hidden"
+              name="min_budget"
+              defaultValue={minBudget ? minBudget.toString() : ""}
+            />
+
+            <Input
+              required
+              id=""
+              placeholder=""
+              label="Maximum Budget"
+              //formatNumber
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              inputClassName="bg-white"
+              onChange={(value: string) => handleMaxChange(value)}
+              value={maxBudget ? maxBudget.toLocaleString() : ""}
+            />
+            <input
+              id="max_budget"
+              type="hidden"
+              name="max_budget"
+              defaultValue={maxBudget ? maxBudget.toString() : ""}
+            />
+          </div>
+        </div>
       </div>
       <div className="flex flex-col gap-2">
-        <StateAndLocalGovt data={data} />
-        <div className="flex flex-col gap-2">
+        <div className="location-selection space-y-4">
+          <h3 className="text-black dark:text-white font-semibold mb-2">
+            Location
+          </h3>
+
+          <Select
+            options={stateOptions}
+            id="state"
+            label="state"
+            value={data?.state || address.state}
+            onChange={(value) => handleAddressChange("state", value)}
+            required
+          />
+
+          <Select
+            options={getLocalGovernments(address.state)}
+            id="lga"
+            label="local government"
+            onChange={(value) => handleAddressChange("lga", value)}
+            value={data?.lga || address.lga}
+            required
+          />
+        </div>
+        {/* <StateAndLocalGovt data={data} /> */}
+        <div className="date-validation-selection flex flex-col gap-2 mt-2">
           <h3 className="text-black dark:text-white font-semibold mb-2">
             Valid Till
           </h3>
@@ -236,8 +286,6 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
 
   useEffect(() => {
-    console.log("Original target_audience:", data?.target_audience);
-
     const initialSelectedStates = (() => {
       if (typeof data?.target_audience === "string") {
         try {
@@ -258,7 +306,6 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
       return [];
     })();
 
-    console.log("Processed initialSelectedStates:", initialSelectedStates);
     setSelectedStates(initialSelectedStates);
   }, [data?.target_audience]);
 
@@ -273,8 +320,8 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
   const allOptions = selectedStates.includes("All States")
     ? ["All States"] // Limit options to "All States" when selected
     : ["All States", ...getAllStates()].filter(
-      (option, index, self) => self.indexOf(option) === index // Remove duplicates
-    );
+        (option, index, self) => self.indexOf(option) === index // Remove duplicates
+      );
 
   return (
     <div className="audience flex flex-col gap-2">
@@ -285,7 +332,7 @@ export const StateAndLocalGovt = ({ data }: { data?: any }) => {
         defaultValue={selectedStates}
         name="target_audience"
         options={allOptions}
-        maxSelections={selectedStates.includes("All States") ? 1 : 10}
+        maxSelections={selectedStates.includes("All States") ? 1 : 3}
         id="target_audience"
         label="Select States"
         required

@@ -36,7 +36,7 @@ const companyTypes: CompanyTypeItem[] = [
 ];
 
 const CompanyType = () => {
-  const [selectedTypeId, setSelectedTypeId] = useState<number | null>(null);
+  const [selectedTypeId, setSelectedTypeId] = useState<number | null>(1);
   const { handleInputChange } = useContext(FlowProgressContext);
   const handleSelect = (id: number) => {
     setSelectedTypeId(id);
@@ -48,7 +48,7 @@ const CompanyType = () => {
 
   return (
     <Section separatorStyles="max-w-[1200px]">
-      <div className="custom-flex-col gap-[18px]">
+      <div className="company-type-module-wrapper custom-flex-col gap-[18px]">
         <SectionHeading required title="company type">
           Please choose the company type that best fits your default dashboard
           configuration.

@@ -16,7 +16,7 @@ interface CheckInOut {
 }
 
 interface BaseVehicleRecord {
-  status: "pending" | "completed";
+  status: "pending" | "completed" | "no_record";
   pictureSrc: string;
   name: string;
   id: string | number;
@@ -26,16 +26,50 @@ interface BaseVehicleRecord {
   plate_number: string;
   last_update: string;
   category: string;
+  note: string;
 }
 
 interface PendingVehicleRecord extends BaseVehicleRecord {
-  status: "pending";
+  // status: "pending";
+  status: "check-in";
   latest_check_out?: null;
 }
 
 interface CompletedVehicleRecord extends BaseVehicleRecord {
-  status: "completed";
+  // status: "completed";
+  status: "check-out";
   checkOut?: CheckInOut;
 }
 
-export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord;
+interface NoRecordVehicleRecord extends BaseVehicleRecord {
+  // status: "no_record";
+  status: "pending";
+  checkOut?: CheckInOut;
+}
+
+export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord | NoRecordVehicleRecord;
+
+interface Tenant {
+  tenant_id: number;
+  name: string;
+  gender: string;
+  address: string;
+  lga: string;
+  city: string;
+  state: string;
+  telephone: string;
+  picture: string;
+  status: string;
+}
+
+interface TenantData {
+  total_tenants: number;
+  monthly_tenants: number;
+  tenants: Tenant[];
+}
+
+export interface TenantApiResponse {
+  status: string;
+  message: string;
+  data: TenantData;
+}

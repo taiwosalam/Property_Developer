@@ -7,19 +7,87 @@ import AnnouncementPost from "@/components/tasks/announcements/announcement-post
 import AttachedImagesGrid from "@/components/tasks/complainid/Attached-images-grid";
 import { LandlordTenantInfo as AnnouncementInfo } from "@/components/Management/landlord-tenant-info-components";
 import ReadBy from "@/components/tasks/announcements/read-by";
+import useFetch from "@/hooks/useFetch";
+import ServerError from "@/components/Error/ServerError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import NetworkError from "@/components/Error/NetworkError";
+
+import {
+  AnnouncementDetailsResponse,
+  AnnouncementResponseDetails,
+} from "@/app/(nav)/tasks/announcements/types";
+import { useEffect, useState } from "react";
+import {
+  AnnouncementDetailsPageData,
+  transformAnnouncementDetailsData,
+} from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import dayjs from "dayjs";
+import AnnouncementSkeleton from "@/components/Loader/announcement-preview";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const PreviewAnnouncement = () => {
   const router = useRouter();
   const { announcementId } = useParams();
-  const images = [
-    { src: "/empty/SampleProperty.jpeg", isVideo: false },
-    { src: "/empty/SampleProperty2.jpeg", isVideo: true },
-    { src: "/empty/SampleProperty3.jpeg", isVideo: false },
-    { src: "/empty/SampleProperty4.png", isVideo: false },
-    { src: "/empty/SampleProperty5.jpg", isVideo: false },
-    { src: "/empty/SampleProperty6.jpg", isVideo: false },
-    { src: "/empty/SampleProperty.jpeg", isVideo: false },
-  ];
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCreateManageAnnouncement = usePermission(
+    role,
+    "Can create and manage announcement"
+  );
+
+  const [pageData, setPageData] = useState<AnnouncementDetailsPageData | null>(
+    null
+  );
+
+  const getRoute = () => {
+    switch (role) {
+      case "director":
+        router.push(`/tasks/announcements/${announcementId}/manage`);
+        break;
+      case "account":
+        router.push(`/accountant/tasks/announcements/${announcementId}/manage`);
+        break;
+      case "manager":
+        router.push(`/manager/tasks/announcements/${announcementId}/manage`);
+        break;
+      case "staff":
+        router.push(`/staff/tasks/announcements/${announcementId}/manage`);
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    error,
+    isNetworkError,
+    refetch,
+  } = useFetch<AnnouncementResponseDetails>(`announcements/${announcementId}`);
+
+  useRefetchOnEvent("announcementDispatch", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (apiData) {
+      const transformData = transformAnnouncementDetailsData(apiData);
+      setPageData(transformData);
+    }
+  }, [apiData]);
+
+  // Show skeleton if loading or silentLoading is true, or if delay hasn't completed
+  if (loading && !error && !isNetworkError) {
+    return <AnnouncementSkeleton />;
+  }
+
+  if (error) <ServerError error={error} />;
+  //if (loading || silentLoading || !isDelayed) <AnnouncementSkeleton />;
+  if (isNetworkError) <NetworkError />;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-2">
@@ -32,35 +100,64 @@ const PreviewAnnouncement = () => {
           >
             <ChevronLeft />
           </button>
-          <h1 className="text-black dark:text-white font-bold text-lg lg:text-xl">
-            Rent Increase & Maintenance
+          <h1 className="text-black dark:text-white capitalize font-bold text-lg lg:text-xl">
+            {pageData?.title}
           </h1>
         </div>
-        <Button
-          href={`/tasks/announcements/${announcementId}/manage`}
-          size="sm_medium"
-          className="py-2 px-3"
-        >
-          Manage Announcement
-        </Button>
+        {canCreateManageAnnouncement && (
+          <Button
+            href={`/manager/tasks/announcements/${announcementId}/manage`}
+            size="sm_medium"
+            className="py-2 px-3"
+          >
+            manage announcement
+          </Button>
+        )}
       </div>
       <div className="flex flex-col gap-y-5 gap-x-10 lg:flex-row lg:items-start">
         {/* Left Side */}
         <div className="lg:w-[58%] lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <AnnouncementPost />
+          <AnnouncementPost
+            data={{
+              comments: pageData?.comments || [],
+              likes: pageData?.likes || 0,
+              dislikes: pageData?.dislikes || 0,
+              viewers: pageData?.viewers || [],
+              description: pageData?.description || "",
+              my_like: pageData?.my_like ?? false,
+              my_dislike: pageData?.my_dislike ?? false,
+            }}
+          />
         </div>
         {/* Right Side */}
         <div className="lg:flex-1 space-y-5 lg:max-h-screen lg:overflow-y-auto custom-round-scrollbar lg:pr-2">
-          <AttachedImagesGrid images={images} />
+          {pageData && pageData?.media.length > 0 && (
+            <AttachedImagesGrid images={pageData?.media} />
+          )}
+
           <AnnouncementInfo
             containerClassName="rounded-lg"
-            heading="summary"
+            heading="target audience"
             info={{
-              branch: "All/ Bodija, Moniya, Tokyo",
-              properties: "All Projects/ Harmony Cottage, Bodija Hotels",
+              branch: pageData?.summary?.branch_name,
+              properties: pageData?.summary?.property_name,
             }}
           />
-          <ReadBy />
+          <ReadBy
+            readBy={
+              pageData?.read_by
+                ? pageData.read_by.map((user) => ({
+                    ...user,
+                    name: user.user_name?.toLowerCase(), // adjust property names as needed
+                    tier: user.tier_id, // adjust property names as needed
+                    dateTime: `${dayjs(user?.date).format(
+                      "DD/MM/YYYY"
+                    )} ${dayjs(user?.time).format("hh:mm A")}`,
+                    image: user.image ?? "", // ensure image is always a string
+                  }))
+                : undefined
+            }
+          />
         </div>
       </div>
     </div>

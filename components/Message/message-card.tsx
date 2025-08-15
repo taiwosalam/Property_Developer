@@ -4,13 +4,21 @@ import Link from "next/link";
 import VerifiedIcon from "@/public/icons/verified.svg";
 
 // Types
-import type { MessageCardProps } from "./types";
+import type { MessageCardProps, UserDetailsResponse } from "./types";
 
 // Imports
 import clsx from "clsx";
 import { empty } from "@/app/config";
 import Picture from "../Picture/picture";
 import { SectionSeparator } from "../Section/section-components";
+import { getIconByContentType } from "@/app/(nav)/(messages-reviews)/messages/data";
+import { useGlobalStore } from "@/store/general-store";
+import { useRouter } from "next/navigation";
+import BadgeIcon, { tierColorMap } from "../BadgeIcon/badge-icon";
+import useFetch from "@/hooks/useFetch";
+import { getCleanRoleName } from "./data";
+import { capitalizeWords } from "@/hooks/capitalize-words";
+import { truncateText } from "../tasks/vehicles-record/data";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -22,25 +30,92 @@ const MessageCard: React.FC<MessageCardProps> = ({
   highlight,
   messages = 0,
   onClick,
+  content_type,
+  online,
+  last_seen,
+  tier,
+  title,
+  role,
+  type,
+  // badgeColor,
 }) => {
+  const router = useRouter();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const IconComponent = getIconByContentType(content_type as string);
+  const isGroupChat = type?.toLowerCase() === "group";
+  const isOnline = last_seen?.toLowerCase() === "online";
+
+  // Badge color logic:
+  // - No badge for group chats
+  // - For special roles (director, account, staff, manager, super-admin) with tier 2: gray badge
+  // - For non-special roles with a tier: use tierColorMap
+  // - Otherwise, no badge
+  let badgeColor: string | undefined;
+  if (!isGroupChat) {
+    const specialRoles = [
+      "director",
+      "account",
+      "staff",
+      "manager",
+      "super-admin",
+    ];
+    if (specialRoles.includes(role ?? "")) {
+      badgeColor = tier === 2 ? "gray" : undefined;
+    } else if (tier && tierColorMap[tier as keyof typeof tierColorMap]) {
+      badgeColor = tierColorMap[tier as keyof typeof tierColorMap];
+    }
+  }
+
+  const handleClick = () => {
+    setGlobalStore("messageUserData", {
+      id: Number(id),
+      branch_id: 1,
+      position: "",
+      name: fullname,
+      imageUrl: pfp,
+      last_seen,
+    });
+
+    setGlobalStore("isGroupChat", isGroupChat);
+    if (onClick) {
+      onClick();
+    } else {
+      router.push(`/messages/${id}`);
+    }
+  };
+
   const Children = () => (
     <>
       <div></div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 flex-1">
-          <Picture src={pfp} alt="profile picture" size={60} rounded status />
+          <Picture
+            src={pfp || empty}
+            alt="profile picture"
+            size={60}
+            rounded
+            status={online}
+            containerClassName="custom-secondary-bg rounded-full"
+          />
           <div className="custom-flex-col gap-1 flex-1">
             <div className="flex items-center gap-[10px]">
               <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                {fullname}
+                {capitalizeWords(fullname)}
               </p>
-              {verified && (
-                <Picture src={VerifiedIcon} alt="verified" size={16} />
+              {!isGroupChat && badgeColor && (
+                <BadgeIcon color={badgeColor as any} />
               )}
             </div>
-            <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal custom-truncated">
-              {desc}
-            </p>
+            {content_type === "text" ? (
+              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
+                {truncateText(desc, 30) || ""}
+              </p>
+            ) : (
+              <div className="flex gap-1 text-sm items-center text-brand-9">
+                {IconComponent && <IconComponent />}
+                {content_type}
+              </div>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2 justify-center items-center font-normal">
@@ -58,25 +133,27 @@ const MessageCard: React.FC<MessageCardProps> = ({
     </>
   );
 
-  return onClick ? (
-    <button
-      type="button"
-      onClick={onClick}
-      className={clsx("custom-flex-col gap-4", {
-        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-      })}
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleClick();
+        }
+      }}
+      className={clsx(
+        "custom-flex-col gap-4 cursor-pointer transition-colors duration-200",
+        {
+          "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
+          "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight,
+        }
+      )}
     >
       <Children />
-    </button>
-  ) : (
-    <Link
-      href={`/messages/${id}`}
-      className={clsx("custom-flex-col gap-4", {
-        "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
-      })}
-    >
-      <Children />
-    </Link>
+    </div>
   );
 };
 

@@ -2,7 +2,7 @@
 
 // Imports
 import dayjs from "dayjs";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
@@ -39,15 +39,26 @@ import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import ServerError from "@/components/Error/ServerError";
+import { useSearchParams } from "next/navigation";
 
 const states = getAllStates();
 
 const Landlord = () => {
   const storedView = useView();
   const [view, setView] = useState<string | null>(storedView);
-  const [pageData, setPageData] = useState<LandlordsPageData>(
-    initialLandlordsPageData
-  );
+
+  const searchParams = useSearchParams();
+  const query = searchParams.get("q");
+
+  const [pageData, setPageData] = useState<LandlordsPageData>(() => {
+    const savedPage = sessionStorage.getItem("landlord_page");
+    return {
+      ...initialLandlordsPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
 
   const {
     total_pages,
@@ -61,12 +72,31 @@ const Landlord = () => {
     landlords,
   } = pageData;
 
-  const [config, setConfig] = useState<AxiosRequestConfig>({
-    params: {
-      page: 1,
-      search: "",
-    } as LandlordRequestParams,
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("landlord_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: query ? query.trim() : "",
+      } as LandlordRequestParams,
+    };
   });
+
+  useEffect(() => {
+    if (query) {
+      const searchQuery = query.trim().toLowerCase();
+      setConfig((prevConfig) => ({
+        ...prevConfig,
+        params: { ...prevConfig.params, search: searchQuery, page: 1 },
+      }));
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+        current_page: 1,
+      }));
+      sessionStorage.setItem("landlord_page", "1");
+    }
+  }, [query]);
 
   const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
     useState<LandlordHelpInfo>();
@@ -74,11 +104,9 @@ const Landlord = () => {
   const fetchLandlordHelp = useCallback(async () => {
     try {
       const data = await getLandlordsHelpInfo();
-      // console.log(data.res[0]);
+      //
       setFetchedLandlordHelpInfo(data.res[0]);
-    } catch (error) {
-      console.error("Error fetching landlord help info:", error);
-    }
+    } catch (error) {}
   }, []);
 
   const { data: branchesData } =
@@ -91,6 +119,11 @@ const Landlord = () => {
   useEffect(() => {
     setView(storedView);
   }, [storedView]);
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("landlord_page", current_page.toString());
+  }, [current_page]);
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -113,7 +146,7 @@ const Landlord = () => {
     setAppliedFilters(filters);
     const { menuOptions, startDate, endDate } = filters;
     const statesArray = menuOptions["State"] || [];
-    const agent = menuOptions["Landlord Type"]?.[0];
+    const agent = menuOptions["Landlord/Landlady Type"]?.[0];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: LandlordRequestParams = {
@@ -138,12 +171,26 @@ const Landlord = () => {
     setConfig({
       params: queryParams,
     });
+
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
   };
+
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
 
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
+    // Scroll to the top where LandlordCards start
+    if (contentTopRef.current) {
+      contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -156,6 +203,12 @@ const Landlord = () => {
     setConfig({
       params: { ...config.params, search: query },
     });
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
   };
 
   const branchOptions =
@@ -172,49 +225,103 @@ const Landlord = () => {
     error,
     refetch,
   } = useFetch<LandlordApiResponse>("landlords", config);
+  useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
+
+  // IF VIEW CHANGE., REFETCH DATA FROM PAGE 1
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
+    window.dispatchEvent(new Event("refetchLandlords"));
+  }, [view]);
 
   useEffect(() => {
     if (apiData) {
-      setPageData((x) => ({
-        ...x,
-        ...transformLandlordApiResponse(apiData),
-      }));
+      const transformedData = transformLandlordApiResponse(apiData);
+      setPageData((prevData) => {
+        const updatedLandlords =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.landlords
+            : [...prevData.landlords, ...transformedData.landlords];
+        return { ...transformedData, landlords: updatedLandlords };
+      });
     }
-  }, [apiData]);
+  }, [apiData, view]);
 
-  // Listen for the refetch event
-  useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
+  // --- Infinite Scroll Logic ---
+  // Create an observer to detect when the last row is visible
+  const observer = useRef<IntersectionObserver | null>(null);
 
-  const transformedLandlords = landlords.map((l) => ({
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < total_pages &&
+          !silentLoading
+        ) {
+          // Load next page when the last row becomes visible
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, total_pages, silentLoading]
+  );
+
+  // Transform landlord data to table rows.
+  // Attach the lastRowRef to the last row if there are more pages.
+  const transformedLandlords = landlords.map((l, index) => ({
     ...l,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
         <span>{l.name}</span>
-        {l.badge_color && <BadgeIcon color={l.badge_color} />}
+        <div className="flex gap-2 items-center">
+          {l.badge_color && <BadgeIcon color={l.badge_color} />}
+          {l.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        </div>
       </p>
     ),
-    user_tag: <UserTag type={l.user_tag} />,
+    user_tag: (
+      <>
+        <div className="flex gap-2 mb-2 items-center">
+          <UserTag type={l.user_tag} />
+        </div>
+      </>
+    ),
     "manage/chat": (
-      <div className="flex gap-x-[4%] items-center w-full">
-        <Button
-          href={`/management/landlord/${l.id}/manage`}
-          size="sm_medium"
-          className="px-8 py-2 mx-auto"
-        >
-          Manage
-        </Button>
+      <div className="flex gap-x-[4%] items-center justify-end w-full">
         {l.user_tag === "mobile" && (
           <Button
             variant="sky_blue"
             size="sm_medium"
-            className="px-8 py-2 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
-            // onClick={() => onClickChat(l)}
+            className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-white mx-auto"
           >
             Chat
           </Button>
         )}
+        <Button
+          href={`/management/landlord/${l.id}/manage`}
+          size="sm_medium"
+          className="px-8 py-2"
+        >
+          Manage
+        </Button>
       </div>
     ),
+    // Attach the lastRowRef to the final row if more pages exist.
+    ref:
+      index === landlords.length - 1 && current_page < total_pages
+        ? lastRowRef
+        : undefined,
   }));
 
   if (loading)
@@ -227,13 +334,11 @@ const Landlord = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-
-  if (error)
-    return <p className="text-base text-red-500 font-medium">{error}</p>;
+  if (error) return <ServerError error={error} />;
 
   return (
     <div className="space-y-8">
-      <div className="page-header-container">
+      <div className="page-header-container" ref={contentTopRef}>
         <div className="hidden md:flex flex-wrap gap-5">
           <ManagementStatistcsCard
             title="Total Landlords"
@@ -276,12 +381,6 @@ const Landlord = () => {
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}
         pageTitle="Landlords/Landladies (Owners)"
-        aboutPageModalData={{
-          title: fetchedLandlordHelpInfo?.slug || "",
-          description: fetchedLandlordHelpInfo?.description || "",
-          video: fetchedLandlordHelpInfo?.acf.video_link || "",
-          readingLink: fetchedLandlordHelpInfo?.link || "",
-        }}
         searchInputPlaceholder="Search for Landlords"
         handleFilterApply={handleFilterApply}
         isDateTrue
@@ -299,7 +398,7 @@ const Landlord = () => {
           },
           {
             radio: true,
-            label: "Landlord Type",
+            label: "Landlord/Landlady Type",
             value: [
               { label: "Mobile Landlord", value: "mobile" },
               { label: "Web Landlord", value: "web" },
@@ -322,30 +421,12 @@ const Landlord = () => {
             <SearchError />
           ) : (
             <EmptyList
-              buttonText="+ Create New Landlord"
+              noButton
               modalContent={<AddLandlordModal />}
               title="The landlord and landlady files are empty"
               body={
-                 <p>
-                  You don&apos;t have any landlord or landlady profiles yet. You
-                  can easily create one by clicking on the &quot;Create New
-                  Landlord&quot; button and add them using their profile ID.
-                  After adding profiles to this page, this guide will disappear.{' '}
-                  <br />
-                  <br />
-                  To learn more about this page in the future,you can click on
-                  this icon{' '}
-                  <span className='inline-block text-brand-10 align-text-top'>
-                    <ExclamationMark />
-                  </span>{' '}
-                  at the top left of the dashboard page.
-                  <br />
-                  <br />
-                  Before creating or managing a rental property, you need to
-                  create a profile for the landlord or landlady of the property.
-                  You can invite them using their email and phone number for
-                  registration. If you already have their list, you can add them
-                  in bulk using an XML file or add them manually.
+                <p>
+                  You don&apos;t have any landlord or landlady profiles yet.
                 </p>
               }
             />
@@ -369,6 +450,7 @@ const Landlord = () => {
                         email={l.email}
                         phone_number={l.phone_number}
                         badge_color={l.badge_color}
+                        note={l.note}
                       />
                     </Link>
                   ))
@@ -376,23 +458,26 @@ const Landlord = () => {
               </AutoResizingGrid>
             ) : (
               <>
-                {silentLoading ? (
-                  <TableLoading />
-                ) : (
-                  <CustomTable
-                    displayTableHead={false}
-                    fields={landlordTableFields}
-                    data={transformedLandlords}
-                    tableBodyCellSx={{ color: "#3F4247" }}
-                  />
+                <CustomTable
+                  displayTableHead={false}
+                  fields={landlordTableFields}
+                  data={transformedLandlords}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
                 )}
               </>
             )}
-            <Pagination
-              totalPages={total_pages}
-              currentPage={current_page}
-              onPageChange={handlePageChange}
-            />
+            {view === "grid" && (
+              <Pagination
+                totalPages={total_pages}
+                currentPage={current_page}
+                onPageChange={handlePageChange}
+              />
+            )}
           </>
         )}
       </section>

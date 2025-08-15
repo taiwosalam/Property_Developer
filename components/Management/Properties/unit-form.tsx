@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext, useEffect } from "react";
 import UnitPictures from "./unit-pictures";
 import UnitDetails from "./unit-details";
 import UnitFeatures from "./unit-features";
@@ -20,9 +20,13 @@ import {
   getUnitById,
   editUnit as editUnitApi,
 } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
-import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
-import { useRouter } from "next/navigation";
+import { CreateUnitLoadsteps, type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
+import FullPageLoader from "@/components/Loader/start-rent-loader";
+import { useGlobalStore } from "@/store/general-store";
+import DynamicFooterActions from "./footer-action";
+import ProgressCardLoader from "@/components/Loader/setup-card-loader";
 
 export interface UnitFormState {
   images: string[];
@@ -34,6 +38,7 @@ export interface UnitFormState {
 interface emptyUnitFormProps {
   empty: true;
   hideEmptyForm: () => void;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 interface editUnitFormProps {
@@ -42,27 +47,70 @@ interface editUnitFormProps {
   data: UnitDataObject & { notYetUploaded?: boolean };
   isEditing: boolean;
   setIsEditing: (a: boolean) => void;
+  formRef?: React.RefObject<HTMLFormElement>;
 }
 
 type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 
 const UnitForm: React.FC<UnitFormProps> = (props) => {
   const router = useRouter();
-  const formRef = useRef<HTMLFormElement>(null);
+  const searchParams = useSearchParams();
+  const internalFormRef = useRef<HTMLFormElement>(null);
+  const formRef = props.formRef || internalFormRef;
+  const unitPicturesRef = useRef<HTMLDivElement>(null);
+  const [shouldRedirect, setShouldRedirect] = useState(false);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [duplicate, setDuplicate] = useState({ val: false, count: 1 });
   const addUnit = useAddUnitStore((s) => s.addUnit);
   const editUnit = useAddUnitStore((s) => s.editUnit);
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const propertyId = useAddUnitStore((state) => state.property_id);
-
+  const {
+    setSubmitLoading: setParentSubmitLoading,
+    clickedNo,
+    setClickedNo,
+  } = useContext(UnitFormContext) || {};
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+  const newForm = useAddUnitStore((state) => state.newForm);
+  const allowEditUnit = useGlobalStore((s) => s.allowEditUnit);
   const [submitLoading, setSubmitLoading] = useState(false);
   const [saveClick, setSaveClick] = useState(false);
 
-  const [state, setState] = useState<UnitFormState>({
-    images: props.empty ? [] : props.data.images.map((img) => img.path),
-    imageFiles: props.empty ? [] : props.data.images.map((img) => img.path),
-    unitType: props.empty ? "" : (props.data.unit_type as UnitTypeKey),
-    formResetKey: 0,
+  const navigateBackOrToProperties = () => {
+    const page = searchParams.get("page");
+    if (page === "rent-unit") {
+      router.back();
+    } else {
+      router.push("/management/properties");
+    }
+  };
+
+  const [state, setState] = useState<UnitFormState>(() => {
+    if (props.empty) {
+      // New unit: start with empty images
+      return {
+        images: [],
+        imageFiles: [],
+        unitType: "",
+        formResetKey: 0,
+      };
+    } else if (props.data.notYetUploaded) {
+      // Not yet uploaded: clear images to force upload
+      return {
+        images: [],
+        imageFiles: [],
+        unitType: props.data.unit_type as UnitTypeKey,
+        formResetKey: 0,
+      };
+    } else {
+      // Existing unit (editing or viewing): retain images
+      return {
+        images: props.data.images.map((img) => img.path),
+        imageFiles: props.data.images.map((img) => img.path),
+        unitType: props.data.unit_type as UnitTypeKey,
+        formResetKey: 0,
+      };
+    }
   });
 
   const maxImages = propertyType === "facility" ? 5 : 14;
@@ -94,11 +142,15 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
 
   const handleSubmit = async (formData: Record<string, any>) => {
     if (!propertyId) return;
-    if (propertyType !== "facility" && state.images.length === 0) {
+    if (
+      propertyType !== "facility" &&
+      (!state.imageFiles || state.imageFiles.length === 0)
+    ) {
       toast.warning("Please add at least one picture");
       return;
     }
-    // Check if strings contain at least one digit
+
+    // Validate numeric fields
     const hasNoDigits = (str: string) => !/\d/.test(str);
     if (
       (formData.number_of && hasNoDigits(formData.number_of)) ||
@@ -107,145 +159,213 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
       toast.warning("Please enter valid measurement values");
       return;
     }
+
     setSubmitLoading(true);
+    if (setParentSubmitLoading) setParentSubmitLoading(true);
     convertYesNoToBoolean(formData, yesNoFields);
+
     const transformedData = transformUnitFormData(
       formData,
       state.imageFiles,
-      propertyId
+      propertyId,
+      props.empty ? [] : props.data.images
     );
-    if (props.empty) {
-      const unitId = await createUnit(propertyId, transformedData);
-      if (unitId) {
-        if (saveClick) {
-          setSubmitLoading(false);
-          resetForm();
-          formRef.current?.reset();
-          router.push("/management/properties/");
+
+    try {
+      if (props.empty) {
+        // Handle creation of a new unit
+        if (!propertyId) {
+          toast.error("Property ID is missing.");
           return;
         }
-        const unitData = await getUnitById(unitId);
-        if (unitData) {
-          if (duplicate?.val) {
-            addUnit(unitData, duplicate.count);
-            setDuplicate({
-              val: false,
-              count: 1,
-            });
-            props.hideEmptyForm();
-          } else {
-            addUnit(unitData);
-          }
-          formRef.current?.reset();
-          resetForm();
-        }
-      }
-    } else {
-      if (props.data.notYetUploaded) {
         const unitId = await createUnit(propertyId, transformedData);
         if (unitId) {
+          setFormSubmitted?.(true);
+          if (saveClick) {
+            const unitData = await getUnitById(unitId);
+            if (unitData) {
+              setShouldRedirect(true); // Set redirect only after success
+              resetForm();
+              formRef.current?.reset();
+              return;
+            }
+          }
           const unitData = await getUnitById(unitId);
           if (unitData) {
-            editUnit(props.index, unitData);
+            if (duplicate?.val) {
+              addUnit(unitData, duplicate.count);
+              props.hideEmptyForm();
+            } else {
+              addUnit(unitData);
+            }
+            formRef.current?.reset();
+            resetForm();
+            if (clickedNo) {
+              setTimeout(() => {
+                setClickedNo?.(false);
+              }, 0);
+            }
           }
         }
       } else {
-        const { newImages, retainedImages } = transformedData.images.reduce<{
-          newImages: File[];
-          retainedImages: string[];
-        }>(
-          (acc, image) => {
-            if (image instanceof File) {
-              acc.newImages.push(image);
-            } else {
-              const matchingImage = props.data.images.find(
-                (img) => img.path === image
-              );
-              if (matchingImage) {
-                acc.retainedImages.push(matchingImage.id);
-              }
+        if (props.data.notYetUploaded) {
+          if (!propertyId) {
+            toast.error("Property ID is missing.");
+            return;
+          }
+          const unitId = await createUnit(propertyId, transformedData);
+          if (unitId) {
+            setFormSubmitted?.(true);
+            const unitData = await getUnitById(unitId);
+            if (unitData) {
+              editUnit(props.index, unitData);
+              setShouldRedirect(true); // Set redirect only after success
             }
-            return acc;
-          },
-          { newImages: [], retainedImages: [] }
-        );
-        const editUnitPayload = {
-          ...transformedData,
-          images: newImages,
-          retain_images: retainedImages,
-        };
-        const unitId = await editUnitApi(props.data.id, editUnitPayload);
-        if (unitId) {
-          const unitData = await getUnitById(unitId);
-          if (unitData) {
-            editUnit(props.index, unitData);
+          }
+        } else {
+          const { newImages, retainedImages } = state.imageFiles.reduce<{
+            newImages: File[];
+            retainedImages: string[];
+          }>(
+            (acc, image) => {
+              if (image instanceof File) {
+                acc.newImages.push(image);
+              } else if (typeof image === "string") {
+                const matchingImage = props.data.images.find(
+                  (img) => img.path === image
+                );
+                if (matchingImage) {
+                  acc.retainedImages.push(matchingImage.id);
+                }
+              }
+              return acc;
+            },
+            { newImages: [], retainedImages: [] }
+          );
+
+          const editUnitPayload = {
+            ...transformedData,
+            images: newImages,
+            retain_images: retainedImages,
+          };
+
+          const unitId = await editUnitApi(props.data.id, editUnitPayload);
+          if (unitId) {
+            setFormSubmitted?.(true);
+            window.dispatchEvent(new Event("refetchSingleProperty"));
+            const unitData = await getUnitById(unitId);
+            if (unitData) {
+              editUnit(props.index, unitData);
+              setShouldRedirect(true); // Set redirect only after success
+            }
           }
         }
+        props.setIsEditing(false);
       }
-      props.setIsEditing(false);
+    } catch (error) {
+      toast.error("An error occurred while saving the unit.");
+    } finally {
+      setSubmitLoading(false);
+      if (setParentSubmitLoading) setParentSubmitLoading(false);
     }
-    setSubmitLoading(false);
   };
 
+  useEffect(() => {
+    if (unitPicturesRef.current) {
+      unitPicturesRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, [props.empty, newForm]);
+
+  // if (submitLoading) {
+  //   return <FullPageLoader text="Processing Unit Data..." />;
+  // }
+
   return (
-    <FlowProgress
-      steps={1}
-      activeStep={0}
-      inputClassName="unit-form-input"
-      showProgressBar={false}
-      key="unit-form-progress"
-    >
-      <UnitFormContext.Provider
-        value={{
-          ...state,
-          setImages,
-          setUnitType,
-          submitLoading,
-          setSaveClick,
-          resetForm,
-          ...(!props.empty
-            ? {
-                isEditing: props.isEditing,
-                setIsEditing: props.setIsEditing,
-                unitData: props.data,
-              }
-            : {
-                duplicate,
-                setDuplicate,
-              }),
-        }}
+    <>
+      <ProgressCardLoader loading={submitLoading} steps={CreateUnitLoadsteps} />
+      <FlowProgress
+        steps={1}
+        activeStep={0}
+        inputClassName="unit-form-input"
+        showProgressBar={false}
+        key="unit-form-progress"
       >
-        <AuthForm
-          id={props.empty ? "add-unit-form" : undefined}
-          className="space-y-6 lg:space-y-8"
-          skipValidation
-          onFormSubmit={handleSubmit}
-          ref={formRef}
+        <UnitFormContext.Provider
+          value={{
+            ...state,
+            setImages,
+            setUnitType,
+            submitLoading,
+            setSaveClick,
+            resetForm,
+            formSubmitted,
+            setFormSubmitted,
+            shouldRedirect,
+            setShouldRedirect,
+            ...(!props.empty
+              ? {
+                  isEditing: props.isEditing,
+                  setIsEditing: props.setIsEditing,
+                  unitData: props.data,
+                  index: props.index,
+                  notYetUploaded: props.data.notYetUploaded || false,
+                }
+              : {
+                  duplicate,
+                  setDuplicate,
+                }),
+          }}
         >
-          {!props.empty && props.isEditing && (
-            <>
-              <div className="flex justify-between items-center">
-                <p className="text-brand-9 font-semibold">Edit Unit</p>
-                <EditUnitActions />
-              </div>
-              <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
-            </>
-          )}
-          <UnitPictures />
-          <UnitDetails />
-          <UnitFeatures />
-          {propertyType === "rental" ? (
-            <>
-              <UnitBreakdownNewTenant />
-              <UnitBreakdownRenewalTenant />
-            </>
-          ) : (
-            <UnitBreakdownFacility />
-          )}
-          {!props.empty ? <EditUnitActions /> : <AddUntFooter />}
-        </AuthForm>
-      </UnitFormContext.Provider>
-    </FlowProgress>
+          <AuthForm
+            id={props.empty ? "add-unit-form" : undefined}
+            className="space-y-6 lg:space-y-8"
+            skipValidation
+            onFormSubmit={handleSubmit}
+            ref={formRef}
+          >
+            {!props.empty && props.isEditing && (
+              <>
+                <div className="flex justify-between items-center">
+                  <p className="text-brand-9 font-semibold">Edit Unit</p>
+                  <EditUnitActions />
+                </div>
+                <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
+              </>
+            )}
+            <UnitPictures ref={unitPicturesRef} />
+            <UnitDetails />
+            <div className="unit-feature-wrapper">
+              <UnitFeatures />
+            </div>
+
+            {propertyType === "rental" ? (
+              <>
+                <UnitBreakdownNewTenant />
+                <UnitBreakdownRenewalTenant />
+              </>
+            ) : (
+              <>
+                <div className="unit-fee-breakdown-wrapper">
+                  <UnitBreakdownFacility />
+                </div>
+                <div className="unit-fee-renewal-details">
+                  <UnitBreakdownRenewalTenant />
+                </div>
+              </>
+            )}
+            {!props.empty ? (
+              <EditUnitActions />
+            ) : (
+              <AddUntFooter noForm={props.empty} />
+            )}
+            <DynamicFooterActions />
+          </AuthForm>
+        </UnitFormContext.Provider>
+      </FlowProgress>
+    </>
   );
 };
 

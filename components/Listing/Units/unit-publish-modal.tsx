@@ -10,6 +10,7 @@ import { ModalTrigger } from "@/components/Modal/modal";
 const UnitPublishModal: React.FC<UnitPublishModalProps> = ({
   onYes,
   isPublished,
+  loading,
 }) => {
   return (
     <div className="w-[501px] p-7 rounded-[20px] bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] custom-flex-col gap-10">
@@ -21,8 +22,8 @@ const UnitPublishModal: React.FC<UnitPublishModalProps> = ({
         </p>
       </div>
       <div className="flex gap-3 justify-end">
-        <Button onClick={onYes} size="base_medium" className="py-2 px-8">
-          Yes
+        <Button disabled={loading} onClick={onYes} size="base_medium" className="py-2 px-8">
+          { loading ? "Please wait..." : "Yes" }
         </Button>
         <ModalTrigger asChild close>
           <Button size="base_medium" className="py-2 px-8">

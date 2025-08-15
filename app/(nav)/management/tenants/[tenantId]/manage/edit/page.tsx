@@ -21,14 +21,15 @@ import {
 import BackButton from "@/components/BackButton/back-button";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import type { TenantData } from "../../../types";
-import {
-  transformIndividualTenantAPIResponse,
-  type IndividualTenantAPIResponse,
-} from "../data";
+import { transformIndividualTenantAPIResponse } from "../data";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { deleteTenant } from "./data";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import ServerError from "@/components/Error/ServerError";
+import { IndividualTenantAPIResponse } from "../types";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
 
 const EditTenant = ({ params }: { params: { tenantId: string } }) => {
   const { tenantId } = params;
@@ -40,24 +41,54 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
 
   useRefetchOnEvent("tenant-updated", () => refetch({ silent: true }));
 
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
   useEffect(() => {
     if (data) {
       setTenantData(transformIndividualTenantAPIResponse(data));
     }
   }, [data]);
 
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditTenantTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
   if (loading)
     return (
       <CustomLoader layout="edit-page" pageTitle="Edit Tenants & Occupant" />
     );
   if (isNetworkError) return <NetworkError />;
-  if (error) return <div>{error}</div>;
+  if (error) return <ServerError error={error} />;
   if (!tenantData) return null;
 
   return (
     <TenantEditContext.Provider value={{ data: tenantData }}>
       <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
-        <BackButton>Edit Tenants & Occupant</BackButton>
+        <div className="flex gap-2 items-center">
+          <BackButton>Edit Tenants & Occupant</BackButton>
+
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
             <TenantEditProfileInfoSection />
@@ -81,7 +112,7 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
                 type="button"
                 variant="light_red"
                 size="base_medium"
-                className="py-2 px-6"
+                className="delete-button py-2 px-6"
               >
                 delete account
               </Button>
@@ -98,9 +129,10 @@ const EditTenant = ({ params }: { params: { tenantId: string } }) => {
           <Button
             type="submit"
             size="base_medium"
-            className="py-2 px-6"
+            className="save-button py-2 px-6"
             onClick={() => {
-              router.push(`/management/tenants/${tenantId}`);
+              // router.push(`/management/tenants/${tenantId}`);
+              router.push(`/management/tenants`);
             }}
           >
             save

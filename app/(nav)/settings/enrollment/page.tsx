@@ -4,6 +4,12 @@ import React, { useState, useEffect } from "react";
 import SettingsSection from "@/components/Settings/settings-section";
 import SettingsEnrollmentCard from "@/components/Settings/SettingsEnrollment/settings-enrollment-card";
 import Link from "next/link";
+import { SettingsSectionTitle } from "@/components/Settings/settings-components";
+import CustomTable from "@/components/Table/table";
+import { CustomTableProps } from "@/components/Table/types";
+import clsx from "clsx";
+import { ChevronRight } from "lucide-react";
+import { enrollment_subscriptions } from "../add-on/data";
 
 const Enrollment = () => {
   const [showFeatures, setShowFeatures] = useState(false);
@@ -19,7 +25,27 @@ const Enrollment = () => {
   const [premiumIsLifeTimePlan, setPremiumIsLifeTimePlan] = useState(false);
 
   const [pageData, setPageData] = useState([]);
-  
+
+  const table_style_props: Partial<CustomTableProps> = {
+    tableHeadClassName: "h-[45px]",
+  };
+
+  const transformedSubscriptions = enrollment_subscriptions.data.map(
+    (data) => ({
+      ...data,
+      status: (
+        <p
+          className={clsx({
+            "text-status-success-2": data.status === "Active",
+            "text-status-caution-2": data.status === "Pending",
+          })}
+        >
+          {data.status}
+        </p>
+      ),
+    })
+  );
+
   const calculatePrice = (
     billingType: "monthly" | "yearly",
     quantity: number,
@@ -122,128 +148,160 @@ const Enrollment = () => {
   }, [basicPriceDetails.isLifeTimePlan, premiumPriceDetails.isLifeTimePlan]);
 
   return (
-    <SettingsSection title="Enrollment/Renewal">
-      <h4 className="text-[14px] text-text-disabled">
-        This subscription plan is for Property Manager module only. To view
-        other subscription plans, go to the respective module or switch from the
-        top left of the dashboard header.
-      </h4>
-
-      <div className="flex mb-4 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
-        
-        <SettingsEnrollmentCard
-          planTitle="FREE PLAN"
-          desc="Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints."
-          price="₦000.00"
-          duration=""
-          showFeatures={showFeatures}
-          setShowFeatures={setShowFeatures}
-          features={[
-            "Maximum of 1 Branch",
-            "Maximum of 1 Director",
-            "Maximum of 1 Staff",
-            "Maximum of 1 Properties",
-            "Maximum of 1 Unit Listings",
-            "Maximum of 4 Tenants & Occupants",
-            "Ads-on are required",
-          ]}
-          billingType="monthly"
-          quantity={0}
-          isFree={true}
-          discount=""
-          discountText=""
-          incrementQuantity={() => {}}
-          decrementQuantity={() => {}}
-          onBillingTypeChange={() => {}}
-          isLifeTimePlan={false}
-        />
-
-        <SettingsEnrollmentCard
-          planTitle="Basic Plan"
-          desc="The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations."
-          planFor="Property Managers"
-          showFeatures={showFeatures}
-          setShowFeatures={setShowFeatures}
-          billingType={basicBillingType}
-          quantity={basicQuantity}
-          incrementQuantity={() =>
-            incrementQuantity(setBasicQuantity, basicBillingType)
-          }
-          decrementQuantity={() => decrementQuantity(setBasicQuantity)}
-          isFree={false}
-          onBillingTypeChange={(type) => setBasicBillingType(type)}
-          features={[
-            "Maximum of 2 Branches",
-            "Maximum of 2 Directors",
-            "Maximum of 8 Staffs",
-            "Maximum of 50 Properties ",
-            "Maximum of 200 Unit Listings",
-            "Maximum of 150 Tenants & Occupants ",
-            "Ads-on are required",
-          ]}
-          {...basicPriceDetails} // Spread the calculated price details
-          isLifeTimePlan={basicIsLifeTimePlan}
-        />
-
-        <SettingsEnrollmentCard
-          planTitle="Premium Plan"
-          desc="Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It's an ideal solution for those seeking a streamlined approach to property management."
-          planFor="Property Managers"
-          showFeatures={showFeatures}
-          setShowFeatures={setShowFeatures}
-          billingType={premiumBillingType}
-          quantity={premiumQuantity}
-          incrementQuantity={() =>
-            incrementQuantity(setPremiumQuantity, premiumBillingType)
-          }
-          decrementQuantity={() => decrementQuantity(setPremiumQuantity)}
-          isFree={false}
-          onBillingTypeChange={(type) => setPremiumBillingType(type)}
-          features={[
-            "Maximum of 8 Branches",
-            "Maximum of 4 Directors",
-            "Maximum of 15 Staffs",
-            "Maximum of 150 Properties ",
-            "Maximum of 600 Unit Listings",
-            "Unlimited Tenants & Occupants",
-            "Ads-on for SMS & Domain Required",
-          ]}
-          {...premiumPriceDetails} // Spread the calculated price details
-          isLifeTimePlan={premiumIsLifeTimePlan}
-        />
-      </div>
-
-      <div className="flex flex-col w-full pr-10 pl-4 rounded-md mt-8 flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60">
-        <h3 className="text-[16px] underline font-bold text-brand-9">
-          PROFESSIONAL PLAN
-        </h3>
-        <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
-          If none of the available plans meets your company&apos;s standards,
-          consider opting for the Professional plan. This plan provides
-          unlimited access to all software solutions. Professional plans are
-          ideal for established property managers who wish to customize the
-          software with their company&apos;s name and brand.
-        </p>
-
-        <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
-          Features Included:
+    <>
+      {/* <SettingsSection title="Subscription Plan">
+        <h4 className="text-[14px] text-text-disabled">
+          This subscription plan is for Property Manager module only. To view
+          other subscription plans, go to the respective module or switch from
+          the top left of the dashboard header.
         </h4>
-        <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-start w-full lg:justify-between flex-wrap">
-          <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
-            All plans benefit and all Ads-on Inclusive; API integrations, SaaS,
-            Whitelabel, Custom domain, Unlimited Branches, Director, Staff and
-            Property Creations. Dedicated account officer, 24/7 Support and
-            training, Email integration, and SMS prefer name.
-          </strong>
 
-          <div className="w-full sm:w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
-            <Link href="#" className="">
-              Read More
-            </Link>
+        <div className="flex mb-4 flex-nowrap overflow-x-auto custom-round-scrollbar gap-4 pricingWrapper mt-4">
+          <SettingsEnrollmentCard
+            planTitle="FREE PLAN"
+            desc="Free plans offer a reduced set of features in comparison to paid alternatives, but provide users with trial options to explore the software without time constraints."
+            price="₦000.00"
+            duration=""
+            showFeatures={showFeatures}
+            setShowFeatures={setShowFeatures}
+            features={[
+              "Maximum of 1 Branch",
+              "Maximum of 1 Director",
+              "Maximum of 1 Staff",
+              "Maximum of 1 Properties",
+              "Maximum of 1 Unit Listings",
+              "Maximum of 4 Tenants & Occupants",
+              "Ads-on are required",
+            ]}
+            billingType="monthly"
+            quantity={0}
+            isFree={true}
+            discount=""
+            discountText=""
+            incrementQuantity={() => {}}
+            decrementQuantity={() => {}}
+            onBillingTypeChange={() => {}}
+            isLifeTimePlan={false}
+          />
+
+          <SettingsEnrollmentCard
+            planTitle="Basic Plan"
+            desc="The Basic plan is ideal for Property Managers overseeing maximum of 2 branches with a limited number of properties. It offers basic features tailored for smaller-scale operations."
+            planFor="Property Managers"
+            showFeatures={showFeatures}
+            setShowFeatures={setShowFeatures}
+            billingType={basicBillingType}
+            quantity={basicQuantity}
+            incrementQuantity={() =>
+              incrementQuantity(setBasicQuantity, basicBillingType)
+            }
+            decrementQuantity={() => decrementQuantity(setBasicQuantity)}
+            isFree={false}
+            onBillingTypeChange={(type) => setBasicBillingType(type)}
+            features={[
+              "Maximum of 2 Branches",
+              "Maximum of 2 Directors",
+              "Maximum of 8 Staffs",
+              "Maximum of 50 Properties ",
+              "Maximum of 200 Unit Listings",
+              "Maximum of 150 Tenants & Occupants ",
+              "Ads-on are required",
+            ]}
+            {...basicPriceDetails} // Spread the calculated price details
+            isLifeTimePlan={basicIsLifeTimePlan}
+          />
+
+          <SettingsEnrollmentCard
+            planTitle="Premium Plan"
+            desc="Highly recommended for Property Managers overseeing over 7 branches and managing more than 100 properties. It's an ideal solution for those seeking a streamlined approach to property management."
+            planFor="Property Managers"
+            showFeatures={showFeatures}
+            setShowFeatures={setShowFeatures}
+            billingType={premiumBillingType}
+            quantity={premiumQuantity}
+            incrementQuantity={() =>
+              incrementQuantity(setPremiumQuantity, premiumBillingType)
+            }
+            decrementQuantity={() => decrementQuantity(setPremiumQuantity)}
+            isFree={false}
+            onBillingTypeChange={(type) => setPremiumBillingType(type)}
+            features={[
+              "Maximum of 8 Branches",
+              "Maximum of 4 Directors",
+              "Maximum of 15 Staffs",
+              "Maximum of 150 Properties ",
+              "Maximum of 600 Unit Listings",
+              "Unlimited Tenants & Occupants",
+              "Ads-on for SMS & Domain Required",
+            ]}
+            {...premiumPriceDetails} // Spread the calculated price details
+            isLifeTimePlan={premiumIsLifeTimePlan}
+          />
+        </div>
+
+        <div className="flex flex-col w-full pr-10 pl-4 rounded-md mt-8 flex-wrap shadow-md py-4 bg-[url('/icons/enrollment-bg.svg')] bg-no-repeat bg-center bg-cover bg-opacity-60">
+          <h3 className="text-[16px] underline font-bold text-brand-9">
+            PROFESSIONAL PLAN
+          </h3>
+          <p className="text-sm max-w-[964px] text-text-secondary dark:text-darkText-1">
+            If none of the available plans meets your company&apos;s standards,
+            consider opting for the Professional plan. This plan provides
+            unlimited access to all software solutions. Professional plans are
+            ideal for established property managers who wish to customize the
+            software with their company&apos;s name and brand.
+          </p>
+
+          <h4 className="text-sm font-bold mt-4 text-text-secondary dark:text-white">
+            Features Included:
+          </h4>
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-0 justify-start w-full lg:justify-between flex-wrap">
+            <strong className="leading-[150%] w-full lg:w-4/5 max-w-[750px]">
+              All plans benefit and all Ads-on Inclusive; API integrations,
+              SaaS, Whitelabel, Custom domain, Unlimited Branches, Director,
+              Staff and Property Creations. Dedicated account officer, 24/7
+              Support and training, Email integration, and SMS prefer name.
+            </strong>
+
+            <div className="w-full sm:w-1/2 lg:w-1/5 bg-brand-9 h-10 text-white px-4 py-2 rounded-md flex items-center justify-center">
+              <Link
+                href="https://ourproperty.com.ng/resources/professional-plan/"
+                className=""
+                target="_blank"
+              >
+                Read More
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
-    </SettingsSection>
+      </SettingsSection> */}
+
+      <SettingsSection title="Subscription/Renewal History">
+        <div className="custom-flex-col gap-7">
+          <SettingsSectionTitle desc="Track and manage your active and past enrollments with ease. Below is a detailed record of your current subscription plan, along with any previously paid fees for past enrollments." />
+          <div className="flex justify-between items-center">
+            <div>
+              <h2 className="text-black dark:text-white text-lg font-medium">
+                Subscription Overview
+              </h2>
+            </div>
+            <div className="flex gap-2 items-center">
+              <Link
+                href="/settings/enrollment/history"
+                className="text-text-label dark:text-white font-medium"
+              >
+                See All
+              </Link>
+              <ChevronRight className="text-sm font-medium" />
+            </div>
+          </div>
+          <CustomTable
+            data={transformedSubscriptions}
+            fields={enrollment_subscriptions.fields}
+            {...table_style_props}
+          />
+        </div>
+      </SettingsSection>
+    </>
   );
 };
 

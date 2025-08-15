@@ -6,7 +6,12 @@ import { useState } from "react";
 import type { AddTenantModalOptions } from "./types";
 
 // Imports
-import { addTenant, inviteTenantEmail, multipleCreateTenants, multipleInviteTenants } from "./data";
+import {
+  addTenant,
+  inviteTenantEmail,
+  multipleCreateTenants,
+  multipleInviteTenants,
+} from "./data";
 import InvitationForm from "../invitation-form";
 import AddTenantOptions from "./add-tenant-options";
 import AddLandLordOrTenantForm from "../add-landlord-or-tenant-form";
@@ -14,32 +19,56 @@ import AddMultipleLandlordsOrTenants from "../add-multiple-landlords-or-tenants"
 import LandlordTenantModalPreset from "../landlord-tenant-modal-preset";
 import { useModal } from "@/components/Modal/modal";
 import { useRouter, usePathname } from "next/navigation";
+import { addTenantWithEmail } from "../Landlord/data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useRole } from "@/hooks/roleContext";
 
 const AddTenantModal = () => {
   const router = useRouter();
   const pathname = usePathname();
   const { setIsOpen } = useModal();
+  const { role } = useRole();
   const [activeStep, setActiveStep] =
     useState<AddTenantModalOptions>("options");
+  const [identifier, setIdentifier] = useState("");
 
+  // switch the pathname based on the role
+  const switchPathname = () => {
+    switch (role) {
+      case "manager":
+        return `/manager/management/tenants`;
+      case "director":
+        return `/management/tenants`;
+      case "account": 
+        return `/accountant/management/tenants`;
+      default:
+        return `/management/tenants`;
+    }
+  };
+  
   const closeModalAndRefresh = () => {
     setIsOpen(false);
-    if (pathname !== "/management/tenants") {
-      router.push("/management/tenants");
+    window.dispatchEvent(new Event("refetchTenants"));
+    if (pathname !== switchPathname()) {
+      router.push(switchPathname());
     } else {
-      // location.reload();
       setTimeout(() => {
         window.dispatchEvent(new Event("refetchTenants"));
       }, 0);
     }
   };
 
+  // Modify handleBack to handle both modal and form steps
   const handleBack = () => {
     if (activeStep === "add-tenant" && formStep === 2) {
       setFormStep(1);
+    } else if (activeStep === "add-user-with-email" && formStep === 3) {
+      setFormStep(1);
+      setIdentifier("");
     } else {
       setActiveStep("options");
       setFormStep(1);
+      setIdentifier("");
     }
   };
 
@@ -49,6 +78,8 @@ const AddTenantModal = () => {
     const success = await addTenant(data);
     if (success) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -56,14 +87,21 @@ const AddTenantModal = () => {
     const success = await inviteTenantEmail(data);
     if (success) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
-  const handleInviteTenantId = async (data: any) => {
-    // const success = await inviteTenantId(data);
-    // if (success) {
-    //   closeModalAndRefresh();
-    // }
+  const handleAddTenantWithEmmailOrID = async (data: any) => {
+    const payload = {
+      identifier: data,
+    };
+    const success = await addTenantWithEmail(objectToFormData(payload));
+    if (success) {
+      closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
+    }
   };
 
   const handleMultipleInviteTenants = async (file: File) => {
@@ -72,6 +110,8 @@ const AddTenantModal = () => {
     const status = await multipleInviteTenants(formData);
     if (status) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
 
@@ -81,9 +121,10 @@ const AddTenantModal = () => {
     const status = await multipleCreateTenants(formData);
     if (status) {
       closeModalAndRefresh();
+    } else {
+      setIsOpen(false);
     }
   };
-
 
   const modal_states: Record<
     AddTenantModalOptions,
@@ -133,10 +174,19 @@ const AddTenantModal = () => {
         <InvitationForm method="email" submitAction={handleInviteTenantEmail} />
       ),
     },
-    "add-user-with-id": {
-      heading: "Add Landlord/Landlady with ID",
+    "add-user-with-email": {
+      heading:
+        formStep === 3 ? "Adding Warning!" : "Add Landlord/Landlady with Email",
       content: (
-        <InvitationForm method="id" submitAction={handleInviteTenantId} />
+        <InvitationForm
+          method="id"
+          page="tenant"
+          formStep={formStep}
+          setFormStep={setFormStep}
+          identifier={identifier}
+          setIdentifier={setIdentifier}
+          submitAction={() => handleAddTenantWithEmmailOrID(identifier)}
+        />
       ),
     },
   };

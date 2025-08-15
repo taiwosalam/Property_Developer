@@ -20,6 +20,7 @@ import { DatePickerWithRange } from "./date-picker";
 import { Switch } from "../ui/switch";
 import { Label } from "../ui/label";
 import type { DateRange } from "react-day-picker";
+import { useGlobalStore } from "@/store/general-store";
 
 interface ChartDataPoint {
   date: string;
@@ -51,9 +52,15 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     return initialState;
   });
 
-  const [timeRange, setTimeRange] = React.useState("30d");
   const [highestMetric, setHighestMetric] = React.useState<string | null>(null);
   const [primaryColor, setPrimaryColor] = React.useState<string | null>(null);
+
+  // Use Zustand store for timeRange and selectedDateRange
+  const timeRange = useGlobalStore((state) => state.timeRange);
+  const selectedDateRange = useGlobalStore((state) => state.selectedDateRange);
+  const setGlobalInfoStore = useGlobalStore(
+    (state) => state.setGlobalInfoStore
+  );
 
   const calculateDateRange = (days: number): DateRange => {
     const now = new Date();
@@ -62,53 +69,97 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     return { from: fromDate, to: now };
   };
 
-  const [selectedDateRange, setSelectedDateRange] = React.useState<
-    DateRange | undefined
-  >(calculateDateRange(30));
+  React.useEffect(() => {
+    if (!timeRange) {
+      setGlobalInfoStore("timeRange", "30d");
+    }
+  }, [timeRange, setGlobalInfoStore]);
 
   React.useEffect(() => {
     if (!selectedDateRange) {
       const initialRange = calculateDateRange(30);
-      setSelectedDateRange(initialRange);
+      setGlobalInfoStore("selectedDateRange", initialRange);
     }
-  }, [selectedDateRange]);
+  }, [selectedDateRange, setGlobalInfoStore]);
 
   const handleDateChange = (range: DateRange | undefined) => {
-    setSelectedDateRange(range);
+    setGlobalInfoStore("selectedDateRange", range);
     if (range?.from && range?.to) {
-      setTimeRange("custom");
+      setGlobalInfoStore("timeRange", "custom");
     }
   };
 
   const handleSelectChange = (value: string) => {
-    setTimeRange(value);
+    setGlobalInfoStore("timeRange", value);
+
     if (value !== "custom") {
-      const days =
-        value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
-      setSelectedDateRange(calculateDateRange(days));
+      let days: number;
+      switch (value) {
+        case "90d":
+          days = 90;
+          break;
+        case "30d":
+          days = 30;
+          break;
+        case "7d":
+          days = 7;
+          break;
+        case "1d":
+          days = 1;
+          break;
+        default:
+          days = 30; // Fallback
+      }
+      setGlobalInfoStore("selectedDateRange", calculateDateRange(days));
+    }
+
+    // if (value !== "custom") {
+    //   const days =
+    //     value === "90d" ? 90 : value === "30d" ? 30 : value === "7d" ? 7 : 1;
+    //   setGlobalInfoStore("selectedDateRange", calculateDateRange(days));
+    // }
+  };
+
+  // Get display text for current timeRange
+  const getTimeRangeDisplayText = () => {
+    switch (timeRange) {
+      case "90d":
+        return "Last 3 months";
+      case "30d":
+        return "Last 30 days";
+      case "7d":
+        return "Last 7 days";
+      case "1d":
+        return "Yesterday";
+      case "custom":
+        return "Custom";
+      default:
+        return "Last 30 days";
     }
   };
 
-  const filteredData = chartData && chartData
-    .filter((item) => {
-      const date = new Date(item.date);
-      if (selectedDateRange?.from && selectedDateRange?.to) {
-        return date >= selectedDateRange.from && date <= selectedDateRange.to;
-      }
+  const filteredData =
+    chartData &&
+    chartData
+      .filter((item) => {
+        const date = new Date(item.date);
+        if (selectedDateRange?.from && selectedDateRange?.to) {
+          return date >= selectedDateRange.from && date <= selectedDateRange.to;
+        }
 
-      const now = new Date();
-      let daysToSubtract = 90;
-      if (timeRange === "30d") {
-        daysToSubtract = 30;
-      } else if (timeRange === "7d") {
-        daysToSubtract = 7;
-      } else if (timeRange === "1d") {
-        daysToSubtract = 1;
-      }
-      now.setDate(now.getDate() - daysToSubtract);
-      return date >= now;
-    })
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+        const now = new Date();
+        let daysToSubtract = 90;
+        if (timeRange === "30d") {
+          daysToSubtract = 30;
+        } else if (timeRange === "7d") {
+          daysToSubtract = 7;
+        } else if (timeRange === "1d") {
+          daysToSubtract = 1;
+        }
+        now.setDate(now.getDate() - daysToSubtract);
+        return date >= now;
+      })
+      .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
   // Fetch primary color from localStorage during initial render
   React.useEffect(() => {
@@ -125,7 +176,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
     Object.keys(chartConfig).forEach((metric) => {
       if (enabledMetrics[metric]) {
         const metricMax = Math.max(
-          ...filteredData?.map((item) => Number(item[metric]) || 0) || []
+          ...(filteredData?.map((item) => Number(item[metric]) || 0) || [])
         );
         if (metricMax > maxValue) {
           maxValue = metricMax;
@@ -146,8 +197,9 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               {chartTitle || "Chart Title"}
             </CardTitle>
             <div
-              className={`w-fit ${visibleRange ? "flex" : "hidden"
-                } bg-[#F5F5F5] dark:bg-[#020617] rounded-md items-center justify-center`}
+              className={`w-fit ${
+                visibleRange ? "flex" : "hidden"
+              } bg-[#F5F5F5] dark:bg-[#020617] rounded-md items-center justify-center`}
             >
               {/* Conditionally render DatePickerWithRange */}
               {timeRange === "custom" && (
@@ -158,10 +210,10 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
               )}
               <Select value={timeRange} onValueChange={handleSelectChange}>
                 <SelectTrigger
-                  className="md:w-full px-2 lg:w-[120px] rounded-lg sm:ml-auto dark:text-whie dark:bg-[#020617]"
+                  className="md:w-full px-4 lg:w-[120p rounded-lg sm:ml-auto dark:text-white dark:bg-[#020617]"
                   aria-label="Select a value"
                 >
-                  <SelectValue placeholder="Last 3 months" />
+                  <SelectValue>{getTimeRangeDisplayText()}</SelectValue>
                 </SelectTrigger>
                 <SelectContent className="rounded-xl">
                   <SelectItem value="90d" className="rounded-lg">
@@ -199,8 +251,8 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
                       key === highestMetric && primaryColor
                         ? primaryColor
                         : enabledMetrics[key]
-                          ? config.color
-                          : undefined,
+                        ? config.color
+                        : undefined,
                   }}
                 />
                 <Label
@@ -210,8 +262,8 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
                       key === highestMetric && primaryColor
                         ? primaryColor
                         : enabledMetrics[key]
-                          ? config.color
-                          : undefined,
+                        ? config.color
+                        : undefined,
                   }}
                 >
                   {config.label}
@@ -224,7 +276,7 @@ export const DashboardChart: React.FC<DashboardChartProps> = ({
       <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[280px] w-full -ml-6"
+          className="aspect-auto h-[280px] w-full -ml-6 pt-4"
         >
           <AreaChart
             accessibilityLayer

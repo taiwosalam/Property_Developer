@@ -19,6 +19,7 @@ export interface CalendarContextProps extends CalendarClassData {
   nextMonth: () => void;
   prevMonth: () => void;
   setYear?: (year: number) => void;
+   openActivityModal?: (date: Date) => void;
 }
 // --------------------------------------------------
 
@@ -29,6 +30,11 @@ export interface CalendarEventProps {
   desc: string;
   title: string;
   type: keyof typeof calendar_event_tags;
+  originalType?: keyof typeof calendar_event_tags | string;
+  startTime?: string; 
+  endTime?: string;
+  originalType?: string,
+  created_at?: string
 }
 // --------------------------------------------------
 
@@ -63,5 +69,6 @@ export interface CalendarDayProps {
 export interface CalendarActivitiesProps {
   date: Date;
   events: CalendarEventProps[];
+  setIsOpen?: (isOpen: boolean) => void
 }
 // --------------------------------------------------

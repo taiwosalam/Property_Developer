@@ -12,12 +12,14 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { toast } from "sonner";
+import { useGlobalStore } from "@/store/general-store";
 
 const calculateDefaultDateRange = () => {
   const now = new Date();
-  const fromDate = new Date();
-  fromDate.setDate(now.getDate() - 30);
-  return { from: fromDate, to: now };
+  const toDate = new Date();
+  toDate.setDate(now.getDate() + 30); // 30 days ahead
+  return { from: now, to: toDate };
 };
 
 export function DatePickerWithRange({
@@ -33,10 +35,32 @@ export function DatePickerWithRange({
     selectedRange || calculateDefaultDateRange()
   );
 
+  const { setIsValidDateRange } = useGlobalStore();
+
   // Update local state and notify parent whenever the date changes
   const handleDateChange = (newRange: DateRange | undefined) => {
+    // If there's no range or if only 'from' is selected, update normally
+    if (!newRange || !newRange.to) {
+      setDate(newRange);
+      onDateChange(newRange);
+      setIsValidDateRange(true);
+      return;
+    }
+
+    // Check if 'from' and 'to' are the same date
+    const fromDate = newRange.from?.setHours(0, 0, 0, 0);
+    const toDate = newRange.to?.setHours(0, 0, 0, 0);
+
+    if (fromDate === toDate) {
+      toast.error("You can't select same to and from date");
+      setIsValidDateRange(false);
+      return;
+    }
+
+    // Dates are different, update normally
     setDate(newRange);
     onDateChange(newRange);
+    setIsValidDateRange(true);
   };
 
   // Sync with external changes while preserving default behavior
@@ -49,7 +73,14 @@ export function DatePickerWithRange({
       <input
         type="hidden"
         name="valid_till"
-        value={date?.from && date?.to ? `${format(date.from, 'yyyy-MM-dd')} - ${format(date.to, 'yyyy-MM-dd')}` : ''}
+        value={
+          date?.from && date?.to
+            ? `${format(date.from, "yyyy-MM-dd")} - ${format(
+                date.to,
+                "yyyy-MM-dd"
+              )}`
+            : ""
+        }
       />
       <Popover>
         <PopoverTrigger asChild>

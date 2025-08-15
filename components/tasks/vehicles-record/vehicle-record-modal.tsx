@@ -8,120 +8,193 @@ import TruncatedText from "@/components/TruncatedText/truncated-text";
 import CheckInOutForm from "../visitors-requests/check-in-out-form";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { AuthForm } from "@/components/Auth/auth-components";
-import { checkOutVehicle } from "./data";
+import { checkInVehicle, checkOutVehicle } from "./data";
 import { toast } from "sonner";
 import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import ModalPreset from "@/components/Modal/modal-preset";
+import dayjs from "dayjs";
+import { empty } from "@/app/config";
+import { useModal } from "@/components/Modal/modal";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import { LandlordTenantInfoBox } from "@/components/Management/landlord-tenant-info-components";
+import DOMPurify from "dompurify";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
     showOpenRecordsButton?: boolean;
+    note?: string;
+    page?: "manager" | "account";
   }
 > = ({
   status,
   pictureSrc,
   name,
   id,
+  note,
   category,
   registrationDate,
   latest_check_in,
   showOpenRecordsButton = true,
+  page,
 }) => {
-    const [ loading, setLoading ] = useState(false)
+  const sanitizedNote = DOMPurify.sanitize(note || "");
+  const [loading, setLoading] = useState(false);
+  const { setIsOpen } = useModal();
 
-    const checkIn = {
-      id: latest_check_in?.id,
-      name: latest_check_in?.in_by || "---",
-      passenger: latest_check_in?.passengers_in || "---",
-      date: latest_check_in?.check_in_time
-        ? format_date_time(latest_check_in?.check_in_time)
-        : "---",
-      inventory: latest_check_in?.inventory_in || "---",
-    };
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCheckInAndManageVehicleRec =
+    usePermission(role, "Can check in and manage vehicle records") ||
+    role === "director";
 
-    const [checkOut, setCheckOut] = useState({
-      id: latest_check_in?.id,
-      name: latest_check_in?.out_by || "---",
-      passenger: latest_check_in?.passengers_out || "---",
-      date: latest_check_in?.check_out_time
-        ? format_date_time(latest_check_in?.check_out_time)
-        : "---",
-      inventory: latest_check_in?.inventory_out || "---",
-    });
+  const checkIn = {
+    id: latest_check_in?.id,
+    name: latest_check_in?.in_by || "---",
+    passenger: latest_check_in?.passengers_in || "---",
+    date: latest_check_in?.check_in_time
+      ? dayjs(latest_check_in?.check_in_time).format("MMM DD YYYY hh:mma")
+      : "---",
+    inventory: latest_check_in?.inventory_in || "---",
+  };
 
-    const handleCheckOut = async (event: React.FormEvent) => {
-      event.preventDefault();
-      const form = event.target as HTMLFormElement;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
+  const [checkOut, setCheckOut] = useState({
+    id: latest_check_in?.id,
+    name: latest_check_in?.out_by || "---",
+    passenger: latest_check_in?.passengers_out || "---",
+    date: latest_check_in?.check_out_time
+      ? dayjs(latest_check_in?.check_out_time).format("MMM DD YYYY hh:mma")
+      : "---",
+    inventory: latest_check_in?.inventory_out || "---",
+  });
 
-      if (data.passenger) {
-        data.passengers_out = data.passenger;
-        delete data.passenger;
+  const handleCheckOut = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    if (data.passenger) {
+      data.passengers_out = data.passenger;
+      delete data.passenger;
+    }
+
+    if (data.inventory) {
+      data.inventory_out = data.inventory;
+      delete data.inventory;
+    }
+
+    try {
+      setLoading(true);
+      const response = await checkOutVehicle(data, checkIn.id);
+      if (response) {
+        // console.log("response", response);
+        setCheckOut({
+          id: response.id || checkOut.id,
+          name: response.data.out_by || checkOut.name,
+          passenger: response.data.passengers_out || checkOut.passenger,
+          date: response.data.check_out_time
+            ? format_date_time(response.data.check_out_time)
+            : checkOut.date,
+          inventory: response.data.inventory_out || checkOut.inventory,
+        });
+        window.dispatchEvent(new Event("refetchVehicleRecord"));
+        toast.success("Vehicle checked out successfully");
+        setIsOpen(false);
+        // setActiveStep("success-action");
+      } else {
+        toast.error("Failed to check out vehicle");
       }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      if (data.inventory) {
-        data.inventory_out = data.inventory;
-        delete data.inventory;
+  const handleCheckIn = async (event: React.FormEvent) => {
+    event.preventDefault();
+    const form = event.target as HTMLFormElement;
+    const formData = new FormData(form);
+
+    // Modify keys in formData
+    const data = Object.fromEntries(formData.entries());
+    data.passengers_in = data.passenger;
+    delete data.passenger;
+    data.inventory_in = data.inventory;
+    delete data.inventory;
+
+    // Add vehicle_record to requestId
+    data.vehicle_record_id = `${id}`;
+
+    try {
+      setLoading(true);
+      const response = await checkInVehicle(data);
+      if (response) {
+        window.dispatchEvent(new Event("refetchVehicleRecord"));
+        toast.success("Vehicle checked in successfully");
+        setIsOpen(false);
+      } else {
+        toast.error("Failed to check in vehicle");
       }
-
-      try {
-        setLoading(true);
-        const response = await checkOutVehicle(data, checkIn.id);
-        if (response) {
-          // console.log("response", response);
-          setCheckOut({
-            id: response.id || checkOut.id,
-            name: response.data.out_by || checkOut.name,
-            passenger: response.data.passengers_out || checkOut.passenger,
-            date: response.data.check_out_time ? format_date_time(response.data.check_out_time) : checkOut.date,
-            inventory: response.data.inventory_out || checkOut.inventory,
-          });
-          window.dispatchEvent(new Event("refetchVehicleRecord"));
-          toast.success("Vehicle checked out successfully");
-          setActiveStep("success-action");
-        } else {
-          toast.error("Failed to check out vehicle");
-        }
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const [activeStep, setActiveStep] = useState<
-    "default" | "check-out" | "success-action"
+    "default" | "check-out" | "success-action" | "check-in" | "modal"
   >("default");
   const handleBack = () => {
     setActiveStep("default");
   };
 
-
+  // get record link
+  const getRecordLink = (id: number) => {
+    switch (page) {
+      case "manager":
+        return `/manager/management/vehicles-record/records/${id}/record`;
+      case "account":
+        return `/accountant/management/vehicles-record/records/${id}/record`;
+      default:
+        return `/management/vehicles-record/records/${id}/record`;
+    }
+  };
   if (activeStep === "default") {
     return (
       <WalletModalPreset title="Vehicle Record">
         <div className="flex flex-col md:flex-row items-center justify-between font-medium gap-2">
           <div className="flex items-center gap-2">
-            <Picture size={80} src={pictureSrc} rounded />
+            <Picture size={80} src={pictureSrc || empty} rounded />
             <div className="text-base text-text-primary dark:text-white space-y-1">
               <p className="flex items-center">
-                <span>{name}</span>
-                <BadgeIcon color="blue" />
+                <button onClick={() => setActiveStep("modal")}>
+                  <span className="capitalize">{name}</span>
+                </button>
+                {/* <BadgeIcon color="blue" /> */}
               </p>
-              <p>
+              <div className="flex gap-1">
                 <span className="text-text-tertiary dark:text-darkText-1">
-                  ID:
-                </span>{" "}
-                {id}
-              </p>
+                  ID: {id}
+                </span>
+                {/* {note && (
+                  <button onClick={() => setActiveStep("modal")}>
+                    <div className="flex items-center">
+                      <NoteBlinkingIcon size={20} className="blink-color" />
+                    </div>
+                  </button>
+                )} */}
+              </div>
             </div>
           </div>
           <div className="space-y-2 text-sm">
             <div className="flex items-center gap-4">
-              <p className="text-text-tertiary dark:text-darkText-1 min-w-[100px]">
-                Category
+              <p className="text-text-tertiary dark:text-darkText-1 min-w-[100px] capitalize">
+                record type
               </p>
               <p className="text-text-primary dark:text-white capitalize">
                 {category}
@@ -215,7 +288,8 @@ const VehicleRecordModal: React.FC<
         </div>
         {/* Buttons */}
         <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
-          {status === "pending" && (
+          {/* {status === "pending" && ( */}
+          {status === "check-in" && canCheckInAndManageVehicleRec && (
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
@@ -228,31 +302,62 @@ const VehicleRecordModal: React.FC<
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
-              href={`/management/vehicles-record/records/${id}/record`}
+              // href={`/management/vehicles-record/records/${id}/record`}
+              href={getRecordLink(Number(id))}
             >
               Open Records
             </Button>
           )}
+          {/* {(status === "no_record" || status === "completed") && ( */}
+          {(status === "pending" || status === "check-out") &&
+            canCheckInAndManageVehicleRec && (
+              <Button
+                size="sm_bold"
+                className="py-[10px] px-6 rounded-lg"
+                onClick={() => setActiveStep("check-in")}
+              >
+                Check In
+              </Button>
+            )}
         </div>
       </WalletModalPreset>
     );
   }
-  
+
   if (activeStep === "check-out") {
     return (
       <>
-      <CheckInOutForm
-        loading={loading}
-        type="check-out"
-        useCase="vehicle"
-        handleBack={handleBack}
-        pictureSrc={pictureSrc}
-        userName={name}
-        id={id}
-        category={category}
-        registrationDate={registrationDate}
-        onSubmit={handleCheckOut}
-        />  
+        <CheckInOutForm
+          loading={loading}
+          type="check-out"
+          useCase="vehicle"
+          handleBack={handleBack}
+          pictureSrc={pictureSrc}
+          userName={name}
+          id={id}
+          category={category}
+          registrationDate={registrationDate}
+          onSubmit={handleCheckOut}
+        />
+      </>
+    );
+  }
+
+  if (activeStep === "check-in") {
+    return (
+      <>
+        <CheckInOutForm
+          loading={loading}
+          type="check-in"
+          useCase="vehicle"
+          handleBack={handleBack}
+          pictureSrc={pictureSrc}
+          userName={name}
+          id={id}
+          category={category}
+          registrationDate={registrationDate}
+          onSubmit={handleCheckIn}
+        />
       </>
     );
   }
@@ -273,6 +378,20 @@ const VehicleRecordModal: React.FC<
           </Button>
         </div>
       </ModalPreset>
+    );
+  }
+
+  if (activeStep === "modal") {
+    return (
+      <LandlordTenantModalPreset heading="Note" style={{ maxWidth: "500px" }}>
+        <TruncatedText
+          lines={7}
+          className="text-text-quaternary dark:text-darkText-2 text-sm lg:text-base font-normal"
+          as="div"
+        >
+          <div dangerouslySetInnerHTML={{ __html: sanitizedNote }} />
+        </TruncatedText>
+      </LandlordTenantModalPreset>
     );
   }
 

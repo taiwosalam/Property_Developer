@@ -10,28 +10,34 @@ interface ThemeState {
 
   setPrimaryColor: (color: string) => void;
   setSecondaryColor: (color: string) => void;
-  setColor: (color: string) => void; // Add the method to set both colors
+  setColor: (color?: string | null) => void; // safer signature
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  
-  // primaryColor: localStorage.getItem("primary-color") || "", // Check localStorage for initial value
   primaryColor: "",
-  secondaryColor: "", 
+  secondaryColor: "",
 
   setPrimaryColor: (color: string) => {
+    if (!color) return;
     set({ primaryColor: color });
     localStorage.setItem("primary-color", color);
     document.documentElement.style.setProperty("--primary-color", color);
   },
 
   setSecondaryColor: (color: string) => {
+    if (!color) return;
     set({ secondaryColor: color });
     localStorage.setItem("secondary-color", color);
     document.documentElement.style.setProperty("--secondary-color", color);
   },
 
-  setColor: (color: string) => {
+  setColor: (color?: string | null) => {
+    // Guard against null/undefined or non-string values
+    if (!color || typeof color !== "string") {
+      console.warn("Invalid color passed to setColor:", color);
+      return;
+    }
+
     let hexColor: string | null;
     let rgbColor: string | null;
 
@@ -44,6 +50,7 @@ export const useThemeStore = create<ThemeState>((set) => ({
       rgbColor = color;
       hexColor = rgbToHex(color);
     }
+
     if (rgbColor && hexColor) {
       const alpha = 0.4;
       const rgbParts = rgbColor.match(/\d+(\.\d+)?/g);
@@ -57,8 +64,8 @@ export const useThemeStore = create<ThemeState>((set) => ({
           "--secondary-color": secondaryColor,
         });
         updateBrandColors(hexColor);
-        // Return the new state
-        return set({
+
+        set({
           primaryColor: hexColor,
           secondaryColor: secondaryColor,
         });

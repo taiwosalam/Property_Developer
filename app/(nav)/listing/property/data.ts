@@ -1,24 +1,12 @@
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
 import { PropertyCardProps } from "@/components/Management/Properties/property-card";
+import api, { handleAxiosError } from "@/services/api";
+import axios from "axios";
 import moment from "moment";
+import { toast } from "sonner";
+import { formatFee } from "../../management/rent-unit/data";
 
 export const listingPropertyFilter: FilterOptionMenu[] = [
-  {
-    label: "Property",
-    value: [
-      { label: "Property 1", value: "Property1" },
-      { label: "Property 2", value: "Property2" },
-      { label: "Property 3", value: "Property3" },
-    ],
-  },
-  {
-    label: "branch",
-    value: [
-      { label: "branch 1", value: "branch1" },
-      { label: "branch 2", value: "branch2" },
-      { label: "branch 3", value: "branch3" },
-    ],
-  },
   {
     label: "Status",
     radio: true,
@@ -47,6 +35,10 @@ export interface DraftPropertyFilterParams {
   sort_by?: "desc";
   search?: string;
 }
+
+interface PropertyInvites {
+  id: number;
+}
 export interface PropertyDataProps {
   id: string;
   video_link: string;
@@ -61,6 +53,7 @@ export interface PropertyDataProps {
   branch_id: number;
   inventory_id: number;
   land_lord_id: number;
+  account_officer: any[];
   user_id: number;
   company_id: number;
   agency_fee: number;
@@ -88,10 +81,9 @@ export interface PropertyDataProps {
   branch: BranchDataObject;
 }
 
-export interface BranchDataObject{
+export interface BranchDataObject {
   branch_name: string;
 }
-
 
 export const initialState = {
   total_property: 0,
@@ -103,7 +95,7 @@ export const initialState = {
   current_page: 0,
   last_page: 0,
   properties: [],
-}
+};
 
 export interface PropertyPageState {
   total_property: number;
@@ -129,10 +121,9 @@ export interface PropertyApiResponse {
       current_page: number;
       last_page: number;
       data: PropertyDataProps[];
-    }
-  }
+    };
+  };
 }
-
 
 export interface PropertyDraftFilterResponse {
   data: {
@@ -141,7 +132,6 @@ export interface PropertyDraftFilterResponse {
     data: PropertyDataProps[];
   };
 }
-
 
 export const transformDraftUnitData = (
   response: PropertyApiResponse | PropertyDraftFilterResponse
@@ -156,47 +146,50 @@ export const transformDraftUnitData = (
     ? response.data.invites
     : response.data;
 
-  console.log("Property data", propertyData)
-  const transformedProperties: any = propertyData.data.map(
-    (p) => {
-      const status = p.invites.length > 0 ? "request" : "draft";
-      const updatedAt = moment(p.updated_at);
-      let lastUpdated;
-      const now = moment();
-      if (now.diff(updatedAt, "days") < 7) {
-        lastUpdated = updatedAt.fromNow();
-      } else {
-        lastUpdated = updatedAt.format("DD/MM/YYYY");
-      }
-      const totalReturns = p.units.reduce((sum, unit) => {
-        return sum + parseFloat(unit.fee_amount);
-      }, 0);
-      const feePercentage =
-        p.property_type === "rental" ? p.agency_fee : p.management_fee;
-        const units = p.units.length
-      return {
-        id: p.id,
-        images: p.images.map((image) => image.path),
-        property_name: p.title,
-        address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
-        state: p.state,
-        local_government: p.local_government,
-        total_unit: units,
-        last_updated: lastUpdated,
-        hasVideo: !!p.video_link,
-        property_type: p.property_type,
-        branch: p.branch?.branch_name,
-        total_returns: totalReturns,
-        total_income: (totalReturns * feePercentage) / 100,
-        account_officer: "Nil",
-        status: status,
-      };
+  const transformedProperties: any = propertyData.data.map((p) => {
+    const status = p?.invites?.length > 0 ? "request" : "draft";
+    const updatedAt = moment(p.updated_at);
+    let lastUpdated;
+    const now = moment();
+    if (now.diff(updatedAt, "days") < 7) {
+      lastUpdated = updatedAt.fromNow();
+    } else {
+      lastUpdated = updatedAt.format("DD/MM/YYYY");
     }
-  );
+    const totalReturns = p?.units?.reduce((sum, unit) => {
+      return sum + parseFloat(unit.fee_amount);
+    }, 0);
+    const feePercentage =
+      p.property_type === "rental" ? p.agency_fee : p.management_fee;
+    const units = p.units?.length;
+    return {
+      id: p.id,
+      images: p.images?.map((image) => image.path),
+      property_name: p.title,
+      address: `${p.full_address}, ${p.city_area}, ${p.local_government}, ${p.state}`,
+      company_name: p?.invites?.map((name) => name?.company?.company_name),
+      inviteId: p?.invites?.map((id) => id?.id),
+      state: p?.state,
+      local_government: p?.local_government,
+      total_unit: units,
+      last_updated: lastUpdated,
+      hasVideo: !!p?.video_link || "",
+      property_type: p?.property_type,
+      branch: p.branch?.branch_name || "",
+      total_returns: formatFee(totalReturns, p?.currency || "naira"),
+      // total_income: formatFee(
+      //   (totalReturns * feePercentage) / 100,
+      //   p.currency || "naira"
+      // ),
+      // account_officer: "Nil",
+      account_manager: p.account_officer.length > 0 ? p.account_officer[0]?.user?.name  :  "--- ---",
+      status: status,
+    };
+  });
 
   // console.log("Transformed unit data", transformedUnits)
   if (isUnitApiResponse(response)) {
-    // console.log("isUnitApiResponse", response)
+    console.log("isUnitApiResponse", response)
     return {
       current_page: response.data.invites.current_page,
       last_page: response.data.invites.last_page,
@@ -210,9 +203,24 @@ export const transformDraftUnitData = (
     };
   } else {
     return {
-      current_page: response.data.current_page,
-      last_page: response.data.last_page,    
+      current_page: propertyData.current_page,
+      last_page: propertyData.last_page,
       properties: transformedProperties,
     };
+  }
+};
+
+export const declineOrApproveInvite = async (id: number, type: string) => {
+  try {
+    const res = await api.post(`property/invite/${id}/${type}`);
+    if (res.status === 200 || res.status === 201) {
+      toast.success(type + " successful");
+      window.dispatchEvent(new Event("refetchPropertyDraft"));
+      return true;
+    }
+  } catch (error) {
+    console.error(error);
+    handleAxiosError(error);
+    return false;
   }
 };

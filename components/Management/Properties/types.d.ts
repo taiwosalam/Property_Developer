@@ -5,6 +5,7 @@ import { transformPropertyFormData } from "./data";
 export type AddPropertyModalViews = "options" | "add-property-with-id";
 
 export interface AddPropertyOptionsViewProps {
+  id?: number; //ID is for landlord to add property
   setModalView: React.Dispatch<React.SetStateAction<AddPropertyModalViews>>;
 }
 
@@ -12,6 +13,7 @@ export interface UnitCardProps {
   data: UnitDataObject & { notYetUploaded?: boolean };
   setIsEditing: (a: boolean) => void;
   index: number;
+  default_image?: string;
 }
 
 export interface CreatePropertyFormProps {
@@ -22,6 +24,7 @@ export interface CreatePropertyFormProps {
   editMode?: boolean;
   propertyId?: string;
   onAddUnit?: () => void;
+  landlordId?: string;
 }
 
 export interface StaffData {
@@ -59,12 +62,15 @@ export interface AllLandlordsResponse {
   data: {
     id: string;
     name: string;
+    picture: string;
+    agent?: string;
   }[];
 }
 export interface AllBranchesResponse {
   data: {
     id: string;
     branch_name: string;
+    manager_id?: string;
   }[];
 }
 export interface AllInventoryResponse {

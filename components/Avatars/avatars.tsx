@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 // Types
 import type { AvatarsProps } from './types';
 import Skeleton from '@mui/material/Skeleton';
-import { branchAvatarLinks, getAvatarLinks } from './data';
+import { branchAvatarLinks, getAvatarLinks, getBranchAvatarLinks } from './data';
 import Picture from '../Picture/picture';
 import useWindowWidth from '@/hooks/useWindowWidth';
 
@@ -38,7 +38,9 @@ const Avatars: React.FC<AvatarsProps> = ({
       setLoading(true);
       try {
         if (branch) {
-          setLinks(branchAvatarLinks);
+          // setLinks(branchAvatarLinks);
+          const fetchedLinks = await getBranchAvatarLinks();
+          setLinks(fetchedLinks)
         } else {
           const fetchedLinks = await getAvatarLinks();
           setLinks(fetchedLinks);

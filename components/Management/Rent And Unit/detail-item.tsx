@@ -1,5 +1,6 @@
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { cn } from "@/lib/utils";
+
 interface EstateDetailItemProps {
   label: string;
   value?: string;
@@ -10,7 +11,7 @@ interface EstateDetailItemProps {
 
 export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
   label,
-  value,
+  value = "",
   style,
   truncate,
   column,
@@ -31,8 +32,19 @@ export const EstateDetailItem: React.FC<EstateDetailItemProps> = ({
       >
         {label}
       </p>
-      <p className="lg:flex-1 text-black dark:text-darkText-2 capitalize">
-        {truncate ? <TruncatedText lines={3}>{value}</TruncatedText> : value}
+      <p
+        className={cn(
+          "lg:flex-1 text-black dark:text-darkText-2 capitalize",
+          !truncate && "line-clamp-2"
+        )}
+      >
+        {truncate ? (
+          <TruncatedText lines={3}>
+            <span dangerouslySetInnerHTML={{ __html: value }} />
+          </TruncatedText>
+        ) : (
+          <span dangerouslySetInnerHTML={{ __html: value }} />
+        )}
       </p>
     </div>
   );

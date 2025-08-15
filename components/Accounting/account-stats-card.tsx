@@ -9,6 +9,7 @@ import {
   TrendingDownIcon,
 } from "./icons";
 import { formatNumber, currencySymbols } from "@/utils/number-formatter";
+import { getDigitCount } from "@/app/(nav)/accounting/expenses/data";
 
 type TrendDirection = "up" | "down";
 type TrendColor = "red" | "green";
@@ -27,11 +28,14 @@ interface AccountStatsCardProps {
   variant: StatCardVariant;
   percentage: number;
   trendDirection: TrendDirection;
-  trendColor: TrendColor;
+  trendColor?: TrendColor;
   title: string;
-  balance: number;
+  balance: number | string;
   className?: string;
   forBranch?: boolean;
+  timeRangeLabel?: string;
+  otherCurrency?: string;
+  noSymbol?: boolean;
 }
 
 const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
@@ -43,7 +47,18 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
   balance,
   className,
   forBranch,
+  timeRangeLabel,
+  otherCurrency,
+  noSymbol,
 }) => {
+  // Determine font size based on digit count
+  const digitCount = getDigitCount(balance);
+  const fontSizeClass = clsx({
+    "text-[24px] xl:text-[28px]": digitCount < 10, // Default for < 8 digits
+    "text-[20px] xl:text-[24px]": digitCount >= 10 && digitCount <= 12, // 8–9 digits
+    "text-[16px] xl:text-[20px]": digitCount >= 13, // 10+ digits
+  });
+
   const getVariantStyles = (): VariantStyle => {
     switch (variant) {
       case "blueIncoming":
@@ -95,8 +110,23 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
           <p className="font-medium text-[16px] text-text-tertiary dark:text-darkText-1 whitespace-nowrap">
             {title}
           </p>
-          <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
+          {/* <p className="font-bold text-[24px] xl:text-[28px] text-[#202224] dark:text-white">
             {`${currencySymbols.naira}${formatNumber(balance)}`}
+          </p> */}
+          <p
+            className={clsx(
+              "font-bold text-[#202224] dark:text-white",
+              fontSizeClass // Apply dynamic font size
+            )}
+          >
+            {noSymbol
+              ? balance
+              : typeof balance === "string"
+              ? `${currencySymbols.naira}${balance}`
+              : `${currencySymbols.naira}${formatNumber(balance)}`}
+          </p>
+          <p className="text-black font-semibold text-md">
+            {otherCurrency ?? ""}
           </p>
         </div>
         <div
@@ -115,7 +145,7 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
       <div className="flex items-center gap-2">
         <span
           className={
-            trendColor === "green"
+            trendDirection === "up"
               ? "text-status-success-2"
               : "text-status-error-2"
           }
@@ -125,14 +155,15 @@ const AccountStatsCard: React.FC<AccountStatsCardProps> = ({
         <p className="text-text-label font-normal text-[16px]">
           <span
             className={
-              trendColor === "green"
+              trendDirection === "up"
                 ? "text-status-success-2"
                 : "text-status-error-2"
             }
           >
             {percentage}%
           </span>{" "}
-          {trendDirection === "up" ? "Up" : "Down"} from last week
+          {trendDirection === "up" ? "Up" : "Down"} from{" "}
+          {timeRangeLabel || "Last month"}{" "}
         </p>
       </div>
     </div>

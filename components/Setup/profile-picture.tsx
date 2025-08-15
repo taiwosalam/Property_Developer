@@ -1,94 +1,168 @@
 import Image from "next/image";
-import { useContext } from "react";
-// Import
+import { useContext, useEffect, useState } from "react";
 import { SectionHeading } from "../Section/section-components";
-import Button from "../Form/Button/button";
-import { DeleteIconOrange, UploadImageIcon } from "@/public/icons/icons";
-import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import {
+  DeleteIconOrange,
+  UploadImageIcon,
+  PersonIcon,
+} from "@/public/icons/icons";
 import { useImageUploader } from "@/hooks/useImageUploader";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
+import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
+import Avatars from "../Avatars/avatars";
+import Picture from "../Picture/picture";
+import { FlowProgressContext } from "../FlowProgress/flow-progress";
+import { useGlobalStore } from "@/store/general-store";
 
 const ProfilePicture = () => {
-  const { handleInputChange } = useContext(FlowProgressContext);
+  const { canSubmit } = useContext(FlowProgressContext);
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const [selectedAvatar, setSelectedAvatar] = useState("");
+  const {
+    preview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: { unit: "MB", value: 2 },
+  });
 
-  const { preview, inputFileRef, handleImageChange, clearSelection } =
-    useImageUploader({
-      maxSize: { unit: "MB", value: 2 },
-    });
+  // Track picture selection status and trigger FlowProgress validation
+  useEffect(() => {
+    const hasPicture = Boolean(
+      preview &&
+        preview !== CameraCircle &&
+        inputFileRef.current?.files?.[0]?.size &&
+        inputFileRef.current.files[0].size > 0 
+    );
+    const hasAvatar = selectedAvatar !== "";
+    const sub = hasAvatar || hasPicture
+    setGlobalStore("SelectedDirectorPics", sub);
+  }, [preview, inputFileRef, selectedAvatar]);
 
-  const handleButtonClick = () => {
-    if (inputFileRef.current) {
-      inputFileRef.current.click();
-    }
+  const [avatarModalOpen, setAvatarModalOpen] = useState(false);
+
+  // Handle avatar selection
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearSelection(); // Clear uploaded file
+    setSelectedAvatar(avatarUrl); // Set avatar
+    setAvatarModalOpen(false); // Close modal
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    handleImageChange(e);
-    handleInputChange();
+  // Handle file upload
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedAvatar(""); // Clear avatar
+    originalHandleImageChange(e); // Handle file upload
   };
 
-  const handleDeleteImage = () => {
-    clearSelection();
-    handleInputChange();
+  // Handle deletion of image or avatar
+  const handleDelete = () => {
+    clearSelection(); // Clear file
+    setSelectedAvatar(""); // Clear avatar
   };
 
   return (
     <div className="custom-flex-col gap-5">
-      <SectionHeading title="profile picture">
+      <SectionHeading required title="profile picture">
         The profile photo size should be 100 x 100 pixels with a maximum file
-        size of 2MB.
+        size of 2MB. Or choose an avatar.
       </SectionHeading>
 
-      <div className="flex gap-2">
+      <div className="flex gap-5 items-end">
+        {/* Hidden input for avatar */}
         <input
-          name="director_profile_picture"
-          type="file"
-          accept="image/*"
-          ref={inputFileRef}
-          onChange={handleFileChange}
-          className="hidden setup-f required"
+          type="hidden"
+          name="avatar"
+          className="setup-f"
+          value={selectedAvatar}
         />
-        {preview ? (
-          <div className="w-[100px] h-[100px] relative">
-            <button
-              type="button"
-              onClick={handleDeleteImage}
-              className="absolute top-[-15px] right-[-25px] z-10"
-              aria-label="Delete"
+
+        {/* File upload side */}
+        <div className="flex gap-2">
+          {preview && preview !== CameraCircle ? (
+            <div className="w-[60px] h-[60px] relative rounded-full">
+              <Image
+                src={preview}
+                alt="Profile Picture"
+                fill
+                style={{ objectFit: "cover" }}
+                className="w-[60px] h-[60px] rounded-full"
+              />
+              <button
+                type="button"
+                onClick={handleDelete}
+                className="absolute top-0 right-0 z-10"
+                aria-label="Delete"
+              >
+                <DeleteIconOrange size={20} />
+              </button>
+            </div>
+          ) : (
+            <label
+              htmlFor="director_profile_picture"
+              className="!w-fit cursor-pointer relative"
             >
-              <DeleteIconOrange />
-            </button>
-            <Image
-              src={preview}
-              alt="Profile Picture"
-              fill
-              style={{ objectFit: "cover" }}
-              className="rounded-lg w-[100px] h-[100px]"
-            />
-          </div>
-        ) : (
-          <button
-            type="button"
-            onClick={handleButtonClick}
-            className="w-[100px] h-[100px] rounded-xl border-2 border-dashed border-borders-normal flex flex-col items-center justify-center cursor-pointer"
+              <Picture src={preview} alt="Camera" size={60} rounded />
+            </label>
+          )}
+          <input
+            id="director_profile_picture"
+            name="director_profile_picture"
+            type="file"
+            accept="image/*"
+            ref={inputFileRef}
+            onChange={handleImageChange}
+            className="hidden setup-f"
+          />
+        </div>
+
+        {/* Avatar selection button */}
+        <div className="custom-flex-col gap-3">
+          <Modal
+            state={{ isOpen: avatarModalOpen, setIsOpen: setAvatarModalOpen }}
           >
-            <UploadImageIcon />
-            <span className="text-text-secondary text-xs font-normal">
-              Upload Profile Picture
-            </span>
-          </button>
-        )}
-        {preview && (
-          <div className="flex items-end">
-            <Button
-              type="button"
-              variant="change"
-              size="sm"
-              onClick={handleButtonClick}
+            <ModalTrigger
+              className="bg-[rgba(42,42,42,0.63)] !w-[60px] h-[60px] rounded-full flex items-center justify-center text-white relative"
+              aria-label="choose avatar"
             >
-              Change Picture
-            </Button>
-          </div>
-        )}
+              {selectedAvatar ? (
+                <>
+                  <Image
+                    src={selectedAvatar}
+                    alt="Selected avatar"
+                    width={60}
+                    height={60}
+                    className="object-cover object-center w-[60px] h-[60px] rounded-full bg-brand-9"
+                  />
+                  <div
+                    role="button"
+                    aria-label="Remove avatar"
+                    className="absolute top-0 right-0"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setSelectedAvatar("");
+                      clearSelection();
+                    }}
+                  >
+                    <DeleteIconOrange size={20} />
+                  </div>
+                </>
+              ) : (
+                <PersonIcon size={18} />
+              )}
+            </ModalTrigger>
+            <ModalContent>
+              <LandlordTenantModalPreset
+                heading="Choose Avatar"
+                style={{ maxWidth: "700px" }}
+              >
+                <Avatars onClick={handleAvatarSelection} />
+              </LandlordTenantModalPreset>
+            </ModalContent>
+          </Modal>
+        </div>
       </div>
     </div>
   );

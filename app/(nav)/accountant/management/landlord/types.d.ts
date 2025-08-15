@@ -37,24 +37,75 @@ interface Others {
   family_type: string | null;
 }
 
-interface PropertyManaged {
-  images: string[];
+export interface PropertiesManaged {
   id: string;
-  name: string;
+  property_name: string;
+  images: string[];
+  default_image: string;
   address: string;
-  currency: string;
+  total_units: number;
   total_income: number;
   total_returns: number;
-  total_units: number;
+  property_type: "rental" | "facility";
+  total_unit_pictures: number;
+  hasVideo: boolean;
+  currency: "naira" | "dollar" | "pound" | undefined;
   mobile_tenants: number;
   web_tenants: number;
-  accountOfficer: string;
   owing_units: number;
   available_units: number;
-  isClickable: boolean;
   viewOnly: boolean;
+  isClickable: boolean;
   branch: string;
-}
+  last_updated: string;
+  accountOfficer: string;
+  documents: any[];
+};
+
+export interface PreviousProperties {
+  id: string;
+  property_name: string;
+  images: string[];
+  default_image: string;
+  address: string;
+  total_units: number;
+  total_income: number;
+  total_returns: number;
+  property_type: "rental" | "facility";
+  total_unit_pictures: number;
+  hasVideo: boolean;
+  currency: "naira" | "dollar" | "pound" | undefined;
+  mobile_tenants: number;
+  web_tenants: number;
+  owing_units: number;
+  available_units: number;
+  viewOnly: boolean;
+  isClickable: boolean;
+  branch: string;
+  last_updated: string;
+  accountOfficer: string;
+  documents: any[];
+};
+
+// interface PropertyManaged {
+//   images: string[];
+//   id: string;
+//   name: string;
+//   address: string;
+//   currency: string;
+//   total_income: number;
+//   total_returns: number;
+//   total_units: number;
+//   mobile_tenants: number;
+//   web_tenants: number;
+//   accountOfficer: string;
+//   owing_units: number;
+//   available_units: number;
+//   isClickable: boolean;
+//   viewOnly: boolean;
+//   branch: string;
+//   property_type: "rental" | "facility";
+// }
 
 interface AttachedDocument extends AttachedDocumentCard {
   document_type: string;
@@ -67,6 +118,7 @@ export type LandlordPageData = {
   // first_name: string;
   // last_name: string;
   name: string;
+  title: string;
   email: string;
   gender: string;
   phone_number: string;
@@ -86,12 +138,36 @@ export type LandlordPageData = {
     last_updated: string;
     write_up: string;
   };
+  note?: boolean;
   others: Others;
   documents: AttachedDocument[];
-  properties_managed?: PropertyManaged[];
-  previous_properties?: PropertyManaged[];
+  properties_managed?: PropertiesManaged[];
+  previous_properties?: PreviousProperties[];
+  statement?: Array<{
+    id: number;
+    picture: string;
+    name: string;
+    payment_id: string;
+    details: string;
+    credit: string | null;
+    debit: string | null;
+    date: string;
+    badge_color: BadgeIconColors | null;
+  }>;
+  messageUserData: messageUserDataTypes;
+  propertyOptions?: {
+    label: string;
+    value: string;
+  }[]
 };
 
+export interface messageUserDataTypes {
+  branch_id: number;
+  id: number;
+  imageUrl: string;
+  name: string;
+  position: string;
+}
 export type LandlordHelpInfo = {
   id: number;
   count: number;

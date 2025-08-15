@@ -1,40 +1,51 @@
+
 import api, { handleAxiosError } from "@/services/api";
 import { AxiosError } from "axios";
 import { toast } from "sonner";
+import { PersonalDataProps } from "./form-sections";
+
+// export const createVehicleRecord = async (data: any) => {
+//   try {
+//     const response = await api.post("/vehicle-records", data);
+//     return response.status === 200 || response.status === 201;
+//   } catch (error) {
+//     if (error instanceof AxiosError) {
+//       const errorMessage = error.response?.data?.message || error.message;
+//       const additionalErrors = error.response?.data?.errors.messages;
+//       const idError = error?.response?.data.error;
+//       if (idError) {
+//         if (typeof idError === "string" && idError.trim() !== "") {
+//           toast.error(`Error: ${idError}`);
+//         }
+//       } else {
+//         toast.error(`Error: ${errorMessage}`);
+//       }
+//       if (additionalErrors) {
+//         Object.keys(additionalErrors).forEach((key) => {
+//           additionalErrors[key].forEach((msg: string) => {
+//             toast.error(`Error: ${msg}`);
+//           });
+//         });
+//       }
+//     } else {
+//       console.error(error);
+//       toast.error("An unexpected error occurred.");
+//     }
+//     return false;
+//   }
+// };
 
 export const createVehicleRecord = async (data: any) => {
   try {
-    const response = await api.post("/vehicle-records", data);
-    return response.status === 200 || response.status === 201;
-  } catch (error) {
-    if (error instanceof AxiosError) {
-        const errorMessage = error.response?.data?.message || error.message;
-        const additionalErrors = error.response?.data?.errors.messages;
-        const idError = error?.response?.data.error;
-        console.log('idError', idError);
-        if (idError) {
-          if (typeof idError === 'string' && idError.trim() !== '') {
-            toast.error(`Error: ${idError}`);
-          }
-        }else {
-          toast.error(`Error: ${errorMessage}`);
-        }
-        if (additionalErrors) {
-          Object.keys(additionalErrors).forEach((key) => {
-            additionalErrors[key].forEach((msg: string) => {
-              toast.error(`Error: ${msg}`);
-            });
-        });
-      }
-    } else {
-      console.error(error);
-      toast.error("An unexpected error occurred.");
+    const res = await api.post("/vehicle-records", data);
+    if (res.status === 200 || res.status === 201) {
+      return true;
     }
+  } catch (err) {
+    handleAxiosError(err);
     return false;
   }
 };
-
-
 export const updateVehicleDetails = async (data: any, id: number) => {
   try {
     const response = await api.post(`/vehicle-records/${id}`, data);
@@ -44,7 +55,6 @@ export const updateVehicleDetails = async (data: any, id: number) => {
     return false;
   }
 };
-
 
 export const checkOutVehicle = async (data: any, id: number) => {
   try {
@@ -74,32 +84,43 @@ export const checkInVehicle = async (data: any) => {
 export function formatCustomDateTime(dateTimeString: string): string {
   const date = new Date(dateTimeString);
 
-  const day = String(date.getUTCDate()).padStart(2, '0');
-  const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are zero-indexed
   const year = String(date.getUTCFullYear()).slice(-2);
 
-  const hours = String(date.getUTCHours()).padStart(2, '0');
-  const minutes = String(date.getUTCMinutes()).padStart(2, '0');
-  const seconds = String(date.getUTCSeconds()).padStart(2, '0');
+  const hours = String(date.getUTCHours()).padStart(2, "0");
+  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+  const seconds = String(date.getUTCSeconds()).padStart(2, "0");
 
   return `${day}${month}${year} - ${hours}${minutes}${seconds}`;
 }
-
 
 export const updateVehicleRecord = async (data: any, id: number) => {
   try {
     const response = await api.patch(`/vehicle-record/${id}`, data);
     return response.status === 200 || response.status === 201;
   } catch (error) {
-    console.error(error)
-    handleAxiosError(error)
+    console.error(error);
+    handleAxiosError(error);
   }
-}
+};
 
-
-
-
-
+export const transformTenant = (
+  // data: IndividualTenantAPIResponse | null //uncomment and fix later
+  data: any | null
+): PersonalDataProps => {
+  const tenant = data?.data;
+  return {
+    id: Number(tenant?.id),
+    full_name: tenant?.name || "",
+    state: tenant?.state || "",
+    local_government: tenant?.local_government || "",
+    city: tenant?.city || "",
+    address: tenant?.address || "",
+    phone_number: tenant?.phone || "",
+    avatar: tenant?.picture || "",
+  };
+};
 
 export const vehicleData = {
   Cars: {
@@ -344,7 +365,16 @@ export const vehicleData = {
       "Wheel Loaders",
       "Other",
     ],
-    colors: [],
+    colors: [
+      "blue",
+      "green",
+      "grey",
+      "orange",
+      "red",
+      "white",
+      "yellow",
+      "black",
+    ],
     years: [
       "1972 - 1976",
       "1977 - 1981",
@@ -398,4 +428,16 @@ export const vehicleData = {
       "Other Years",
     ],
   },
+};
+
+// Helper function to truncate text
+export const truncateText = (
+  text: string | undefined | null,
+  length?: number
+): string => {
+  if (!text) return "";
+  if (length === undefined || text.length <= length) {
+    return text;
+  }
+  return text.slice(0, length) + "...";
 };

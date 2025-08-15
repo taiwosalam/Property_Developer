@@ -11,8 +11,8 @@ import Button from "@/components/Form/Button/button";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { useWalletStore } from "@/store/wallet-store";
 import { toast } from "sonner";
-import { changeWalletPin, createNewWalletPin } from "@/app/(nav)/settings/profile/data";
-import { changePassword, getPasswordResetOTP, verifyPasswordOTP } from "@/app/(nav)/settings/security/data";
+import { changeWalletPin, createNewWalletPin } from "@/app/(nav)/settings/company/data";
+import { addBankInfo, changePassword, getPasswordResetOTP, verifyPasswordOTP } from "@/app/(nav)/settings/security/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useAuthStore } from "@/store/authStore";
 import obfuscateEmail from "@/utils/obfuscateEmail";
@@ -23,6 +23,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
   changeStep,
   isForgetWallet,
   saveOtp,
+  addBank,
   resetPass,
   changePassword: changeOldPassword
 }) => {
@@ -38,6 +39,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
   const current_pin = useWalletStore((s) => s.current_pin);
   const new_pin = useWalletStore((s) => s.new_pin);
   const confirm_pin = useWalletStore((s) => s.confirm_pin);
+  const bank_details = useWalletStore((s) => s.bank_details);
 
   useEffect(() => {
     if (pinFieldRef.current && pinFieldRef.current.length > 0) {
@@ -106,7 +108,6 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
     try {
       setLoading(true)
       if (otp !== null) {
-        console.log("otp", otp)
         const res = await changePassword(objectToFormData(payload))
         if (res) {
           toast.success("Password changed successfully")
@@ -119,6 +120,26 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
       setLoading(false)
     }
   };
+
+  const handleAddBank = async () => {
+    const payload = {
+      ...bank_details,
+      otp: otp
+    }
+    try {
+      setLoading(true)
+      const res = await addBankInfo(objectToFormData(payload))
+      if (res) {
+        toast.success("Bank details added successfully")
+        changeStep(3)
+        window.dispatchEvent(new Event("fetch-banks"));
+      }
+    } catch (err) {
+      toast.error("Failed to add bank details")
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const handleButtonClick = () => {
     if (saveOtp) {
@@ -137,6 +158,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
       return handleChangePassword()
     }
 
+    if (addBank) return handleAddBank()
     return handleChangeWalletPin()
   }
 
@@ -188,6 +210,7 @@ const SettingsOTPModal: React.FC<DefaultSettingsModalProps> = ({
               length={4}
               onChange={setOtp}
               ref={pinFieldRef}
+              type="password"
               validate={/^[0-9]$/}
               className="w-10 h-10 text-center border border-solid border-[#2B2B2B] rounded-lg custom-primary-outline"
             />

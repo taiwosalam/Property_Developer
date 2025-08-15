@@ -1,3 +1,5 @@
+import parsePhoneNumberFromString from "libphonenumber-js";
+
 export type InputData = FormData | Record<string, any>;
 
 export function checkFormDataForImageOrAvatar(
@@ -27,6 +29,29 @@ export function checkFormDataForImageOrAvatar(
   return hasPicture || hasAvatar;
 }
 
+// export function cleanPhoneNumber(
+//   data: InputData,
+//   phoneNumberFields: string[] = ["phone_number"]
+// ): void {
+//   phoneNumberFields.forEach((phoneNumberField) => {
+//     let phoneNumber: string | null | undefined;
+
+//     if (data instanceof FormData) {
+//       phoneNumber = data.get(phoneNumberField) as string | null;
+//       if (phoneNumber && phoneNumber.length <= 4) {
+//         data.delete(phoneNumberField);
+//       }
+//     } else {
+//       phoneNumber = data[phoneNumberField];
+//       if (phoneNumber && phoneNumber.length <= 4) {
+//         delete data[phoneNumberField];
+//       }
+//     }
+//   });
+// }
+
+
+
 export function cleanPhoneNumber(
   data: InputData,
   phoneNumberFields: string[] = ["phone_number"]
@@ -34,14 +59,61 @@ export function cleanPhoneNumber(
   phoneNumberFields.forEach((phoneNumberField) => {
     let phoneNumber: string | null | undefined;
 
+    // Extract phone number based on input type
     if (data instanceof FormData) {
       phoneNumber = data.get(phoneNumberField) as string | null;
-      if (phoneNumber && phoneNumber.length <= 4) {
-        data.delete(phoneNumberField);
-      }
     } else {
       phoneNumber = data[phoneNumberField];
-      if (phoneNumber && phoneNumber.length <= 4) {
+    }
+
+    // If no phone number or empty string, remove the field or set to empty
+    if (!phoneNumber) {
+      if (data instanceof FormData) {
+        data.delete(phoneNumberField);
+      } else {
+        delete data[phoneNumberField];
+      }
+      return;
+    }
+
+    try {
+      // Parse and validate the phone number
+      const parsedNumber = parsePhoneNumberFromString(phoneNumber);
+
+      // If parsing fails, invalid number, or too short (likely just country code)
+      if (!parsedNumber || !parsedNumber.isValid()) {
+        if (data instanceof FormData) {
+          data.delete(phoneNumberField);
+        } else {
+          delete data[phoneNumberField];
+        }
+        return;
+      }
+
+      // Ensure the number has sufficient digits (more than just country code)
+      const numberLength = parsedNumber.number.replace(/[^0-9]/g, '').length;
+      const countryCodeLength = parsedNumber.countryCallingCode.length;
+      if (numberLength <= countryCodeLength + 3) {
+        if (data instanceof FormData) {
+          data.delete(phoneNumberField);
+        } else {
+          delete data[phoneNumberField];
+        }
+        return;
+      }
+
+      // If valid, set the cleaned E.164 format number
+      const cleanedNumber = parsedNumber.format('E.164');
+      if (data instanceof FormData) {
+        data.set(phoneNumberField, cleanedNumber);
+      } else {
+        data[phoneNumberField] = cleanedNumber;
+      }
+    } catch (error) {
+      console.error('Error validating phone number:', error);
+      if (data instanceof FormData) {
+        data.delete(phoneNumberField);
+      } else {
         delete data[phoneNumberField];
       }
     }
@@ -70,12 +142,18 @@ export function convertYesNoToBoolean(data: InputData, fields: string[]): void {
   });
 }
 
-export const mapNumericToYesNo = (value?: 1 | 0) => {
-  const mapping = {
-    1: "Yes",
-    0: "No",
-  } as const;
-  return value !== undefined ? mapping[value] : undefined;
+// export const mapNumericToYesNo = (value?: 1 | 0) => {
+//   const mapping = {
+//     1: "Yes",
+//     0: "No",
+//   } as const;
+//   return value !== undefined ? mapping[value] : undefined;
+// };
+
+export const mapNumericToYesNo = (value?: any): any => {
+  if (value === 1 || value === true) return "Yes";
+  if (value === 0 || value === false) return "No";
+  return value;
 };
 
 export function objectToFormData(

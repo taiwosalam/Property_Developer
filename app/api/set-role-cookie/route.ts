@@ -1,4 +1,3 @@
-// `/pages/api/set-role-cookie.ts`
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -20,8 +19,9 @@ export async function POST(req: Request) {
     response.cookies.set('role', role, {
       httpOnly: true, // Makes it inaccessible to JavaScript
       secure: process.env.NODE_ENV === 'production', // Use HTTPS in production
-      sameSite: 'strict', // Protects against CSRF attacks
+      sameSite: 'strict', // Protects against (CSRF) attacks
       path: '/', // Makes the cookie available to the entire site
+      maxAge: 60 * 60 * 168, // Cookie will expire after 7 days
     });
 
     return response;

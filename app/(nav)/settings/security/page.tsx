@@ -25,24 +25,103 @@ import {
   SettingsUpdateButton,
 } from "@/components/Settings/settings-components";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { cleanPhoneNumber, objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { FormState, updateUserProfile } from "./data";
+import {
+  base64ToBlob,
+  FormState,
+  initialData,
+  InitialDataTypes,
+  transformProfileData,
+  updateDirectorProfile,
+  updateUserProfile,
+} from "./data";
 import { toast } from "sonner";
 import { AuthForm } from "@/components/Auth/auth-components";
 import SettingsSignature from "@/components/Settings/settings-signature";
 import SettingsBank from "@/components/Settings/settings-bank";
+import SettingsSmtp from "@/components/Settings/settings-smtp";
+import SettingsSMS from "@/components/Settings/settings-sms";
+import PhoneNumberInput from "@/components/Form/PhoneNumberInput/phone-number-input";
+import TextArea from "@/components/Form/TextArea/textarea";
+import useFetch from "@/hooks/useFetch";
+import { Button } from "@/components/ui/button";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { NameVerification } from "@/components/Settings/name-verification";
+import { Avatar } from "@/components/ui/avatar";
+import { DeleteIconOrange, PersonIcon } from "@/public/icons/icons";
+import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import Avatars from "@/components/Avatars/avatars";
+import CameraCircle from "@/public/icons/camera-circle.svg";
+import Image from "next/image";
+import DateInput from "@/components/Form/DateInput/date-input";
+import dayjs from "dayjs";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 const Security = () => {
+  const { role } = useRole();
   const name = usePersonalInfoStore((state) => state.full_name);
   const title = usePersonalInfoStore((state) => state.title);
-  const { preview, inputFileRef, handleImageChange } = useImageUploader();
+  const company_wallet = usePersonalInfoStore((state) => state.company_wallet);
+
+  const directorId = usePersonalInfoStore((state) => state.director_id);
+
+  const {
+    preview,
+    inputFileRef,
+    handleImageChange: originalHandleImageChange,
+    clearSelection: clearImageSelection,
+  } = useImageUploader({
+    placeholder: CameraCircle,
+    maxSize: {
+      unit: "MB",
+      value: 2,
+    },
+  });
+  const [pageData, setPageData] = useState<InitialDataTypes>(initialData);
+  const [avatar, setAvatar] = useState("");
+  const [picture, setPicture] = useState(pageData?.profile_picture || "");
+  const [closeVerificationModal, setCloseVerificationModal] = useState(false);
+
+  const [fullName, setFullName] = useState<string>(pageData?.fullname || "");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    originalHandleImageChange(e);
+    setPicture("");
+  };
+
+  const handleAvatarSelection = (avatarUrl: string) => {
+    clearImageSelection(); // Clear any selected image
+    setAvatar(avatarUrl);
+    if (avatarUrl) {
+      setPicture("");
+      setIsOpen(false);
+      setPageData((prev) => ({
+        ...prev,
+        profile_picture: "", // Clear the profile picture
+      }));
+    }
+  };
+
+  useEffect(() => {
+    setFullName(pageData?.fullname || "");
+  }, [pageData?.fullname]);
+
+  const onChangeFullName = (value: string) => {
+    setFullName(value);
+  };
+
+  const yearsOptions = Array.from({ length: 10 }, (_, i) => {
+    const yearValue = i + 1;
+    return { label: `${yearValue} years +`, value: `${yearValue}` };
+  });
 
   const [inputFields, setInputFields] = useState([
     { id: Date.now(), signature: SignatureImage },
   ]);
-  const profile_picture = usePersonalInfoStore(
-    (state) => state.profile_picture
-  );
+
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [formState, setFormState] = useState<FormState>({
@@ -50,27 +129,74 @@ const Security = () => {
     title: title || "",
   });
 
+  const { data, loading, error, refetch } = useFetch("/user/profile");
+  useRefetchOnEvent("fetch-profile", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (data) {
+      setPageData((x) => ({
+        ...x,
+        ...transformProfileData(data),
+      }));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (pageData?.profile_picture) {
+      //setAvatar(pageData?.profile_picture);
+      setPicture(pageData?.profile_picture);
+    }
+  }, [pageData?.profile_picture]);
+
   const setUpdateState = (fieldName: keyof FormState, value: any) => {
     setFormState((prev) => ({ ...prev, [fieldName]: value }));
   };
 
   const changeImage = () => {
     inputFileRef?.current?.click();
+    setAvatar("");
   };
 
-  const handleUpdateProfile = async (data: FormData) => {
-    const payload = {
-      name: data.get("name"),
-      title: data.get("title"),
-      picture: data.get("picture"),
-    };
+  const handleUpdateProfile = async (formData: FormData) => {
+    const payload = new FormData();
+
+    // Append all form fields
+    payload.append("full_name", (formData.get("full_name") as string) || "");
+    payload.append("title", (formData.get("title") as string) || "");
+    payload.append(
+      "professional_title",
+      (formData.get("professional_title") as string) || ""
+    );
+    payload.append(
+      "years_in_business",
+      (formData.get("years_in_business") as string) || ""
+    );
+    payload.append(
+      "about_director",
+      (formData.get("about_director") as string) || ""
+    );
+    payload.append("phone_number", (formData.get("phone") as string) || "");
+    payload.append("alt_email", (formData.get("alt_email") as string) || "");
+
+    if (avatar) {
+      // If avatar is selected, use it
+
+      payload.append("avatar", avatar);
+    } else if (formData.get("picture")) {
+      // If a file was uploaded, use that
+      payload.append("profile_picture", formData.get("picture") as Blob);
+    }
 
     try {
       setReqLoading(true);
-      const res = await updateUserProfile(objectToFormData(payload));
-      if (res && 'status' in res && res.status === 200) {
-        // console.log(res);
+      if (!directorId) {
+        toast.error("No director ID");
+      }
+      const res = await updateDirectorProfile(payload, directorId);
+      if (res && "status" in res && res.status === 200) {
+        //
         toast.success("Profile updated successfully");
+        setAvatar("");
         setNext(true);
         window.dispatchEvent(new Event("fetch-profile"));
       }
@@ -81,11 +207,29 @@ const Security = () => {
     }
   };
 
+  // PERMISSIONS TO RENDER COMPONENTS
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
+  const IS_COMPANY_OWNER = usePersonalInfoStore((state) => state.is_owner);
+  const canSetSignature =
+    usePermission(role, "Set Authorized Signature") || IS_COMPANY_OWNER;
+  const canChangeWalletPin =
+    usePermission(role, "Change Wallet PIN") || IS_COMPANY_OWNER;
+  const canUpdateBankDetails =
+    usePermission(role, "Update Bank Details") || IS_COMPANY_OWNER;
+  const canUpdateSMS =
+    usePermission(role, "Modify SMS Sender Name") || IS_COMPANY_OWNER;
+  const canConfigureSMTP =
+    usePermission(role, "Configure SMTP Settings") || IS_COMPANY_OWNER;
+  // 💀😈👿 BE CAREFUL NOT TO SPOIL THE ABOVE PERMISSIONS 💀😈👿
 
   return (
     <>
       <SettingsSection title="directors profile">
-        <AuthForm onFormSubmit={handleUpdateProfile} skipValidation returnType="form-data">
+        <AuthForm
+          onFormSubmit={handleUpdateProfile}
+          skipValidation
+          returnType="form-data"
+        >
           <div className="custom-flex-col gap-8">
             <div className="custom-flex-col gap-4">
               <SettingsSectionTitle
@@ -93,73 +237,201 @@ const Security = () => {
                 desc="The profile photo size should be 180 x 180 pixels with a maximum file size of 2MB."
               />
               <div className="custom-flex-col gap-[18px]">
-                <ProfileUpload
-                  preview={preview || profile_picture || ""}
-                  onChange={handleImageChange}
-                  inputFileRef={inputFileRef}
-                  onClick={changeImage}
-                />
-                <div className="flex flex-col lg:flex-row gap-5">
+                <p className="text-black dark:text-darkText-1 text-base font-medium">
+                  <span className="text-status-error-primary">*</span> Upload
+                  picture or select an avatar.
+                </p>
+                <div className="flex items-center gap-4">
+                  <label htmlFor="picture" className="cursor-pointer relative">
+                    <Picture
+                      src={picture || preview}
+                      alt="Camera"
+                      size={70}
+                      rounded
+                      className="bg-[rgba(42,42,42,0.63)]"
+                    />
+                    {preview && picture && preview !== CameraCircle && (
+                      <div
+                        role="button"
+                        aria-label="remove image"
+                        className="absolute top-0 right-0"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          clearImageSelection();
+                        }}
+                      >
+                        <DeleteIconOrange size={20} />
+                      </div>
+                    )}
+                    <input
+                      type="file"
+                      id="picture"
+                      name="picture"
+                      accept="image/*"
+                      className="hidden pointer-events-none"
+                      onChange={handleImageChange}
+                      ref={inputFileRef}
+                    />
+                  </label>
+                  <Modal state={{ isOpen, setIsOpen }}>
+                    <ModalTrigger>
+                      <button
+                        type="button"
+                        className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+                        aria-label="choose avatar"
+                      >
+                        {avatar ? (
+                          <>
+                            <input
+                              hidden
+                              value={avatar}
+                              name="avatar"
+                              id="avatar"
+                            />
+                            <Image
+                              src={avatar}
+                              width={70}
+                              height={70}
+                              alt="selected avatar"
+                              className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
+                            />
+                            <div
+                              role="button"
+                              aria-label="remove avatar"
+                              className="absolute top-0 right-0"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setAvatar("");
+                              }}
+                            >
+                              <DeleteIconOrange size={20} />
+                            </div>
+                          </>
+                        ) : (
+                          <PersonIcon />
+                        )}
+                      </button>
+                    </ModalTrigger>
+
+                    <ModalContent className="relative">
+                      <LandlordTenantModalPreset heading="Choose Avatar">
+                        <Avatars onClick={handleAvatarSelection} />
+                      </LandlordTenantModalPreset>
+                    </ModalContent>
+                  </Modal>
+                </div>
+                <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
                   <Select
-                    id="personal_title"
+                    id="title"
                     name="title"
                     options={titles}
                     label="personal title"
-                    inputContainerClassName="w-[277px] bg-neutral-2"
-                    defaultValue={title as string}
+                    inputContainerClassName="bg-neutral-2"
+                    defaultValue={pageData?.personal_title}
                   />
+
+                  <Select
+                    id="professional_title"
+                    name="professional_title"
+                    options={industryOptions}
+                    label="professional title"
+                    inputContainerClassName="bg-neutral-2"
+                    defaultValue={pageData?.professional_title}
+                  />
+                  <div className="relative">
+                    <Input
+                      disabled={pageData?.is_bvn_verified}
+                      inputClassName="capitalize"
+                      id="full_name"
+                      name="full_name"
+                      label="full name"
+                      placeholder="Write Here"
+                      readOnly={pageData?.is_bvn_verified}
+                      value={fullName ? fullName.toLowerCase() : ""}
+                      onChange={onChangeFullName}
+                    />
+                    <Modal
+                      state={{
+                        setIsOpen: setCloseVerificationModal,
+                        isOpen: closeVerificationModal,
+                      }}
+                    >
+                      <ModalTrigger>
+                        <Button
+                          disabled={pageData?.is_bvn_verified}
+                          className="bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white absolute top-9 right-2 py-2 h-9"
+                        >
+                          {pageData?.is_bvn_verified ? "Verified" : "Verify"}
+                        </Button>
+                      </ModalTrigger>
+                      <ModalContent>
+                        <NameVerification
+                          fullName={fullName}
+                          setFullName={setFullName}
+                          setCloseVerification={setCloseVerificationModal}
+                        />
+                      </ModalContent>
+                    </Modal>
+                  </div>
+
                   <Input
-                    id="fullname"
-                    name="name"
-                    label="full name"
-                    placeholder="Write Here"
-                    className="w-[277px]"
-                    defaultValue={name}
+                    id="alt_email"
+                    label="email"
+                    type="email"
+                    placeholder="write here"
+                    inputClassName="rounded-[8px] setup-f bg-white"
+                    defaultValue={pageData?.director_email}
+                  />
+
+                  <DateInput
+                    id="years_in_business"
+                    label=" Years of Experience (Since)"
+                    // onChange={(value) =>
+                    //   onFormChange?.(
+                    //     "years_in_business",
+                    //     value ? value.toString() : ""
+                    //   )
+                    // }
+                    value={
+                      pageData?.director_experience
+                        ? dayjs(pageData.director_experience)
+                        : null
+                    }
+                  />
+
+                  <PhoneNumberInput
+                    id="phone"
+                    label="phone number"
+                    placeholder="800 0000 000"
+                    inputClassName="setup-f"
+                    defaultValue={pageData?.phone}
                   />
                 </div>
+                <TextArea
+                  id="about_director"
+                  label="About Director"
+                  placeholder="Write about the director"
+                  hiddenInputClassName="setup-f"
+                  defaultValue={pageData?.about_director}
+                />
               </div>
             </div>
             <SettingsUpdateButton
               submit
               loading={reqLoading}
               action={handleUpdateProfile as any}
-              next={next}
             />
           </div>
         </AuthForm>
       </SettingsSection>
-      <SettingsSignature />
-      <SettingsWalletSection />
+      {canSetSignature && <SettingsSignature />}
+      {company_wallet?.has_pin && canChangeWalletPin && (
+        <SettingsWalletSection />
+      )}
       <SettingsPasswordSection />
-      <SettingsBank />
-      <SettingsSection title="Customized SMS name">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
-          <div className="flex gap-5">
-            <Input
-              id="desired_name"
-              label="input desired name"
-              className="w-[277px]"
-              maxLength={11}
-            />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
-      <SettingsSection title="SMTP Settings">
-        <div className="custom-flex-col gap-8">
-          <SettingsSectionTitle
-            title="Set up email alias"
-            desc="Choose how you intend to utilize your SMTP: for private and business correspondence, updates, notifications, mobile messages, transactional messages, marketing communications, or other purposes. This feature enables you to utilize your own domain email address to send messages to your users."
-          />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <Input id="email" label="email address" className="w-full" />
-            <Input id="password" label="password" className="w-full" />
-            <Input id="smtp_server" label="SMTP Server" className="w-full" />
-          </div>
-          <SettingsUpdateButton />
-        </div>
-      </SettingsSection>
+      {company_wallet?.has_pin && canUpdateBankDetails && <SettingsBank />}
+      {canUpdateSMS && <SettingsSMS />}
+      {canConfigureSMTP && <SettingsSmtp />}
     </>
   );
 };

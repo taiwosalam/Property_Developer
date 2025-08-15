@@ -11,6 +11,9 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   heading,
   children,
   lightSeparator,
+  bodyStyle,
+  noPaddingTop = false,
+  customClose,
 }) => {
   return (
     <div
@@ -18,7 +21,7 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
       className="w-[85%] max-w-[900px] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-auto custom-round-scrollbar"
     >
       {/* Header */}
-      <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[20px] bg-white dark:bg-darkText-primary">
+      <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[20px] bg-white dark:bg-darkText-primary rounded-t-[20px]">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             {back && (
@@ -31,15 +34,28 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
               {heading}
             </p>
           </div>
-          <ModalTrigger close className="p-2" aria-label="close">
-            <NavCloseIcon />
-          </ModalTrigger>
+          {!customClose ? (
+            <ModalTrigger close className="p-2" aria-label="close">
+              <NavCloseIcon />
+            </ModalTrigger>
+          ) : (
+            <button onClick={customClose}>
+              <NavCloseIcon />
+            </button>
+          )}
         </div>
         <SectionSeparator className={!lightSeparator ? "!bg-[#B8B8B8]" : ""} />
       </div>
 
       {/* body */}
-      <div className="px-[30px] pt-10 pb-[24px] md:pb-[32px]">{children}</div>
+      <div
+        className={`px-[30px] ${
+          noPaddingTop ? "pt-0" : "pt-10"
+        } pb-[24px] md:pb-[32px]`}
+        style={bodyStyle}
+      >
+        {children}
+      </div>
     </div>
   );
 };

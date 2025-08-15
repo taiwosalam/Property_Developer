@@ -42,9 +42,15 @@ body {
   min-height: 100vh;
 }
 
+.light-shadow {
+  /* box-shadow: 0 0 10px 0 #0000000d; */
+  border: 3px dashed var(--primary-color);
+}
+
 /* * {
   outline: 1px solid red; //FOR CSS DEBUGGING
 } */
+
 
 .autocomplete-suggestions {
   position: absolute;
@@ -70,16 +76,41 @@ body {
 
 .custom-list {
   margin-top: 5px;
-  list-style: none; /* Removes default bullets */
+  list-style: none;
+  /* Removes default bullets */
   padding-left: 0;
 }
 
 .custom-list li::before {
-  content: "•"; /* Unicode for a bullet */
-  font-size: 1.5rem; /* Custom size */
-  margin-right: 8px; /* Spacing between dot and text */
+  content: "•";
+  /* Unicode for a bullet */
+  font-size: 1.5rem;
+  /* Custom size */
+  margin-right: 8px;
+  /* Spacing between dot and text */
 }
 
+/* HIDE PAYSTACK CLOSE BUTTON */
+button[data-v-81bf4389][data-v-87825872][aria-label="Close"] {
+  display: none !important;
+}
+
+
+button .button .button--standard{
+  display: none !important;
+}
+
+
+.stroke-texts {
+  -webkit-text-stroke: 1px var(--primary-color);
+  color: white;
+  text-shadow:
+      3px 3px 0 var(--primary-color),
+    -1px -1px 0 var(--primary-color),  
+     1px -1px 0 var(--primary-color),
+     -1px 1px 0 var(--primary-color),
+      1px 1px 0 var(--primary-color);
+}
 
 
 #portal {
@@ -89,7 +120,7 @@ body {
   pointer-events: none;
 }
 
-#portal > * {
+#portal>* {
   position: absolute;
   pointer-events: all;
 }
@@ -101,12 +132,12 @@ h1 {
 }
 
 .lato,
-.lato > * {
+.lato>* {
   font-family: "Lato", sans-serif !important;
 }
 
 .dm-sans,
-.dm-sans > * {
+.dm-sans>* {
   font-family: "DM Sans", sans-serif !important;
 }
 
@@ -164,7 +195,7 @@ h1 {
   flex-direction: column;
 }
 
-.custom-flex-col > * {
+.custom-flex-col>* {
   width: 100%;
 }
 
@@ -216,12 +247,43 @@ h1 {
   background-color: #c1c1c1;
 }
 
+/* ----------------------------------------------------------- */
+/* overwriting voicevisualizer styles */
+/* ------------------------------------------------------------ */
+.voice-visualizer__audio-info-container {
+  height: 0px !important;
+}
+
+.voice-visualizer button{
+  height: 2em !important;
+  width: 2em !important;
+}
+
+.voice-visualizer__btn{
+  min-height: 2em !important;
+  min-width: 4em !important;
+  border-radius: .6em !important;
+  /* display: flex !important; */
+  text-align: center !important;
+  padding: 0 !important;
+  /* align-items: center !important;
+  justify-content: center !important; */
+}
+
+.voice-visualizer__buttons-container{
+  /* background-color: #000000; */
+  margin-top: 1em !important;
+  display: flex !important;
+  gap: 0.5em !important;
+}
+
+
 /* -------------------------------------------------------------- */
 
 /* Overwriting default behaviour */
 /* -------------------------------------------------------------- */
 
-.sections > *:last-child .separator {
+.sections>*:last-child .separator {
   display: none;
 }
 
@@ -244,6 +306,21 @@ input[type="number"]:not(.keep-spinner)::-webkit-outer-spin-button,
 input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+/* Ensure the input behaves like a number input but keeps spinners visible */
+.typography.appearance-textfield {
+  -webkit-appearance: textfield; /* For WebKit browsers (Chrome, Safari) */
+  -moz-appearance: textfield; /* For Firefox */
+  appearance: textfield; /* Standard */
+}
+
+/* Force spinners to be visible at all times */
+.typography::-webkit-inner-spin-button,
+typography::-webkit-outer-spin-button {
+  -webkit-appearance: inner-spin-button; /* Show spinners in WebKit */
+  opacity: 1; /* Ensure spinners are always visible */
+  margin-left: 8px; /* Space between value and spinners */
 }
 
 button:disabled:not(.retain-opacity) {
@@ -357,6 +434,7 @@ button:disabled:not(.retain-opacity) {
 .dash-table tbody tr:nth-child(2n + 1) {
   @apply bg-brand-1 text-[#f1f1fd] dark:bg-[#020617];
 }
+
 .dash-table tbody tr:nth-child(2n + 1):hover {
   background-color: #ffffff21;
 }
@@ -406,7 +484,7 @@ button:disabled:not(.retain-opacity) {
 }
 
 /* for the blue buttons */
-.page-header-container > :last-child {
+.page-header-container> :last-child {
   @apply flex-shrink-0;
 }
 
@@ -421,6 +499,16 @@ button:disabled:not(.retain-opacity) {
 .undo-text-transform {
   text-transform: unset !important;
 }
+
+
+.hide-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera */
+}
+
 
 /* ------------------------ */
 .loader {
@@ -471,10 +559,73 @@ button:disabled:not(.retain-opacity) {
   0% {
     opacity: 0.6;
   }
+
   50% {
     opacity: 1;
   }
+
   100% {
     opacity: 0.6;
   }
+}
+
+@keyframes blinkColor {
+  0%, 100% {
+    stroke: var(--primary-color); 
+  }
+  50% {
+    stroke: #ef4444;
+  }
+}
+
+.blink-color {
+  stroke: #1d4ed8; 
+  animation: blinkColor 1.5s infinite ease-in-out;
+}
+
+@media print {
+  * {
+    box-shadow: none !important;
+  }
+}
+
+
+.agreement-preview-container {
+  @apply rounded-[20px] bg-white dark:bg-white p-6 max-h-[80vh] overflow-y-auto md:max-w-[80%] custom-round-scrollbar;
+}
+
+.agreement-preview-header {
+  @apply flex justify-between items-center mb-4;
+}
+
+.agreement-preview-title {
+  @apply text-xl font-bold text-gray-800 dark:text-gray-200;
+}
+
+.agreement-preview-close-button {
+  @apply py-2 px-4 font-semibold text-sm;
+}
+
+.agreement-preview-content {
+  @apply space-y-4;
+}
+
+.agreement-preview-first-page {
+  @apply border-4 border-black p-8;
+}
+
+.agreement-preview-section {
+  @apply flex flex-col gap-4;
+}
+
+.agreement-preview-footer {
+  @apply mt-4 flex justify-end;
+}
+
+.agreement-preview-download-button {
+  @apply py-2 px-8 font-bold text-sm lg:text-base;
+}
+
+.fixedText-color {
+  @apply text-[#000000] dark:text-black;
 }

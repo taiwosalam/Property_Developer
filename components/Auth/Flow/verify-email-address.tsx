@@ -7,6 +7,7 @@ import {
   verifyEmail,
   verifyOtpAndResetPassword,
   requestPasswordReset,
+  getDashboardPage,
 } from "@/app/(onboarding)/auth/data";
 import Button from "@/components/Form/Button/button";
 import { objectLength } from "@/utils/object-length";
@@ -28,6 +29,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
   const [code, setCode] = useState("");
   const [countdown, setCountdown] = useState(40);
   const [canResend, setCanResend] = useState(false);
+  const [resending, setResending] = useState(false);
 
   const handlePinChange = (pin: string) => {
     setCode(pin);
@@ -41,39 +43,56 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
     if (!objectLength(validation.invalidKeys)) {
       setIsLoading(true);
 
-      // Choose verification function based on type
-      const status =
-        type === "sign up"
-          ? await verifyEmail(code)
-          : await verifyOtpAndResetPassword(code);
+      try {
+        const handleSaveCode = async (code: string) => {
+          await useAuthStore.getState().setAuthState("code", code);
+          return true;
+        };
 
-      if (status) {
-        if (type === "sign up") {
-          if (role !== "director") {
-            router.push("/dashboard"); //FIX ROUTE TO DASHBOARD ACCORDING TO ROLE LATER
-          } else {
-            router.push("/setup");
+        // Choose verification function based on type
+        const status =
+          type === "sign up"
+            ? await verifyEmail(code)
+            : await handleSaveCode(code);
+
+        if (status) {
+          if (type === "sign up") {
+            // console.log("role here for redirect", role);
+            if (role === "user") {
+              router.push("/setup");
+            } else {
+              const dashboardPage = getDashboardPage(role);
+              router.push(dashboardPage);
+            }
+          } else if (type === "forgot password") {
+            changeStep("next");
           }
-        } else if (type === "forgot password") {
-          changeStep("next");
         }
+      } catch (error) {
+        console.error("Error during code submission:", error);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     } else {
       setErrorMsgs(validation.invalidKeys);
     }
   };
 
   const handleResendCode = async () => {
-    if (canResend) {
+    if (canResend && !resending) {
+      setResending(true);
+
       const status =
         type === "sign up"
           ? await resendOtp()
           : await requestPasswordReset({ email });
+
       if (status) {
         setCountdown(40);
         setCanResend(false);
       }
+
+      setResending(false);
     }
   };
 
@@ -131,14 +150,15 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
           type="button"
           onClick={handleResendCode}
           className="flex gap-1 custom-primary-color text-base font-medium"
-          disabled={!canResend}
+          disabled={!canResend || resending}
         >
           <span className="custom-primary-color">
             <ReloadIcon />
           </span>
-          <p>Resend code</p>
-          {!canResend && <p>({countdown}s)</p>}
+          <p>{resending ? "Sending code..." : "Resend code"}</p>
+          {!canResend && !resending && <p>({countdown}s)</p>}
         </button>
+
         <button
           type="button"
           onClick={() => changeStep("prev")}

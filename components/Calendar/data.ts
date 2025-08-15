@@ -34,9 +34,12 @@ export const calendar_event_tags = {
   "new rent": "#FFBB53",
   inspections: "#01BA4C",
   complaints: "#2DD4BF",
-  "due rent": "#8C62FF",
+  "due rent": "#E9212E",
   maintenance: "#0033C4",
-  "multiple event": "#E9212E",
+  examines: "#621406",
+  "multiple event": "#8C62FF",
+  applications: "#e20be6",
+  reminders: "#04b8f7",
 } as const;
 
 export class Calendar implements CalendarClassData {
@@ -111,17 +114,27 @@ export class Calendar implements CalendarClassData {
   getDayDetails(date: Date): CalendarDayProps {
     const events = this.events.filter((event) => isSameDay(event.date, date));
 
+    if (events.length > 1) {
+      // If there are multiple events, preserve their original types
+      events.forEach((event) => {
+        event.originalType = event.type;
+        event.type = "multiple event";
+      });
+    }
+
     return {
       date,
-      events: events,
+      events,
       isToday: isToday(date),
       isCurrentMonth: isSameMonth(date, this.targetDate),
-
-      // Check if the date has any events
       eventCount: events.length,
       hasEvent: events.length > 0,
       color:
-        events.length > 0 ? calendar_event_tags[events[0].type] : undefined,
+        events.length > 0
+          ? calendar_event_tags[
+              events.length > 1 ? "multiple event" : events[0].type
+            ]
+          : undefined,
     };
   }
 }

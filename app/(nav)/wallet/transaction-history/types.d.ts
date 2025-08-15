@@ -2,9 +2,17 @@ import type { Transaction } from "@/store/wallet-store";
 
 export interface AllTransactionsResponse {
   data: {
-    current_page: number;
-    last_page: number;
-    data: Transaction[];
+    stats: {
+      total_funds: string;
+      total_debit: string;
+      total_credit: string;
+      total_withdrawal: string;
+    };
+    transactions: Transaction[];
+    pagination: {
+      current_page: number;
+      last_page: number;
+    };
   };
 }
 
@@ -17,7 +25,7 @@ export interface TransactionPageData {
 
 export interface TransactionQueryParams {
   page?: number;
-  type?: string; // "credit" | "debit";
+  transaction_type?: string; // "credit" | "debit";
   status?: string; // "pending" | "failed" | "success";
   from?: string;
   to?: string;

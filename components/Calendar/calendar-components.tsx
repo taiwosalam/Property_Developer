@@ -1,4 +1,5 @@
 // Types
+import { useCalendar } from "./calendar-context";
 import { calendar_event_tags, calendar_week_days } from "./data";
 
 // Imports
@@ -23,7 +24,7 @@ export const CalendarEventTagItem: React.FC<CalendarEventTagItemProps> = ({
       className={clsx("w-[5px] h-[5px]", { "rounded-full": rounded })}
       style={{ backgroundColor: color }}
     />
-    <p className="text-text-label text-sm font-medium capitalize whitespace-nowrap">
+    <p className="text-text-label dark:text-darkText-2 text-sm font-medium capitalize whitespace-nowrap">
       {title}
     </p>
   </div>
@@ -46,7 +47,8 @@ export const CalendarDay: React.FC<CalendarDayProps> = ({
       "relative w-8 h-8 m-auto rounded-sm flex items-center justify-center",
       {
         "opacity-50": !isCurrentMonth,
-        "bg-white": isToday && isCurrentMonth,
+        "bg-white dark:bg-darkText-primary border border-darkText-2":
+          isToday && isCurrentMonth,
         "outline outline-2 custom-primary-outline-color": isActive,
       }
     )}
@@ -110,14 +112,34 @@ export const CalendarActivity: React.FC<CalendarEventProps> = ({
   desc,
   type,
   title,
+  originalType,
 }) => (
-  <div className="flex gap-4">
+  <div className="flex gap-4 overflow-hidden">
     <div
       className="w-1"
-      style={{ backgroundColor: calendar_event_tags[type] }}
+      style={{
+        backgroundColor:
+          calendar_event_tags[
+            originalType as keyof typeof calendar_event_tags
+          ] ||
+          calendar_event_tags[type as keyof typeof calendar_event_tags] ||
+          "#000000", // fallback color
+      }}
     />
-    <p className="p-1 text-text-primary text-sm font-normal">
-      <span className="capitalize font-bold">{type}</span> || {desc}
+    <p className="p-1 text-text-primary text-sm font-normal break-words whitespace-normal">
+      <span className="capitalize font-bold dark:text-white pr-1">
+        {(originalType || type) === "reminders"
+          ? "reminder"
+          : originalType || type}
+      </span>
+      {type !== "reminders" ? (
+        <span className="dark:text-darkText-2"> || {desc}</span>
+      ) : (
+        <span
+          className="dark:text-darkText-2 inline-flex gap-1 break-words whitespace-normal"
+          dangerouslySetInnerHTML={{ __html: ` || ${desc}` }}
+        />
+      )}
     </p>
   </div>
 );
