@@ -37,7 +37,7 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useFetch from "@/hooks/useFetch";
 import { useGlobalStore } from "@/store/general-store";
 import { useRole } from "@/hooks/roleContext";
-
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 
 const VacantUnitCard = ({
@@ -50,12 +50,12 @@ const VacantUnitCard = ({
   availableSponsors?: number;
   page?: "manager" | "account";
   status:
-    | "published"
-    | "unpublished"
-    | "under moderation"
-    | "rejected"
-    | "approved"
-    | "pending";
+  | "published"
+  | "unpublished"
+  | "under moderation"
+  | "rejected"
+  | "approved"
+  | "pending";
 }) => {
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
   const currency = unit_data.currency || "naira";
@@ -64,25 +64,29 @@ const VacantUnitCard = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const is_sponsored = unit_data.is_sponsored;
   const { role } = useRole();
+  const { isMobile, isTablet, isLaptop, isDesktop } = useWindowWidth();
+
+  const ICON_SIZE = isMobile ? 20 : isTablet ? 22 : 24;
+  const ICON_TEXT = isMobile ? "hidden" : "visible";
 
   const CAN_LINK_TENANT = role === "manager" || role === "director";
   const CAN_SPONSOR_UNIT = role === "manager" || role === "director";
 
-console.log("role", role)
+  console.log("role", role)
   // Function to determine route prefix based on page
   const getRoutePrefix = function (): string {
     switch (role) {
       case "manager":
         return "/manager";
       case "account":
-        return "/accountant"; 
+        return "/accountant";
       case "director":
         return "";
       default:
         return "";
     }
   };
-  
+
   const referenceObject = {
     property_title: "",
     unit_name: "",
@@ -100,10 +104,10 @@ console.log("role", role)
     status === "pending"
       ? "under moderation"
       : status === "approved" && published
-      ? "published"
-      : status === "approved" && !published
-      ? "unpublished"
-      : status;
+        ? "published"
+        : status === "approved" && !published
+          ? "unpublished"
+          : status;
 
   const [checked, setChecked] = useState(unit_status === "published");
   useEffect(() => {
@@ -139,15 +143,13 @@ console.log("role", role)
     property_title: unit_data.property_title,
     unit_name: unit_data.unit_name,
     unit_details: transformUnitDetails(unit_data),
-    rent: `${
-      currencySymbols[currency as keyof typeof currencySymbols]
-    }${formatNumber(parseFloat(unit_data.rent))}`,
+    rent: `${currencySymbols[currency as keyof typeof currencySymbols]
+      }${formatNumber(parseFloat(unit_data.rent))}`,
     ...(unit_data.caution_fee
       ? {
-          caution_deposit: `${
-            currencySymbols[currency as keyof typeof currencySymbols]
+        caution_deposit: `${currencySymbols[currency as keyof typeof currencySymbols]
           }${formatNumber(parseFloat(unit_data.caution_fee))}`,
-        }
+      }
       : {}),
     total_package: unit_data.total_package,
     address: unit_data.address,
@@ -219,9 +221,8 @@ console.log("role", role)
         <SectionSeparator />
       </div>
       <div
-        className={`flex flex-wrap items-center text-brand-9 text-base font-medium lato ${
-          status === "rejected" ? "justify-between" : "justify-end"
-        }`}
+        className={`flex flex-wrap items-center text-brand-9 text-base font-medium lato ${status === "rejected" ? "justify-between" : "justify-end"
+          }`}
       >
         {status === "rejected" && (
           <div className="flex items-center">
@@ -231,11 +232,11 @@ console.log("role", role)
           </div>
         )}
 
-        <div className="flex gap-10 justify-end">
+        <div className="flex items-center gap-10 justify-end">
           {status === "approved" && (
-            <div className="flex  gap-2 capitalize">
+            <div className="flex items-center gap-2 capitalize">
               <Switch checked={checked} onClick={() => setIsOpen(true)} />
-              <p> {published ? "Unpublish" : "Publish"} </p>
+              <p className="hidden lg:block"> {published ? "Unpublish" : "Publish"} </p>
             </div>
           )}
 
@@ -274,44 +275,73 @@ console.log("role", role)
           )}
           <Link
             href={`${getRoutePrefix()}/management/rent-unit/${unit_data.unitId}`}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 relative group"
           >
-            <PreviewEyeIcon />
-            <p>Preview</p>
+            <div className="relative">
+              <PreviewEyeIcon size={ICON_SIZE} />
+              {/* Mobile hover tooltip */}
+              {isMobile && (
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  Preview
+                </div>
+              )}
+            </div>
+            <p className="hidden lg:block">Preview</p>
           </Link>
           {!["under moderation", "rejected", "unpublished"].includes(
             unit_status
           ) && (
-            <Link
-              href={`${getRoutePrefix()}/listing/statistics/${unit_data.unitId}`}
-              className="flex gap-2"
-            >
-              <StatsChartIcon />
-              <p>Stats</p>
-            </Link>
-          )}
+              <Link
+                href={`${getRoutePrefix()}/listing/statistics/${unit_data.unitId}`}
+                className="flex items-center gap-2 relative group"
+              >
+                <div className="relative">
+                  <StatsChartIcon size={ICON_SIZE} />
+                  {/* Mobile hover tooltip */}
+                  {isMobile && (
+                    <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                      Stats
+                    </div>
+                  )}
+                </div>
+                <p className="hidden lg:block">Stats</p>
+              </Link>
+            )}
           <Link
-            href={`${getRoutePrefix()}/management/properties/${
-              unit_data.property_id
-            }/edit-property`}
-            className="flex gap-2"
+            href={`${getRoutePrefix()}/management/properties/${unit_data.property_id}/edit-property`}
+            className="flex items-center gap-2 relative group"
           >
-            <EditPencilIcon />
-            <p>Edit</p>
+            <div className="relative">
+              <EditPencilIcon size={ICON_SIZE} />
+              {/* Mobile hover tooltip */}
+              {isMobile && (
+                <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                  Edit
+                </div>
+              )}
+            </div>
+            <p className="hidden lg:block">Edit</p>
           </Link>
           {CAN_LINK_TENANT && (
             <Link
-              href={`${getRoutePrefix()}/management/rent-unit/${
-                unit_data.unitId
-              }/start-rent?type=${unit_data.propertyType}&id=${
-                unit_data.unitId
-              }`}
-              className="flex gap-2 font-normal"
+              href={`${getRoutePrefix()}/management/rent-unit/${unit_data.unitId
+                }/start-rent?type=${unit_data.propertyType}&id=${unit_data.unitId
+                }`}
+              className="flex items-center gap-2 font-normal relative group"
             >
-              <StartRentIcon size={24} />
-              <p>Link Tenant</p>
+              <div className="relative">
+                <StartRentIcon size={ICON_SIZE} />
+                {/* Mobile hover tooltip */}
+                {isMobile && (
+                  <div className="absolute -top-12 left-1/2 transform -translate-x-1/2 bg-gray-600 text-white text-xs px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-10">
+                    Link Tenant
+                  </div>
+                )}
+              </div>
+              <p className="hidden lg:block">Link Tenant</p>
             </Link>
           )}
+
         </div>
       </div>
     </div>

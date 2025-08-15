@@ -121,7 +121,8 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
         ></div>
       </div>
       <SectionSeparator />
-      <div className="pb-6 overflow-x-auto custom-round-scrollbar">
+      {/* <div className="pb-6 overflow-x-auto custom-round-scrollbar"> */}
+      <div className="pb-6 overflow-x-auto scrollbar-hide-mobile">
         <div className="min-w-[800px] custom-flex-col gap-4">
           <div className="flex items-center gap-6 justify-between">
             <div className="flex flex-1">
@@ -191,23 +192,23 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </p>
                 </PropertyListingParagraph>
               ) : // ) : status === "awaiting" || status === "unpublished" ? (
-              //   <PropertyListingParagraph>
-              //     Created By : Ajadi David -- Moniya Branch
-              //   </PropertyListingParagraph>
-              // ) : status === "moderation" ? (
-              //   <PropertyListingRed>
-              //     Please review the property settings and replace the picture,
-              //     as it appears to have been mistakenly used for another
-              //     property.
-              //   </PropertyListingRed>
-              status === "request" ? (
-                <PropertyListingTitleDesc
-                  title={
-                    data?.company_name || "Taiwo Salam & Co. Properties Ltd"
-                  }
-                  desc="Requests permission to add and manage this property in their portfolio."
-                />
-              ) : null}
+                //   <PropertyListingParagraph>
+                //     Created By : Ajadi David -- Moniya Branch
+                //   </PropertyListingParagraph>
+                // ) : status === "moderation" ? (
+                //   <PropertyListingRed>
+                //     Please review the property settings and replace the picture,
+                //     as it appears to have been mistakenly used for another
+                //     property.
+                //   </PropertyListingRed>
+                status === "request" ? (
+                  <PropertyListingTitleDesc
+                    title={
+                      data?.company_name || "Taiwo Salam & Co. Properties Ltd"
+                    }
+                    desc="Requests permission to add and manage this property in their portfolio."
+                  />
+                ) : null}
             </div>
             <div className="flex gap-3 items-center">
               {status === "draft" ? (
@@ -227,35 +228,35 @@ const PropertyListingCard: React.FC<PropertyListingCardProps> = ({
                   </Button>
                 </>
               ) : // ) : status === "unpublished" ? (
-              //   <>
-              //     <Button variant="border" {...button_props}>
-              //       manage
-              //     </Button>
-              //     <Button {...button_props}>publish</Button>
-              //   </>
-              // ) : status === "moderation" ? (
-              //   <Button variant="border" {...button_props}>
-              //     manage
-              //   </Button>
-              status === "request" ? (
-                <>
-                  <Button {...button_props} onClick={hanldeOpen}>
-                    action
-                  </Button>
-                  <Modal state={{ isOpen, setIsOpen }}>
-                    <ModalContent>
-                      <ListingFlow inviteId={data?.inviteId?.[0]}/>
-                    </ModalContent>
-                  </Modal>
-                  <Button
-                    variant="border"
-                    {...button_props}
-                    onClick={() => router.push(getPreviewRoute())}
-                  >
-                    preview
-                  </Button>
-                </>
-              ) : null}
+                //   <>
+                //     <Button variant="border" {...button_props}>
+                //       manage
+                //     </Button>
+                //     <Button {...button_props}>publish</Button>
+                //   </>
+                // ) : status === "moderation" ? (
+                //   <Button variant="border" {...button_props}>
+                //     manage
+                //   </Button>
+                status === "request" ? (
+                  <>
+                    <Button {...button_props} onClick={hanldeOpen}>
+                      action
+                    </Button>
+                    <Modal state={{ isOpen, setIsOpen }}>
+                      <ModalContent>
+                        <ListingFlow inviteId={data?.inviteId?.[0]} />
+                      </ModalContent>
+                    </Modal>
+                    <Button
+                      variant="border"
+                      {...button_props}
+                      onClick={() => router.push(getPreviewRoute())}
+                    >
+                      preview
+                    </Button>
+                  </>
+                ) : null}
             </div>
           </div>
         </div>

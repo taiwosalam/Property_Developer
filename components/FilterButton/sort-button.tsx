@@ -41,7 +41,7 @@ const SortButton: React.FC<{
       onClick={toggleSort}
     >
       {getIcon()}
-      <span className="text-[#344054] dark:text-darkText-1 text-base font-medium">
+      <span className="text-[#344054] dark:text-darkText-1 text-base font-medium hidden sm:block">
         Sort
       </span>
     </button>

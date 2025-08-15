@@ -212,12 +212,12 @@ const UnitSponsorPopover = ({
       </div>
       {/* Visible sponsor button */}
       <button
-        className="flex gap-2 text-start"
+        className="flex items-center gap-2 text-start"
         onClick={() => setShowPopover((prev) => !prev)}
       >
         <SponsorIcon />
         {
-          sponsored_count > 0 ? <p>Sponsored</p> : <p>Sponsor</p>
+          sponsored_count > 0 ? <p className="hidden sm:block">Sponsored</p> : <p className="hidden sm:block">Sponsor</p>
         }
        {sponsored_count > 1 && <span>x{sponsored_count}</span>}
       </button>
