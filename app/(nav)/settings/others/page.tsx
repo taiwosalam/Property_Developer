@@ -23,6 +23,9 @@ import {
 } from "@/components/Settings/settings-components";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import Switch from "@/components/Form/Switch/switch";
+import { SectionSeparator } from "@/components/Section/section-components";
+
 import { industryOptions } from "@/data";
 
 import {
@@ -199,6 +202,321 @@ interface NotificationSettings {
   [key: string]: boolean;
 }
 
+// Organized notification options by category
+const notificationCategories = [
+  {
+    title: "Management",
+    desc: "Stay updated on company-wide activities, approvals, and property status changes.",
+    options: [
+      {
+        name: "vehicle_activity_summary",
+        text: "Vehicle activity summary (daily/weekly/monthly)",
+      },
+      {
+        name: "management_summary",
+        text: "Management summary (weekly/monthly)",
+      },
+      {
+        name: "property_invite_approved_rejected",
+        text: "Property invite approved/rejected",
+      },
+      {
+        name: "drafted_property_reminder",
+        text: "Drafted property reminder",
+      },
+      {
+        name: "tenant_branch_staff_company_limit_alerts",
+        text: "Tenant/branch/staff/company limit alerts",
+      },
+      {
+        name: "new_property_awaiting_approval",
+        text: "New property awaiting approval",
+      },
+      {
+        name: "property_vacant_listed",
+        text: "Property vacant & listed",
+      },
+      {
+        name: "new_landlord_tenant_profile_awaiting_approval",
+        text: "New landlord/tenant profile awaiting approval",
+      },
+    ],
+  },
+  {
+    title: "Rent & Payments",
+    desc: "Get alerts for rent creation, due dates, expiries, payments, and property/unit changes.",
+    options: [
+      {
+        name: "new_rent_created",
+        text: "New rent created",
+      },
+      {
+        name: "rent_due_reminder",
+        text: "Rent due reminder",
+      },
+      {
+        name: "rent_expired",
+        text: "Rent expired",
+      },
+      {
+        name: "late_payment_warning",
+        text: "Late payment warning",
+      },
+      {
+        name: "part_payment_made",
+        text: "Part payment made",
+      },
+      {
+        name: "upfront_payment_received",
+        text: "Upfront payment received",
+      },
+      {
+        name: "renewal_processed",
+        text: "Renewal processed",
+      },
+      {
+        name: "property_change_update",
+        text: "Property change update",
+      },
+      {
+        name: "unit_change_update",
+        text: "Unit change update",
+      },
+    ],
+  },
+  {
+    title: "Tasks & Workflow",
+    desc: "Track all applications, complaints, tasks, inspections, and maintenance progress.",
+    options: [
+      {
+        name: "new_application_pending",
+        text: "New application pending",
+      },
+      {
+        name: "complaint_updates",
+        text: "Complaint updates (new/approved/rejected/comments)",
+      },
+      {
+        name: "task_progress_update",
+        text: "Task progress update",
+      },
+      {
+        name: "new_note_added",
+        text: "New note added",
+      },
+      {
+        name: "inspection_created_completed",
+        text: "Inspection created/completed",
+      },
+      {
+        name: "examination_created_report_ready",
+        text: "Examination created/report ready",
+      },
+      {
+        name: "maintenance_reminder",
+        text: "Maintenance reminder",
+      },
+    ],
+  },
+  {
+    title: "Calendar & Reminders",
+    desc: "Never miss important deadlines, events, or pending activities.",
+    options: [
+      {
+        name: "daily_weekly_monthly_events",
+        text: "Daily/weekly/monthly events",
+      },
+      {
+        name: "rent_expiry_reminder",
+        text: "Rent expiry reminder",
+      },
+      {
+        name: "pending_applications",
+        text: "Pending applications",
+      },
+      {
+        name: "pending_inspections",
+        text: "Pending inspections",
+      },
+      {
+        name: "upcoming_maintenance",
+        text: "Upcoming maintenance",
+      },
+      {
+        name: "upcoming_examinations",
+        text: "Upcoming examinations",
+      },
+      {
+        name: "pending_call_requests",
+        text: "Pending call requests",
+      },
+    ],
+  },
+  {
+    title: "Announcements & Requests",
+    desc: "Receive updates on new announcements, call requests, and property/deposit requests.",
+    options: [
+      {
+        name: "new_announcements",
+        text: "New announcements",
+      },
+      {
+        name: "new_call_request",
+        text: "New call request",
+      },
+      {
+        name: "property_request_updates",
+        text: "Property request (new/approved/rejected/reminder)",
+      },
+      {
+        name: "deposit_request_updates",
+        text: "Deposit request updates",
+      },
+    ],
+  },
+  {
+    title: "Listings",
+    desc: "Stay informed about property listings, sponsorships, bookmarks, and drafts.",
+    options: [
+      {
+        name: "listing_approved_rejected",
+        text: "Listing approved/rejected",
+      },
+      {
+        name: "sponsored_listing_update",
+        text: "Sponsored listing update",
+      },
+      {
+        name: "bookmarked_property",
+        text: "Bookmarked property",
+      },
+      {
+        name: "property_request_sent_received",
+        text: "Property request sent/received",
+      },
+      {
+        name: "property_draft_reminder",
+        text: "Property draft reminder",
+      },
+    ],
+  },
+  {
+    title: "Accounting",
+    desc: "Monitor all invoice and disbursement activities to stay on top of finances.",
+    options: [
+      {
+        name: "invoice_created",
+        text: "Invoice created",
+      },
+      {
+        name: "invoice_paid",
+        text: "Invoice paid",
+      },
+      {
+        name: "invoice_due_reminder",
+        text: "Invoice due reminder",
+      },
+      {
+        name: "disbursement_processed",
+        text: "Disbursement processed",
+      },
+    ],
+  },
+  {
+    title: "Community",
+    desc: "Engage with agent community updates, forum posts, contributions, and feedback.",
+    options: [
+      {
+        name: "new_group_message",
+        text: "New group message",
+      },
+      {
+        name: "new_forum_post",
+        text: "New forum post",
+      },
+      {
+        name: "new_agent_request",
+        text: "New agent request",
+      },
+      {
+        name: "contribution_approved_rejected",
+        text: "Contribution approved/rejected",
+      },
+      {
+        name: "new_comment",
+        text: "New comment",
+      },
+      {
+        name: "new_like_dislike",
+        text: "New like/dislike",
+      },
+    ],
+  },
+  {
+    title: "Settings & Subscriptions",
+    desc: "Track subscription updates, system settings, and document verification results.",
+    options: [
+      {
+        name: "subscription_updates",
+        text: "Subscription updates (activation/upgrade/renewal/expiry)",
+      },
+      {
+        name: "document_verification_result",
+        text: "Document verification result",
+      },
+      {
+        name: "system_settings_addons_updated",
+        text: "System settings/add-ons updated",
+      },
+    ],
+  },
+  {
+    title: "System & Communication",
+    desc: "Get notified about call requests and delivery failures for SMS or email.",
+    options: [
+      {
+        name: "call_request_submitted",
+        text: "Call request submitted",
+      },
+      {
+        name: "sms_delivery_failed",
+        text: "SMS delivery failed",
+      },
+      {
+        name: "email_delivery_failed",
+        text: "Email delivery failed",
+      },
+    ],
+  },
+  {
+    title: "Units & Campaigns",
+    desc: "Stay alerted on unit balances, sponsorships, features, and campaign statuses.",
+    options: [
+      {
+        name: "units_low_exhausted",
+        text: "Units low/exhausted",
+      },
+      {
+        name: "listing_sponsorship_updates",
+        text: "Listing sponsorship (new/expired reminder/expired)",
+      },
+      {
+        name: "sms_units_low_exhausted",
+        text: "SMS units low/exhausted",
+      },
+      {
+        name: "feature_subscription_updates",
+        text: "Feature subscription (new/expired reminder/expired)",
+      },
+      {
+        name: "campaign_subscription_updates",
+        text: "Campaign subscription (new/expired reminder/expired)",
+      },
+    ],
+  },
+];
+
+// Legacy notification options for backward compatibility
 const notificationOptions = [
   {
     name: "profile_changes",
@@ -278,6 +596,7 @@ const Others = () => {
 
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
+      // Legacy settings
       profile_changes: true,
       new_messages: true,
       task_updates: true,
@@ -285,6 +604,78 @@ const Others = () => {
       property_approval: true,
       property_vacant: true,
       document_creation: true,
+      // New Management settings
+      vehicle_activity_summary: true,
+      management_summary: true,
+      property_invite_approved_rejected: true,
+      drafted_property_reminder: true,
+      tenant_branch_staff_company_limit_alerts: true,
+      new_property_awaiting_approval: true,
+      property_vacant_listed: true,
+      new_landlord_tenant_profile_awaiting_approval: true,
+      // New Rent & Payments settings
+      new_rent_created: true,
+      rent_due_reminder: true,
+      rent_expired: true,
+      late_payment_warning: true,
+      part_payment_made: true,
+      upfront_payment_received: true,
+      renewal_processed: true,
+      property_change_update: true,
+      unit_change_update: true,
+      // New Tasks & Workflow settings
+      new_application_pending: true,
+      complaint_updates: true,
+      task_progress_update: true,
+      new_note_added: true,
+      inspection_created_completed: true,
+      examination_created_report_ready: true,
+      maintenance_reminder: true,
+      // New Calendar & Reminders settings
+      daily_weekly_monthly_events: true,
+      rent_expiry_reminder: true,
+      pending_applications: true,
+      pending_inspections: true,
+      upcoming_maintenance: true,
+      upcoming_examinations: true,
+      pending_call_requests: true,
+      // New Announcements & Requests settings
+      new_announcements: true,
+      new_call_request: true,
+      property_request_updates: true,
+      deposit_request_updates: true,
+      // New Listings settings
+      listing_approved_rejected: true,
+      sponsored_listing_update: true,
+      bookmarked_property: true,
+      property_request_sent_received: true,
+      property_draft_reminder: true,
+      // New Accounting settings
+      invoice_created: true,
+      invoice_paid: true,
+      invoice_due_reminder: true,
+      disbursement_processed: true,
+      // New Community settings
+      new_group_message: true,
+      new_forum_post: true,
+      new_agent_request: true,
+      contribution_approved_rejected: true,
+      new_comment: true,
+      new_like_dislike: true,
+      // New Settings & Subscriptions settings
+      subscription_updates: true,
+      document_verification_result: true,
+      system_settings_addons_updated: true,
+      // New System & Communication settings
+      call_request_submitted: true,
+      sms_delivery_failed: true,
+      email_delivery_failed: true,
+      // New Units & Campaigns settings
+      units_low_exhausted: true,
+      listing_sponsorship_updates: true,
+      sms_units_low_exhausted: true,
+      feature_subscription_updates: true,
+      campaign_subscription_updates: true,
     });
 
   const [resetOptions, setResetOptions] = useState<string[]>([]);
@@ -934,9 +1325,9 @@ const Others = () => {
                         back={
                           activeStep === "choose-avatar"
                             ? {
-                                handleBack: () =>
-                                  setStepForDirector(directorId, "options"),
-                              }
+                              handleBack: () =>
+                                setStepForDirector(directorId, "options"),
+                            }
                             : undefined
                         }
                       >
@@ -1080,7 +1471,7 @@ Once restricted, they will no longer have access to participate in the property'
                       style={{ maxHeight: "80vh", overflow: "visible" }}
                     >
                       <RestrictUsersForm
-                        submitAction={() => {}}
+                        submitAction={() => { }}
                         setIsUserRestricted={setIsUserRestricted}
                       />
                     </LandlordTenantModalPreset>
@@ -1203,11 +1594,91 @@ Once restricted, they will no longer have access to participate in the property'
             <SettingsUpdateButton
               loading={loadingNotification}
               action={saveSettings}
-              //action={userPlan === "professional" ? saveSettings : undefined}
+            //action={userPlan === "professional" ? saveSettings : undefined}
             />
           </div>
         </SettingsSection>
       )}
+
+      {/* NOTIFICATION SETTINGS*/}
+      {
+        <SettingsSection title="Notification Settings">
+          <div className="custom-flex-col gap-8 mt-4">
+            {/* Notification Categories */}
+            {notificationCategories.map((category, categoryIndex) => (
+              <div key={category.title} className="space-y-4">
+                {/* Category Header with Switch */}
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-black rounded-full"></div> <h4 className="text-lg font-semibold text-text-primary">{category.title}</h4>
+                    </div>
+                    {/* Category Description */}
+                    <p className="text-sm text-text-disabled ml-4 mt-1 mb-3">
+                      {category.desc}
+                    </p>
+                  </div>
+
+                  {/* Category Toggle Switch */}
+                  <div className="flex items-center gap-2">
+                    {/* <span className="text-sm text-text-disabled">Enable all</span> */}
+                    <Switch
+                      checked={category.options.every(option =>
+                        notificationSettings[option.name]
+                      )}
+                      onClick={() => {
+                        // Toggle all options in this category
+                        const allChecked = category.options.every(option =>
+                          notificationSettings[option.name]
+                        );
+                        const newValue = !allChecked;
+                        category.options.forEach(option => {
+                          handleSetIsChecked(option.name, newValue);
+                        });
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {/* Category Options */}
+                <div className="ml-4 space-y-3">
+                  {category.options.map((option) => (
+                    <DocumentCheckbox
+                      key={option.name}
+                      name={option.name}
+                      darkText
+                      state={{
+                        isChecked: notificationSettings[option.name] || false,
+                        setIsChecked: (value) =>
+                          handleSetIsChecked(option.name, value),
+                      }}
+                      onChange={handleCheckboxChange}
+                    >
+                      {option.text}
+                    </DocumentCheckbox>
+                  ))}
+                </div>
+
+                {/* Separator line between categories */}
+                {categoryIndex < notificationCategories.length - 1 && (
+                  // <div className="border-t border-gray-200 pt-6"></div>
+                  <>                  <SectionSeparator />
+
+                  </>
+
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="flex justify-end mt-8">
+            <SettingsUpdateButton
+              loading={loadingNotification}
+              action={saveSettings}
+            />
+          </div>
+        </SettingsSection>
+      }
 
       {/* RESET SETTINGS */}
       {(canResetSystem || IS_COMPANY_OWNER) && (
@@ -1227,7 +1698,7 @@ Once restricted, they will no longer have access to participate in the property'
                 name={option.name}
                 state={{
                   isChecked: resetOptions.includes(option.name),
-                  setIsChecked: () => {},
+                  setIsChecked: () => { },
                 }}
                 checked={resetOptions.includes(option.name)}
                 //onChange={() => handleResetCheckboxChange(option.name)}
