@@ -177,7 +177,7 @@ const VacantUnitCard = ({
         ></div>
       </div>
       <SectionSeparator />
-      <div className="custom-flex-col gap-4 overflow-x-auto custom-round-scrollbar">
+      <div className="custom-flex-col gap-4 overflow-x-auto custom-round-scrollbar hide-scrollbar">
         <div className="min-w-[800px] custom-flex-col gap-4">
           <div className="flex gap-6 items-center">
             <div className="custom-flex-col flex-1 gap-2">
