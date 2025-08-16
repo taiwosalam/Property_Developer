@@ -56,7 +56,7 @@ const SignIn = () => {
     <AuthForm
       onFormSubmit={handleSubmit}
       skipValidation
-      className='custom-flex-col gap-10 pt-6'
+     className='custom-flex-col gap-md pt-6'
     >
       <AuthHeading
         title='welcome Back'
@@ -85,6 +85,7 @@ const SignIn = () => {
             <Checkbox
             // checked={rememberMe}
             // onChange={() => setRememberMe(!rememberMe)}
+            sm
             >
               remember me
             </Checkbox>
@@ -101,6 +102,9 @@ const SignIn = () => {
         <Button
           type='submit'
           disabled={isLoading}
+          size="base_bold"
+          variant="default"
+          className="py-xs px-lg mt-2"
         >
           {isLoading ? 'signing in...' : 'sign in'}
         </Button>

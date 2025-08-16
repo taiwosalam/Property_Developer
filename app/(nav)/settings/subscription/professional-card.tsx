@@ -63,10 +63,9 @@ const ProfessionalPlanCard = ({
     return true;
   };
 
-
   return (
     <div
-      className={`min-w-[400px] min-h-[480px] flex flex-col justify-between rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg transition-all duration-300 ease-in-out ${themeColor}`}
+      className={`sm:min-w-[400px] min-w-[320px] min-h-[480px] flex flex-col justify-between rounded-lg bg-white dark:bg-darkText-primary dark:border dark:border-[#3C3D37] overflow-hidden shadow-lg transition-all duration-300 ease-in-out ${themeColor}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >

@@ -306,35 +306,37 @@ const RentAndUnit = () => {
 
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
-          title="Total Units"
-          newData={pageData?.month_unit}
-          total={pageData?.total_unit}
-          className="w-[240px]"
-          colorScheme={1}
-        />
-        <ManagementStatistcsCard
-          title="Occupied Units"
-          newData={pageData?.month_occupied}
-          total={pageData?.total_occupied}
-          className="w-[240px]"
-          colorScheme={2}
-        />
-        <ManagementStatistcsCard
-          title="Vacant Units"
-          newData={pageData?.month_vacant}
-          total={pageData?.total_vacant}
-          className="w-[240px]"
-          colorScheme={3}
-        />
-        <ManagementStatistcsCard
-          title="Expired Units"
-          newData={pageData?.month_expired}
-          total={pageData?.total_expired}
-          className="w-[240px]"
-          colorScheme={4}
-        />
+      <div className="page-header-container mt-4 md:mt-0" ref={contentTopRef}>
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
+          <ManagementStatistcsCard
+            title="Total Units"
+            newData={pageData?.month_unit}
+            total={pageData?.total_unit}
+            className="w-[240px]"
+            colorScheme={1}
+          />
+          <ManagementStatistcsCard
+            title="Occupied Units"
+            newData={pageData?.month_occupied}
+            total={pageData?.total_occupied}
+            className="w-[240px]"
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Vacant Units"
+            newData={pageData?.month_vacant}
+            total={pageData?.total_vacant}
+            className="w-[240px]"
+            colorScheme={3}
+          />
+          <ManagementStatistcsCard
+            title="Expired Units"
+            newData={pageData?.month_expired}
+            total={pageData?.total_expired}
+            className="w-[240px]"
+            colorScheme={4}
+          />
+        </div>
       </div>
       <FilterBar
         azFilter
@@ -417,10 +419,7 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit?.map((unit, index) => (
-                      <RentalPropertyCard
-                        key={index}
-                        {...unit}
-                      />
+                      <RentalPropertyCard key={index} {...unit} />
                     ))
                   )}
                 </AutoResizingGrid>
@@ -430,10 +429,7 @@ const RentAndUnit = () => {
                     <CardsLoading />
                   ) : (
                     pageData?.unit.map((unit, index) => (
-                      <RentalPropertyListCard
-                        key={index}
-                        {...unit}
-                      />
+                      <RentalPropertyListCard key={index} {...unit} />
                     ))
                   )}
                 </div>

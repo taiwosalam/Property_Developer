@@ -314,10 +314,11 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         </div>
       </div>
       <div className="flex flex-col-reverse md:flex-row md:justify-between gap-x-8 gap-y-4 md:items-start">
-        <div className="invoice-summary-section md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
-          <AutoResizingGrid gap={12} minWidth={230}>
+        <div className="invoice-summary-section md:w-[58%] lg:w-[68%] bg-white dark:bg-[#3C3D37] overflow-x-auto p-6 space-y-4 rounded-lg border border-[rgba(186,199,213,0.20)]">
+          <div className="account-card-container">
             <AccountStatsCard
               title="Total Invoice Created"
+              className="account-card"
               balance={Number(receipt_statistics?.total_receipt || 0)}
               percentage={
                 Number(
@@ -334,6 +335,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Paid Invoice"
+               className="account-card"
               balance={Number(receipt_statistics?.total_paid_receipt || 0)}
               percentage={
                 Number(
@@ -350,6 +352,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Pending Invoice"
+               className="account-card"
               balance={Number(receipt_statistics?.total_pending_receipt) || 0}
               percentage={
                 Number(
@@ -366,7 +369,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
               variant="blueIncoming"
               forBranch
             />
-          </AutoResizingGrid>
+          </div>
         </div>
         <div className="branch-wallet-card md:flex-1 space-y-7">
           <Link
@@ -418,7 +421,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
         />
 
         <BranchActivitiesCard
-          className="branch-activities-card lg:flex-1"
+          className="branch-activities-card lg:flex-1 w-full"
           branchId={Number(branchId) ?? 0}
         />
       </div>

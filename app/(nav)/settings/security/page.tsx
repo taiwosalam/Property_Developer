@@ -253,7 +253,7 @@ const Security = () => {
                   <span className="text-status-error-primary">*</span> Upload
                   picture or select an avatar.
                 </p>
-                <div className="flex items-center gap-4">
+                <div className="flex  items-center gap-4">
                   <label htmlFor="picture" className="cursor-pointer relative">
                     <Picture
                       src={picture || preview}
@@ -373,7 +373,11 @@ const Security = () => {
                       <ModalTrigger>
                         <Button
                           disabled={pageData?.is_bvn_verified}
+<<<<<<< HEAD
                           className="bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white absolute top-10 right-2 py-4 h-9"
+=======
+                          className="bg-brand-9 dark:bg-brand-9 dark:text-white hover:bg-brand-9/70 dark:hover:bg-brand-9/70 text-white absolute sm:top-9 top-1/2 sm:translate-y-0 -translate-y-1/2 right-2 py-2 h-9"
+>>>>>>> b59f181adc307d29a87d96cbde472fc44eb656ce
                         >
                           {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>

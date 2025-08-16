@@ -74,16 +74,6 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
 
   return (
     <div className="custom-flex-col pb-3">
-      <div className="flex md:hidden justify-center p-3 pt-0">
-        <Image
-          src={company_logo || empty}
-          alt="company logo"
-          width={200}
-          height={55}
-          className="w-full h-[55px] object-contain"
-        />
-      </div>
-
       {navItems.map((item, idx) => {
         const className = sanitizeClassName(item.label);
         return item.content ? (

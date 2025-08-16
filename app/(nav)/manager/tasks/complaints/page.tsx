@@ -216,30 +216,34 @@ const ComplaintsPage = () => {
 
   return (
     <div className="space-y-7">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="account-card-container">
         <ManagementStatistcsCard
           title="Total Complaints"
           newData={pageData?.total_month_complaints || 0}
           total={pageData?.total_complaints || 0}
           colorScheme={1}
+          className="shrink-0"
         />
         <ManagementStatistcsCard
           title="Total Processing"
           newData={pageData?.total_month_processing || 0}
           total={pageData?.total_processing || 0}
           colorScheme={2}
+          className="shrink-0"
         />
         <ManagementStatistcsCard
           title="Total Completed"
           newData={pageData?.total_month_completed || 0}
           total={pageData?.total_completed || 0}
           colorScheme={3}
+          className="shrink-0"
         />
         <ManagementStatistcsCard
           title="Total Rejected"
           newData={pageData?.total_month_rejected || 0}
           total={pageData?.total_rejected || 0}
           colorScheme={4}
+          className="shrink-0"
         />
       </div>
 

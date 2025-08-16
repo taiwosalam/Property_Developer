@@ -383,7 +383,10 @@ const Vat = () => {
                 </ModalContent>
               </Modal>
               <div className="flex items-center gap-2">
-                <ExportButton type="pdf" href="/accountant/accounting/vat/export" />
+                <ExportButton
+                  type="pdf"
+                  href="/accountant/accounting/vat/export"
+                />
                 <ExportButton
                   fileLabel="Accounting Vat"
                   data={transformedTableData}
@@ -392,8 +395,9 @@ const Vat = () => {
               </div>
             </div>
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Vat Paid"
               balance={total_vat_created}
               percentage={percentage_change_total}
@@ -403,7 +407,7 @@ const Vat = () => {
               trendDirection={percentage_change_total < 0 ? "down" : "up"}
               trendColor={percentage_change_total < 0 ? "red" : "green"}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       {vats.length === 0 && !silentLoading ? (

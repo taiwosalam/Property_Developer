@@ -84,8 +84,6 @@ const CreateInvoicePage = () => {
       ]
     : [];
 
-  
-
   useEffect(() => {
     const fetchTenants = async () => {
       setTenantLoading(true);
@@ -226,7 +224,7 @@ const CreateInvoicePage = () => {
               account_officer={propertyData?.account_officer}
             />
           </div>
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid lg:grid-cols-2 gap-4">
             <Select
               id="property"
               className="property-selection-dropdown"

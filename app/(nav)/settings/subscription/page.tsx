@@ -192,9 +192,11 @@ const Enrollment = () => {
       const payload = {
         plan_id: plan?.id || 0,
         payment_method: "wallet",
-        quantity:  plan.isLifeTimePlan ? 1 : plan.quantity,
+        quantity: plan.isLifeTimePlan ? 1 : plan.quantity,
         duration: plan.isLifeTimePlan ? "lifetime" : plan.billingType,
-        amount: plan.isLifeTimePlan ? plan.lifetimePrice : cleanPricingValue(plan.price),
+        amount: plan.isLifeTimePlan
+          ? plan.lifetimePrice
+          : cleanPricingValue(plan.price),
       };
 
       if (isExtend) {
@@ -238,11 +240,11 @@ const Enrollment = () => {
         </h4>
         <div
           className={clsx(
-            "mb-4 pb-10 flex items-center justfiy-center gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
+            "mb-4 pb-10 flex scrollbar-hide items-center justfiy-center gap-4 pricingWrapper overflow-x-auto flex-nowrap custom-round-scrollbar mt-4 ",
             currentPlanKeyword !== "free" ? "flex-row" : "flex-col"
           )}
         >
-          <div className="flex gap-4">
+          <div className="flex scrollbar-hide gap-4">
             {loading
               ? Array(3)
                   .fill(0)

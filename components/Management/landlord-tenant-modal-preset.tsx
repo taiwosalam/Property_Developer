@@ -3,6 +3,7 @@ import type { LandlordTenantModalPresetProps } from "./types";
 import { ModalTrigger } from "../Modal/modal";
 import { ChevronLeft, NavCloseIcon } from "@/public/icons/icons";
 import { SectionSeparator } from "../Section/section-components";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   star,
@@ -10,15 +11,17 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
   style,
   heading,
   children,
+  className,
   lightSeparator,
   bodyStyle,
   noPaddingTop = false,
   customClose,
 }) => {
+  const { isMobile } = useWindowWidth();
   return (
     <div
       style={style}
-      className="w-[85%] max-w-[900px] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-auto custom-round-scrollbar"
+      className={`w-[85%] max-w-[900px] max-h-[90vh] rounded-[20px] bg-white dark:bg-black overflow-auto custom-round-scrollbar ${className}`}
     >
       {/* Header */}
       <div className="sticky z-[1] top-0 px-[30px] pt-[12px] md:pt-[20px] bg-white dark:bg-darkText-primary rounded-t-[20px]">
@@ -36,11 +39,11 @@ const LandlordTenantModalPreset: React.FC<LandlordTenantModalPresetProps> = ({
           </div>
           {!customClose ? (
             <ModalTrigger close className="p-2" aria-label="close">
-              <NavCloseIcon />
+              <NavCloseIcon size={isMobile ? 20 : 35} />
             </ModalTrigger>
           ) : (
             <button onClick={customClose}>
-              <NavCloseIcon />
+              <NavCloseIcon size={isMobile ? 20 : 35} />
             </button>
           )}
         </div>

@@ -12,9 +12,7 @@ import ReadyByCard from "@/components/Community/ReadByCard";
 import useFetch from "@/hooks/useFetch";
 import { useEffect } from "react";
 import { useState } from "react";
-import {
-  Loader,
-} from "../../../components";
+import { Loader } from "../../../components";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import CommunityComments from "@/components/Community/CommunityComments";
 import { CommunitySlider } from "@/components/Community/CommunitySlider";
@@ -71,7 +69,6 @@ const ThreadPreview = () => {
     }
   }, [data]);
 
-
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -86,7 +83,7 @@ const ThreadPreview = () => {
       refetchComments={refetchComments}
     >
       <div>
-        <div className="flex items-center justify-between flex-wrap gap-2 mb-4">
+        <div className="flex items-center mt-2 justify-between flex-wrap gap-2 mb-4">
           <div className="flex items-center gap-1 mb-1">
             <button
               type="button"
@@ -123,7 +120,7 @@ const ThreadPreview = () => {
                 </div>
               )}
             </div>
-            <ThreadArticle  />
+            <ThreadArticle />
             <CommunityComments
               slug={slug}
               comments={comments}

@@ -35,7 +35,7 @@ import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import useView from "@/hooks/useView";
@@ -78,8 +78,10 @@ const ServiceProviders = () => {
   const storedView = useView();
   const { role } = useRole();
   // PERMISSIONS
-  const canViewServiceProviders =
-    usePermission(role, "Can create service provider");
+  const canViewServiceProviders = usePermission(
+    role,
+    "Can create service provider"
+  );
 
   const [view, setView] = useState<string | null>(storedView);
   const [config, setConfig] = useState<AxiosRequestConfig>({
@@ -298,7 +300,8 @@ const ServiceProviders = () => {
     }));
   }, [service_providers, current_page, total_pages, view]);
 
-  const CAN_CREATE_SERVICE_PROVIDER = canViewServiceProviders || role === "director";
+  const CAN_CREATE_SERVICE_PROVIDER =
+    canViewServiceProviders || role === "director";
   //console.log(total_pages)
 
   if (loading) {
@@ -317,8 +320,8 @@ const ServiceProviders = () => {
     return <p className="text-base text-red-500 font-medium">{error}</p>;
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0">
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Providers"
             newData={total_month}
@@ -344,7 +347,10 @@ const ServiceProviders = () => {
         {CAN_CREATE_SERVICE_PROVIDER && (
           <Modal>
             <ModalTrigger asChild>
-              <Button type="button" className="page-header-button">
+              <Button
+                type="button"
+                className="page-header-button md:block hidden"
+              >
                 + Create New Service Provider
               </Button>
             </ModalTrigger>
@@ -458,6 +464,21 @@ const ServiceProviders = () => {
                 </>
               )}
             </>
+          )}
+
+          {CAN_CREATE_SERVICE_PROVIDER && (
+            <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+              <Modal>
+                <ModalTrigger asChild>
+                  <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                    <PlusIcon />
+                  </button>
+                </ModalTrigger>
+                <ModalContent>
+                  <AddServiceProviderModal />
+                </ModalContent>
+              </Modal>
+            </div>
           )}
         </section>
       </div>

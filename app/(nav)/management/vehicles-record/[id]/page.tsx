@@ -32,6 +32,7 @@ import { AxiosRequestConfig } from "axios";
 import ServerError from "@/components/Error/ServerError";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { PlusIcon } from "@/public/icons/icons";
 
 const VehiclesRecordPage = () => {
   const { id } = useParams();
@@ -274,8 +275,8 @@ const VehiclesRecordPage = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0">
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
           <ManagementStatistcsCard
             title="Total Record"
             newData={totalStats}
@@ -297,7 +298,7 @@ const VehiclesRecordPage = () => {
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button type="button" className="page-header-button md:block hidden">
               + Create New Record
             </Button>
           </ModalTrigger>
@@ -462,6 +463,19 @@ const VehiclesRecordPage = () => {
             </Modal>
           </>
         )}
+
+        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <Modal>
+            <ModalTrigger asChild>
+              <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateRecordModal propertyId={Number(id)} data={data} />
+            </ModalContent>
+          </Modal>
+        </div>
       </section>
     </div>
   );

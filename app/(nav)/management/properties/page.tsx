@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState, useMemo, useCallback, useRef } from "react";
-import { ExclamationMark } from "@/public/icons/icons";
+import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
 import PropertyCard from "@/components/Management/Properties/property-card";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { ModalContent, ModalTrigger, Modal } from "@/components/Modal/modal";
@@ -252,8 +252,8 @@ const Properties = () => {
   return (
     <div className="space-y-9">
       {/* Header with statistics cards */}
-      <div className="page-header-container" ref={contentTopRef}>
-        <div className="properties-stats hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container mt-4 md:mt-0" ref={contentTopRef}>
+        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full">
           <ManagementStatistcsCard
             title="Total Properties"
             newData={new_properties_count}
@@ -278,7 +278,7 @@ const Properties = () => {
             <Button
               onClick={() => setIsModalOpen(true)}
               type="button"
-              className="page-header-button"
+              className="page-header-button md:block hidden"
             >
               + create property
             </Button>
@@ -385,6 +385,22 @@ const Properties = () => {
             />
           </>
         )}
+
+        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+          <Modal>
+            <ModalTrigger>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
+              >
+                <PlusIcon />
+              </button>
+            </ModalTrigger>
+            <ModalContent>
+              <AddPropertyModal isOpen={isModalOpen} />
+            </ModalContent>
+          </Modal>
+        </div>
       </section>
     </div>
   );

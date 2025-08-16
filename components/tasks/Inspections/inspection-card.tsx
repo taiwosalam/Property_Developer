@@ -151,26 +151,27 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           >
             Message
           </button>
-            <Modal
-              state={{
-                setIsOpen,
-                isOpen,
-              }}
-            >
-              <ModalTrigger asChild>
-                <Button size="xs_normal" className="py-2 px-6">
-                  more details
-                </Button>
-              </ModalTrigger>
-              <ModalContent>
-                {inspection && (
-                  <InspectionDetailModal
-                    data={inspection}
-                    setIsOpen={setIsOpen}
-                  />
-                )}
-              </ModalContent>
-            </Modal>
+          <Modal
+            state={{
+              setIsOpen,
+              isOpen,
+            }}
+          >
+            <ModalTrigger asChild>
+              <Button size="xs_normal" className="py-2 px-6">
+                more details
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              {inspection && (
+                <InspectionDetailModal
+                  hideCard
+                  data={inspection}
+                  setIsOpen={setIsOpen}
+                />
+              )}
+            </ModalContent>
+          </Modal>
         </div>
       </div>
     </div>

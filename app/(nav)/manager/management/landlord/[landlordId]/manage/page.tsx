@@ -215,7 +215,6 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             {landlordData?.user_tag === "mobile" ? (
               <>
                 <Button
-                  // href={`/messages/${landlordData.user_id}`}
                   onClick={goToMessage}
                   size="base_medium"
                   className="py-2 px-8"
@@ -229,7 +228,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                         <Button
                           variant="light_green"
                           size="base_medium"
-                          className="py-2 px-8"
+                          className="py-2 px-4 page-header-button"
                         >
                           Edit
                         </Button>
@@ -248,7 +247,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                         <Button
                           variant="sky_blue"
                           size="base_medium"
-                          className="py-2 px-8"
+                          className="py-2 px-4 page-header-button"
                         >
                           Note
                         </Button>
@@ -270,7 +269,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   <Button
                     href={`/manager/management/landlord/${landlordId}/manage/edit`}
                     size="base_medium"
-                    className="py-2 px-8"
+                    className="py-2 px-4 page-header-button"
                   >
                     edit
                   </Button>
@@ -295,7 +294,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                       <Button
                         variant="sky_blue"
                         size="base_medium"
-                        className="py-2 px-4"
+                        className="py-2 px-4 page-header-button"
                       >
                         update with Email
                       </Button>

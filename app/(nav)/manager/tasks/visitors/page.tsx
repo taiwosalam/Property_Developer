@@ -223,7 +223,7 @@ const BookVisitorsPage = () => {
 
   return (
     <section className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="flex gap-5 py-4 scrollbar-hide overflow-x-auto md:flex-wrap">
         <ManagementStatistcsCard
           total={pageData?.month_total || 0}
           title="Total Visitors"
@@ -326,6 +326,7 @@ const BookVisitorsPage = () => {
           </AutoResizingGrid>
 
           <Pagination
+            className="pb-4"
             totalPages={pageData?.pagination?.total_pages || 0}
             currentPage={pageData?.pagination?.current_page || 0}
             onPageChange={handlePageChange}

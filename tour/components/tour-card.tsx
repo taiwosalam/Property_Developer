@@ -4,6 +4,7 @@ import { XIcon } from "@/public/icons/icons";
 import Button from "@/components/Form/Button/button";
 import { ChevronLeftIcon } from "lucide-react";
 import parse from "html-react-parser";
+import Text from "@/components/Form/Text/text";
 
 interface TourCardProps {
   step: TourStep;
@@ -36,19 +37,16 @@ const TourCard: React.FC<TourCardProps> = ({
     <>
       <div
         ref={tooltipRef}
-        className="absolute bg-white dark:bg-[#3C3D37] rounded-lg shadow-xl p-6 min-w-[80vw] max-w-[500px] w-[80vw] sm:min-w-[300px] sm:w-auto sm:max-w-[300px] z-[10002] text-gray-900 dark:text-gray-100 responsive-tour-card"
+        className="absolute bg-white dark:bg-[#3C3D37] rounded-lg shadow-xl p-6 z-[10002] text-gray-900 dark:text-gray-100 w-[80%] max-w-[600px]"
         role="dialog"
         aria-labelledby={`tour-step-${stepIndex}-title`}
         aria-describedby={`tour-step-${stepIndex}-content`}
-        style={{ boxSizing: 'border-box', margin: '0 0 0 -6px' }}
+        style={{ boxSizing: "border-box", margin: "0 0 0 -6px" }}
       >
         <div className="flex justify-between items-start">
-          <h3
-            id={`tour-step-${stepIndex}-title`}
-            className="text-lg dark:text-white font-semibold mb-2 sm:text-lg text-base"
-          >
+          <Text id={`tour-step-${stepIndex}-title`} as="h3" size="base_bold">
             {step.title}
-          </h3>
+          </Text>
           <button
             onClick={onSkip}
             className="text-sm text-gray- dark:text-white hover:text-blue-700 dark:hover:text-gray-300"
@@ -60,13 +58,13 @@ const TourCard: React.FC<TourCardProps> = ({
         <p
           id={`tour-step-${stepIndex}-content`}
           className="text-sm dark:text-white mb-4 sm:text-sm text-xs"
-          style={{ wordBreak: 'break-word' }}
+          style={{ wordBreak: "break-word" }}
         >
           {parse(step.content)}
         </p>
         <div className="flex justify-between items-center">
           {isWelcomeStep ? (
-            <div className="gap-2 flex w-full justify-end items-end">
+            <div className="gap-sm flex w-full justify-end items-end">
               <button
                 onClick={onSkip}
                 className="px-4 py-2 text-sm text-brand-9 dark:text-white"
@@ -78,7 +76,7 @@ const TourCard: React.FC<TourCardProps> = ({
                 onClick={onNext}
                 type="button"
                 size="sm_normal"
-                className="px-4 py-2 text-white capitalize rounded-md text-sm"
+                className="px-md py-sm text-white capitalize rounded-md text-xs md:text-sm"
                 aria-label="Start tour"
               >
                 Take the Tour
@@ -102,7 +100,7 @@ const TourCard: React.FC<TourCardProps> = ({
                 </div>
               )}
               <div className="flex gap-2">
-                {(!isFirstStep && !isLastStep) && (
+                {!isFirstStep && !isLastStep && (
                   <Button
                     onClick={onBack}
                     variant="border"
@@ -148,22 +146,6 @@ const TourCard: React.FC<TourCardProps> = ({
           )}
         </div>
       </div>
-      <style jsx global>{`
-        @media (max-width: 640px) {
-          .responsive-tour-card {
-            padding: 1rem !important;
-            min-width: 0 !important;
-            max-width: 98vw !important;
-            width: 98vw !important;
-          }
-          .responsive-tour-card h3 {
-            font-size: 1rem !important;
-          }
-          .responsive-tour-card p {
-            font-size: 0.85rem !important;
-          }
-        }
-      `}</style>
     </>
   );
 };

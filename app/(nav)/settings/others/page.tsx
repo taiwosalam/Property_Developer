@@ -1111,7 +1111,7 @@ Once restricted, they will no longer have access to participate in the property'
             ))}
           </div>
 
-          <div className="flex justify-end mt-2">
+          <div className="flex  justify-end mt-2">
             {/* 
             Enable this when other company module
             is available 
@@ -1148,7 +1148,7 @@ Once restricted, they will no longer have access to participate in the property'
             ))}
           </div>
 
-          <div className="flex justify-end mt-2">
+          <div className="flex  justify-end mt-2">
             {/* <Button onClick={updateMessageReviewSettings} disabled={processingMessageReview}>
             {processingMessageReview? "Updating..." : "Update"}
           </Button> */}

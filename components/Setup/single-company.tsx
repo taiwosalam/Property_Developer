@@ -17,7 +17,7 @@ const SingleCompany: React.FC<
       <SVG type={iconType} color={selected ? "#0033C4" : "#3F4247"} />
       <p
         className={clsx(
-          "text-base font-medium",
+          "text-sm md:text-base font-medium",
           selected ? "text-brand-9" : "text-text-secondary"
         )}
       >
@@ -25,7 +25,7 @@ const SingleCompany: React.FC<
       </p>
       <p
         className={clsx(
-          "text-sm font-normal",
+          "text-xs md:text-sm font-normal",
           !selected && "text-text-disabled "
         )}
       >

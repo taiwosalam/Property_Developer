@@ -6,7 +6,13 @@ import { useModal } from "@/components/Modal/modal";
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
 import TextArea from "@/components/Form/TextArea/textarea";
-import { getAllStates, getLocalGovernments, getCities, getAllLocalGovernments, getAllCities } from "@/utils/states";
+import {
+  getAllStates,
+  getLocalGovernments,
+  getCities,
+  getAllLocalGovernments,
+  getAllCities,
+} from "@/utils/states";
 import { useState } from "react";
 import Button from "@/components/Form/Button/button";
 import { AuthForm } from "@/components/Auth/auth-components";
@@ -21,10 +27,12 @@ import { createBranch } from "./data";
 import { BranchCardProps } from "./branch-card";
 import RestrictInput from "@/components/Form/Input/InputWIthRestrict";
 import { useGlobalStore } from "@/store/general-store";
+import useWindowWidth from "@/hooks/useWindowWidth";
 // import VerifyEmailModal from "./verify-email-modal";
 
 const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
   const { setIsOpen } = useModal();
+  const { isMobile } = useWindowWidth();
   const hasRestrictedWords = useGlobalStore((s) => s.hasRestrictedWords);
   const router = useRouter();
   const pathname = usePathname();
@@ -119,6 +127,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
     <LandlordTenantModalPreset
       heading={formStep === 2 ? "Choose Sample" : "Create New Branch"}
       star={formStep === 1}
+      bodyStyle={{ padding: "1.5em" }}
       back={formStep === 2 ? { handleBack: () => setFormStep(1) } : undefined}
     >
       <div className="relative">
@@ -205,7 +214,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
               label="Write About Branch"
               placeholder="Write here"
               required
-              inputSpaceClassName="bg-neutral-2 dark:bg-darkText-primary !h-[100px]"
+              inputSpaceClassName="bg-neutral-2 dark:bg-darkText-primary !h-[150px] md:!h-[100px]"
               className="md:col-span-2 lg:col-span-3"
             />
           </div>
@@ -217,7 +226,12 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
               </p>
               <div className="flex items-end gap-3">
                 <label htmlFor="picture" className="cursor-pointer relative">
-                  <Picture src={preview} alt="Camera" size={70} rounded />
+                  <Picture
+                    src={preview}
+                    alt="Camera"
+                    size={isMobile ? 40 : 70}
+                    rounded
+                  />
                   {preview && preview !== CameraCircle && (
                     <div
                       role="button"
@@ -228,7 +242,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
                         clearImageSelection();
                       }}
                     >
-                      <DeleteIconOrange size={20} />
+                      <DeleteIconOrange size={isMobile ? 16 : 20} />
                     </div>
                   )}
                   <input
@@ -245,7 +259,7 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
                 <button
                   type="button"
                   onClick={() => setFormStep(2)}
-                  className="bg-[rgba(42,42,42,0.63)] w-[70px] h-[70px] rounded-full flex items-center justify-center text-white relative"
+                  className="bg-[rgba(42,42,42,0.63)] w-[40px] md:w-[70px] h-[40px] md:h-[70px] rounded-full flex items-center justify-center text-white relative"
                   aria-label="choose avatar"
                 >
                   {activeAvatar ? (
@@ -253,9 +267,9 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
                       <Image
                         src={activeAvatar}
                         alt="selected avatar"
-                        width={70}
-                        height={70}
-                        className="object-cover object-center w-[70px] h-[70px] rounded-full bg-brand-9"
+                        width={isMobile ? 40 : 70}
+                        height={isMobile ? 40 : 70}
+                        className="object-cover object-center w-[40px] md:w-[70px] h-[40px] md:h-[70px] rounded-full bg-brand-9"
                       />
                       <div
                         role="button"
@@ -266,11 +280,11 @@ const CreateBranchModal = ({ branches }: { branches?: BranchCardProps[] }) => {
                           setActiveAvatar("");
                         }}
                       >
-                        <DeleteIconOrange size={20} />
+                        <DeleteIconOrange size={isMobile ? 16 : 20} />
                       </div>
                     </>
                   ) : (
-                    <PersonIcon />
+                    <PersonIcon size={isMobile ? 16 : 20} />
                   )}
                 </button>
               </div>

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { AnimatePresence, m, domAnimation, LazyMotion } from "framer-motion";
 
 // Types
 import type { SettingsSectionProps } from "./types";
@@ -24,7 +25,7 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({
       className="bg-white dark:bg-darkText-primary rounded-2xl custom-flex-col"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
     >
-      <div className="flex justify-between py-[18px] px-6 bg-neutral-2 dark:bg-black rounded-t-2xl">
+      <div className="flex justify-between py-[1.125rem] px-2 sm:px-6 bg-neutral-2 dark:bg-black rounded-t-2xl">
         <div className="content flex flex-col sm:flex-row items-start sm:items-center gap-2">
           <p className="text-primary-navy dark:text-white text-base font-medium capitalize">
             {title}
@@ -45,7 +46,23 @@ const SettingsSection: React.FC<SettingsSectionProps> = ({
           />
         </button>
       </div>
-      {isOpen && <div className="p-6">{children}</div>}
+
+      <LazyMotion features={domAnimation}>
+        <AnimatePresence initial={false}>
+          {isOpen && (
+            <m.div
+              key="content"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: "auto", opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              className="overflow-hidden"
+            >
+              <div className="sm:p-6 p-2">{children}</div>
+            </m.div>
+          )}
+        </AnimatePresence>
+      </LazyMotion>
     </div>
   );
 };

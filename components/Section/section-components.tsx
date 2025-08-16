@@ -33,7 +33,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   children,
   required,
 }) => (
-  <div className="custom-flex-col gap-[2px]">
+  <div className="custom-flex-col gap-xs">
     {title && <SectionTitle required={required}>{title}</SectionTitle>}
     <SectionDesc>{children}</SectionDesc>
   </div>

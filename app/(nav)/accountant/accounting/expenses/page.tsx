@@ -87,7 +87,6 @@ const AccountingExpensesPage = () => {
     DateRange | undefined
   >();
 
-
   const isFilterApplied = useCallback(() => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
     return (
@@ -136,7 +135,7 @@ const AccountingExpensesPage = () => {
   const handleSearch = (query: string) => {
     setSearch(query);
   };
-  
+
   const { data, loading, silentLoading, isNetworkError, error } =
     useFetch<ExpensesApiResponse>("/expenses", config);
 
@@ -157,9 +156,7 @@ const AccountingExpensesPage = () => {
     data: propertyData,
     error: propertyError,
     loading: propertyLoading,
-  } = useFetch<PropertyListResponse>(
-    `/property/all`
-  );
+  } = useFetch<PropertyListResponse>(`/property/all`);
 
   const {
     data: staffsData,
@@ -170,14 +167,16 @@ const AccountingExpensesPage = () => {
   const staffOptions = staffsData ? transformStaffs(staffsData) : [];
 
   const propertyOptions = [
-    ...new Map(propertyData?.data?.map((property) => [
-      property.title.toLowerCase().trim(),
-      {
-        value: property.id.toString(),
-        label: property.title.toLowerCase(),
-      }
-    ])).values(),
-  ]
+    ...new Map(
+      propertyData?.data?.map((property) => [
+        property.title.toLowerCase().trim(),
+        {
+          value: property.id.toString(),
+          label: property.title.toLowerCase(),
+        },
+      ])
+    ).values(),
+  ];
 
   const [timeRange, setTimeRange] = useState("90d");
 
@@ -351,8 +350,9 @@ const AccountingExpensesPage = () => {
               appliedFilters={appliedFilters}
             />
           </div>
-          <AutoResizingGrid gap={24} minWidth={300}>
+          <div className="account-card-container">
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Expenses"
               balance={Number(stats.total_amount)}
               variant="redOutgoing"
@@ -364,6 +364,7 @@ const AccountingExpensesPage = () => {
               timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Deduction"
               balance={Number(stats.total_deduct)}
               variant="blueIncoming"
@@ -375,6 +376,7 @@ const AccountingExpensesPage = () => {
               timeRangeLabel={getTimeRangeLabel()}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Balance"
               balance={Number(stats.total_balance)}
               variant="yellowCard"
@@ -385,7 +387,7 @@ const AccountingExpensesPage = () => {
               percentage={stats.percentage_change_balance}
               timeRangeLabel={getTimeRangeLabel()}
             />
-          </AutoResizingGrid>
+          </div>
         </div>
       </div>
       {/* Table and Menu */}

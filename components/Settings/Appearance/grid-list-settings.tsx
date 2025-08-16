@@ -45,7 +45,7 @@ const GridListSettings = ({ appearance, setAppearance }: Props) => {
         desc="Kindly select from 'grid' or 'list' to determine the appearance of your cards."
       />
       <AuthForm onFormSubmit={handleUpdateCard} skipValidation>
-        <div className="themes flex gap-5 flex-wrap mt-6">
+        <div className="themes flex gap-5 overflow-x-scroll  scrollbar-hide mt-6">
           <ThemeCard
             img="/global/grid-view.svg"
             value="grid"

@@ -175,24 +175,27 @@ const InspectionPage = () => {
 
   return (
     <div className="space-y-7">
-      <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="account-card-container">
         <ManagementStatistcsCard
           title="Total Inspections"
           newData={inspectionData?.total_months ?? 0}
           total={inspectionData?.total_inspections ?? 0}
           colorScheme={1}
+          className="shrink-0"
         />
         <ManagementStatistcsCard
           title="Physical Inspections"
           newData={inspectionData?.total_physical_month ?? 0}
           total={inspectionData?.total_physical ?? 0}
           colorScheme={2}
+          className="shrink-0"
         />
         <ManagementStatistcsCard
           title="Virtual Inspections"
           newData={inspectionData?.total_virtual_month ?? 0}
           total={inspectionData?.total_virtual ?? 0}
           colorScheme={3}
+          className="shrink-0"
         />
       </div>
       <FilterBar

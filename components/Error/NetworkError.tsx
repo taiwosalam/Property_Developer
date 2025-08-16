@@ -2,7 +2,7 @@ import { NetworkIcon } from "@/public/icons/icons";
 
 const NetworkError = () => {
   return (
-    <div className="flex flex-col gap-[15px] mt-12 px-20">
+    <div className="flex flex-col gap-[15px] mt-12 px-6 md:px-20 mb-5">
       <div className="flex w-full items-center justify-center text-brand-9 mb-4">
         <NetworkIcon />
       </div>

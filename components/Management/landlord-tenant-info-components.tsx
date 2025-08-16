@@ -420,7 +420,6 @@ export const MobileNotesModal: React.FC<{
   );
 };
 
-
 export const ViewNote = ({ note }: { note: string }) => {
   const sanitizedHTML = DOMPurify.sanitize(note || "");
   return (

@@ -15,23 +15,19 @@ export const button_variants = {
     custom: "",
   },
   size: {
-    sm: "py-2 px-3 text-sm font-normal",
-    mid: "py-[10px] px-3 text-base font-medium",
-    default: "py-2 px-3 md:py-[10px] md:px-12 text-sm lg:text-lg font-bold",
-
-    xs_medium: "font-medium text-xs",
-    xs_normal: "font-normal text-xs",
-    xs_bold: "font-bold text-xs",
-
-    sm_normal: "font-normal text-sm",
-    sm_medium: "font-medium text-sm",
-    sm_bold: "font-bold text-sm",
-
-    base_medium: "font-medium text-base",
-    base_bold: "font-bold text-base",
-
-    "16_bold": "text-[16px] font-bold",
-
+    sm: "py-[clamp(0.5rem,1.5vw,0.75rem)] px-[clamp(0.75rem,2.5vw,1rem)] text-[clamp(0.875rem,2.5vw,1rem)] font-normal",
+    mid: "py-[clamp(0.625rem,2vw,0.875rem)] px-[clamp(0.75rem,2.5vw,1rem)] text-[clamp(1rem,3vw,1.125rem)] font-medium",
+    default:
+      "py-[clamp(0.5rem,2vw,0.875rem)] px-[clamp(0.75rem,3vw,3rem)] text-[clamp(0.875rem,3vw,1.125rem)] font-bold",
+    xs_medium: "text-[clamp(0.75rem,2vw,0.875rem)] font-medium",
+    xs_normal: "text-[clamp(0.75rem,2vw,0.875rem)] font-normal",
+    xs_bold: "text-[clamp(0.75rem,2vw,0.875rem)] font-bold",
+    sm_normal: "text-[clamp(0.875rem,2.5vw,1rem)] font-normal",
+    sm_medium: "text-[clamp(0.875rem,2.5vw,1rem)] font-medium",
+    sm_bold: "text-[clamp(0.875rem,2.5vw,1rem)] font-bold",
+    base_medium: "text-[clamp(1rem,3vw,1.125rem)] font-medium",
+    base_bold: "text-[clamp(1rem,3vw,1.125rem)] font-bold",
+    "16_bold": "text-[clamp(1rem,3vw,1.125rem)] font-bold",
     custom: "",
   },
 };

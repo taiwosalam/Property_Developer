@@ -30,6 +30,8 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import Link from "next/link";
+import { PlusIcon } from "@/public/icons/icons";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
@@ -150,8 +152,8 @@ const AnnouncementPage = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="page-header-container-variant">
+        <div className="flex pt-4 gap-5 overflow-x-auto scrollbar-hide md:flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"
             newData={apiData?.total_announcement_month || 0}
@@ -161,8 +163,8 @@ const AnnouncementPage = () => {
         </div>
         {canCreateManageAnnouncement && (
           <Button
-            href="/staff/tasks/announcements/create-announcement"
-            className="page-header-button"
+            href="/tasks/announcements/create-announcement"
+            className="page-header-button hidden md:block"
           >
             + Create Announcement
           </Button>
@@ -299,6 +301,15 @@ const AnnouncementPage = () => {
             })}
           </AutoResizingGrid>
         </section>
+      )}
+
+      {canCreateManageAnnouncement && (
+        <Link
+          href="/tasks/announcements/create-announcement"
+          className="mobile-button"
+        >
+          <PlusIcon />
+        </Link>
       )}
 
       <Pagination

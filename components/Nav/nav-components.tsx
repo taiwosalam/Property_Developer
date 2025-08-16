@@ -1,3 +1,275 @@
+// import Link from "next/link";
+
+// // Types
+// import type { Color } from "@/types/global";
+// import type {
+//   NavIconProps,
+//   NavButtonProps,
+//   NavSearchTabProps,
+//   NavCreateNewColumnProps,
+// } from "./types";
+
+// // Imports
+// import clsx from "clsx";
+// import SVG from "../SVG/svg";
+// import { useThemeStoreSelectors } from "@/store/themeStore";
+// import { AnimatePresence, motion } from "framer-motion";
+// import { roundUptoNine } from "@/app/(nav)/(messages-reviews)/messages/data";
+
+// export const NavButton: React.FC<NavButtonProps> = ({
+//   type,
+//   href,
+//   style,
+//   onClick,
+//   children,
+//   minimized,
+//   highlight,
+//   minimized_highlight,
+//   isDropdown,
+//   isOpen,
+//   isCollapsed,
+//   topNav,
+//   className,
+// }) => {
+//   const primaryColor = useThemeStoreSelectors.use.primaryColor();
+//   const SecondaryColor = useThemeStoreSelectors.use.secondaryColor();
+
+//   const color = highlight ? "#fff" : (primaryColor as Color);
+
+//   const content = (
+//     <div
+//       className={clsx(
+//         "w-full py-3 flex items-center gap-4",
+//         {
+//           "nav-button": !minimized,
+//           "nav-button-minimized": minimized,
+//           "custom-primary-bg": highlight,
+//           "pl-10 pr-5": !topNav,
+//           "px-5": topNav,
+//         },
+//         className
+//       )}
+//       style={{
+//         backgroundColor: minimized_highlight ? SecondaryColor : undefined,
+//         ...style,
+//       }}
+//     >
+//       {type && (
+//         <SVG
+//           type={type}
+//           color={color}
+//           className={clsx("w-[30px] flex-shrink-0 flex justify-center", {
+//             "path-fill": type === "chart",
+//           })}
+//         />
+//       )}
+//       <AnimatePresence initial={false}>
+//         {!isCollapsed && (
+//           <motion.div
+//             initial={{ opacity: 0, x: -20 }}
+//             animate={{ opacity: 1, x: 0 }}
+//             exit={{ opacity: 0, x: -20 }}
+//             transition={{ duration: 0.3 }}
+//             className={clsx("relative flex-1 text-left flex-shrink-0", {
+//               "flex gap-2": topNav,
+//             })}
+//           >
+//             <p
+//               className={clsx("capitalize", {
+//                 "text-white": highlight,
+//                 "custom-primary-color": !highlight,
+//                 "text-base font-bold": !minimized,
+//                 "text-sm font-medium": minimized,
+//               })}
+//               style={{
+//                 whiteSpace: "nowrap",
+//                 overflow: "hidden",
+//                 textOverflow: "ellipsis",
+//               }}
+//             >
+//               {children}
+//             </p>
+
+//             {isDropdown && (
+//               <div
+//                 className={clsx(
+//                   "transition-transform duration-300",
+//                   isOpen && "rotate-180",
+//                   {
+//                     "absolute right-0 top-[50%] translate-y-[-50%]": !topNav,
+//                   }
+//                 )}
+//               >
+//                 <SVG
+//                   type="arrow_down"
+//                   color={isOpen || highlight ? "#fff" : (primaryColor as Color)}
+//                 />
+//               </div>
+//             )}
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </div>
+//   );
+
+//   return href ? (
+//     <Link
+//       title={String(children)}
+//       className="w-full block"
+//       href={href}
+//       onClick={onClick ? (e) => onClick(e) : undefined}
+//     >
+//       {content}
+//     </Link>
+//   ) : (
+//     <button
+//       aria-label={String(children)}
+//       type="button"
+//       className="w-full block"
+//       onClick={onClick ? (e) => onClick(e) : undefined}
+//     >
+//       {content}
+//     </button>
+//   );
+// };
+
+// export const NotificationBadge = ({
+//   count,
+//   color,
+// }: {
+//   count: number | string;
+//   color: string;
+// }) => {
+//   if (!count || count === "0" || count === 0) return null;
+
+//   const isPlusCount = typeof count === "string" && count.includes("+");
+//   const numericCount = typeof count === "string" ? parseInt(count, 10) : count;
+
+//   if (!numericCount || numericCount <= 0) return null;
+
+//   return (
+//     <span
+//       className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
+//     >
+//       {isPlusCount || numericCount > 9 ? "9+" : numericCount}
+//     </span>
+//   );
+// };
+
+// export const NavIcon: React.FC<NavIconProps> = ({
+//   icon,
+//   alt,
+//   href,
+//   onClick,
+//   count,
+//   badgeColor,
+// }) => {
+//   const class_styles =
+//     "p-[5px] text-black dark:text-white relative rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[28px] h-[28px] sm:w-[36px] sm:h-[36px] aspect-square";
+//   const roundedCount = roundUptoNine(count ?? 0);
+//   return href ? (
+//     <Link
+//       href={href}
+//       className={class_styles}
+//       aria-label={alt}
+//       title={alt}
+//       onClick={onClick ? () => onClick() : undefined}
+//     >
+//       {icon}
+//       {Number(roundedCount) > 0 && (
+//         <NotificationBadge count={roundedCount} color={badgeColor ?? "green"} />
+//       )}
+//     </Link>
+//   ) : (
+//     <button
+//       type="button"
+//       className={class_styles}
+//       aria-label={alt}
+//       title={alt}
+//       onClick={onClick ? () => onClick() : undefined}
+//     >
+//       {icon}
+//       {Number(roundedCount) > 0 && (
+//         <NotificationBadge count={roundedCount} color={badgeColor ?? "green"} />
+//       )}
+//     </button>
+//   );
+// };
+
+// export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
+//   data = [],
+// }) => {
+//   const options = ["management", "tasks", "accounting", "documents"];
+//   const content = data.filter((item) =>
+//     options.includes(item.label.toLowerCase())
+//   );
+
+//   return (
+//     <div className="flex gap-10">
+//       {content.map(({ type, label, content }, index) => (
+//         <div key={index} className="custom-flex-col text-base font-medium">
+//           <div className="flex items-center gap-2">
+//             <SVG
+//               type={type}
+//               color="#050901"
+//               className="w-[30px] flex justify-center"
+//             />
+//             <p className="text-text-primary capitalize">{label}</p>
+//           </div>
+//           {content?.map(({ label }, idx) => (
+//             <div key={idx} className="py-3 pl-10 pr-5">
+//               <button className="flex items-center gap-4">
+//                 <SVG
+//                   type="horizontal_line"
+//                   className="w-[30px] flex justify-center"
+//                 />
+//                 <p className="text-text-secondary capitalize">{label}</p>
+//               </button>
+//             </div>
+//           ))}
+//         </div>
+//       ))}
+//     </div>
+//   );
+// };
+
+// export const NavSearchTab: React.FC<NavSearchTabProps> = ({
+//   count,
+//   active,
+//   onClick,
+//   children,
+// }) => (
+//   <button
+//     type="button"
+//     onClick={onClick}
+//     className="flex items-center gap-2 text-base font-medium capitalize"
+//   >
+//     <p
+//       className={clsx({
+//         "text-text-label": !active,
+//         "text-brand-9": active,
+//       })}
+//     >
+//       {children}
+//     </p>
+//     <div
+//       className={clsx("w-6 h-6 flex items-center justify-center rounded-full", {
+//         "bg-neutral-3": !active,
+//         "bg-brand-9": active,
+//       })}
+//     >
+//       <p
+//         className={clsx({
+//           "text-neutral-4 dark:text-black": !active,
+//           "text-white": active,
+//         })}
+//       >
+//         {count}
+//       </p>
+//     </div>
+//   </button>
+// );
+
 import Link from "next/link";
 
 // Types
@@ -39,13 +311,13 @@ export const NavButton: React.FC<NavButtonProps> = ({
   const content = (
     <div
       className={clsx(
-        "w-full py-3 flex items-center gap-4",
+        "w-full py-md flex items-center gap-md",
         {
           "nav-button": !minimized,
           "nav-button-minimized": minimized,
           "custom-primary-bg": highlight,
-          "pl-10 pr-5": !topNav,
-          "px-5": topNav,
+          "pl-2xl pr-lg": !topNav,
+          "px-lg": topNav,
         },
         className
       )}
@@ -58,7 +330,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
         <SVG
           type={type}
           color={color}
-          className={clsx("w-[30px] flex-shrink-0 flex justify-center", {
+          className={clsx("icon-lg", {
             "path-fill": type === "chart",
           })}
         />
@@ -71,15 +343,15 @@ export const NavButton: React.FC<NavButtonProps> = ({
             exit={{ opacity: 0, x: -20 }}
             transition={{ duration: 0.3 }}
             className={clsx("relative flex-1 text-left flex-shrink-0", {
-              "flex gap-2": topNav,
+              "flex gap-sm": topNav,
             })}
           >
             <p
               className={clsx("capitalize", {
                 "text-white": highlight,
                 "custom-primary-color": !highlight,
-                "text-base font-bold": !minimized,
-                "text-sm font-medium": minimized,
+                "text-[clamp(1rem,3vw,1.125rem)] font-bold": !minimized,
+                "text-[clamp(0.875rem,2.5vw,1rem)] font-medium": minimized,
               })}
               style={{
                 whiteSpace: "nowrap",
@@ -103,6 +375,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
                 <SVG
                   type="arrow_down"
                   color={isOpen || highlight ? "#fff" : (primaryColor as Color)}
+                  className="icon-sm"
                 />
               </div>
             )}
@@ -133,7 +406,6 @@ export const NavButton: React.FC<NavButtonProps> = ({
   );
 };
 
-
 export const NotificationBadge = ({
   count,
   color,
@@ -149,9 +421,7 @@ export const NotificationBadge = ({
   if (!numericCount || numericCount <= 0) return null;
 
   return (
-    <span
-      className={`absolute -top-[0.05rem] -right-[0.05rem] bg-${color}-500 text-white text-[10px] rounded-full min-w-[18px] h-[18px] flex items-center justify-center`}
-    >
+    <span className={`notification-badge bg-${color}-500`}>
       {isPlusCount || numericCount > 9 ? "9+" : numericCount}
     </span>
   );
@@ -166,8 +436,9 @@ export const NavIcon: React.FC<NavIconProps> = ({
   badgeColor,
 }) => {
   const class_styles =
-    "p-[5px] text-black dark:text-white relative rounded-lg bg-background-2 dark:bg-[#3C3D37] flex items-center justify-center w-[28px] h-[28px] sm:w-[36px] sm:h-[36px] aspect-square";
+    "nav-icon-container text-black dark:text-white rounded-lg bg-background-2 dark:bg-[#3C3D37]";
   const roundedCount = roundUptoNine(count ?? 0);
+
   return href ? (
     <Link
       href={href}
@@ -176,7 +447,7 @@ export const NavIcon: React.FC<NavIconProps> = ({
       title={alt}
       onClick={onClick ? () => onClick() : undefined}
     >
-      {icon}
+      <span className="icon-md">{icon}</span>
       {Number(roundedCount) > 0 && (
         <NotificationBadge count={roundedCount} color={badgeColor ?? "green"} />
       )}
@@ -189,7 +460,7 @@ export const NavIcon: React.FC<NavIconProps> = ({
       title={alt}
       onClick={onClick ? () => onClick() : undefined}
     >
-      {icon}
+      <span className="icon-md">{icon}</span>
       {Number(roundedCount) > 0 && (
         <NotificationBadge count={roundedCount} color={badgeColor ?? "green"} />
       )}
@@ -206,24 +477,20 @@ export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   );
 
   return (
-    <div className="flex gap-10">
+    <div className="flex gap-xl">
       {content.map(({ type, label, content }, index) => (
-        <div key={index} className="custom-flex-col text-base font-medium">
-          <div className="flex items-center gap-2">
-            <SVG
-              type={type}
-              color="#050901"
-              className="w-[30px] flex justify-center"
-            />
+        <div
+          key={index}
+          className="custom-flex-col text-[clamp(1rem,3vw,1.125rem)] font-medium"
+        >
+          <div className="flex items-center gap-sm">
+            <SVG type={type} color="#050901" className="icon-lg" />
             <p className="text-text-primary capitalize">{label}</p>
           </div>
           {content?.map(({ label }, idx) => (
-            <div key={idx} className="py-3 pl-10 pr-5">
-              <button className="flex items-center gap-4">
-                <SVG
-                  type="horizontal_line"
-                  className="w-[30px] flex justify-center"
-                />
+            <div key={idx} className="py-md pl-2xl pr-lg">
+              <button className="flex items-center gap-md">
+                <SVG type="horizontal_line" className="icon-lg" />
                 <p className="text-text-secondary capitalize">{label}</p>
               </button>
             </div>
@@ -243,7 +510,7 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
   <button
     type="button"
     onClick={onClick}
-    className="flex items-center gap-2 text-base font-medium capitalize"
+    className="flex items-center gap-sm text-[clamp(1rem,3vw,1.125rem)] font-medium capitalize"
   >
     <p
       className={clsx({
@@ -254,13 +521,16 @@ export const NavSearchTab: React.FC<NavSearchTabProps> = ({
       {children}
     </p>
     <div
-      className={clsx("w-6 h-6 flex items-center justify-center rounded-full", {
-        "bg-neutral-3": !active,
-        "bg-brand-9": active,
-      })}
+      className={clsx(
+        "w-md h-md flex items-center justify-center rounded-full",
+        {
+          "bg-neutral-3": !active,
+          "bg-brand-9": active,
+        }
+      )}
     >
       <p
-        className={clsx({
+        className={clsx("text-[clamp(0.75rem,2vw,0.875rem)]", {
           "text-neutral-4 dark:text-black": !active,
           "text-white": active,
         })}

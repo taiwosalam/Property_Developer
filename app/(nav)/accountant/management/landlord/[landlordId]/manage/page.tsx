@@ -217,31 +217,12 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             {landlordData?.user_tag === "mobile" ? (
               <>
                 <Button
-                  // href={`/messages/${landlordData.user_id}`}
                   onClick={goToMessage}
                   size="base_medium"
-                  className="py-2 px-8"
+                  className="py-2 px-4 page-header-button"
                 >
                   message
                 </Button>
-                {/* <Modal>
-                  <ModalTrigger asChild>
-                    <Button
-                      variant="light_green"
-                      size="base_medium"
-                      className="py-2 px-8"
-                    >
-                      Edit
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <EditMobileUser
-                      CAN_DELETE={CAN_DELETE}
-                      page="landlord"
-                      id={landlordId}
-                    />
-                  </ModalContent>
-                </Modal> */}
 
                 {canCreateAndManageLandlord && (
                   <Modal>
@@ -249,7 +230,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                       <Button
                         variant="sky_blue"
                         size="base_medium"
-                        className="py-2 px-8"
+                        className="py-2 px-4 page-header-button"
                       >
                         Note
                       </Button>
@@ -270,7 +251,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   <Button
                     href={`/accountant/management/landlord/${landlordId}/manage/edit`}
                     size="base_medium"
-                    className="py-2 px-8"
+                    className="py-2 px-4 page-header-button"
                   >
                     edit
                   </Button>
@@ -295,7 +276,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                       <Button
                         variant="sky_blue"
                         size="base_medium"
-                        className="py-2 px-4"
+                        className="py-2 px-4 page-header-button"
                       >
                         update with Email
                       </Button>
@@ -343,7 +324,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           heading="bank details"
           info={{
             bank: landlordData.bank_details.bank_name,
-            "account name": capitalizeWords(landlordData.bank_details.account_name?.toLowerCase() || "___ ___"),
+            "account name": capitalizeWords(
+              landlordData.bank_details.account_name?.toLowerCase() || "___ ___"
+            ),
             "account number": landlordData.bank_details.account_number,
             ...(landlordData.user_tag === "mobile" && {
               "wallet ID": landlordData.bank_details.wallet_id,
