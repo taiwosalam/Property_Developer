@@ -31,14 +31,16 @@ export const PERIOD_OPTIONS = [
 // /property-manager-subscription/toggle-auto-renew
 export const toggleAutoRenewPlan = async (payload: any) => {
   try {
-    const res = await api.post(`/property-manager-subscription/toggle-auto-renew`, payload);
+    const res = await api.post(
+      `/property-manager-subscription/toggle-auto-renew`,
+      payload
+    );
     if (res.status === 200 || res.status === 201) return true;
   } catch (error) {
     handleAxiosError(error, "Failed to Auto Renew");
     return false;
-  } 
+  }
 };
-
 
 export const activatePlan = async (payload: any) => {
   try {
@@ -272,37 +274,116 @@ export const transformPropertyManagerSubsApiData = (
   });
 };
 
+// export const transformEnrollmentHistory = (
+//   enrollments: EnrollmentApiResponse["data"]["enrollments"]
+// ) => {
+//   return enrollments.slice(0, 6).map((enrollment, idx) => {
+//     // Map period to discount from PERIOD_OPTIONS
+//     const periodOption = PERIOD_OPTIONS.find((option) => {
+//       const label = option.label.toLowerCase().replace("s", "");
+//       const period = enrollment.period.toLowerCase();
+//       return (
+//         label.includes(period) ||
+//         period.includes(label.split(" -")[0].toLowerCase())
+//       );
+//     });
+//     let discount = "0%";
+//     if (periodOption && periodOption.label.includes("-")) {
+//       discount = periodOption.label.split("-")[1].trim();
+//     }
+
+//     return {
+//       id: `${enrollment.id || idx + 1}`,
+//       subscription_type: capitalizeWords(enrollment.subs_package) || "--- ---",
+//       duration: enrollment.period || "--- ---",
+//       discount,
+//       price: `₦${formatNumber(parseFloat(enrollment.amount))}`,
+//       amount_paid: enrollment.amount_paid
+//         ? `₦${formatNumber(parseFloat(enrollment.amount_paid))}`
+//         : `₦${formatNumber(parseFloat(enrollment.amount))}`,
+//       start_date: enrollment.date ? enrollment.date : "--- ---",
+//       due_date: enrollment.expire_date || "--- ---",
+//       status: enrollment.status || "--- ---",
+//       // auto_renew: enrollment.auto_renew || 0,
+//     };
+//   });
+// };
+
+type PeriodOption = {
+  value: string;
+  label: string; 
+};
+
 export const transformEnrollmentHistory = (
   enrollments: EnrollmentApiResponse["data"]["enrollments"]
 ) => {
   return enrollments.slice(0, 6).map((enrollment, idx) => {
-    // Map period to discount from PERIOD_OPTIONS
-    const periodOption = PERIOD_OPTIONS.find((option) => {
-      const label = option.label.toLowerCase().replace("s", "");
-      const period = enrollment.period.toLowerCase();
+    // Extract numeric months from backend string (e.g. "39 month")
+    const match = enrollment.period?.match(/\d+/);
+    const durationInMonths = match ? parseInt(match[0], 10) : 0;
+    const periodStr = enrollment.period?.toLowerCase() || "";
+
+    // Find exact matching option
+    let periodOption: PeriodOption | undefined = PERIOD_OPTIONS.find((opt) => {
+      const optValue = parseInt(opt.value, 10);
+      if (!isNaN(optValue)) {
+        return optValue === durationInMonths;
+      }
+      // Handle lifetime
       return (
-        label.includes(period) ||
-        period.includes(label.split(" -")[0].toLowerCase())
+        opt.label.toLowerCase() === "lifetime" &&
+        (periodStr === "lifetime" || durationInMonths > 500)
       );
     });
+
+    // If not exact match, pick the *closest lower or equal option* by months
+    if (!periodOption && durationInMonths > 0) {
+      const numericOptions = PERIOD_OPTIONS.map((opt) => ({
+        ...opt,
+        num: parseInt(opt.value, 10),
+      })).filter((opt) => !isNaN(opt.num));
+
+      const closest = numericOptions.reduce(
+        (prev, curr) => {
+          if (curr.num <= durationInMonths && curr.num > prev.num) {
+            return curr;
+          }
+          return prev;
+        },
+        { num: 0 } as any
+      );
+
+      if (closest && closest.value) {
+        periodOption = closest;
+      }
+    }
+
+    // Extract discount
     let discount = "0%";
-    if (periodOption && periodOption.label.includes("-")) {
+    if (periodOption?.label.includes("-")) {
       discount = periodOption.label.split("-")[1].trim();
     }
+
+    // Use amount_paid ONLY if it's defined (even if 0)
+    const hasAmountPaid =
+      enrollment.amount_paid !== undefined &&
+      enrollment.amount_paid !== null &&
+      enrollment.amount_paid !== "";
+
+    const amountPaid = hasAmountPaid
+      ? `₦${formatNumber(parseFloat(enrollment.amount_paid))}`
+      : `₦${formatNumber(parseFloat(enrollment.amount))}`;
 
     return {
       id: `${enrollment.id || idx + 1}`,
       subscription_type: capitalizeWords(enrollment.subs_package) || "--- ---",
-      duration: enrollment.period || "--- ---",
+      duration: periodOption?.label || enrollment.period || "--- ---",
       discount,
       price: `₦${formatNumber(parseFloat(enrollment.amount))}`,
-      amount_paid: enrollment.amount_paid
-        ? `₦${formatNumber(parseFloat(enrollment.amount_paid))}`
-        : `₦${formatNumber(parseFloat(enrollment.amount))}`,
+      amount_paid: amountPaid,
       start_date: enrollment.date ? enrollment.date : "--- ---",
       due_date: enrollment.expire_date || "--- ---",
       status: enrollment.status || "--- ---",
-      // auto_renew: enrollment.auto_renew || 0,
     };
   });
 };

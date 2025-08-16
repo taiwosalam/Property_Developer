@@ -166,7 +166,7 @@ const LandlordsReport = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <div className="space-y-9">
+    <div className="my-9">
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total"

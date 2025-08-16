@@ -973,3 +973,11 @@ button:disabled:not(.retain-opacity) {
 .account-card {
   @apply !min-w-[320px] shrink-0;
 }
+
+
+/* DO NOT CHANGE THIS WITHOUT CONSULTING @BINARYTECH001 */
+.management-cardstat-wrapper{
+  @apply flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar my-4 md:mt-0 flex-nowrap md:flex-wrap w-full px-2;
+}
+
+/*  mt-4 md:mt-0 */

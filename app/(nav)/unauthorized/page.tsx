@@ -64,7 +64,7 @@ const Unauthorized = () => {
         </ModalContent>
       </Modal>
 
-      <div className="py-11 px-20 flex flex-col gap-10">
+      <div className="py-11 md:px-20 px-10 flex flex-col gap-10">
         <div className="w-full flex items-center justify-center">
           <div className="relative text-brand-9">
             <UnauthorizedIcon />
@@ -81,7 +81,7 @@ const Unauthorized = () => {
         </div>
         <div className="flex flex-col gap-[15px]">
           <div>
-            <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
+            <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-md md:text-xl">
               Oops! You Can&rsquo;t Go There – Access Denied or Unauthorized
               Access
             </p>

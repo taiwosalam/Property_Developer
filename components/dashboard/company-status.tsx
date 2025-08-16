@@ -13,6 +13,7 @@ import { toast } from "sonner";
 import { sendDemoRequest } from "@/app/(nav)/dashboard/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { validateAndCleanPhoneNumber } from "@/utils/validatePhoneNumber";
+import Text from "../Form/Text/text";
 
 interface CompanyStatusModalProps {
   status: "approved" | "pending" | "rejected";
@@ -59,39 +60,8 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
     }
   };
 
-  // const handleSubmit = async (data: FormData) => {
-  //   const payload = {
-  //     name: data.get("full_name") ?? "",
-  //     title: data.get("title") ?? "",
-  //     email: user_email,
-  //     date: data.get("prefer_date") ?? "",
-  //     time: data.get("prefer_time") ?? "",
-  //     // phone: data.get("phone") ?? "",
-  //   };
-
-  //   const phoneNumber = data.get("phone");
-  //   const cleanedPhoneNumber = validateAndCleanPhoneNumber(phoneNumber);
-  //   if (!cleanedPhoneNumber && phoneNumber) {
-  //     toast.warning("Please enter a valid phone number.");
-  //     return;
-  //   }
-  //   try {
-  //     setReqLoading(true);
-  //     const res = await sendDemoRequest(objectToFormData(payload));
-  //     if (res) {
-  //       toast.success("Request sent successfully");
-  //       // After a successful demo request, show the alternate step.
-  //       setActiveStep(3);
-  //     }
-  //   } catch (error) {
-  //     toast.error("Failed to send Request. Try again");
-  //   } finally {
-  //     setReqLoading(false);
-  //   }
-  // };
-
   const handleSubmit = async (data: FormData) => {
-    const rawPhoneNumber = data.get("phone")?.toString() || ""; 
+    const rawPhoneNumber = data.get("phone")?.toString() || "";
     const cleanedPhoneNumber = validateAndCleanPhoneNumber(rawPhoneNumber);
 
     if (!cleanedPhoneNumber && rawPhoneNumber) {
@@ -134,19 +104,19 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
           ? "pending"
           : "success"
       }
-      className="lg:w-[50%] w-60%"
+      className="lg:w-[50%] w-[80%]"
     >
       {activeStep === 1 ? (
         // Step 1: Initial message for approved, rejected or pending (if no demo requested)
         <>
-          <p className="mt-2">
+          <Text size="sm" className="mt-2">
             {status === "pending"
               ? "Your verification submission has been successful. Please await an email notification regarding the approval of your account."
               : "We regret to inform you that your account verification submission did not meet the requirements."}
-          </p>
+          </Text>
           {status === "rejected" && reject_reason && (
             <div
-              className="mt-2"
+              className="text-xs md:text-base"
               dangerouslySetInnerHTML={{
                 __html: formatRejectReason(reject_reason),
               }}
@@ -156,7 +126,7 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
             <Button
               onClick={handleClick}
               size="base_medium"
-              className="px-8 py-2"
+              className="py-2 px-4 page-header-button"
             >
               {status === "pending" ? "Request Demo" : "Edit Account Setup"}
             </Button>
@@ -166,7 +136,7 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
         // Step 2: Demo request form (only shown when pending and no demo requested)
         <AuthForm onFormSubmit={handleSubmit} returnType="form-data">
           <div className="flex items-center w-full">
-            <div className="grid gap-4 md:gap-5 grid-cols-2 w-full">
+            <div className="grid gap-4 md:gap-5 grid-cols-1 md:grid-cols-2 w-full">
               <Input
                 required
                 id="full_name"
@@ -199,7 +169,7 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
             <Button
               type="submit"
               size="base_medium"
-              className="px-8 py-2"
+              className="py-2 px-4 page-header-button"
               disabled={reqLoading}
             >
               {reqLoading ? "Please wait..." : "Request Demo"}
@@ -209,11 +179,11 @@ const CompanyStatusModal = ({ status, id }: CompanyStatusModalProps) => {
       ) : activeStep === 3 ? (
         // Step 3: Alternate view when a demo has already been requested.
         <>
-          <p className="mt-2">
+          <Text size="sm" className="mt-2">
             Our support team will get in touch with you to assist in setting up
             your account and also provide you your account manager that will
             provide a demonstration guide on how to use this software.
-          </p>
+          </Text>
         </>
       ) : null}
     </CommpanyStatusPreset>

@@ -208,8 +208,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionProperty: "margin-left",
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
-          className={clsx("custom-flex-col sticky z-[2] duration-300", {
-            "w-full top-[150px]": navbar === "row", // Adjusted top to 150px to account for TopNav height
+          className={clsx("custom-flex-col fixed z-[2] duration-300", {
+            "w-full top-[139px]": navbar === "row", // Adjusted top to 150px to account for TopNav height
             "top-[99px]": navbar !== "row",
             "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
             "md:ml-[235px] lg:ml-[250px]": isSideNavOpen && navbar !== "row",
@@ -273,7 +273,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]",
+            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 mt-[48px] min-h-[calc(100vh-152px)]",
             {
               "w-full md:ml-0 lg:ml-0": navbar === "row",
               "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
