@@ -49,6 +49,8 @@ import { useTourStore } from "@/store/tour-store";
 import { getLocalStorage, removeLocalStorage } from "@/utils/local-storage";
 import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manage-expenses/data";
 import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
+import ProgressCardLoader from "@/components/Loader/setup-card-loader";
+import { StartRentLLoadingSteps } from "@/services/loading-steps";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -286,7 +288,6 @@ const StartRent = () => {
     isTourCompleted,
   ]);
 
-
   useEffect(() => {
     if (unit_data?.unit_id) {
       sessionStorage.setItem("return_to_start_rent_unit_id", unit_data.unit_id);
@@ -317,14 +318,14 @@ const StartRent = () => {
     );
   };
 
-  if (reqLoading || pdfLoading) {
-    return (
-      <FullPageLoader
-        text="Submitting rent..."
-        onClose={() => setReqLoading(false)} 
-      />
-    );
-  }
+  // if (reqLoading || pdfLoading) {
+  //   return (
+  //     <FullPageLoader
+  //       text="Submitting rent..."
+  //       onClose={() => setReqLoading(false)}
+  //     />
+  //   );
+  // }
 
   if (loading) return <PageCircleLoader />;
   if (isNetworkError) return <NetworkError />;
@@ -339,120 +340,123 @@ const StartRent = () => {
     selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
   return (
-    <div className="space-y-6 pb-[100px]">
-      <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
-      <section className="space-y-6">
-        <EstateDetails
-          title={`${isRental ? "Unit" : "Facility"} Details`}
-          estateData={isRental ? rentalData : estateData}
-        />
-        <EstateSettings
-          id={propertyId as string}
-          title={`${isRental ? "Unit" : "Facility"} Settings`}
-          estateSettingsDta={
-            isRental ? propertySettingsData : estateSettingsDta
-          }
-          // {...(isRental ? { gridThree: true } : {})}
-          gridThree
-        />
-        <OccupantProfile
-          isRental={isRental}
-          occupants={tenants_data.map((tenant) => ({
-            name: tenant.name,
-            id: tenant.id,
-            picture: tenant.picture || empty,
-          }))}
-          period={unit_data?.fee_period as RentPeriod}
-          setStart_date={setStartDate}
-          setSelectedTenantId={setSelectedTenantId}
-          setSelectedCheckboxOptions={setSelectedCheckboxOptions}
-          currency={unit_data.currency as Currency}
-          feeDetails={[
-            {
-              name: isRental
-                ? `${unit_data?.fee_period} Rent`
-                : `${unit_data?.fee_period} Fee`,
-              amount: unit_data.newTenantPrice,
-            },
-            { name: "Service Charge", amount: unit_data.service_charge },
-            { name: "Caution Fee", amount: unit_data.caution_fee },
-            { name: "Inspection Fee", amount: unit_data.inspectionFee },
-            { name: "Agency Fee", amount: unit_data.unitAgentFee },
-            { name: "Legal Fee", amount: unit_data.legalFee },
-            { name: "Security Fee", amount: unit_data.security_fee },
-            { name: "VAT", amount: unit_data.vat_amount },
-            { name: "Other Charges", amount: unit_data.other_charge },
-          ].filter((fee) => fee.amount !== undefined && fee.amount !== "")}
-          total_package={Number(unit_data.total_package)}
-          loading={loading}
-          id={propertyId as string}
-          setDueDate={setDueDate}
-          disableInput={disableInput}
-          tenantsLoading={allTenantsLoading}
-        />
-      </section>
+    <>
+      <ProgressCardLoader loading={reqLoading || pdfLoading} steps={StartRentLLoadingSteps} />
+      <div className="space-y-6 pb-[100px]">
+        <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
+        <section className="space-y-6">
+          <EstateDetails
+            title={`${isRental ? "Unit" : "Facility"} Details`}
+            estateData={isRental ? rentalData : estateData}
+          />
+          <EstateSettings
+            id={propertyId as string}
+            title={`${isRental ? "Unit" : "Facility"} Settings`}
+            estateSettingsDta={
+              isRental ? propertySettingsData : estateSettingsDta
+            }
+            // {...(isRental ? { gridThree: true } : {})}
+            gridThree
+          />
+          <OccupantProfile
+            isRental={isRental}
+            occupants={tenants_data.map((tenant) => ({
+              name: tenant.name,
+              id: tenant.id,
+              picture: tenant.picture || empty,
+            }))}
+            period={unit_data?.fee_period as RentPeriod}
+            setStart_date={setStartDate}
+            setSelectedTenantId={setSelectedTenantId}
+            setSelectedCheckboxOptions={setSelectedCheckboxOptions}
+            currency={unit_data.currency as Currency}
+            feeDetails={[
+              {
+                name: isRental
+                  ? `${unit_data?.fee_period} Rent`
+                  : `${unit_data?.fee_period} Fee`,
+                amount: unit_data.newTenantPrice,
+              },
+              { name: "Service Charge", amount: unit_data.service_charge },
+              { name: "Caution Fee", amount: unit_data.caution_fee },
+              { name: "Inspection Fee", amount: unit_data.inspectionFee },
+              { name: "Agency Fee", amount: unit_data.unitAgentFee },
+              { name: "Legal Fee", amount: unit_data.legalFee },
+              { name: "Security Fee", amount: unit_data.security_fee },
+              { name: "VAT", amount: unit_data.vat_amount },
+              { name: "Other Charges", amount: unit_data.other_charge },
+            ].filter((fee) => fee.amount !== undefined && fee.amount !== "")}
+            total_package={Number(unit_data.total_package)}
+            loading={loading}
+            id={propertyId as string}
+            setDueDate={setDueDate}
+            disableInput={disableInput}
+            tenantsLoading={allTenantsLoading}
+          />
+        </section>
 
-      <FixedFooter className="start-rent-button flex gap-4">
-        {AGREEMENT_CHECKED && isRental && (
-          <>
-            {HAS_DOCUMENT ? (
-              <Button
-                size="base_medium"
-                className="py-2 px-6"
-                onClick={handleAgreementClick}
-              >
-                Manage Agreement
-              </Button>
-            ) : (
-              <Modal>
-                <ModalTrigger asChild>
-                  <Button size="base_medium" className="py-2 px-6">
-                    Create Agreement
-                  </Button>
-                </ModalTrigger>
-                <ModalContent>
-                  <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
-                </ModalContent>
-              </Modal>
-            )}
-          </>
+        <FixedFooter className="start-rent-button flex gap-4">
+          {AGREEMENT_CHECKED && isRental && (
+            <>
+              {HAS_DOCUMENT ? (
+                <Button
+                  size="base_medium"
+                  className="py-2 px-6"
+                  onClick={handleAgreementClick}
+                >
+                  Manage Agreement
+                </Button>
+              ) : (
+                <Modal>
+                  <ModalTrigger asChild>
+                    <Button size="base_medium" className="py-2 px-6">
+                      Create Agreement
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+                  </ModalContent>
+                </Modal>
+              )}
+            </>
+          )}
+
+          <Button
+            size="base_medium"
+            className="py-2 px-6 items-end ml-auto"
+            disabled={reqLoading || pdfLoading || !canSubmitRent}
+            onClick={handleStartRent}
+          >
+            {reqLoading || pdfLoading
+              ? "Please wait..."
+              : isPastDate
+              ? "Save Rent"
+              : !IS_WEB_TENANT
+              ? "Proceed"
+              : isRental
+              ? "Proceed"
+              : "Move In"}
+          </Button>
+        </FixedFooter>
+
+        {isAgreementModalOpen && (
+          <Modal
+            state={{
+              isOpen: isAgreementModalOpen,
+              setIsOpen: setIsAgreementModalOpen,
+            }}
+          >
+            <ModalContent>
+              <AgreementPreview
+                onClose={() => setIsAgreementModalOpen(false)}
+                onContinue={handleAgreementContinue}
+                isWebTenant={IS_WEB_TENANT}
+              />
+            </ModalContent>
+          </Modal>
         )}
-
-        <Button
-          size="base_medium"
-          className="py-2 px-6 items-end ml-auto"
-          disabled={reqLoading || pdfLoading || !canSubmitRent}
-          onClick={handleStartRent}
-        >
-          {reqLoading || pdfLoading
-            ? "Please wait..."
-            : isPastDate
-            ? "Save Rent"
-            : !IS_WEB_TENANT
-            ? "Proceed"
-            : isRental
-            ? "Proceed"
-            : "Move In"}
-        </Button>
-      </FixedFooter>
-
-      {isAgreementModalOpen && (
-        <Modal
-          state={{
-            isOpen: isAgreementModalOpen,
-            setIsOpen: setIsAgreementModalOpen,
-          }}
-        >
-          <ModalContent>
-            <AgreementPreview
-              onClose={() => setIsAgreementModalOpen(false)}
-              onContinue={handleAgreementContinue}
-              isWebTenant={IS_WEB_TENANT}
-            />
-          </ModalContent>
-        </Modal>
-      )}
-    </div>
+      </div>
+    </>
   );
 };
 

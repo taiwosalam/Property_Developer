@@ -39,7 +39,7 @@ const ReviewChat = () => {
 
   return (
     <>
-      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col">
+      <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-darkText-primary custom-flex-col">
         {loading ? <ReviewCardSkeleton /> : <Review {...review?.main} main />}
 
         {review?.replies?.comments?.map((comment) => (

@@ -311,7 +311,7 @@ export const transformPropertyManagerSubsApiData = (
 
 type PeriodOption = {
   value: string;
-  label: string; 
+  label: string;
 };
 
 export const transformEnrollmentHistory = (
@@ -323,39 +323,31 @@ export const transformEnrollmentHistory = (
     const durationInMonths = match ? parseInt(match[0], 10) : 0;
     const periodStr = enrollment.period?.toLowerCase() || "";
 
-    // Find exact matching option
-    let periodOption: PeriodOption | undefined = PERIOD_OPTIONS.find((opt) => {
-      const optValue = parseInt(opt.value, 10);
-      if (!isNaN(optValue)) {
-        return optValue === durationInMonths;
-      }
-      // Handle lifetime
-      return (
-        opt.label.toLowerCase() === "lifetime" &&
-        (periodStr === "lifetime" || durationInMonths > 500)
-      );
-    });
+    let periodOption: PeriodOption | undefined;
 
-    // If not exact match, pick the *closest lower or equal option* by months
+    // Lifetime check
+    if (periodStr === "lifetime" || durationInMonths > 500) {
+      periodOption = PERIOD_OPTIONS.find(
+        (opt) => opt.label.toLowerCase() === "lifetime"
+      );
+    }
+
+    // If more than 12 months, pick year option (ignore remainder months)
+    if (!periodOption && durationInMonths >= 12) {
+      const years = Math.floor(durationInMonths / 12); // whole years only
+      const yearOption = PERIOD_OPTIONS.find((opt) =>
+        opt.label.toLowerCase().startsWith(`${years} year`)
+      );
+      if (yearOption) {
+        periodOption = yearOption;
+      }
+    }
+
+    // If still no match, fall back to exact month option
     if (!periodOption && durationInMonths > 0) {
-      const numericOptions = PERIOD_OPTIONS.map((opt) => ({
-        ...opt,
-        num: parseInt(opt.value, 10),
-      })).filter((opt) => !isNaN(opt.num));
-
-      const closest = numericOptions.reduce(
-        (prev, curr) => {
-          if (curr.num <= durationInMonths && curr.num > prev.num) {
-            return curr;
-          }
-          return prev;
-        },
-        { num: 0 } as any
+      periodOption = PERIOD_OPTIONS.find(
+        (opt) => parseInt(opt.value, 10) === durationInMonths
       );
-
-      if (closest && closest.value) {
-        periodOption = closest;
-      }
     }
 
     // Extract discount
@@ -364,11 +356,21 @@ export const transformEnrollmentHistory = (
       discount = periodOption.label.split("-")[1].trim();
     }
 
-    // Use amount_paid ONLY if it's defined (even if 0)
+    // Build display duration
+    let durationLabel = enrollment.period || "--- ---";
+    if (durationInMonths >= 12) {
+      const years = Math.floor(durationInMonths / 12);
+      const months = durationInMonths % 12;
+      durationLabel =
+        months > 0 ? `${years} Years ${months} Months` : `${years} Years`;
+    }
+
+    // Amount paid logic
     const hasAmountPaid =
       enrollment.amount_paid !== undefined &&
       enrollment.amount_paid !== null &&
-      enrollment.amount_paid !== "";
+      enrollment.amount_paid !== "" &&
+      Number(enrollment.amount_paid) > 0;
 
     const amountPaid = hasAmountPaid
       ? `₦${formatNumber(parseFloat(enrollment.amount_paid))}`
@@ -377,7 +379,7 @@ export const transformEnrollmentHistory = (
     return {
       id: `${enrollment.id || idx + 1}`,
       subscription_type: capitalizeWords(enrollment.subs_package) || "--- ---",
-      duration: periodOption?.label || enrollment.period || "--- ---",
+      duration: durationLabel,
       discount,
       price: `₦${formatNumber(parseFloat(enrollment.amount))}`,
       amount_paid: amountPaid,

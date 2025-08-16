@@ -207,12 +207,17 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)",
             transitionProperty: "margin-left",
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
+            ...(isSideNavOpen && navbar !== "row"
+              ? { width: "calc(100vw - 250px)" } // when sidenav open
+              : { width: "100vw" }), // when sidenav closed‰„
           }}
           className={clsx("custom-flex-col fixed z-[2] duration-300", {
             "w-full top-[139px]": navbar === "row", // Adjusted top to 150px to account for TopNav height
             "top-[99px]": navbar !== "row",
-            "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
-            "md:ml-[235px] lg:ml-[250px]": isSideNavOpen && navbar !== "row",
+            "md:ml-[110px] lg:ml-[110px] w-[calc(100vw - 250px)] w-full":
+              !isSideNavOpen && navbar !== "row",
+            "md:ml-[235px] lg:ml-[250px] w-full":
+              isSideNavOpen && navbar !== "row",
           })}
         >
           <div
@@ -222,7 +227,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <div
             className={`h-[50px] px-3 flex items-center ${
               navbar !== "row" ? "justify-between" : "justify-end"
-            } gap-2 bg-white dark:bg-[#020617] max-w-full overflow-hidden`}
+            } gap-2 bg-white dark:bg-[#020617] max-w-full`}
           >
             {navbar !== "row" && (
               <button
