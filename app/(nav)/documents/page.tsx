@@ -30,6 +30,7 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import OtherAgreementDocument from "@/components/Documents/other-agreement";
 import { DrawerComponent } from "@/components/Drawer/drawer";
+import { PlusIcon } from "@/public/icons/icons";
 
 const Documents = () => {
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -151,8 +152,8 @@ const Documents = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="page-header-container">
-        <div className="hidden md:flex gap-5 flex-wrap">
+      <div className="account-card-container">
+        <div className="pt-2">
           <ManagementStatistcsCard
             title="Total Document"
             newData={total_month ?? 0}
@@ -162,7 +163,10 @@ const Documents = () => {
         </div>
         <Modal>
           <ModalTrigger asChild>
-            <Button type="button" className="page-header-button">
+            <Button
+              type="button"
+              className="page-header-button md:block hidden !h-max self-end"
+            >
               + create document
             </Button>
           </ModalTrigger>
@@ -237,6 +241,17 @@ const Documents = () => {
           )}
         </section>
       </div>
+
+      <Modal>
+        <ModalTrigger asChild>
+          <Button type="button" className="mobile-button">
+            <PlusIcon />
+          </Button>
+        </ModalTrigger>
+        <ModalContent>
+          <CreateTenancyAggrementModal />
+        </ModalContent>
+      </Modal>
       <Pagination
         totalPages={pagination?.total_pages ?? 0}
         currentPage={pagination?.current_page ?? 0}

@@ -264,7 +264,7 @@ export const VerificationMethod = ({
       <WalletModalPreset
         title="Verify your BVN"
         headerClassName="text-xl"
-        className="w-[800px]"
+        className="w-[800px] !bg-red-500"
         back={onBack}
       >
         <div className="p-[18px] rounded-2xl dark:bg-darkText-primary dark:border dark:border-gray-500 mt-4 mb-4">
@@ -297,7 +297,7 @@ export const VerificationMethod = ({
     <WalletModalPreset
       title="Verify your BVN"
       headerClassName="text-xl"
-      className="w-[800px]"
+      className="w-[800px] "
       back={onBack}
     >
       <div>
@@ -316,7 +316,7 @@ export const VerificationMethod = ({
                 key={index}
                 onClick={() => onMethodSelect(method.title)}
               >
-                <div className="flex justify-between items-center">
+                <div className="flex  flex-col justify-between md:flex-row items-center">
                   <div className="flex items-start gap-3">
                     <div className="text-brand-9 flex justify-center items-center px-6 py-3 aspect-video bg-brand-9 custom-secondary-bg text-3xl rounded-2xl">
                       <method.icon />
@@ -333,7 +333,7 @@ export const VerificationMethod = ({
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-center justify-end">
+                  <div className="flex  ml-auto md:items-center justify-end">
                     <Button
                       // onClick={(e) => {
                       //   e.stopPropagation(); // Prevent onClick from triggering parent div

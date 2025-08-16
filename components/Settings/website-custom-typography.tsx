@@ -250,7 +250,7 @@ const WebsiteTypography = () => {
               typographySettings[setting.title]?.fontSize;
 
             return (
-              <div key={setting.title} className="my-4">
+              <div key={setting.title} className="my-4 ">
                 <div className="flex flex-col flex-1 mb-4">
                   <h3 className="text-text-quaternary dark:text-white text-base font-medium capitalize">
                     {setting.title}
@@ -258,7 +258,7 @@ const WebsiteTypography = () => {
                   <p className="text-text-disabled">{setting.desc}</p>
                 </div>
 
-                <div className="flex flex-col flex-1 justify-end">
+                <div className="flex flex-col k w-full flex-1 justify-end">
                   <div className="wrapper flex md:flex-nowrap sm:flex-wrap gap-2">
                     <Select
                       id={setting.title}
@@ -304,7 +304,7 @@ const WebsiteTypography = () => {
 
                   {/* PREVIEW ONLY SHOWS WHEN CHANGED */}
                   {/* {hasChanged && ( */}
-                  <div className="mb-4 mt-2 max-w-[300px] overflow-auto custom-round-scrollbar">
+                  <div className="mb-4 mt-2 max-w-full sm:max-w-[300px] overflow-auto custom-round-scrollbar">
                     <p
                       style={{
                         fontWeight: numericWeight || setting.defaultWeight,

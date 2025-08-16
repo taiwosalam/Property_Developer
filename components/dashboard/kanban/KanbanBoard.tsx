@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
-
 import { BoardColumn, BoardContainer } from "./BoardColumn";
 import {
   DndContext,
@@ -265,7 +264,6 @@ export function KanbanBoard({
       }));
     }
   }, [pagination]);
-
 
   // Load more data for a specific column
   const handleLoadMore = useCallback(
@@ -720,13 +718,11 @@ export function KanbanBoard({
             isOverATask ? overIndex - 1 : activeIndex
           );
         });
-
       }
     }
     pickedUpTaskColumn.current = null;
   }
 
- 
   function onDragOver(event: DragOverEvent) {
     const { active, over } = event;
     if (!over) return;

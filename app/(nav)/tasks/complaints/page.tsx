@@ -360,31 +360,23 @@ const ComplaintsPage = () => {
         )}
       </SectionContainer>
 
-      {!isMobile && (
-        <SectionContainer
-          heading={
-            pageData && pageData.complaints.length > 0 ? "All Complains" : ""
-          }
-        >
-          {loading ? (
-            <div className="flex justify-between gap-12">
-              <CardsLoading
-                length={3}
-                className="h-[300px] border-dashed border-2 border-spacing-4"
-              />
-            </div>
-          ) : !pageData?.complaints.length ? null : !!config.params.search ||
-            hasActiveFilters(appliedFilters) ? (
-            pageData.complaints.length === 0 ? (
-              <SearchError />
-            ) : (
-              <KanbanBoard
-                kanbanTask={pageData?.complaints}
-                pagination={pageData?.pagination}
-                onLoadMore={handleLoadMore}
-                loading={loading}
-              />
-            )
+      {/* {!isMobile && ( */}
+      <SectionContainer
+        heading={
+          pageData && pageData.complaints.length > 0 ? "All Complains" : ""
+        }
+      >
+        {loading ? (
+          <div className="flex justify-between gap-12">
+            <CardsLoading
+              length={3}
+              className="h-[300px] border-dashed border-2 border-spacing-4"
+            />
+          </div>
+        ) : !pageData?.complaints.length ? null : !!config.params.search ||
+          hasActiveFilters(appliedFilters) ? (
+          pageData.complaints.length === 0 ? (
+            <SearchError />
           ) : (
             <KanbanBoard
               kanbanTask={pageData?.complaints}
@@ -392,9 +384,17 @@ const ComplaintsPage = () => {
               onLoadMore={handleLoadMore}
               loading={loading}
             />
-          )}
-        </SectionContainer>
-      )}
+          )
+        ) : (
+          <KanbanBoard
+            kanbanTask={pageData?.complaints}
+            pagination={pageData?.pagination}
+            onLoadMore={handleLoadMore}
+            loading={loading}
+          />
+        )}
+      </SectionContainer>
+      {/* )} */}
 
       {/* infinite scroll later */}
     </div>
