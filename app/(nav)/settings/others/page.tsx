@@ -1611,10 +1611,12 @@ Once restricted, they will no longer have access to participate in the property'
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 bg-black rounded-full"></div> <h4 className="text-lg font-semibold text-text-primary">{category.title}</h4>
+                      {/* <div className="w-2 h-2 bg-black rounded-full"></div>  */}
+                      {/* <h4 className="text-lg font-semibold text-text-primary">{category.title}</h4> */}
+                      <h4 className="text-lg text-text-primary">{category.title}</h4>
                     </div>
                     {/* Category Description */}
-                    <p className="text-sm text-text-disabled ml-4 mt-1 mb-3">
+                    <p className="text-sm text-text-disabled ml-0 mt-1 mb-3">
                       {category.desc}
                     </p>
                   </div>
@@ -1623,15 +1625,15 @@ Once restricted, they will no longer have access to participate in the property'
                   <div className="flex items-center gap-2">
                     {/* <span className="text-sm text-text-disabled">Enable all</span> */}
                     <Switch
-                      checked={category.options.every(option =>
+                      checked={category.options.some(option =>
                         notificationSettings[option.name]
                       )}
                       onClick={() => {
                         // Toggle all options in this category
-                        const allChecked = category.options.every(option =>
+                        const anyChecked = category.options.some(option =>
                           notificationSettings[option.name]
                         );
-                        const newValue = !allChecked;
+                        const newValue = !anyChecked;
                         category.options.forEach(option => {
                           handleSetIsChecked(option.name, newValue);
                         });
