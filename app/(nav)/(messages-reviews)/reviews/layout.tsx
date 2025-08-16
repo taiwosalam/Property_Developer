@@ -221,14 +221,18 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                   <div className="flex flex-col-reverse md:flex-row gap-4 md:justify-between md:items-center w-full">
                     <div className="flex gap-2 items-center">
                       <div
-                        className={`flex items-center flex-col ${selectedFilters.includes("Positive Review")
-                          ? "border rounded-md"
-                          : ""
-                          }`}
+                        className={`flex items-center flex-col ${
+                          selectedFilters.includes("Positive Review")
+                            ? "border rounded-md"
+                            : ""
+                        }`}
                       >
                         <div
-                          className={`p-2 flex items-center gap-2 cursor-pointer ${selectedFilters.includes("Positive Review") ? "" : ""
-                            }`}
+                          className={`p-2 flex items-center gap-2 cursor-pointer ${
+                            selectedFilters.includes("Positive Review")
+                              ? ""
+                              : ""
+                          }`}
                           onClick={() =>
                             handleFilterClick("Positive Review", "positive")
                           }
@@ -243,14 +247,16 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                       </div>
 
                       <div
-                        className={`flex items-center flex-col ${selectedFilters.includes("Neutral Review")
-                          ? "border rounded-md"
-                          : ""
-                          }`}
+                        className={`flex items-center flex-col ${
+                          selectedFilters.includes("Neutral Review")
+                            ? "border rounded-md"
+                            : ""
+                        }`}
                       >
                         <div
-                          className={`p-2 flex gap-2 items-center rounded-md cursor-pointer ${selectedFilters.includes("Neutral Review") ? "" : ""
-                            }`}
+                          className={`p-2 flex gap-2 items-center rounded-md cursor-pointer ${
+                            selectedFilters.includes("Neutral Review") ? "" : ""
+                          }`}
                           onClick={() =>
                             handleFilterClick("Neutral Review", "neutral")
                           }
@@ -267,14 +273,18 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                       </div>
 
                       <div
-                        className={`flex items-center flex-col ${selectedFilters.includes("Negative Review")
-                          ? "border rounded-md"
-                          : ""
-                          }`}
+                        className={`flex items-center flex-col ${
+                          selectedFilters.includes("Negative Review")
+                            ? "border rounded-md"
+                            : ""
+                        }`}
                       >
                         <div
-                          className={`p-2 flex gap-2 items-center cursor-pointer ${selectedFilters.includes("Negative Review") ? "" : ""
-                            }`}
+                          className={`p-2 flex gap-2 items-center cursor-pointer ${
+                            selectedFilters.includes("Negative Review")
+                              ? ""
+                              : ""
+                          }`}
                           onClick={() =>
                             handleFilterClick("Negative Review", "negative")
                           }
@@ -288,60 +298,60 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                       </div>
                     </div>
                     <div className="flex gap-2 items-center">
-                    <Input
-                      id="search"
-                      value={searchInput}
-                      onChange={(value: string) => setSearchInput(value)}
-                      className="w-full"
-                      placeholder="Search for reviews"
-                      leftIcon={"/icons/search-icon.svg"}
-                      inputClassName="pr-[52px] border-transparent"
-                    />
-                    {/* <div className="absolute top-2/4 right-0 -translate-y-2/4"> */}
-                    <div className="">
-                    <FilterButton
-                      noTitle
-                      className="bg-transparent py-[10px] px-4"
-                      onClick={(e) => setAnchorEl(e.currentTarget)}
-                    />
-                    <MessagesFilterMenu
-                      anchorEl={anchorEl}
-                      open={Boolean(anchorEl)}
-                      onClose={handleMenuClose}
-                      onFilterApply={handleFilterApply}
-                      setSelectedLabel={setSelectedLabel}
-                      allowMultiple={false}
-                      filterOptions={[
-                        {
-                          label: "Total Reviews",
-                          bgColor: "#60A5FA",
-                          value: reviews?.total_reviews,
-                        },
-                        {
-                          label: "Positive Review",
-                          bgColor: "#01BA4C",
-                          value: reviews?.total_dislike,
-                        },
-                        {
-                          label: "Neutral Review",
-                          bgColor: "#FFBB53",
-                          value: reviews?.neutral_count,
-                        },
-                        {
-                          label: "Negative Review",
-                          bgColor: "#E9212E",
-                          value: reviews?.total_like,
-                        },
+                      <Input
+                        id="search"
+                        value={searchInput}
+                        onChange={(value: string) => setSearchInput(value)}
+                        className="w-full"
+                        placeholder="Search for reviews"
+                        leftIcon={"/icons/search-icon.svg"}
+                        inputClassName="pr-[52px] border-transparent"
+                      />
+                      {/* <div className="absolute top-2/4 right-0 -translate-y-2/4"> */}
+                      <div className="">
+                        <FilterButton
+                          noTitle
+                          className="bg-transparent py-[10px] px-4"
+                          onClick={(e) => setAnchorEl(e.currentTarget)}
+                        />
+                        <MessagesFilterMenu
+                          anchorEl={anchorEl}
+                          open={Boolean(anchorEl)}
+                          onClose={handleMenuClose}
+                          onFilterApply={handleFilterApply}
+                          setSelectedLabel={setSelectedLabel}
+                          allowMultiple={false}
+                          filterOptions={[
+                            {
+                              label: "Total Reviews",
+                              bgColor: "#60A5FA",
+                              value: reviews?.total_reviews,
+                            },
+                            {
+                              label: "Positive Review",
+                              bgColor: "#01BA4C",
+                              value: reviews?.total_dislike,
+                            },
+                            {
+                              label: "Neutral Review",
+                              bgColor: "#FFBB53",
+                              value: reviews?.neutral_count,
+                            },
+                            {
+                              label: "Negative Review",
+                              bgColor: "#E9212E",
+                              value: reviews?.total_like,
+                            },
 
-                        {
-                          label: "Un-replied Review",
-                          bgColor: "#005623",
-                          value: reviews?.total_unreplied,
-                        },
-                      ]}
-                    />
-                  </div>
-                  </div>
+                            {
+                              label: "Un-replied Review",
+                              bgColor: "#005623",
+                              value: reviews?.total_unreplied,
+                            },
+                          ]}
+                        />
+                      </div>
+                    </div>
                   </div>
                   {/* <div className="absolute top-2/4 right-0 -translate-y-2/4">
                     <FilterButton

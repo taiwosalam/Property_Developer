@@ -41,12 +41,10 @@ const Marquee = ({
   return (
     <>
       {showMarquee && (
-        <div
-          className={`relative overflow-hidden ${className}`}
-        >
+        <div className={`relative overflow-hidden ${className}`}>
           <div
             ref={marqueeRef}
-            className="w-full h-12 flex items-center"
+            className="w-full h-4 flex items-center"
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
           >
@@ -58,16 +56,10 @@ const Marquee = ({
                 animationPlayState: isHovered ? "paused" : "running",
               }}
             >
-              <span className="text-brand-9 text-sm">{text}</span>
-              <a
-                href={url}
-                onClick={handleLinkClick}
-                className="text-blue-600 text-sm hover:text-blue-800 underline font-medium transition-colors duration-200"
-              >
-                {urlText}
-              </a>
-              {/* Duplicate content for seamless loop */}
-              <span className="text-brand-9 text-sm">{parse(text)}</span>
+              <div
+                className="text-brand-9 text-sm"
+                dangerouslySetInnerHTML={{ __html: text }}
+              />
               <a
                 href={url}
                 onClick={handleLinkClick}
