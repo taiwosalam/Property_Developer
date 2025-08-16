@@ -28,6 +28,7 @@ import useFetch from "@/hooks/useFetch";
 import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ChevronLeftIcon } from "lucide-react";
+import useConversationListener from "@/hooks/useConversationListen";
 
 const useUserProfile = (id: string | number) => {
   const { data, loading } = useFetch<UserDetailsResponse>(
@@ -65,7 +66,7 @@ const Chat = () => {
   // Track which chat id last loaded
   const lastLoadedId = useRef<string | null>(null);
 
-  // User lookup and info
+  // User lookup and info - UserId is the participant ID (user u're chatting...)
   const userId = Number(id);
   const user: UsersProps | undefined =
     messageUserData || users.find((u: UsersProps) => Number(u.id) === userId);
@@ -154,6 +155,7 @@ const Chat = () => {
       setIsLoading(false);
     }
   }, [apiData, setChatData, isGroupChat, id]);
+
 
   // UI Guards
   if (!user) {

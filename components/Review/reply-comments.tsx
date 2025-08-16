@@ -47,7 +47,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
       </div>
       <div className=" flex-1 space-y-2">
         <div className="flex gap-2 items-center">
-          <p className="text-text-primary text-sm font-medium capitalize">
+          <p className="text-text-primary dark:text-white text-sm font-medium capitalize">
             {name.toLocaleLowerCase()}
           </p>
           {tier && (
@@ -58,7 +58,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
           )}
         </div>
 
-        <p className="text-text-disabled text-xs">{comment || text}</p>
+        <p className="text-text-disabled dark:text-gray-300 text-xs">{comment || text}</p>
 
         {replies.length > 0 && (
           <div className="ml-4">

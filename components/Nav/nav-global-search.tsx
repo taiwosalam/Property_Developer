@@ -30,6 +30,7 @@ import {
 } from "./global_data";
 import { debounce } from "lodash";
 import { useRoleBasedSearch } from "./useRoleBaseSearch"; // Import the new hook
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const NavGlobalSearch = () => {
   const { role, setRole } = useRole();
@@ -37,6 +38,7 @@ const NavGlobalSearch = () => {
   const [activeTab, setActiveTab] = useState<string>("");
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+  const { isMobile } = useWindowWidth();
   const [searchResults, setSearchResults] = useState<IGlobalSearchPageData | null>(null);
 
   const { setIsOpen } = useModal();
@@ -159,31 +161,31 @@ const NavGlobalSearch = () => {
         transition: "width 0.3s ease",
       }}
       className={`custom-flex-col gap-3 bg-white dark:bg-black rounded-2xl border border-solid border-neutral-4 dark:border-[#3C3D37] overflow-hidden max-h-[80vh] ${
-        searchQuery === "" ? "w-[50%] max-w-[600px]" : "w-[85%] max-w-[1200px]"
+        searchQuery === "" ? "w-[80%] md:w-[50%] max-w-full md:max-w-[600px]" : "w-[85%] max-w-[85%] md:max-w-[1200px]"
       }`}
     >
-      <div className="custom-flex-col gap-6 pt-8 px-8 bg-neutral-2 dark:bg-black border-b border-solid border-neutral-4 dark:border-[#3C3D37]">
+      <div className="custom-flex-col gap-6 md:pt-8 pt-2 px-3 md:px-8 bg-neutral-2 dark:bg-black border-b border-solid border-neutral-4 dark:border-[#3C3D37]">
         <div className="custom-flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <div className="custom-flex-col">
-              <h2 className="text-primary-navy dark:text-white text-xl font-bold uppercase">
+          <div className="flex flex-col items-start justify-between">
+            <div className="flex itens-center w-full justify-between">
+              <h2 className="text-primary-navy dark:text-white text-base md:text-xl font-bold uppercase">
                 global search
               </h2>
-              <p className="text-text-disabled text-sm font-normal">
+            <ModalTrigger close className="">
+              <NavCloseIcon />
+            </ModalTrigger>
+            </div>
+              <p className="text-text-disabled text-xs md:text-sm font-normal text-start">
                 Easily find anything across the app using keywords, locations,
                 or names.
               </p>
-            </div>
-            <ModalTrigger close className="p-2">
-              <NavCloseIcon />
-            </ModalTrigger>
           </div>
           <SectionSeparator />
         </div>
-        <div className="flex pb-6">
+        <div className="flex items-center pb-6">
           <div
-            className={`h-[45px] flex gap-3 ${
-              searchQuery === "" ? "w-full" : " w-[60%]"
+            className={`h-[35px] md:h-[45px] flex items-center gap-3 ${
+              searchQuery === "" ? "w-full" : "w-full md:w-[60%]"
             }`}
           >
             <Input
@@ -191,7 +193,7 @@ const NavGlobalSearch = () => {
               value={searchQuery}
               onChange={(value: string) => setSearchQuery(value)}
               placeholder="Type here"
-              className="h-full flex-1 text-sm bg-neutral-3 dark:bg-black py-2"
+              className="h-full flex-1 text-sm bg-neutral-3 dark:bg-black"
             />
 
             <button
@@ -199,7 +201,7 @@ const NavGlobalSearch = () => {
               className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md cursor-none"
             >
               <span className="text-white">
-                <AlertInfoIcon size={24} />
+                <AlertInfoIcon size={ isMobile ? 16 : 24} />
               </span>
             </button>
           </div>
@@ -249,7 +251,7 @@ const NavGlobalSearch = () => {
                   <p className="dark:text-darkText-1">
                     {activeTab || "Results"}
                   </p>
-                  <p className="dark:text-darkText-1">type</p>
+                  <p className="dark:text-darkText-1 nd:block hidden">type</p>
                 </div>
               )}
               <div className="relative z-[1] custom-flex-col gap-3">
@@ -313,14 +315,15 @@ const NetworkError = () => {
 };
 
 const SearchError = () => {
+  const { isMobile } = useWindowWidth();
   return (
     <>
       <div className="flex flex-col gap-[15px] mt-6 px-20">
         <div className="flex flex-col gap-3 w-full items-center justify-center text-brand-9 mb-4">
-          <ServerErrorIcon />
+          <ServerErrorIcon size={isMobile ? 20 : 100} />
         </div>
 
-        <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-xl">
+        <p className="text-[#092C4C] dark:text-darkText-1 font-bold text-base md:text-xl">
           Oops! We ran into some trouble
         </p>
 

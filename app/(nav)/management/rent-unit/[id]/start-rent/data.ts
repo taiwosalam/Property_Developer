@@ -39,6 +39,7 @@ export const initialTenants: Tenant[] = [
   },
 ];
 
+
 export const getPropertySettingsData = (unit_data: any) => [
   { label: "Agency Fee", value: `${unit_data?.agency_fee ?? "--- ---"}%` },
   { label: "Period", value: unit_data?.fee_period ?? "--- ---" },

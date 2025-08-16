@@ -42,7 +42,7 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
   };
 
   return (
-    <div ref={containerRef} className="relative flex-1 max-w-[240px]">
+    <div ref={containerRef} className="relative flex-1 max-w-max md:max-w-[240px] shrink-0">
       {trigger ? (
         <div onClick={handleSwitch}>{trigger}</div>
       ) : (
@@ -69,7 +69,7 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
             transition={DROPDOWN_ANIMATION.transition}
             variants={DROPDOWN_ANIMATION}
             style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.1)" }}
-            className="absolute top-full left-0 w-[220px] min-w-[180px]md:w-full py-2 bg-white dark:bg-[#3C3D37] rounded-bl-lg rounded-br-lg z-50"
+            className="absolute top-full left-0 w-[220px min-w-[120px] max-w-max md:min-w-[180px] md:w-full py-2 bg-white dark:bg-[#3C3D37] rounded-bl-lg rounded-br-lg z-50"
           >
             <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold dark:text-white">
               <button

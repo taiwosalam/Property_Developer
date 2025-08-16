@@ -47,20 +47,20 @@ const Review: React.FC<ReviewProps> = ({
   return (
     <div className="flex gap-1">
       <div className="flex flex-col items-center">
-        <Picture src={pfp} alt="profile picture" size={36} rounded />
+        <Picture src={pfp} alt="profile picture" size={36} rounded className="custom-secondary-bg" />
         <SectionSeparator direction="y" className="bg-gray-200" />
       </div>
       <div className="custom-flex-col gap-3 pb-3 flex-1 ml-3">
         <div className="custom-flex-col gap-1">
-          <div className="flex items-center gap-1">
-            <p className="text-text-primary text-sm font-medium capitalize">
+          <div className="flex items-center gap-1 dark:text-white">
+            <p className="text-text-primary dark:text-white text-sm font-medium capitalize">
               {fullname}
             </p>
             {getBadgeColor(tier_id) && (
               <BadgeIcon color={getBadgeColor(tier_id) as BadgeIconColors} />
             )}
           </div>
-          <p className="text-text-disabled text-xs mt-1">{desc}</p>
+          <p className="text-text-disabled dark:text-white/80 text-xs mt-1">{desc}</p>
         </div>
         <div className="flex items-center justify-between text-[10px] font-medium">
           {main ? (
@@ -70,8 +70,8 @@ const Review: React.FC<ReviewProps> = ({
               <div></div>
               <div className="flex gap-[10px]">
                 <button className="flex gap-1">
-                  <Picture src={Comment} alt="reply" size={16} />
-                  <p className="text-text-secondary">Reply</p>
+                  <Picture src={Comment} alt="reply" size={16} className="custom-secondary-bg" />
+                  <p className="text-text-secondary dark:text-white">Reply</p>
                 </button>
                 <button
                   className="flex gap-1"

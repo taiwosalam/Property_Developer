@@ -3,7 +3,7 @@ import React from 'react';
 
 export const ReviewCardSkeleton = ({ count = 6 }) => {
   return (
-    <div className="space-y-4 p-4 bg-white">
+    <div className="space-y-4 p-4 bg-white dark:bg-black/50">
       {Array.from({ length: count }).map((_, index) => (
         <div key={index} className="flex items-start space-x-3 p-4 bg-gray-50 rounded-lg animate-pulse">
           {/* Avatar skeleton */}

@@ -795,177 +795,6 @@ button:disabled:not(.retain-opacity) {
   font-weight: 600;
 }
 
-/* Spacing System - Responsive */
-.gap-xs {
-  gap: clamp(0.25rem, 1vw, 0.5rem);
-}
-.gap-sm {
-  gap: clamp(0.5rem, 2vw, 0.75rem);
-}
-.gap-md {
-  gap: clamp(0.75rem, 3vw, 1rem);
-}
-.gap-lg {
-  gap: clamp(1rem, 4vw, 1.5rem);
-}
-.gap-xl {
-  gap: clamp(1.5rem, 5vw, 2rem);
-}
-
-.p-xs {
-  padding: clamp(0.25rem, 1vw, 0.5rem);
-}
-.p-sm {
-  padding: clamp(0.5rem, 2vw, 0.75rem);
-}
-.p-md {
-  padding: clamp(0.75rem, 3vw, 1rem);
-}
-.p-lg {
-  padding: clamp(1rem, 4vw, 1.5rem);
-}
-.p-xl {
-  padding: clamp(1.5rem, 5vw, 2rem);
-}
-
-.px-xs {
-  padding-left: clamp(0.25rem, 1vw, 0.5rem);
-  padding-right: clamp(0.25rem, 1vw, 0.5rem);
-}
-.px-sm {
-  padding-left: clamp(0.5rem, 2vw, 0.75rem);
-  padding-right: clamp(0.5rem, 2vw, 0.75rem);
-}
-.px-md {
-  padding-left: clamp(0.75rem, 3vw, 1rem);
-  padding-right: clamp(0.75rem, 3vw, 1rem);
-}
-.px-lg {
-  padding-left: clamp(1rem, 4vw, 1.5rem);
-  padding-right: clamp(1rem, 4vw, 1.5rem);
-}
-.px-xl {
-  padding-left: clamp(1.5rem, 5vw, 2rem);
-  padding-right: clamp(1.5rem, 5vw, 2rem);
-}
-
-.py-xs {
-  padding-top: clamp(0.25rem, 1vw, 0.5rem);
-  padding-bottom: clamp(0.25rem, 1vw, 0.5rem);
-}
-.py-sm {
-  padding-top: clamp(0.5rem, 2vw, 0.75rem);
-  padding-bottom: clamp(0.5rem, 2vw, 0.75rem);
-}
-.py-md {
-  padding-top: clamp(0.75rem, 3vw, 1rem);
-  padding-bottom: clamp(0.75rem, 3vw, 1rem);
-}
-.py-lg {
-  padding-top: clamp(1rem, 4vw, 1.5rem);
-  padding-bottom: clamp(1rem, 4vw, 1.5rem);
-}
-.py-xl {
-  padding-top: clamp(1.5rem, 5vw, 2rem);
-  padding-bottom: clamp(1.5rem, 5vw, 2rem);
-}
-
-.pl-xs {
-  padding-left: clamp(0.25rem, 1vw, 0.5rem);
-}
-.pl-sm {
-  padding-left: clamp(0.5rem, 2vw, 0.75rem);
-}
-.pl-md {
-  padding-left: clamp(0.75rem, 3vw, 1rem);
-}
-.pl-lg {
-  padding-left: clamp(1rem, 4vw, 1.5rem);
-}
-.pl-xl {
-  padding-left: clamp(1.5rem, 5vw, 2rem);
-}
-.pl-2xl {
-  padding-left: clamp(2rem, 6vw, 2.5rem);
-}
-
-.pr-xs {
-  padding-right: clamp(0.25rem, 1vw, 0.5rem);
-}
-.pr-sm {
-  padding-right: clamp(0.5rem, 2vw, 0.75rem);
-}
-.pr-md {
-  padding-right: clamp(0.75rem, 3vw, 1rem);
-}
-.pr-lg {
-  padding-right: clamp(1rem, 4vw, 1.5rem);
-}
-.pr-xl {
-  padding-right: clamp(1.5rem, 5vw, 2rem);
-}
-
-/* Border Radius - Responsive */
-.rounded-xs {
-  border-radius: clamp(0.125rem, 0.5vw, 0.25rem);
-}
-.rounded-sm {
-  border-radius: clamp(0.25rem, 1vw, 0.375rem);
-}
-.rounded-md {
-  border-radius: clamp(0.375rem, 1.5vw, 0.5rem);
-}
-.rounded-lg {
-  border-radius: clamp(0.5rem, 2vw, 0.75rem);
-}
-.rounded-xl {
-  border-radius: clamp(0.75rem, 3vw, 1rem);
-}
-
-/* Width/Height Responsive Utilities */
-.w-xs {
-  width: clamp(1rem, 4vw, 1.5rem);
-}
-.w-sm {
-  width: clamp(1.5rem, 5vw, 2rem);
-}
-.w-md {
-  width: clamp(2rem, 6vw, 2.5rem);
-}
-.w-lg {
-  width: clamp(2.5rem, 7vw, 3rem);
-}
-.w-xl {
-  width: clamp(3rem, 8vw, 4rem);
-}
-
-.h-xs {
-  height: clamp(1rem, 4vw, 1.5rem);
-}
-.h-sm {
-  height: clamp(1.5rem, 5vw, 2rem);
-}
-.h-md {
-  height: clamp(2rem, 6vw, 2.5rem);
-}
-.h-lg {
-  height: clamp(2.5rem, 7vw, 3rem);
-}
-.h-xl {
-  height: clamp(3rem, 8vw, 4rem);
-}
-
-/* min-width responsive utilities for badges */
-.min-w-xs {
-  min-width: clamp(1rem, 2.5vw, 1.125rem);
-}
-.min-w-sm {
-  min-width: clamp(1.125rem, 3vw, 1.25rem);
-}
-.min-w-md {
-  min-width: clamp(1.25rem, 3.5vw, 1.5rem);
-}
-
 .account-card-container {
   @apply scrollbar-hide py-3 pl-2 flex gap-6 overflow-x-auto;
 }
@@ -974,6 +803,13 @@ button:disabled:not(.retain-opacity) {
   @apply !min-w-[320px] shrink-0;
 }
 
+
+/* DO NOT CHANGE THIS WITHOUT CONSULTING @BINARYTECH001 */
+.management-cardstat-wrapper{
+  @apply flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar my-4 md:mt-0 flex-nowrap md:flex-wrap w-full px-2;
+}
+
+/*  mt-4 md:mt-0 */
 .mobile-button {
   @apply bg-brand-9 z-[50] grid fixed bottom-4 right-4 text-white size-[4rem] rounded-full place-items-center md:hidden;
 }
