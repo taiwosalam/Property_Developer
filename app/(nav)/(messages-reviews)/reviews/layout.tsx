@@ -477,7 +477,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
       {!isDirector && !canViewAndReplyReviews && (
         <div className="absolute inset-0 bg-white/70 backdrop-blur-[2px] z-10 rounded-md flex items-center justify-center text-center px-4">
           <p className="text-sm font-medium text-gray-700">
-            ⚠️ You don't have permission to view this page.
+            ⚠️ You don&apos;t have permission to view this page.
           </p>
         </div>
       )}
