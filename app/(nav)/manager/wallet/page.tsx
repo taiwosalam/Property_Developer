@@ -142,7 +142,7 @@ const Wallet = () => {
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex items-center gap-1">
-        <h1 className="text-black dark:text-white text-2xl font-medium">
+        <h1 className="text-black dark:text-white text-2xl font-medium max-sm:mt-2">
           Wallet
         </h1>
       </div>

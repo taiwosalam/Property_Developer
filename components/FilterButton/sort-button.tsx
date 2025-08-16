@@ -43,7 +43,11 @@ const SortButton: React.FC<{
       onClick={toggleSort}
     >
       {getIcon()}
+<<<<<<< HEAD
       <span className="text-[#344054] dark:text-darkText-1 md:block hidden text-base font-medium">
+=======
+      <span className="text-[#344054] dark:text-darkText-1 text-base font-medium hidden sm:block">
+>>>>>>> 8e2e7277ac6ef17c3e53708862967ee916496b9d
         Sort
       </span>
     </button>
