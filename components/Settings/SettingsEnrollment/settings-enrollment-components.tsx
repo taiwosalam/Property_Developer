@@ -480,7 +480,8 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
 
-  const isProfessionalPlan = currentPlanKeyword === "professional";
+  // const isProfessionalPlan = currentPlanKeyword === "professional";
+  const isProfessionalPlan = thisPlanKeyword === "professional";
 
   // Plan rank mapping (higher number = higher rank)
   const planRank: { [key: string]: number } = {
