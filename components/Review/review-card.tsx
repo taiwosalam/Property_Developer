@@ -67,7 +67,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
   return (
     <Link
       href={`/reviews/${props.id}`}
-      className={clsx("custom-flex-col gap-4", {
+      className={clsx("custom-flex-col gap-4 px-4", {
         "bg-neutral-2": props.highlight,
       })}
     >

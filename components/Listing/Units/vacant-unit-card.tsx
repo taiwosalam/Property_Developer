@@ -67,7 +67,7 @@ const VacantUnitCard = ({
   const { isMobile, isTablet, isLaptop, isDesktop } = useWindowWidth();
 
   const ICON_SIZE = isMobile ? 20 : isTablet ? 22 : 24;
-  const ICON_TEXT = isMobile ? "hidden" : "visible";
+  // const ICON_TEXT = isMobile ? "hidden" : "visible";
 
   const CAN_LINK_TENANT = role === "manager" || role === "director";
   const CAN_SPONSOR_UNIT = role === "manager" || role === "director";

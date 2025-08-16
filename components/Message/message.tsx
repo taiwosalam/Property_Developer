@@ -75,7 +75,7 @@ const Message: React.FC<MessageProps> = ({
               <Image
                 src={sender.picture}
                 width={AVATAR_SIZE}
-                height={AVATAR_SIZE }
+                height={AVATAR_SIZE}
                 alt={sender?.fullname ?? "sender"}
                 className="object-cover w-full h-full custom-secondary-bg rounded-full"
               />
@@ -86,7 +86,7 @@ const Message: React.FC<MessageProps> = ({
         </div>
       )}
       <div
-        className={clsx("py-2 px-4 flex gap-4 rounded-2xl max-w-[70%]", {
+        className={clsx("py-2 px-4 flex gap-4 rounded-2xl max-w-[70%] max-sm:max-w-[80%]", {
           "bg-brand-primary rounded-tr-none": type === "from user",
           "bg-status-caution-1 rounded-tl-none": type === "to user",
         })}
@@ -109,7 +109,10 @@ const Message: React.FC<MessageProps> = ({
               </div>
             )}
 
-          <div className={`flex gap-4 ${content_type === "audio" && "flex flex-col gap-0"}`}>
+          {/* <div className={`flex flex-row gap-x-4 ${(content_type === "audio" || content_type === 'image') && "flex-col gap-y-1"}`}> */}
+          <div className={`flex flex-col gap-x-4`}>
+          {/* <div className={clsx((content_type === "audio" || 'image') ? "flex flex-col gap-y-1" : "flex flex-row gap-x-4")}> */}
+
             <div>
               {/* Text Content */}
               {content_type === "text" && (
@@ -169,8 +172,8 @@ const Message: React.FC<MessageProps> = ({
 
               {/* Audio Content */}
               {content_type === "audio" && (
-                <div className="relative w-auto h-auto">
-                  <audio controls>
+                <div className="relative h-auto">
+                  <audio controls className="max-w-xs sm:max-w-sm">
                     <source src={text} type="audio/mpeg" />
                     Your browser does not support the audio element.
                   </audio>
