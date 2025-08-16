@@ -89,6 +89,7 @@ export const staffConfigurations = [
         "Can view complaints",
         "Can create and manage announcement",
         "Can create examine",
+        "Can add/delete branch properties",
         "Can manage inspections",
         "Can view service provider",
         "Can check in and manage vehicle records",

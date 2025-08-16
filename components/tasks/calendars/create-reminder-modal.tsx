@@ -26,28 +26,32 @@ dayjs.extend(timezone);
 
 interface IReminderProps {
   date?: Date;
+  isShowDate: boolean;
 }
 
-const CreateReminderMOdal = ({ date = new Date() }: IReminderProps) => {
+// Helper function to strip HTML tags and get plain text
+const stripHtmlTags = (html: string): string => {
+  const div = document.createElement("div");
+  div.innerHTML = html;
+  return div.textContent || div.innerText || "";
+};
+
+const CreateReminderMOdal = ({
+  date = new Date(),
+  isShowDate = false,
+}: IReminderProps) => {
   const allTabs = ["event", "task", "reminder", "examine"] as const;
   type Tab = (typeof allTabs)[number];
   const [activeTab, setActiveTab] = useState<Tab>(allTabs[0]);
   const { setIsOpen } = useModal();
 
   const [reminderDate, setReminderDate] = useState<Dayjs | null>(
-    date ? dayjs(date) : null
+    date && isShowDate ? dayjs(date) : null
   );
 
   const [inputTitle, setInputTitle] = useState("");
   const [textAreaNote, setTextAreaNote] = useState("");
   const [loading, setLoading] = useState(false);
-
-  // Helper function to strip HTML tags and get plain text
-  const stripHtmlTags = (html: string): string => {
-    const div = document.createElement("div");
-    div.innerHTML = html;
-    return div.textContent || div.innerText || "";
-  };
 
   const handleDateChange = (date?: Dayjs | null) => {
     if (date && date.isBefore(dayjs().startOf("day"))) {

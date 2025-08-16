@@ -276,12 +276,24 @@ export const transformProfileData = (
       ? data?.data?.profile?.picture ?? ""
       : data?.data?.director?.picture ?? "",
     email: data.data.user.email,
+
+    isOwner: data?.user?.is_owner,
     fullname: profile
-      ? (data?.data?.profile?.name && data?.data?.profile?.name !== "undefined" ? data?.data?.profile?.name : data?.data?.user?.name) || ""
-      : data?.data?.director?.name || "",
-    personal_title: profile
-      ? data?.data?.profile?.title ?? ""
-      : data?.data?.director?.title ?? "",
+      ? data?.data?.profile?.name?.toLowerCase()
+      : data?.data?.user?.name?.toLowerCase()
+      ? data?.data?.user?.name?.toLowerCase()
+      : data?.data?.director?.name?.toLowerCase()
+      ? data?.data?.director?.name?.toLowerCase()
+      : data?.data?.director?.name?.toLowerCase()
+      ? data?.data?.director?.name?.toLowerCase()
+      : "",
+
+    personal_title: data?.data?.profile?.title
+      ? data?.data?.profile?.title
+      : data?.data?.director?.title
+      ? data?.data?.director?.title
+      : data?.data?.director?.title,
+
     is_bvn_verified: data?.data?.profile?.bvn ? true : false,
     professional_title: profile
       ? data?.data?.profile?.professional_title ?? ""
@@ -293,8 +305,13 @@ export const transformProfileData = (
       ? data?.data?.profile?.about_director ?? ""
       : data?.data?.director?.about_director || "",
     director_email: profile
-      ? data?.data?.profile?.alt_email ?? ""
-      : data?.data?.director?.alt_email || "",
+      ? data?.data?.profile?.alt_email
+      : data?.data?.director?.alt_email
+      ? data?.data?.director?.alt_email
+      : data.data?.user.email
+      ? data?.data?.user.email
+      : "",
+
     gender: profile
       ? data?.data?.profile?.gender ?? ""
       : data?.data?.director?.gender || "",
@@ -318,6 +335,7 @@ export interface InitialDataTypes {
   is_bvn_verified: boolean;
   gender: string;
   bio: string;
+  isOwner: boolean;
 }
 
 export const initialData: InitialDataTypes = {
@@ -333,6 +351,7 @@ export const initialData: InitialDataTypes = {
   is_bvn_verified: false,
   gender: "",
   bio: "",
+  isOwner: false,
 };
 
 export function base64ToBlob(base64Data: string): Blob {

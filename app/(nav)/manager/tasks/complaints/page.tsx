@@ -9,13 +9,10 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import { transformComplaintsData } from "@/app/(nav)/tasks/complaints/data";
+import { approveAndProcessComplaint, rejectComplaint, transformComplaintsData } from "@/app/(nav)/tasks/complaints/data";
 import useFetch from "@/hooks/useFetch";
 import { useState, useEffect, useCallback } from "react";
-import {
-  ComplaintsPageData,
-  ComplaintsResponse,
-} from "@/app/(nav)/tasks/complaints/types";
+import { ComplaintsPageData, ComplaintsResponse } from "@/app/(nav)/tasks/complaints/types";
 import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -35,6 +32,7 @@ import PendingComplaintsScroll from "@/app/(nav)/tasks/complaints/pending-scroll
 import { toast } from "sonner";
 import { Modal, ModalContent } from "@/components/Modal/modal";
 import TaskModal from "@/components/dashboard/kanban/task-action-modal";
+import { empty } from "@/app/config";
 
 const ComplaintsPage = () => {
   const { isMobile } = useWindowWidth();
@@ -45,6 +43,7 @@ const ComplaintsPage = () => {
     null
   );
 
+  // Main config for all complaints
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
       page: 1,
@@ -52,6 +51,7 @@ const ComplaintsPage = () => {
     } as LandlordRequestParams,
   });
 
+  // Main complaints data fetch
   const {
     data: complaintData,
     loading,
@@ -60,6 +60,7 @@ const ComplaintsPage = () => {
     isNetworkError,
     refetch,
   } = useFetch<ComplaintsResponse>(`/complaints`, config);
+
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
@@ -67,8 +68,11 @@ const ComplaintsPage = () => {
     endDate: null,
   });
 
-  useRefetchOnEvent("refetchComplaints", () => refetch({ silent: true }));
+  useRefetchOnEvent("refetchComplaints", () => {
+    refetch({ silent: true });
+  });
 
+  // Transform main complaints data
   useEffect(() => {
     if (complaintData) {
       const transformData = transformComplaintsData(complaintData);
@@ -79,7 +83,6 @@ const ComplaintsPage = () => {
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
   const propertyOptions =
     propertiesData?.data.properties.data
-      // Filter for unique property titles
       .filter(
         (property, index, self) =>
           self.findIndex((p) => p.title === property.title) === index
@@ -90,7 +93,6 @@ const ComplaintsPage = () => {
       })) || [];
 
   const { data: tenantsData } = useFetch<any>("/tenants");
-
   const tenantsOptions =
     tenantsData?.data?.tenants
       ?.filter((tenant: { name: string; id: number }) => tenant?.name)
@@ -99,43 +101,39 @@ const ComplaintsPage = () => {
         value: tenant.id.toString(),
       })) || [];
 
-  const [pendingComplaintsPage, setPendingComplaintsPage] = useState(1);
-
-  // 3. Create a separate handler for pending complaints infinite scroll
+  // Handler for pending complaints infinite scroll
   const handleLoadMorePending = useCallback(
     async (page: number) => {
       try {
-        // Create a new config specifically for pending complaints
-        const pendingConfig = {
-          ...config,
+        console.log('Loading more for pending complaints, page:', page);
+        
+        // Update the main config to fetch the next page
+        setConfig(prev => ({
+          ...prev,
           params: {
-            ...config.params,
+            ...prev.params,
             page: page,
-            status: "pending",
           },
-        };
-
-        setConfig(pendingConfig);
-        setPendingComplaintsPage(page);
+        }));
       } catch (error) {
         console.error("Error loading more pending complaints:", error);
         throw error;
       }
     },
-    [config]
+    []
   );
 
-  const handleFilterApply = (filters: FilterResult) => {
-    setAppliedFilters(filters);
+  const applyFiltersToConfig = (filters: FilterResult, targetConfig: AxiosRequestConfig) => {
     const { menuOptions, startDate, endDate } = filters;
     const propertyIds = menuOptions["Property"] || [];
     const tenantIds = menuOptions["Tenant/Occupant"] || [];
     const branchIdsArray = menuOptions["Branch"] || [];
 
     const queryParams: LandlordRequestParams = {
-      page: 1,
-      search: "",
+      ...targetConfig.params,
+      page: 1, // Reset to page 1 when applying filters
     };
+
     if (propertyIds.length > 0) {
       queryParams.property_ids = propertyIds.join(",");
     }
@@ -151,9 +149,16 @@ const ComplaintsPage = () => {
     if (endDate) {
       queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
     }
-    setConfig({
-      params: queryParams,
-    });
+
+    return { params: queryParams };
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    
+    // Apply filters to the config
+    const baseConfig = applyFiltersToConfig(filters, config);
+    setConfig(baseConfig);
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -164,40 +169,38 @@ const ComplaintsPage = () => {
 
   const handleSearch = async (query: string) => {
     setConfig({
-      params: { ...config.params, search: query },
+      params: { ...config.params, search: query, page: 1 },
     });
   };
 
-  // Handle loading more data for infinite scroll
+  // Handle loading more data for Kanban infinite scroll
   const handleLoadMore = useCallback(
     async (columnId: ColumnId, page: number) => {
       try {
-        // Update the config to fetch the next page
         const newConfig = {
           ...config,
           params: {
             ...config.params,
             page: page,
-            // You might want to add column-specific filtering here
-            // status: columnId, // if your API supports filtering by status
           },
         };
 
         setConfig(newConfig);
       } catch (error) {
         console.error("Error loading more data:", error);
-        throw error; // Re-throw so the KanbanBoard can handle the error state
+        throw error;
       }
     },
     [config]
   );
 
+  // Reset to first page when filters change
   useEffect(() => {
     setConfig((prev) => ({
       ...prev,
       params: {
         ...prev.params,
-        page: 1, // Reset to first page
+        page: 1,
       },
     }));
   }, [appliedFilters]);
@@ -207,7 +210,8 @@ const ComplaintsPage = () => {
       <CustomLoader layout="page" statsCardCount={3} pageTitle="Complaints" />
     );
   }
-  if (error) <ServerError error={error} />;
+  
+  if (error && !pageData) return <ServerError error={error} />;
   if (isNetworkError) return <NetworkError />;
 
   return (
@@ -242,9 +246,9 @@ const ComplaintsPage = () => {
           className="shrink-0"
         />
       </div>
+
       <FilterBar
         hasGridListToggle={false}
-        //azFilter
         pageTitle="Complains"
         aboutPageModalData={{
           title: "Complains",
@@ -254,7 +258,6 @@ const ComplaintsPage = () => {
         searchInputPlaceholder="Search for Task"
         handleFilterApply={handleFilterApply}
         handleSearch={handleSearch}
-        //onSort={handleSort}
         appliedFilters={appliedFilters}
         isDateTrue
         filterOptionsMenu={[
@@ -266,7 +269,6 @@ const ComplaintsPage = () => {
                 },
               ]
             : []),
-
           ...(tenantsOptions.length > 0
             ? [
                 {
@@ -280,10 +282,12 @@ const ComplaintsPage = () => {
 
       <SectionContainer
         heading={
-          pageData && pageData.complaints.length > 0 ? "Recent Complains" : ""
+          pageData && pageData.complaints.some(c => c.content?.status === "pending")
+            ? "Recent Complains" 
+            : ""
         }
       >
-        {loading ? (
+        {loading && !pageData ? (
           <AutoResizingGrid gap={24}>
             <CardsLoading length={5} />
           </AutoResizingGrid>
@@ -303,7 +307,8 @@ const ComplaintsPage = () => {
             }
           />
         ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
-          pageData.complaints.length === 0 ? (
+          // When filters are applied, show filtered pending complaints
+          pageData?.complaints.filter(task => task?.content?.status === "pending").length === 0 ? (
             <SearchError />
           ) : (
             <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
@@ -331,7 +336,7 @@ const ComplaintsPage = () => {
                       title: complaint?.title,
                       message: complaint?.message,
                       tier: complaint?.tier,
-                      avatarSrc: complaint?.avatarSrc ?? "/empty/avatar.png",
+                      avatarSrc: complaint?.avatarSrc ?? empty,
                     }}
                     onClick={() => {
                       setSelectedPendingTask(complaint);
@@ -342,11 +347,16 @@ const ComplaintsPage = () => {
             </div>
           )
         ) : (
+          // When no filters are applied, use the PendingComplaintsScroll with auto-loading
           <PendingComplaintsScroll
-            complaints={pageData.complaints}
-            pagination={pageData.pagination}
+            complaints={pageData?.complaints || []}
+            pagination={pageData?.pagination || { total_pages: 1, current_page: 1, per_page: 10, total: 0 }}
             onLoadMore={handleLoadMorePending}
-            loading={silentLoading} // Use silentLoading to avoid showing main loader
+            loading={silentLoading}
+            onTaskClick={(complaint) => {
+              setSelectedPendingTask(complaint);
+              setPendingModalOpen(true);
+            }}
           />
         )}
       </SectionContainer>
@@ -373,7 +383,7 @@ const ComplaintsPage = () => {
                 kanbanTask={pageData?.complaints}
                 pagination={pageData?.pagination}
                 onLoadMore={handleLoadMore}
-                loading={loading}
+                loading={silentLoading}
               />
             )
           ) : (
@@ -381,13 +391,11 @@ const ComplaintsPage = () => {
               kanbanTask={pageData?.complaints}
               pagination={pageData?.pagination}
               onLoadMore={handleLoadMore}
-              loading={loading}
+              loading={silentLoading}
             />
           )}
         </SectionContainer>
       )}
-
-      {/* infinite scroll later */}
     </div>
   );
 };
