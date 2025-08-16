@@ -48,7 +48,7 @@ const EmailModal: React.FC<EmailRecord> = ({
   isMedia = false,
 }) => {
   return (
-    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white dark:bg-darkText-primary overflow-x-auto custom-round-scrollbar font-medium">
+    <div className="w-[600px] max-w-[80%] max-h-[85%] h-fit rounded-lg bg-white dark:bg-darkText-primary overflow-x-auto custom-round-scrollbar hide-scrollbar font-medium">
       {/* Header */}
       <div className="py-5 bg-brand-1 dark:bg-darkText-primary flex items-center justify-center sticky top-0 z-[2]">
         <span className="font-medium text-[16px] text-text-secondary dark:text-white">
@@ -62,7 +62,7 @@ const EmailModal: React.FC<EmailRecord> = ({
       {/* Body */}
       <div className="bg-white dark:bg-darkText-primary p-6 text-sm">
         <div className="space-y-3">
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
             <p>
               <span className="text-text-secondary dark:text-darkText-1">
                 From:

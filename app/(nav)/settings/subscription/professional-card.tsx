@@ -161,7 +161,7 @@ const ProfessionalPlanCard = ({
         price={price}
         planTitle={planTitle}
         onSelectPlan={onSelectPlan}
-        page={page}
+        page={"modal"}
         expiry_date={expiry_date}
         hovered={isHovered}
       />
