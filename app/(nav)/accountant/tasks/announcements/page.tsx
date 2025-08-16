@@ -174,7 +174,7 @@ const AnnouncementPage = () => {
 
   return (
     <div className="space-y-9">
-      <div className="page-header-container-variant">
+      <div className="page-header-container-variant ">
         <div className="flex pt-4 gap-5 overflow-x-auto scrollbar-hide md:flex-wrap">
           <ManagementStatistcsCard
             title="Announcement"

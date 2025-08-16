@@ -300,7 +300,7 @@ const SettingsWebsiteDomain = () => {
             title="choose template"
             desc="Choose how your website will be presented to your customers and clients."
           />
-          <div className="flex  gap-6 items-start justify-start h-auto themes overflow-x-scroll  scrollbar-hide mt-6">
+          <div className="flex gap-6 items-start py-3 justify-start h-auto themes overflow-x-scroll  scrollbar-hide mt-6">
             <ThemeCard
               img={WebsiteTemplate1}
               value="template1"

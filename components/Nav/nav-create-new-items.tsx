@@ -43,7 +43,7 @@ export const create_new_items: CreateNewItemsProps = [
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
       // { label: "event", modal: <CreateReminderMOdal /> },
       // { label: "task", modal: <CreateReminderMOdal /> },
-      { label: "reminder", modal: <CreateReminderMOdal /> },
+      { label: "reminder", modal: <CreateReminderMOdal isShowDate={false} /> },
       {
         label: "announcement",
         link: "/tasks/announcements/create-announcement",
@@ -117,7 +117,7 @@ export const manager_create_new_items: CreateNewItemsProps = [
     content: [
       { label: "examine", modal: <CreateExamineModal /> },
       { label: "maintenance", link: "/manager/tasks/maintenance/create-new" },
-      { label: "reminder", modal: <CreateReminderMOdal /> },
+      { label: "reminder", modal: <CreateReminderMOdal isShowDate={false} /> },
       {
         label: "announcement",
         link: "/manager/tasks/announcements/create-announcement",

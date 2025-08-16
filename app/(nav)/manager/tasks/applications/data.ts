@@ -153,7 +153,7 @@ export const transformApplicationData = (
       property_name: `${item?.unit.name} - ${item?.unit?.property_title}`,
       renew_fee_period: item?.unit?.renew_fee_period,
       address: `${item?.unit?.property_address} ${item?.unit?.property_local_government} ${item?.unit?.property_city_area} ${item?.unit?.property_state}`,
-      phone_number: `${item?.user?.phone}` || `${item?.user?.profile_phone}`,
+      phone_number: item?.user?.phone || item?.user?.profile_phone,
       date: item?.application_date,
       total_package: item?.unit?.renew_total_package
         ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()

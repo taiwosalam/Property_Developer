@@ -21,6 +21,7 @@
         "@google/generative-ai": "^0.21.0",
         "@hasma/react-voice-visualizer": "^1.8.16",
         "@hello-pangea/dnd": "^17.0.0",
+        "@laravel/echo-react": "^2.2.0",
         "@microsoft/fetch-event-source": "^2.0.1",
         "@mui/material": "^6.0.1",
         "@mui/x-date-pickers": "^7.16.0",
@@ -61,7 +62,6 @@
         "jsonwebtoken": "^9.0.2",
         "jspdf": "^2.5.2",
         "keen-slider": "^6.8.6",
-        "laravel-echo": "^2.1.5",
         "libphonenumber-js": "^1.12.10",
         "lodash": "^4.17.21",
         "lucide-react": "^0.435.0",
@@ -74,7 +74,6 @@
         "npm": "^10.8.3",
         "polished": "^4.3.1",
         "pusher": "^5.2.0",
-        "pusher-js": "^8.4.0",
         "quill": "^2.0.2",
         "react": "^18",
         "react-colorful": "^5.6.1",
@@ -118,7 +117,9 @@
         "@types/uuid": "^10.0.0",
         "eslint": "^8",
         "eslint-config-next": "14.2.6",
+        "laravel-echo": "^2.2.0",
         "postcss": "^8",
+        "pusher-js": "^8.4.0",
         "tailwindcss": "^3.4.1",
         "typescript": "^5"
     }

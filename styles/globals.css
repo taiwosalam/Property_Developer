@@ -631,8 +631,6 @@ button:disabled:not(.retain-opacity) {
   @apply text-[#000000] dark:text-black;
 }
 
-
-
 /* scrollbar hide */
 /* Hide scrollbar but still allow scrolling */
 .scrollbar-hide {
@@ -643,8 +641,6 @@ button:disabled:not(.retain-opacity) {
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Opera */
 }
-
-
 
 /* =================================== RESPONSIVE CLASSES =============================================== */
 
@@ -814,3 +810,10 @@ button:disabled:not(.retain-opacity) {
 }
 
 /*  mt-4 md:mt-0 */
+.mobile-button {
+  @apply bg-brand-9 z-[50] grid fixed bottom-4 right-4 text-white size-[4rem] rounded-full place-items-center md:hidden;
+}
+
+.page-header-container-variant {
+  @apply w-full flex items-center justify-start md:justify-between gap-4;
+}

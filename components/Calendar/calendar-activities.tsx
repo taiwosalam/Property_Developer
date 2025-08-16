@@ -16,8 +16,6 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
     setIsOpen(false);
   };
 
-  console.log(date);
-
   return (
     <div
       className={`w-full h-full overflow-auto bg-white dark:bg-darkText-primary rounded-lg custom-flex-col gap-[18px]`}
@@ -42,7 +40,10 @@ const CalendarActivities: React.FC<CalendarActivitiesProps> = ({
         <div className="custom-flex-col gap-2">
           {!!events.length ? (
             events.map((event, index) => (
-              <CalendarActivity key={`${event.originalType}-${index}`} {...event} />
+              <CalendarActivity
+                key={`${event.originalType}-${index}`}
+                {...event}
+              />
             ))
           ) : (
             <p className="text-text-tertiary">No activities</p>
