@@ -11,8 +11,8 @@ import { DocumentssFilterOptionsWithDropdown } from "../../manager/documents/dat
 const Applications = () => {
   return (
     <div className="custom-flex-col gap-8">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
+      <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
+      <ManagementStatistcsCard
           title="Total Application"
           newData={34}
           total={657}

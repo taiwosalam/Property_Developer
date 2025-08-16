@@ -82,7 +82,7 @@ const UnitStatisticDetails = ({ id }: { id: string }) => {
       <div className="custom-flex-col gap-5">
         <BackButton bold>Statistics</BackButton>
         {/* <div className="hidden md:flex gap-5 flex-wrap"> */}
-        <div className="flex gap-5 flex-wrap">
+        <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
           <ManagementStatistcsCard
             title="Total Views"
             newData={pageData?.total_month_views ?? 0}
