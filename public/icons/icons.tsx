@@ -3466,7 +3466,7 @@ export const SponsorIcon = () => {
   );
 };
 
-export const PreviewEyeIcon = () => {
+export const PreviewEyeIcon = ({ size }: { size?: number }) => {
   return (
     <svg
       width="24"
@@ -3494,8 +3494,8 @@ export const PreviewEyeIcon = () => {
     </svg>
   );
 };
-
-export const StatsChartIcon = () => {
+ 
+export const StatsChartIcon = ({ size }: { size?: number }) => {
   return (
     <svg
       width="24"

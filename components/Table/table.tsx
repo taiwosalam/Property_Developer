@@ -118,7 +118,7 @@ const CustomTable: React.FC<CustomTableProps> = ({
     <TableContainer
       component={Paper}
       className={clsx(
-        "relative max-h-[600px] custom-round-scrollbar pb-1",
+        "relative max-h-[600px] custom-round-scrollbar hide-scrollbar pb-1",
         className
       )}
       sx={{ boxShadow: "none" }}
