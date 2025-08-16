@@ -98,8 +98,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
 
   const { role } = useRole();
 
-  console.log(role)
-
   const gotoPage = (id: string | number) => {
     switch (role) {
       case "director":
@@ -190,7 +188,6 @@ export const TaskCard: React.FC<TaskCardProps> = ({
   }, [isDragging, noDrag, viewOnly]);
 
   const handleCardClick = () => {
-    console.log("Clicked..")
     if (viewOnly) return;
     if (noDrag && onClick) {
       onClick();

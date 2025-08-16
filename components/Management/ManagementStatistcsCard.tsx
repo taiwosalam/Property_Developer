@@ -180,7 +180,7 @@ const ManagementStatistcsCard: React.FC<ManagementStatistcsCardProps> = ({
       newColorScheme = colors.green;
       break;
     case 2:
-      oldColorScheme = colors.purple;
+    oldColorScheme = colors.purple;
       newColorScheme = colors.green;
       break;
     case 3:

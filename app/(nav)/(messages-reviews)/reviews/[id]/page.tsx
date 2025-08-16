@@ -39,16 +39,6 @@ const ReviewChat = () => {
 
   return (
     <>
-      <div className="py-4 px-6 bg-neutral-2">
-        <div className="flex items-center gap-3">
-          <button onClick={() => router.push("/reviews")}>
-            <Picture src={ChevronLeft} alt="back" size={20} />
-          </button>
-          <p className="text-text-primary text-base font-medium capitalize">
-            review details
-          </p>
-        </div>
-      </div>
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white custom-flex-col">
         {loading ? <ReviewCardSkeleton /> : <Review {...review?.main} main />}
 

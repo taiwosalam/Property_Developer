@@ -302,17 +302,23 @@ input[type="number"]:not(.keep-spinner)::-webkit-inner-spin-button {
 
 /* Ensure the input behaves like a number input but keeps spinners visible */
 .typography.appearance-textfield {
-  -webkit-appearance: textfield; /* For WebKit browsers (Chrome, Safari) */
-  -moz-appearance: textfield; /* For Firefox */
-  appearance: textfield; /* Standard */
+  -webkit-appearance: textfield;
+  /* For WebKit browsers (Chrome, Safari) */
+  -moz-appearance: textfield;
+  /* For Firefox */
+  appearance: textfield;
+  /* Standard */
 }
 
 /* Force spinners to be visible at all times */
 .typography::-webkit-inner-spin-button,
 typography::-webkit-outer-spin-button {
-  -webkit-appearance: inner-spin-button; /* Show spinners in WebKit */
-  opacity: 1; /* Ensure spinners are always visible */
-  margin-left: 8px; /* Space between value and spinners */
+  -webkit-appearance: inner-spin-button;
+  /* Show spinners in WebKit */
+  opacity: 1;
+  /* Ensure spinners are always visible */
+  margin-left: 8px;
+  /* Space between value and spinners */
 }
 
 button:disabled:not(.retain-opacity) {
@@ -493,11 +499,15 @@ button:disabled:not(.retain-opacity) {
 }
 
 .hide-scrollbar {
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE/Edge */
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
 }
+
 .hide-scrollbar::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
+  display: none;
+  /* Chrome, Safari, Opera */
 }
 
 /* ------------------------ */
@@ -564,6 +574,7 @@ button:disabled:not(.retain-opacity) {
   100% {
     stroke: var(--primary-color);
   }
+
   50% {
     stroke: #ef4444;
   }

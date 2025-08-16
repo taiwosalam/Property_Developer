@@ -62,6 +62,7 @@ const ManageCalendar = () => {
   const [reminderModal, setReminderModal] = useState(true);
   const [currentDate, setCurrentDate] = useState(startOfMonth(new Date()));
   const [activeLayout, setActiveLayout] = useState<CalendarLayoutType>("Month");
+  const [createReminderModal, setCreateReminderModal] = useState(false);
 
   // Memos
   // const { activities } = useMemo(() => {
@@ -119,15 +120,16 @@ const ManageCalendar = () => {
   const openReminderModal = (date: Date) => {
     setActiveDate(date);
     setReminderModal(true);
+    setCreateReminderModal(false);
   };
 
   const openModal = () => {
-    setReminderModal(true);
-  }
+    setCreateReminderModal(true);
+  };
 
-  useEffect(()=> {
+  useEffect(() => {
     setReminderModal(false);
-  }, [])
+  }, []);
 
   const openActivityModal = (date: Date) => {
     setActiveDate(date);
@@ -306,7 +308,7 @@ const ManageCalendar = () => {
         ) : null}
         <Modal state={{ isOpen: reminderModal, setIsOpen: setReminderModal }}>
           <ModalContent>
-            <CreateReminderMOdal date={activeDate} />
+            <CreateReminderMOdal date={activeDate} isShowDate={true} />
           </ModalContent>
         </Modal>
         <Modal
@@ -323,6 +325,16 @@ const ManageCalendar = () => {
                 setIsOpen={setActivityModalIsOpen}
               />
             </div>
+          </ModalContent>
+        </Modal>
+        <Modal
+          state={{
+            isOpen: createReminderModal,
+            setIsOpen: setCreateReminderModal,
+          }}
+        >
+          <ModalContent>
+            <CreateReminderMOdal isShowDate={false} />
           </ModalContent>
         </Modal>
       </div>

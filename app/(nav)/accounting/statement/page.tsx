@@ -91,7 +91,7 @@ const Statement = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-6">
         <div className="flex gap-1 items-center">
-          <h1 className="text-black dark:text-white text-2xl font-medium">
+          <h1 className="text-black dark:text-white text-2xl font-medium max-sm:mt-2">
             Statement
           </h1>
           <ExclamationMark />

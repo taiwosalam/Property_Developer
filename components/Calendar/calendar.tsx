@@ -181,7 +181,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
             )}
           </div>
         </div>
-        <div style={{ maxHeight: "460px" }} className="lg:w-[40%]">
+        <div style={{ maxHeight: "430px" }} className="lg:w-[40%]">
           <CalendarActivities date={activeDate} events={activities ?? []} />
         </div>
       </div>
