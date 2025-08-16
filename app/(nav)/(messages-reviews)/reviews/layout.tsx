@@ -287,7 +287,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                         <p className="text-xs text-[#E9212E]">Negative</p>
                       </div>
                     </div>
-                    {/* <div></div> */}
+                    <div className="flex gap-2 items-center">
                     <Input
                       id="search"
                       value={searchInput}
@@ -297,8 +297,8 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                       leftIcon={"/icons/search-icon.svg"}
                       inputClassName="pr-[52px] border-transparent"
                     />
-                  </div>
-                  <div className="absolute top-2/4 right-0 -translate-y-2/4">
+                    {/* <div className="absolute top-2/4 right-0 -translate-y-2/4"> */}
+                    <div className="">
                     <FilterButton
                       noTitle
                       className="bg-transparent py-[10px] px-4"
@@ -341,6 +341,51 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                       ]}
                     />
                   </div>
+                  </div>
+                  </div>
+                  {/* <div className="absolute top-2/4 right-0 -translate-y-2/4">
+                    <FilterButton
+                      noTitle
+                      className="bg-transparent py-[10px] px-4"
+                      onClick={(e) => setAnchorEl(e.currentTarget)}
+                    />
+                    <MessagesFilterMenu
+                      anchorEl={anchorEl}
+                      open={Boolean(anchorEl)}
+                      onClose={handleMenuClose}
+                      onFilterApply={handleFilterApply}
+                      setSelectedLabel={setSelectedLabel}
+                      allowMultiple={false}
+                      filterOptions={[
+                        {
+                          label: "Total Reviews",
+                          bgColor: "#60A5FA",
+                          value: reviews?.total_reviews,
+                        },
+                        {
+                          label: "Positive Review",
+                          bgColor: "#01BA4C",
+                          value: reviews?.total_dislike,
+                        },
+                        {
+                          label: "Neutral Review",
+                          bgColor: "#FFBB53",
+                          value: reviews?.neutral_count,
+                        },
+                        {
+                          label: "Negative Review",
+                          bgColor: "#E9212E",
+                          value: reviews?.total_like,
+                        },
+
+                        {
+                          label: "Un-replied Review",
+                          bgColor: "#005623",
+                          value: reviews?.total_unreplied,
+                        },
+                      ]}
+                    />
+                  </div> */}
                 </div>
               </div>
               <div className="custom-flex-col relative z-[1] pb-4">
