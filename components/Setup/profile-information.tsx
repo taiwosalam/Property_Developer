@@ -28,7 +28,7 @@ const ProfileInformation = ({
   });
 
   return (
-    <div className="custom-flex-col gap-6 max-w-[940px]">
+    <div className="custom-flex-col gap-6 max-w-[940px] mt-2">
       <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
         <Select
           id="director_personal_title"

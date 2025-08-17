@@ -42,7 +42,7 @@ import NoReviews from "../messages/no-reviews";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { handleAxiosError } from "@/services/api";
-import { Loader2 } from "lucide-react";
+import { ChevronLeftIcon, ChevronRight, Loader2 } from "lucide-react";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
 
@@ -427,15 +427,16 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
         {id && (
           <div className="flex-1 overflow-hidden flex flex-col bg-white">
             {/* Review Details Header */}
-            <div className="py-4 px-6 bg-neutral-2 flex-shrink-0 border-b border-gray-200">
+            <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary flex-shrink-0 border-b border-gray-200 dark:border-gray-500">
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => window.history.back()}
-                  className="p-1 hover:bg-gray-100 rounded-md transition-colors"
+                  className="p-1 hover:bg-gray-100 dark:text-white rounded-md transition-colors"
                 >
-                  <Picture src="/icons/chevron-left.svg" alt="back" size={20} />
+                  <ChevronLeftIcon />
+                  {/* <Picture src="/icons/chevron-left.svg" alt="back" size={20} /> */}
                 </button>
-                <p className="text-text-primary text-base font-medium capitalize">
+                <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                   review details
                 </p>
               </div>
@@ -445,7 +446,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
               {children}
               <div ref={messagesEndRef} />
             </div>
-            <div className="py-4 px-6 flex gap-3 flex-shrink-0 border-t border-gray-200 bg-gray-50">
+            <div className="py-4 px-6 flex gap-3 flex-shrink-0 border-t border-gray-200 bg-gray-50 dark:bg-darkText-primary">
               <input
                 onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
                   if (
@@ -466,7 +467,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                 value={inputComment}
                 id="chat"
                 placeholder="Type your message here"
-                className="flex-1 text-sm p-3 md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out"
+                className="flex-1 text-sm p-3 md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:border-gray-600 bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out"
               />
               <button
                 disabled={inputComment.length === 0 || isSending}

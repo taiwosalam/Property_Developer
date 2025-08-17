@@ -14,10 +14,12 @@ import Avatars from "../Avatars/avatars";
 import Picture from "../Picture/picture";
 import { FlowProgressContext } from "../FlowProgress/flow-progress";
 import { useGlobalStore } from "@/store/general-store";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const ProfilePicture = () => {
   const { canSubmit } = useContext(FlowProgressContext);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const { isMobile } = useWindowWidth();
   const [selectedAvatar, setSelectedAvatar] = useState("");
   const {
     preview,

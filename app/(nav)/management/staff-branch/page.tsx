@@ -289,12 +289,12 @@ const StaffAndBranches = () => {
 
   console.log("branches", branches);
   return (
-    <div className="space-y-9">
+    <div className="my-8">
       <div
-        className="page-header-container mt-4 md:mt-0"
+        className="page-header-container my-4 md:m-0"
         ref={view === "grid" ? contentTopRef : null}
       >
-        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full">
+        <div className="management-cardstat-wrapper">
           <ManagementStatistcsCard
             title="Total Branches"
             newData={new_branches_count}
@@ -418,9 +418,7 @@ const StaffAndBranches = () => {
         <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
           <Modal>
             <ModalTrigger>
-              <button
-                className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
-              >
+              <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
                 <PlusIcon />
               </button>
             </ModalTrigger>

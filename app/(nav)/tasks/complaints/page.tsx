@@ -188,7 +188,7 @@ const ComplaintsPage = () => {
             page: page,
           },
         };
-       
+
         setConfig(newConfig);
       } catch (error) {
         console.error("Error loading more data:", error);
@@ -377,31 +377,23 @@ const ComplaintsPage = () => {
         )}
       </SectionContainer>
 
-      {!isMobile && (
-        <SectionContainer
-          heading={
-            pageData && pageData.complaints.length > 0 ? "All Complains" : ""
-          }
-        >
-          {loading ? (
-            <div className="flex justify-between gap-12">
-              <CardsLoading
-                length={3}
-                className="h-[300px] border-dashed border-2 border-spacing-4"
-              />
-            </div>
-          ) : !pageData?.complaints.length ? null : !!config.params.search ||
-            hasActiveFilters(appliedFilters) ? (
-            pageData.complaints.length === 0 ? (
-              <SearchError />
-            ) : (
-              <KanbanBoard
-                kanbanTask={pageData?.complaints}
-                pagination={pageData?.pagination}
-                onLoadMore={handleLoadMore}
-                loading={silentLoading}
-              />
-            )
+      {/* {!isMobile && ( */}
+      <SectionContainer
+        heading={
+          pageData && pageData.complaints.length > 0 ? "All Complains" : ""
+        }
+      >
+        {loading ? (
+          <div className="flex justify-between gap-12">
+            <CardsLoading
+              length={3}
+              className="h-[300px] border-dashed border-2 border-spacing-4"
+            />
+          </div>
+        ) : !pageData?.complaints.length ? null : !!config.params.search ||
+          hasActiveFilters(appliedFilters) ? (
+          pageData.complaints.length === 0 ? (
+            <SearchError />
           ) : (
             <KanbanBoard
               kanbanTask={pageData?.complaints}
@@ -409,9 +401,17 @@ const ComplaintsPage = () => {
               onLoadMore={handleLoadMore}
               loading={silentLoading}
             />
-          )}
-        </SectionContainer>
-      )}
+          )
+        ) : (
+          <KanbanBoard
+            kanbanTask={pageData?.complaints}
+            pagination={pageData?.pagination}
+            onLoadMore={handleLoadMore}
+            loading={silentLoading}
+          />
+        )}
+      </SectionContainer>
+      {/* )} */}
     </div>
   );
 };

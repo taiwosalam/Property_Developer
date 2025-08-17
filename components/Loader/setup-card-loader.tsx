@@ -246,8 +246,8 @@ const ProgressCardLoader = ({
         )}
         {/* TEXT CONTENTS */}
         <div className="flex flex-col gap-2">
-          <h2 className="text-md font-semibold">{step?.title}</h2>
-          <p className="text-sm font-normal"> → {step.desc} </p>
+          <h2 className="text-md md:text-lg font-semibold">{step?.title}</h2>
+          <p className="text-sm md:text-base font-normal"> → {step.desc} </p>
         </div>
         {/* PROGRESS */}
         <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">

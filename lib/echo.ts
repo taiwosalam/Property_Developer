@@ -3,7 +3,7 @@ import Pusher from 'pusher-js';
 import { getLocalStorage } from '@/utils/local-storage';
 
 // Explicitly type echoInstance with the 'pusher' broadcaster
-let echoInstance: Echo<'pusher'> | null = null;
+let echoInstance: Echo<'reverb'> | null = null;
 
 export const initializeEcho = () => {
   if (typeof window === 'undefined' || echoInstance) {
@@ -29,8 +29,8 @@ export const initializeEcho = () => {
       port: pusherPort,
     });
 
-    echoInstance = new Echo<'pusher'>({
-      broadcaster: 'pusher',
+    echoInstance = new Echo<'reverb'>({
+      broadcaster: 'reverb',
       key: pusherKey,
       cluster: pusherCluster,
       wsHost: pusherHost,
@@ -38,8 +38,8 @@ export const initializeEcho = () => {
       wssPort: pusherPort ? Number(pusherPort) : 443,
       forceTLS: true,
       enabledTransports: ['ws', 'wss'],
-      authEndpoint: '/api/broadcasting/auth',
-      auth: {
+      authEndpoint: 'https://be1.ourproperty.ng/broadcasting/auth',
+    auth: {
         headers: {
           'X-XSRF-TOKEN': getXsrfToken(),
           Authorization: authToken ? `Bearer ${authToken}` : '',
@@ -77,90 +77,3 @@ const getXsrfToken = (): string => {
     return '';
   }
 };
-
-// // lib/echo.ts
-// import Echo from "laravel-echo";
-// import Pusher from "pusher-js";
-
-// declare global {
-//   interface Window {
-//     Echo?: Echo<'pusher'>;
-//     Pusher?: typeof Pusher;
-//   }
-// }
-
-// let echo: Echo | null = null;
-// let isInitializing = false;
-
-// export async function initializeEcho(): Promise<Echo | null> {
-//   if (echo) return echo;
-//   if (isInitializing) {
-//     return new Promise((resolve) => {
-//       const check = () => (echo ? resolve(echo) : setTimeout(check, 50));
-//       check();
-//     });
-//   }
-
-//   isInitializing = true;
-
-//   try {
-//     const pusherKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY!;
-//     const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER;
-//     const pusherHost = process.env.NEXT_PUBLIC_PUSHER_HOST! || `ws-${pusherCluster}.pusher.com`;
-//     const pusherPort = Number(process.env.NEXT_PUBLIC_PUSHER_PORT || 443);
-//     const backendUrl = process.env.NEXT_PUBLIC_BASE_URL!;
-
-//     window.Pusher = Pusher;
-
-//     echo = new Echo({
-//       broadcaster: "pusher",
-//       key: pusherKey,
-//       wsHost: pusherHost,
-//       wsPort: pusherPort,
-//       wssPort: pusherPort,
-//       forceTLS: true,
-//       enabledTransports: ["ws", "wss"],
-//       authEndpoint: `${backendUrl}/broadcasting/auth`,
-//       auth: {
-//         headers: {
-//           Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-//           Accept: "application/json",
-//         },
-//       },
-//       authorizer: (channel, options) => ({
-//         authorize: (socketId, callback) => {
-//           fetch(options.authEndpoint, {
-//             method: "POST",
-//             headers: {
-//               "Content-Type": "application/json",
-//               Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-//               Accept: "application/json",
-//             },
-//             body: JSON.stringify({
-//               socket_id: socketId,
-//               channel_name: channel.name,
-//             }),
-//           })
-//             .then((res) => (res.ok ? res.json() : Promise.reject(res)))
-//             .then((data) => callback(false, data))
-//             .catch((err) => {
-//               console.error("Auth error:", err);
-//               callback(true, err);
-//             });
-//         },
-//       }),
-//     });
-
-//     const conn = echo.connector?.pusher?.connection;
-//     conn?.bind("connected", () => console.log("✅ Pusher connected"));
-//     conn?.bind("error", (err: any) => console.error("🔌 Pusher error:", err));
-
-//     return echo;
-//   } catch (err) {
-//     console.error("Echo init failed:", err);
-//     echo = null;
-//     return null;
-//   } finally {
-//     isInitializing = false;
-//   }
-// }

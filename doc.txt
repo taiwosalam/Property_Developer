@@ -42,427 +42,169 @@ export const button_variants = {
 
 
 
-
-"use client";
-
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
-import { cn } from "@/lib/utils";
-import { SuccessProgressIcon, WarningProgressIcon } from "@/public/icons/icons";
-
-export interface ProgressCardStep {
-  title: string;
-  desc: string;
-  type: "warning" | "success";
+/* Spacing System - Responsive */
+.gap-xs {
+  gap: clamp(0.25rem, 1vw, 0.5rem);
+}
+.gap-sm {
+  gap: clamp(0.5rem, 2vw, 0.75rem);
+}
+.gap-md {
+  gap: clamp(0.75rem, 3vw, 1rem);
+}
+.gap-lg {
+  gap: clamp(1rem, 4vw, 1.5rem);
+}
+.gap-xl {
+  gap: clamp(1.5rem, 5vw, 2rem);
 }
 
-interface ProgressCardLoaderProps {
-  loading: boolean;
-  steps: ProgressCardStep[];
-  className?: string;
-  onClose?: () => void;
+.p-xs {
+  padding: clamp(0.25rem, 1vw, 0.5rem);
+}
+.p-sm {
+  padding: clamp(0.5rem, 2vw, 0.75rem);
+}
+.p-md {
+  padding: clamp(0.75rem, 3vw, 1rem);
+}
+.p-lg {
+  padding: clamp(1rem, 4vw, 1.5rem);
+}
+.p-xl {
+  padding: clamp(1.5rem, 5vw, 2rem);
 }
 
-const ProgressCardLoader = ({
-  loading,
-  steps,
-  className,
-  onClose,
-}: ProgressCardLoaderProps) => {
-  const [mounted, setMounted] = useState(false);
-  const [currentStep, setCurrentStep] = useState(0);
-  const [visible, setVisible] = useState(false);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-    return () => setMounted(false);
-  }, []);
-
-  // Handle step progression
-  //   useEffect(() => {
-  //     if (!mounted) return;
-
-  //     if (loading) {
-  //       setVisible(true);
-  //       setCurrentStep(0);
-
-  //       const stepDuration = 2000; // ms per step while loading
-  //       intervalRef.current = setInterval(() => {
-  //         setCurrentStep((prev) => {
-  //           const maxIndexWhileLoading = steps.length - 2; // stop at second-to-last
-  //           if (prev < maxIndexWhileLoading) {
-  //             return prev + 1;
-  //           }
-  //           return prev; // hold at second-to-last until loading ends
-  //         });
-  //       }, stepDuration);
-  //     } else {
-  //       // stop slow interval
-  //       if (intervalRef.current) clearInterval(intervalRef.current);
-
-  //       // if we haven't reached the second-to-last step yet, fast-forward steps
-  //       if (currentStep < steps.length - 1) {
-  //         let stepIndex = currentStep;
-  //         const fastInterval = setInterval(() => {
-  //           stepIndex++;
-  //           setCurrentStep(stepIndex);
-  //           if (stepIndex >= steps.length - 1) {
-  //             clearInterval(fastInterval);
-  //             setTimeout(() => setVisible(false), 500); // close after .5s
-  //           }
-  //         }, 200); // 0.2s per step
-  //       } else {
-  //         // already at last step
-  //         setTimeout(() => setVisible(false), 1500);
-  //       }
-  //     }
-
-  //     return () => {
-  //       if (intervalRef.current) clearInterval(intervalRef.current);
-  //     };
-  //   }, [loading, mounted, steps.length, currentStep]);
-
-  // Handle step progression
-  useEffect(() => {
-    if (!mounted) return;
-
-    if (loading) {
-      setVisible(true);
-      setCurrentStep(0);
-
-      const stepDuration = 2000; // ms per step while loading
-      intervalRef.current = setInterval(() => {
-        setCurrentStep((prev) => {
-          const maxIndexWhileLoading = steps.length - 2; // stop at second-to-last
-          if (prev < maxIndexWhileLoading) {
-            return prev + 1;
-          }
-          return prev; // hold at second-to-last until loading ends
-        });
-      }, stepDuration);
-    } else {
-      // Stop any existing interval
-      if (intervalRef.current) clearInterval(intervalRef.current);
-
-      // If not at the last step, speed up to show all remaining steps
-      if (currentStep < steps.length - 1) {
-        const fastStepDuration = 200; // 0.2s per step
-        intervalRef.current = setInterval(() => {
-          setCurrentStep((prev) => {
-            if (prev < steps.length - 1) {
-              return prev + 1;
-            }
-            // Reached the last step, stop interval and hide after a short delay
-            if (intervalRef.current) clearInterval(intervalRef.current);
-            setTimeout(() => setVisible(false), 500); // Close 0.5s after last step
-            return prev;
-          });
-        }, fastStepDuration);
-      } else {
-        // Already at the last step, just hide after a short delay
-        setTimeout(() => setVisible(false), 500);
-      }
-    }
-
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [loading, mounted, steps.length, currentStep]);
-
-  
-  if (!mounted || !visible) return null;
-  const target = typeof document !== "undefined" ? document.body : null;
-  if (!target) return null;
-
-  const step = steps[currentStep];
-  const isSuccess = step?.type === "success";
-
-  return createPortal(
-    <div className="fixed inset-0 z-[99999] bg-black/40 backdrop-blur-sm flex items-center justify-center p-4">
-      <div
-        className={cn(
-          "bg-white rounded-2xl shadow-lg w-[70%] sm:w-1/2 p-6 flex flex-col items-center gap-4 text-center",
-          className
-        )}
-      >
-        {isSuccess ? (
-          <SuccessProgressIcon
-            percentage={Math.round(((currentStep + 1) / steps.length) * 100)}
-          />
-        ) : (
-          <WarningProgressIcon
-            percentage={Math.round(((currentStep + 1) / steps.length) * 100)}
-          />
-        )}
-
-        {/* TEXT CONTENTS */}
-        <div className="flex flex-col gap-2">
-          <h2 className="text-md font-semibold">{step?.title}</h2>
-          <p className="text-sm font-normal">→ {step.desc}</p>
-        </div>
-
-        {/* PROGRESS */}
-        <div className="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
-          <div
-            className={cn(
-              "h-2 transition-all duration-500 ease-out",
-              isSuccess ? "bg-green-500" : "bg-yellow-500"
-            )}
-            style={{ width: `${((currentStep + 1) / steps.length) * 100}%` }}
-          />
-        </div>
-
-        {onClose && (
-          <button
-            onClick={onClose}
-            className="absolute top-4 right-4 py-1 px-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-600"
-          >
-            ×
-          </button>
-        )}
-      </div>
-    </div>,
-    target
-  );
-};
-
-export default ProgressCardLoader;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import { useState, useEffect, useMemo } from "react";
-// import { usePathname } from "next/navigation";
-// import useFetch from "@/hooks/useFetch";
-// import { usePersonalInfoStore } from "@/store/personal-info-store";
-// import { DynamicMarqueeConfig, MarqueeApiResponse, MarqueeContent } from "./types";
-
-// const SPEED_MAP = {
-//   "very fast": 200,
-//   fast: 150,
-//   normal: 120,
-//   slow: 80,
-// } as const;
-
-// const PRIORITY_MAP = {
-//   system: 1, // Highest priority (subscription expiry, etc.)
-//   dynamic: 2, // Medium priority (low counts, free plan)
-//   api: 3, // Lowest priority (admin-configured)
-// } as const;
-
-// export const useMarqueeData = (config: DynamicMarqueeConfig = {}) => {
-//   const pathname = usePathname();
-//   const [currentMarquee, setCurrentMarquee] = useState<MarqueeContent | null>(
-//     null
-//   );
-
-//   // Get user info from store
-//   const userTitle = usePersonalInfoStore((state) => state.title);
-//   const isOwner = usePersonalInfoStore((state) => state.is_owner);
-//   const staff = usePersonalInfoStore((state) => state.staff);
-
-//   // Fetch marquee data from API
-//   const { data: apiData } = useFetch<MarqueeApiResponse>("/marques");
-
-//   // Generate dynamic marquees based on current state
-//   const dynamicMarquees = useMemo(() => {
-//     const marquees: MarqueeContent[] = [];
-//     const {
-//       propertyCount = 0,
-//       unitCount = 0,
-//       tenantCount = 0,
-//       currentPlan,
-//       expiryDays,
-//     } = config;
-
-//     // System-level marquees (highest priority)
-//     if (expiryDays !== undefined && expiryDays <= 7) {
-//       marquees.push({
-//         id: "subscription-expiry",
-//         text: `⚠️ Your subscription will expire in ${expiryDays} day${
-//           expiryDays !== 1 ? "s" : ""
-//         }, you can renew to get early discount.`,
-//         url: "/subscription",
-//         urlText: "Renew Now",
-//         speed: 120,
-//         priority: PRIORITY_MAP.system,
-//         source: "system",
-//       });
-//     }
-
-//     // Free plan marquee
-//     if (currentPlan?.toLowerCase() === "free") {
-//       marquees.push({
-//         id: "free-plan",
-//         text: "💳 You are currently on a free plan with limited access to software features. Upgrade your company account to unlock more standard features.",
-//         url: "/upgrade",
-//         urlText: "Click here to upgrade now.",
-//         speed: 120,
-//         priority: PRIORITY_MAP.dynamic,
-//         source: "dynamic",
-//       });
-//     }
-
-//     // Low count warnings
-//     if (propertyCount <= 3 && propertyCount > 0) {
-//       marquees.push({
-//         id: "low-property-count",
-//         text: `📍 You have ${propertyCount} propert${
-//           propertyCount !== 1 ? "ies" : "y"
-//         } remaining. Consider upgrading your plan for more properties.`,
-//         url: "/upgrade",
-//         urlText: "Upgrade Now",
-//         speed: 120,
-//         priority: PRIORITY_MAP.dynamic,
-//         source: "dynamic",
-//       });
-//     }
-
-//     if (unitCount <= 3 && unitCount > 0) {
-//       marquees.push({
-//         id: "low-unit-count",
-//         text: `🏢 You have ${unitCount} unit${
-//           unitCount !== 1 ? "s" : ""
-//         } remaining. Consider upgrading your plan for more units.`,
-//         url: "/upgrade",
-//         urlText: "Upgrade Now",
-//         speed: 120,
-//         priority: PRIORITY_MAP.dynamic,
-//         source: "dynamic",
-//       });
-//     }
-
-//     if (tenantCount <= 3 && tenantCount > 0) {
-//       marquees.push({
-//         id: "low-tenant-count",
-//         text: `👥 You have ${tenantCount} tenant slot${
-//           tenantCount !== 1 ? "s" : ""
-//         } remaining. Consider upgrading your plan for more tenants.`,
-//         url: "/upgrade",
-//         urlText: "Upgrade Now",
-//         speed: 120,
-//         priority: PRIORITY_MAP.dynamic,
-//         source: "dynamic",
-//       });
-//     }
-
-//     return marquees;
-//   }, [config]);
-
-//   // Process API marquees
-//   const apiMarquees = useMemo(() => {
-//     if (!apiData?.data) return [];
-
-//     const now = new Date();
-//     const currentPath = pathname.startsWith("/")
-//       ? pathname.substring(1)
-//       : pathname;
-
-//     return apiData.data
-//       .filter((item) => {
-//         // Check date validity
-//         const startDate = new Date(item.start_date);
-//         const dueDate = new Date(item.due_date);
-
-//         if (now < startDate || now > dueDate) return false;
-
-//         // Check role permissions
-//         const userRole = getUserRole(userTitle, isOwner, staff);
-//         if (
-//           item.role?.length &&
-//           !item.role.some(
-//             (role) =>
-//               role.toLowerCase().includes(userRole.toLowerCase()) ||
-//               userRole.toLowerCase().includes(role.toLowerCase())
-//           )
-//         ) {
-//           return false;
-//         }
-
-//         // Check section/page matching
-//         if (item.section?.length) {
-//           return item.section.some(
-//             (section) =>
-//               currentPath.toLowerCase().startsWith(section.toLowerCase()) ||
-//               section.toLowerCase() === "all" ||
-//               section.toLowerCase() === "*"
-//           );
-//         }
-
-//         return true; // Show on all pages if no section specified
-//       })
-//       .map((item) => ({
-//         id: `api-${item.id}`,
-//         text: stripHtml(item.text),
-//         url: item.link,
-//         urlText: item.link_text,
-//         speed: SPEED_MAP[item.speed] || 120,
-//         priority: PRIORITY_MAP.api,
-//         source: "api" as const,
-//       }));
-//   }, [apiData, pathname, userTitle, isOwner, staff]);
-
-//   // Combine and prioritize marquees
-//   const allMarquees = useMemo(() => {
-//     return [...dynamicMarquees, ...apiMarquees].sort(
-//       (a, b) => a.priority - b.priority
-//     );
-//   }, [dynamicMarquees, apiMarquees]);
-
-//   // Marquee rotation logic
-//   useEffect(() => {
-//     if (!allMarquees.length) {
-//       setCurrentMarquee(null);
-//       return;
-//     }
-
-//     let currentIndex = 0;
-//     setCurrentMarquee(allMarquees[0]);
-
-//     if (allMarquees.length === 1) return;
-
-//     const interval = setInterval(() => {
-//       currentIndex = (currentIndex + 1) % allMarquees.length;
-//       setCurrentMarquee(allMarquees[currentIndex]);
-//     }, 8000); // Rotate every 8 seconds
-
-//     return () => clearInterval(interval);
-//   }, [allMarquees]);
-
-//   return {
-//     currentMarquee,
-//     allMarquees,
-//     hasMarquees: allMarquees.length > 0,
-//   };
-// };
-
-
-
-
-
-
-
-
-
+.px-xs {
+  padding-left: clamp(0.25rem, 1vw, 0.5rem);
+  padding-right: clamp(0.25rem, 1vw, 0.5rem);
+}
+.px-sm {
+  padding-left: clamp(0.5rem, 2vw, 0.75rem);
+  padding-right: clamp(0.5rem, 2vw, 0.75rem);
+}
+.px-md {
+  padding-left: clamp(0.75rem, 3vw, 1rem);
+  padding-right: clamp(0.75rem, 3vw, 1rem);
+}
+.px-lg {
+  padding-left: clamp(1rem, 4vw, 1.5rem);
+  padding-right: clamp(1rem, 4vw, 1.5rem);
+}
+.px-xl {
+  padding-left: clamp(1.5rem, 5vw, 2rem);
+  padding-right: clamp(1.5rem, 5vw, 2rem);
+}
+
+.py-xs {
+  padding-top: clamp(0.25rem, 1vw, 0.5rem);
+  padding-bottom: clamp(0.25rem, 1vw, 0.5rem);
+}
+.py-sm {
+  padding-top: clamp(0.5rem, 2vw, 0.75rem);
+  padding-bottom: clamp(0.5rem, 2vw, 0.75rem);
+}
+.py-md {
+  padding-top: clamp(0.75rem, 3vw, 1rem);
+  padding-bottom: clamp(0.75rem, 3vw, 1rem);
+}
+.py-lg {
+  padding-top: clamp(1rem, 4vw, 1.5rem);
+  padding-bottom: clamp(1rem, 4vw, 1.5rem);
+}
+.py-xl {
+  padding-top: clamp(1.5rem, 5vw, 2rem);
+  padding-bottom: clamp(1.5rem, 5vw, 2rem);
+}
+
+.pl-xs {
+  padding-left: clamp(0.25rem, 1vw, 0.5rem);
+}
+.pl-sm {
+  padding-left: clamp(0.5rem, 2vw, 0.75rem);
+}
+.pl-md {
+  padding-left: clamp(0.75rem, 3vw, 1rem);
+}
+.pl-lg {
+  padding-left: clamp(1rem, 4vw, 1.5rem);
+}
+.pl-xl {
+  padding-left: clamp(1.5rem, 5vw, 2rem);
+}
+.pl-2xl {
+  padding-left: clamp(2rem, 6vw, 2.5rem);
+}
+
+.pr-xs {
+  padding-right: clamp(0.25rem, 1vw, 0.5rem);
+}
+.pr-sm {
+  padding-right: clamp(0.5rem, 2vw, 0.75rem);
+}
+.pr-md {
+  padding-right: clamp(0.75rem, 3vw, 1rem);
+}
+.pr-lg {
+  padding-right: clamp(1rem, 4vw, 1.5rem);
+}
+.pr-xl {
+  padding-right: clamp(1.5rem, 5vw, 2rem);
+}
+
+/* Border Radius - Responsive */
+.rounded-xs {
+  border-radius: clamp(0.125rem, 0.5vw, 0.25rem);
+}
+.rounded-sm {
+  border-radius: clamp(0.25rem, 1vw, 0.375rem);
+}
+.rounded-md {
+  border-radius: clamp(0.375rem, 1.5vw, 0.5rem);
+}
+.rounded-lg {
+  border-radius: clamp(0.5rem, 2vw, 0.75rem);
+}
+.rounded-xl {
+  border-radius: clamp(0.75rem, 3vw, 1rem);
+}
+
+/* Width/Height Responsive Utilities */
+.w-xs {
+  width: clamp(1rem, 4vw, 1.5rem);
+}
+.w-sm {
+  width: clamp(1.5rem, 5vw, 2rem);
+}
+.w-md {
+  width: clamp(2rem, 6vw, 2.5rem);
+}
+.w-lg {
+  width: clamp(2.5rem, 7vw, 3rem);
+}
+.w-xl {
+  width: clamp(3rem, 8vw, 4rem);
+}
+
+.h-xs {
+  height: clamp(1rem, 4vw, 1.5rem);
+}
+.h-sm {
+  height: clamp(1.5rem, 5vw, 2rem);
+}
+.h-md {
+  height: clamp(2rem, 6vw, 2.5rem);
+}
+.h-lg {
+  height: clamp(2.5rem, 7vw, 3rem);
+}
+.h-xl {
+  height: clamp(3rem, 8vw, 4rem);
+}
+
+/* min-width responsive utilities for badges */
+.min-w-xs { min-width: clamp(1rem, 2.5vw, 1.125rem); }
+.min-w-sm { min-width: clamp(1.125rem, 3vw, 1.25rem); }
+.min-w-md { min-width: clamp(1.25rem, 3.5vw, 1.5rem); }
 
 
