@@ -58,7 +58,7 @@ const SignIn = () => {
     <AuthForm
       onFormSubmit={handleSubmit}
       skipValidation
-      className='custom-flex-col gap-md pt-6'
+      className='custom-flex-col mid-gap pt-6'
     >
       <AuthHeading
         title='welcome Back'  
