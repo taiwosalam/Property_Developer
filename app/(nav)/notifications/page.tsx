@@ -20,6 +20,8 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { Loader2 } from "lucide-react";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import NotificationsSkeleton from "./notification-skeleton";
+import { filterNotificationsByRole, UserRole } from "@/components/Notification/notification-permission";
+import { useRole } from "@/hooks/roleContext";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState<
@@ -28,14 +30,21 @@ const Notifications = () => {
   const [page, setPage] = useState(1);
   const [meta, setMeta] = useState<TNotificationData["meta"]>();
   const [initialLoading, setInitialLoading] = useState(true);
-
   const [notificationIds, setNotificationIds] = useState<string[]>([]);
   const [isClearingNotifications, setIsClearingNotifications] = useState(false);
+
+  // Get user role from context
+  const { role } = useRole();
 
   const loadMore = async () => {
     const data = await fetchNotifications(page + 1);
     if (data) {
-      setNotifications((prev) => [...prev, ...data.notifications]);
+      // Filter notifications based on role permissions
+      const filteredNotifications = role 
+        ? filterNotificationsByRole(data.notifications, role as UserRole)
+        : data.notifications;
+        
+      setNotifications((prev) => [...prev, ...filteredNotifications]);
       setMeta(data.meta);
       setPage((prev) => prev + 1);
     }
@@ -49,9 +58,14 @@ const Notifications = () => {
   const refetchNotifications = async () => {
     const data = await fetchNotifications(1);
     if (data) {
-      setNotifications(data.notifications);
+      // Filter notifications based on role permissions
+      const filteredNotifications = role 
+        ? filterNotificationsByRole(data.notifications, role as UserRole)
+        : data.notifications;
+        
+      setNotifications(filteredNotifications);
       setMeta(data.meta);
-      setPage(1); // Reset page to 1
+      setPage(1);
     }
   };
 
@@ -62,24 +76,28 @@ const Notifications = () => {
     };
 
     window.addEventListener("refetchNotifications", handleRefetch);
-
     return () => {
       window.removeEventListener("refetchNotifications", handleRefetch);
     };
-  }, []);
+  }, [role]); // Add role as dependency
 
   useEffect(() => {
     const loadInitial = async () => {
       setInitialLoading(true);
       const data = await fetchNotifications(1);
       if (data) {
-        setNotifications(data.notifications);
+        // Filter notifications based on role permissions
+        const filteredNotifications = role 
+          ? filterNotificationsByRole(data.notifications, role as UserRole)
+          : data.notifications;
+          
+        setNotifications(filteredNotifications);
         setMeta(data.meta);
       }
       setInitialLoading(false);
     };
     loadInitial();
-  }, []);
+  }, [role]); // Add role as dependency
 
   const handleDeleteNotifications = async () => {
     try {
