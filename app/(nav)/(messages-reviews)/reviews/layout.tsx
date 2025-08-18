@@ -45,9 +45,14 @@ import { handleAxiosError } from "@/services/api";
 import { ChevronLeftIcon, ChevronRight, Loader2 } from "lucide-react";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import NoMessage from "../messages/messages-component";
+import Image from "next/image";
+import { empty } from "@/app/config";
 
 const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
   const { isMobile, isTablet, isLaptop, isDesktop } = useWindowWidth();
+
+  const { company_logo } = usePersonalInfoStore();
 
   const { id } = useParams();
   const [reviews, setReviews] = useState<IReviewCard | null>(null);
@@ -211,7 +216,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
 
   return (
     <div className="relative w-full h-full">
-      <div className="flex h-full sm:justify-between sm:gap-8">
+      <div className="flex h-full sm:justify-between sm:gap-8 w-full">
         {/* Reviews List - Always visible on desktop, hidden on mobile when viewing details */}
         {(!isCustom || !id) && (
           <div className="flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0">
@@ -297,7 +302,7 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
                         <p className="text-xs text-[#E9212E]">Negative</p>
                       </div>
                     </div>
-                    <div className="flex gap-2 items-center">
+                    <div className="flex gap-2 items-center lg:justify-center lg:w-full">
                       <Input
                         id="search"
                         value={searchInput}
@@ -424,65 +429,86 @@ const ReviewsLayout: React.FC<ReviewsLayoutProps> = ({ children }) => {
         )}
 
         {/* Review Details - Side by side on desktop, full width on mobile */}
-        {id && (
-          <div className="flex-1 overflow-hidden flex flex-col bg-white">
-            {/* Review Details Header */}
-            <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary flex-shrink-0 border-b border-gray-200 dark:border-gray-500">
-              <div className="flex items-center gap-3">
+        <div className="flex flex-1">
+          {id ? (
+            <div className="overflow-hidden flex flex-col bg-white w-full">
+              {/* Review Details Header */}
+              <div className="py-4 px-6 bg-neutral-2 dark:bg-darkText-primary flex-shrink-0 border-b border-gray-200 dark:border-gray-500">
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => window.history.back()}
+                    className="p-1 hover:bg-gray-100 dark:text-white rounded-md transition-colors"
+                  >
+                    <ChevronLeftIcon />
+                    {/* <Picture src="/icons/chevron-left.svg" alt="back" size={20} /> */}
+                  </button>
+                  <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+                    review details
+                  </p>
+                </div>
+              </div>
+
+              <div className="custom-flex-col w-full h-full flex-1 overflow-y-auto">
+                {children}
+                <div ref={messagesEndRef} />
+              </div>
+              <div className="py-4 px-6 flex gap-3 flex-shrink-0 border-t border-gray-200 bg-gray-50 dark:bg-darkText-primary">
+                <input
+                  onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                    if (
+                      e.key === "Enter" &&
+                      !e.shiftKey &&
+                      inputComment.trim() &&
+                      !isSending
+                    ) {
+                      e.preventDefault();
+                      sendComment().then(() => {
+                        setTimeout(scrollToBottom, 100);
+                      });
+                    }
+                  }}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    setInputComment(e.target.value)
+                  }
+                  value={inputComment}
+                  id="chat"
+                  placeholder="Type your message here"
+                  className="flex-1 text-sm p-3 md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:border-gray-600 bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out"
+                />
                 <button
-                  onClick={() => window.history.back()}
-                  className="p-1 hover:bg-gray-100 dark:text-white rounded-md transition-colors"
+                  disabled={inputComment.length === 0 || isSending}
+                  className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md"
+                  onClick={sendComment}
                 >
-                  <ChevronLeftIcon />
-                  {/* <Picture src="/icons/chevron-left.svg" alt="back" size={20} /> */}
+                  {isSending ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    <Picture src={PlaneBlue} alt="send" size={24} />
+                  )}
                 </button>
-                <p className="text-text-primary dark:text-white text-base font-medium capitalize">
-                  review details
+              </div>
+            </div>
+          ) : (
+            <div className="flex justify-center items-center w-full">
+              <div className="custom-flex-col gap-4">
+                <div className="flex justify-center h-[40px] w-[40px]">
+                  <Image
+                    src={company_logo || empty}
+                    alt="logo"
+                    width={1000}
+                    height={1000}
+                    className="h-full w-full object-contain"
+                  />
+                </div>
+                <p className="text-center text-text-quaternary dark:text-darkText-1 text-sm font-normal">
+                  You don&rsquo;t have any recent reviews. Click on the review
+                  list to select a review you&rsquo;d like to view and start a
+                  conversation.
                 </p>
               </div>
             </div>
-
-            <div className="custom-flex-col w-full h-full flex-1 overflow-y-auto">
-              {children}
-              <div ref={messagesEndRef} />
-            </div>
-            <div className="py-4 px-6 flex gap-3 flex-shrink-0 border-t border-gray-200 bg-gray-50 dark:bg-darkText-primary">
-              <input
-                onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
-                  if (
-                    e.key === "Enter" &&
-                    !e.shiftKey &&
-                    inputComment.trim() &&
-                    !isSending
-                  ) {
-                    e.preventDefault();
-                    sendComment().then(() => {
-                      setTimeout(scrollToBottom, 100);
-                    });
-                  }
-                }}
-                onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                  setInputComment(e.target.value)
-                }
-                value={inputComment}
-                id="chat"
-                placeholder="Type your message here"
-                className="flex-1 text-sm p-3 md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:border-gray-600 bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out"
-              />
-              <button
-                disabled={inputComment.length === 0 || isSending}
-                className="bg-brand-9 h-full aspect-square flex justify-center items-center rounded-md"
-                onClick={sendComment}
-              >
-                {isSending ? (
-                  <Loader2 className="animate-spin" />
-                ) : (
-                  <Picture src={PlaneBlue} alt="send" size={24} />
-                )}
-              </button>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       {!isDirector && !canViewAndReplyReviews && (
