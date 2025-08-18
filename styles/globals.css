@@ -795,6 +795,10 @@ button:disabled:not(.retain-opacity) {
   font-weight: 600;
 }
 
+.mid-gap {
+  gap: clamp(0.75rem, 3vw, 1rem);
+}
+
 .account-card-container {
   @apply scrollbar-hide py-3 pl-2 flex gap-6 overflow-x-auto;
 }
@@ -803,7 +807,38 @@ button:disabled:not(.retain-opacity) {
   @apply !min-w-[320px] shrink-0;
 }
 
+.xsmall_gap {
+  gap: clamp(0.25rem, 1vw, 0.5rem);
+}
 
+.px-md {
+  padding-left: clamp(0.75rem, 3vw, 1rem);
+  padding-right: clamp(0.75rem, 3vw, 1rem);
+}
+.px-lg {
+  padding-left: clamp(1rem, 4vw, 1.5rem);
+  padding-right: clamp(1rem, 4vw, 1.5rem);
+}
+
+.px-xl {
+  padding-left: clamp(1.5rem, 5vw, 2rem);
+  padding-right: clamp(1.5rem, 5vw, 2rem);
+}
+
+.py-xs {
+  padding-top: clamp(0.25rem, 1vw, 0.5rem);
+  padding-bottom: clamp(0.25rem, 1vw, 0.5rem);
+}
+
+.small_padding {
+  padding-top: clamp(0.5rem, 2vw, 0.75rem);
+  padding-bottom: clamp(0.5rem, 2vw, 0.75rem);
+}
+
+.py-md {
+  padding-top: clamp(0.75rem, 3vw, 1rem);
+  padding-bottom: clamp(0.75rem, 3vw, 1rem);
+}
 /* DO NOT CHANGE THIS WITHOUT CONSULTING @BINARYTECH001 */
 .management-cardstat-wrapper{
   @apply flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar my-4 md:mt-0 flex-nowrap md:flex-wrap w-full px-2;

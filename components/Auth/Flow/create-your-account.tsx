@@ -35,12 +35,12 @@ const SignUp: React.FC<FlowComponentProps> = ({ changeStep }) => {
     <AuthForm
       onFormSubmit={handleSignUp}
       setValidationErrors={setErrorMsgs}
-      className="custom-flex-col gap-md"
+      className="custom-flex-col mid-gap"
     >
       <AuthHeading title="Create Your Account">
         Please provide the following information to set up your account.
       </AuthHeading>
-      <div className="custom-flex-col gap-md">
+      <div className="custom-flex-col mid-gap">
         <Input
           id="email"
           type="email"

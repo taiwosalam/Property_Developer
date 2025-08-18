@@ -311,7 +311,7 @@ export const NavButton: React.FC<NavButtonProps> = ({
   const content = (
     <div
       className={clsx(
-        "w-full py-md flex items-center gap-md",
+        "w-full py-md flex items-center mid-gap",
         {
           "nav-button": !minimized,
           "nav-button-minimized": minimized,
@@ -489,7 +489,7 @@ export const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
           </div>
           {content?.map(({ label }, idx) => (
             <div key={idx} className="py-md pl-2xl pr-lg">
-              <button className="flex items-center gap-md">
+              <button className="flex items-center mid-gap">
                 <SVG type="horizontal_line" className="icon-lg" />
                 <p className="text-text-secondary capitalize">{label}</p>
               </button>
