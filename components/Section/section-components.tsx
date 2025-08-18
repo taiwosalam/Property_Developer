@@ -18,7 +18,9 @@ export const SectionTitle: React.FC<SectionTitleProps> = ({
 }) => (
   <div className="flex gap-[2px] text-xs md:text-sm lg:text-base font-medium">
     {required && <span className="text-status-error-primary">*</span>}
-    <p className="text-text-quaternary dark:text-white capitalize">{children}</p>
+    <p className="text-text-quaternary dark:text-white capitalize">
+      {children}
+    </p>
   </div>
 );
 
@@ -33,7 +35,7 @@ export const SectionHeading: React.FC<SectionHeadingProps> = ({
   children,
   required,
 }) => (
-  <div className="custom-flex-col gap-xs">
+  <div className="custom-flex-col xsmall_gap">
     {title && <SectionTitle required={required}>{title}</SectionTitle>}
     <SectionDesc>{children}</SectionDesc>
   </div>
@@ -76,7 +78,10 @@ export const SectionContainer: React.FC<SectionContainerProps> = ({
 }) => (
   <div className={cn("custom-flex-col gap-4", className)}>
     <div className="flex items-center justify-between">
-      <h1 className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]" style={style}>
+      <h1
+        className="text-text-primary text-xl font-medium capitalize dark:text-[#f1f1fd]"
+        style={style}
+      >
         {heading}
       </h1>
       {href && (

@@ -116,9 +116,9 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
         ideally 160px x 450px.
       </SectionHeading>
 
-      <div className="flex gap-4 flex-wrap">
+      <div className="flex  gap-4 flex-wrap">
         {(["light", "dark"] as const).map((mode) => (
-          <div key={mode}>
+          <div className=" max-w-full" key={mode}>
             <h3 className="text-md font-medium mb-4">
               {mode === "light" ? "Light Mode Logo" : "Dark Mode Logo"}
             </h3>
@@ -136,12 +136,12 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDeleteImage(mode)}
-                    className="absolute top-[-15px] scale-75 sm:scale-0 right-[15px] sm:right-[-25px] z-10"
+                    className="absolute top-[-15px] scale-75 sm:scale-0 right-[5px] sm:right-[-25px] z-10"
                     aria-label={`Delete ${mode} logo`}
                   >
                     <DeleteIconOrange />
                   </button>
-                  <div className="relative  max-w-full w-[90%] sm:w-[375px] h-[150px] rounded-md overflow-hidden">
+                  <div className="relative  max-w-full w-full  sm:w-[375px] h-[150px] rounded-md overflow-hidden">
                     <Image
                       src={
                         mode === "light"

@@ -283,9 +283,9 @@ const VehiclesRecordPage = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <div className="space-y-9">
-      <div className="page-header-container mt-4 md:mt-0">
-        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
+    <div className="my-8">
+      <div className="page-header-container my-4 md:m-0">
+        <div className="management-cardstat-wrapper">
           <ManagementStatistcsCard
             title="Total Record"
             newData={totalStats}
@@ -308,7 +308,10 @@ const VehiclesRecordPage = () => {
         {canCheckInAndManageVehicleRec && (
           <Modal>
             <ModalTrigger asChild>
-              <Button type="button" className="page-header-button md:block hidden">
+              <Button
+                type="button"
+                className="page-header-button md:block hidden"
+              >
                 + Create New Record
               </Button>
             </ModalTrigger>

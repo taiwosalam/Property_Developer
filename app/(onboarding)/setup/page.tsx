@@ -22,7 +22,6 @@ import {
   transformFormData,
   createCompany,
   updateCompany,
-  SetupLoadsteps,
 } from "./data";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
@@ -40,10 +39,9 @@ import useFetch from "@/hooks/useFetch";
 import { toast } from "sonner";
 import { useTourStore } from "@/store/tour-store";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
-import ProgressCardLoader, {
-  ProgressCardStep,
-} from "@/components/Loader/setup-card-loader";
 import Text from "@/components/Form/Text/text";
+import ProgressCardLoader from "@/components/Loader/setup-card-loader";
+import { SetupLoadsteps } from "@/services/loading-steps";
 
 const Setup = () => {
   const router = useRouter();

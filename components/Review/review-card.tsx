@@ -68,7 +68,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
     <Link
       href={`/reviews/${props.id}`}
       className={clsx("custom-flex-col gap-4 px-4", {
-        "bg-neutral-2": props.highlight,
+        "bg-neutral-2 dark:bg-gray-800": props.highlight,
       })}
     >
       <div></div>
@@ -79,6 +79,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
             alt="profile picture"
             size={60}
             rounded
+            className="custom-secondary-bg"
             //status
           />
         </div>
@@ -86,7 +87,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
           <div className="custom-flex-col gap-2">
             <div className="flex justify-between">
               <div className="flex items-center gap-[10px]">
-                <p className="text-text-primary text-base font-medium capitalize">
+                <p className="text-text-primary dark:text-white text-base font-medium capitalize">
                   {props.fullname}
                 </p>
                 {getBadgeColor(props.tier_id) && (
@@ -95,7 +96,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
                   />
                 )}
               </div>
-              <p className="text-brand-9 capitalize">
+              <p className="text-brand-9 dark:text-white/50 capitalize">
                 {props.reply_count}{" "}
                 {props.reply_count === 1 ? "reply" : "replies"}
               </p>
@@ -104,7 +105,7 @@ const ReviewCard: React.FC<ReviewCardProp> = ({ ...props }) => {
           </div>
           <div className="flex justify-between">
             <div className="flex gap-4">
-              <p className="text-text-primary text-xs">View all replies</p>
+              <p className="text-text-primary dark:text-white text-xs">View all replies</p>
               <div className="flex gap-[10px]">
                 <button
                   className="flex items-center gap-1"

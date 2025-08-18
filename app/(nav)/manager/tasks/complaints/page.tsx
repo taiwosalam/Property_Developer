@@ -9,10 +9,17 @@ import FilterBar from "@/components/FIlterBar/FilterBar";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
 import { SectionContainer } from "@/components/Section/section-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
-import { approveAndProcessComplaint, rejectComplaint, transformComplaintsData } from "@/app/(nav)/tasks/complaints/data";
+import {
+  approveAndProcessComplaint,
+  rejectComplaint,
+  transformComplaintsData,
+} from "@/app/(nav)/tasks/complaints/data";
 import useFetch from "@/hooks/useFetch";
 import { useState, useEffect, useCallback } from "react";
-import { ComplaintsPageData, ComplaintsResponse } from "@/app/(nav)/tasks/complaints/types";
+import {
+  ComplaintsPageData,
+  ComplaintsResponse,
+} from "@/app/(nav)/tasks/complaints/types";
 import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -102,28 +109,28 @@ const ComplaintsPage = () => {
       })) || [];
 
   // Handler for pending complaints infinite scroll
-  const handleLoadMorePending = useCallback(
-    async (page: number) => {
-      try {
-        console.log('Loading more for pending complaints, page:', page);
-        
-        // Update the main config to fetch the next page
-        setConfig(prev => ({
-          ...prev,
-          params: {
-            ...prev.params,
-            page: page,
-          },
-        }));
-      } catch (error) {
-        console.error("Error loading more pending complaints:", error);
-        throw error;
-      }
-    },
-    []
-  );
+  const handleLoadMorePending = useCallback(async (page: number) => {
+    try {
+      console.log("Loading more for pending complaints, page:", page);
 
-  const applyFiltersToConfig = (filters: FilterResult, targetConfig: AxiosRequestConfig) => {
+      // Update the main config to fetch the next page
+      setConfig((prev) => ({
+        ...prev,
+        params: {
+          ...prev.params,
+          page: page,
+        },
+      }));
+    } catch (error) {
+      console.error("Error loading more pending complaints:", error);
+      throw error;
+    }
+  }, []);
+
+  const applyFiltersToConfig = (
+    filters: FilterResult,
+    targetConfig: AxiosRequestConfig
+  ) => {
     const { menuOptions, startDate, endDate } = filters;
     const propertyIds = menuOptions["Property"] || [];
     const tenantIds = menuOptions["Tenant/Occupant"] || [];
@@ -155,7 +162,7 @@ const ComplaintsPage = () => {
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    
+
     // Apply filters to the config
     const baseConfig = applyFiltersToConfig(filters, config);
     setConfig(baseConfig);
@@ -210,7 +217,7 @@ const ComplaintsPage = () => {
       <CustomLoader layout="page" statsCardCount={3} pageTitle="Complaints" />
     );
   }
-  
+
   if (error && !pageData) return <ServerError error={error} />;
   if (isNetworkError) return <NetworkError />;
 
@@ -282,8 +289,9 @@ const ComplaintsPage = () => {
 
       <SectionContainer
         heading={
-          pageData && pageData.complaints.some(c => c.content?.status === "pending")
-            ? "Recent Complains" 
+          pageData &&
+          pageData.complaints.some((c) => c.content?.status === "pending")
+            ? "Recent Complains"
             : ""
         }
       >
@@ -308,7 +316,9 @@ const ComplaintsPage = () => {
           />
         ) : !!config.params.search || hasActiveFilters(appliedFilters) ? (
           // When filters are applied, show filtered pending complaints
-          pageData?.complaints.filter(task => task?.content?.status === "pending").length === 0 ? (
+          pageData?.complaints.filter(
+            (task) => task?.content?.status === "pending"
+          ).length === 0 ? (
             <SearchError />
           ) : (
             <div className="bg-white dark:bg-[#3C3D37] p-6 border-2 border-dashed rounded-lg border-gray-300 gap-4 flex items-center overflow-x-scroll no-scrollbar">
@@ -350,7 +360,14 @@ const ComplaintsPage = () => {
           // When no filters are applied, use the PendingComplaintsScroll with auto-loading
           <PendingComplaintsScroll
             complaints={pageData?.complaints || []}
-            pagination={pageData?.pagination || { total_pages: 1, current_page: 1, per_page: 10, total: 0 }}
+            pagination={
+              pageData?.pagination || {
+                total_pages: 1,
+                current_page: 1,
+                per_page: 10,
+                total: 0,
+              }
+            }
             onLoadMore={handleLoadMorePending}
             loading={silentLoading}
             onTaskClick={(complaint) => {

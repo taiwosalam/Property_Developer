@@ -222,7 +222,7 @@ const Dashboard = () => {
       )}
       <section className="custom-flex-col gap-10">
         <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
-          <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
+          <div className="w-full xl:flex-1 space-y-4 mt-4 md:backdrop:mt-0 xl:space-y-6">
             <div className="dashboard-stats w-full flex py-1.5 xl:py-7 overflow-x-auto md:overflow-hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-3 no-scrollbar">
               {dashboardStats.map((card, index) => (
                 <Link href={card.link} key={index} prefetch={false}>

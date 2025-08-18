@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { createPortal } from "react-dom";
-
 import { BoardColumn, BoardContainer } from "./BoardColumn";
 import {
   DndContext,
@@ -266,7 +265,6 @@ export function KanbanBoard({
     }
   }, [pagination]);
 
-
   // Load more data for a specific column
   const handleLoadMore = useCallback(
     async (columnId: ColumnId) => {
@@ -529,7 +527,7 @@ export function KanbanBoard({
           {/* Global loading overlay for silent loading operations */}
           {silentLoading && (
             <div className="absolute top-0 right-0 m-4 z-50">
-              <div className="flex items-center gap-2 bg-white shadow-lg rounded-lg px-4 py-2 border">
+              <div className="flex items-center gap-2 shadow-lg rounded-lg px-4 py-2 border">
                 <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
                 <span className="text-sm text-gray-600">Updating...</span>
               </div>
@@ -720,13 +718,11 @@ export function KanbanBoard({
             isOverATask ? overIndex - 1 : activeIndex
           );
         });
-
       }
     }
     pickedUpTaskColumn.current = null;
   }
 
- 
   function onDragOver(event: DragOverEvent) {
     const { active, over } = event;
     if (!over) return;

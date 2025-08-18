@@ -59,7 +59,7 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
           )}
         </div>
 
-        <p className="text-text-disabled text-xs">{comment || text}</p>
+        <p className="text-text-disabled dark:text-gray-300 text-xs">{comment || text}</p>
 
         {replies.length > 0 && (
           <div className="ml-4">

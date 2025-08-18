@@ -183,6 +183,7 @@ export const validPermissions: Record<string, string[]> = {
     "can_view_and_reply_branch_messages",
   ],
   staff: [
+    "can_add_delete_branch_properties",
     "can_view_complaints",
     // "can_view_announcement",
     "can_create_and_manage_announcement",

@@ -57,7 +57,7 @@ const TourCard: React.FC<TourCardProps> = ({
         </div>
         <p
           id={`tour-step-${stepIndex}-content`}
-          className="text-sm dark:text-white mb-4 sm:text-sm text-xs"
+          className="dark:text-white mb-4 sm:text-sm text-xs"
           style={{ wordBreak: "break-word" }}
         >
           {parse(step.content)}
@@ -76,7 +76,7 @@ const TourCard: React.FC<TourCardProps> = ({
                 onClick={onNext}
                 type="button"
                 size="sm_normal"
-                className="px-md py-sm text-white capitalize rounded-md text-xs md:text-sm"
+                className="px-md small_padding text-white capitalize rounded-md text-xs md:text-sm"
                 aria-label="Start tour"
               >
                 Take the Tour
@@ -89,7 +89,7 @@ const TourCard: React.FC<TourCardProps> = ({
                   onClick={onBack}
                   variant="border"
                   size="sm_normal"
-                  className="px-4 py-2 dark:text-white"
+                  className="px-4 md:py-2 py-1 dark:text-white"
                   aria-label="Previous step"
                 >
                   <ChevronLeftIcon size="20" />

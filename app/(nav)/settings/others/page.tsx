@@ -1379,7 +1379,7 @@ const Others = () => {
                           width={30}
                           height={30}
                         />
-                        <span> + Add new Profile </span>
+                        <span> + Add new director </span>
                       </div>
                     </ModalTrigger>
                   </div>
@@ -1399,7 +1399,7 @@ const Others = () => {
           </div>
         </div>
 
-        {/* RESTRICTED USERS */}
+        {/* RESTRICTED USERS 
         <div className="custom-flex-col flex-wrap gap-6 mt-12 mb-6">
           <SettingsSectionTitle
             title="Access Control"
@@ -1480,7 +1480,7 @@ Once restricted, they will no longer have access to participate in the property'
               </Modal>
             </AutoResizingGrid>
           </div>
-        </div>
+        </div>*/}
       </SettingsSection>
 
       {/* COMPANY TYPE SETTINGS */}

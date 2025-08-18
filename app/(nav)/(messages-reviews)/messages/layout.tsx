@@ -70,9 +70,6 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default MessagesLayout;
-
-// "use client";
-// import { useState } from "react";
 // import { useParams } from "next/navigation";
 // import useWindowWidth from "@/hooks/useWindowWidth";
 // import { AuthForm } from "@/components/Auth/auth-components";

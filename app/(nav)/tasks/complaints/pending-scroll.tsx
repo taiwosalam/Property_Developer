@@ -194,7 +194,7 @@ const PendingComplaintsScroll: React.FC<PendingComplaintsScrollProps> = ({
     }
   }, [isLoadingMore, onLoadMore, pagination.current_page]);
 
-  if (allComplaints.length === 0 && !loading) {
+  if (pendingComplaints.length === 0 && !loading) {
     return (
       <div className="w-full flex justify-center items-center py-8">
         <p className="text-text-secondary dark:text-darkText-2 text-sm">

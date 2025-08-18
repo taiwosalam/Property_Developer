@@ -242,8 +242,8 @@ const BranchStaffPage = () => {
 
   return (
     <div className="custom-flex-col gap-6">
-      <div className="page-header-container mt-4 md:mt-0">
-        <div className="flex overflow-x-auto md:overflow-hidden gap-3 no-scrollbar flex-nowrap md:flex-wrap w-full px-2">
+      <div className="page-header-container my-4 md:m-0">
+        <div className="management-cardstat-wrapper">
           <ManagementStatistcsCard
             title="Total Staff"
             newData={state.total_data_count}

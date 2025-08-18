@@ -223,7 +223,7 @@ const ManageTenancyAgreement = () => {
             size="base_bold"
             variant="sky_blue"
             disabled={reqLoading}
-            className="py-2 px-6"
+            className="py-2 px-6 hidden md:block"
           >
             {reqLoading ? "Please wait..." : "Preview"}
           </Button>

@@ -519,9 +519,13 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     if (currentPlanKeyword === "basic" && thisPlanKeyword === "premium") {
       return "Upgrade Plan"; // Basic plan users see "Upgrade" for Premium
     }
+
     if (currentPlanKeyword === "premium") {
-      return thisPlanKeyword === "premium" ? "Extend Plan" : "Basic Plan"; // Premium users see "Extend" for Premium, "Basic Plan" for others
+      if (thisPlanKeyword === "premium") return "Extend Plan";
+      if (thisPlanKeyword === "professional") return "Upgrade Plan"; // FIX
+      return "Basic Plan";
     }
+
     return "Select Plan"; // Fallback
   })();
 
