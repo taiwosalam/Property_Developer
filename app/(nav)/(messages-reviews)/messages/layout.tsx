@@ -51,7 +51,7 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex-1 overflow-hidden flex flex-col">
             {!id && (
               <div className="custom-flex-col w-full h-full">
-                <NoMessage />
+                <NoMessage /> 
               </div>
             )}
             <div className="custom-flex-col w-full h-full flex-1">
