@@ -26,7 +26,7 @@ const VehicleRecordModal: React.FC<
   VehicleRecord & {
     showOpenRecordsButton?: boolean;
     note?: string;
-    page?: "manager" | "account";
+    page?: "manager" | "account" | "staff";
   }
 > = ({
   status,
@@ -48,12 +48,17 @@ const VehicleRecordModal: React.FC<
   // PERMISSIONS
   const canCheckInAndManageVehicleRec =
     usePermission(role, "Can check in and manage vehicle records") ||
-    role === "director";
+    role === "director" ||
+    role === "staff";
+
+  console.log(canCheckInAndManageVehicleRec, status);
+
+  console.log(latest_check_in.vehicle_record_id)
 
   const checkIn = {
-    id: latest_check_in?.id,
+    id: latest_check_in?.vehicle_record_id,
     name: latest_check_in?.in_by || "---",
-    passenger: latest_check_in?.passengers_in || "---",
+    passenger: latest_check_in?.passengers_in !== null ? latest_check_in?.passengers_in : "--- ---",
     date: latest_check_in?.check_in_time
       ? dayjs(latest_check_in?.check_in_time).format("MMM DD YYYY hh:mma")
       : "---",
@@ -61,7 +66,7 @@ const VehicleRecordModal: React.FC<
   };
 
   const [checkOut, setCheckOut] = useState({
-    id: latest_check_in?.id,
+    id: latest_check_in?.vehicle_record_id,
     name: latest_check_in?.out_by || "---",
     passenger: latest_check_in?.passengers_out || "---",
     date: latest_check_in?.check_out_time
@@ -160,6 +165,8 @@ const VehicleRecordModal: React.FC<
         return `/manager/management/vehicles-record/records/${id}/record`;
       case "account":
         return `/accountant/management/vehicles-record/records/${id}/record`;
+      case "staff":
+        return `/staff/management/vehicles-record/records/${id}/record`;
       default:
         return `/management/vehicles-record/records/${id}/record`;
     }
@@ -289,7 +296,7 @@ const VehicleRecordModal: React.FC<
         {/* Buttons */}
         <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
           {/* {status === "pending" && ( */}
-          {status === "check-in" && canCheckInAndManageVehicleRec && (
+          {status === "pending" && canCheckInAndManageVehicleRec && (
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
@@ -308,7 +315,7 @@ const VehicleRecordModal: React.FC<
               Open Records
             </Button>
           )}
-          {/* {(status === "no_record" || status === "completed") && ( */}
+          {/* {(status === "no_record" || status === "completed") && ( 
           {(status === "pending" || status === "check-out") &&
             canCheckInAndManageVehicleRec && (
               <Button
@@ -318,7 +325,7 @@ const VehicleRecordModal: React.FC<
               >
                 Check In
               </Button>
-            )}
+            )}*/}
         </div>
       </WalletModalPreset>
     );

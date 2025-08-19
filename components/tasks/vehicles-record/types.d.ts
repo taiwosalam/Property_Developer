@@ -47,10 +47,14 @@ interface NoRecordVehicleRecord extends BaseVehicleRecord {
   checkOut?: CheckInOut;
 }
 
-export type VehicleRecord = PendingVehicleRecord | CompletedVehicleRecord | NoRecordVehicleRecord;
+export type VehicleRecord =
+  | PendingVehicleRecord
+  | CompletedVehicleRecord
+  | NoRecordVehicleRecord;
 
 interface Tenant {
   tenant_id: number;
+  id: number;
   name: string;
   gender: string;
   address: string;
@@ -71,5 +75,5 @@ interface TenantData {
 export interface TenantApiResponse {
   status: string;
   message: string;
-  data: TenantData;
+  tenants: Tenant[];
 }

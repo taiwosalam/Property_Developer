@@ -110,6 +110,7 @@ export interface checkInsOutData {
     check_out_time: string;
     created_at: string;
     deleted_at: string | "";
+    visitor_name: string;
     id: number;
     in_by: string;
     inventory_in: string;
@@ -197,6 +198,7 @@ export const transformSingleVehicleRecordApiResponse = (
         created_at: checkIn.created_at,
         deleted_at: checkIn?.deleted_at || "",
         id: checkIn.id,
+        visitor_name: vehicleRecord.name,
         in_by: checkIn.in_by,
         inventory_in: checkIn.inventory_in,
         inventory_out: checkIn.inventory_out,

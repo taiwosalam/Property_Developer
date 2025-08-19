@@ -7,7 +7,6 @@ import Input from "@/components/Form/Input/input";
 import Button from "@/components/Form/Button/button";
 import Select from "@/components/Form/Select/select";
 import DateInput from "@/components/Form/DateInput/date-input";
-import TextArea from "@/components/Form/TextArea/textarea";
 import DocumentCheckbox from "@/components/Documents/DocumentCheckbox/document-checkbox";
 import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { useEffect, useState } from "react";
@@ -20,14 +19,18 @@ import { number } from "zod";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import dayjs from "dayjs";
 import { useRole } from "@/hooks/roleContext";
+import TextArea from "@/components/Form/TextArea/textarea";
+import { useModal } from "@/components/Modal/modal";
 
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   next,
   setIsOpen,
+
 }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [announcement, setAnnouncement] = useState(false);
+  const { setIsOpen: setIsOpenModal } = useModal();
 
   const { role } = useRole();
 
@@ -66,7 +69,8 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
       const res = await createExamine(data);
       if (res) {
         toast.success("Examine created");
-        setIsOpen?.(false);
+        //setIsOpen?.(false);
+        setIsOpenModal(false);
       }
     } catch (error) {
     } finally {
@@ -91,7 +95,7 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
 
       const staff = propertyData.data?.branch?.staffs.filter(
         (staff: { id: number; name: string; staff_role: string }) =>
-          staff.staff_role !== "director" 
+          staff.staff_role !== "director"
       );
 
       const officersOptions = staff?.map(
@@ -138,14 +142,18 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
 
   useEffect(() => {
     if (branchData) {
-      const branches = branchData?.data?.map(
-        (branch: { id: number; branch_name: string }) => {
-          return {
-            id: branch.id,
-            name: branch.branch_name,
-          };
-        }
+      // Remove duplicate branches by id
+      const branches: any = Array.from(
+        new Map(
+          branchData?.data?.map(
+            (branch: { id: number; branch_name: string }) => [
+              branch.id,
+              { id: branch.id, name: branch.branch_name },
+            ]
+          ) || []
+        ).values()
       );
+
       setBranchOptions(branches);
     }
   }, [branchData]);
@@ -269,12 +277,19 @@ const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
               label="Examine Date"
               minDate={dayjs(new Date())}
             />
+
             <TextArea
               id="note"
               label="Attach note:"
               className="md:col-span-2"
               required
             />
+            {/* <TextArea
+              id="note"
+              label="Attach note:"
+              className="md:col-span-2"
+              required
+            /> */}
           </div>
           {/* <div className="flex justify-end">
             <DocumentCheckbox

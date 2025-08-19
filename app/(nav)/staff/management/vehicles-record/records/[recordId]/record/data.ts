@@ -111,6 +111,7 @@ export interface checkInsOutData {
     created_at: string;
     deleted_at: string | "";
     id: number;
+    visitor_name: string;
     in_by: string;
     inventory_in: string;
     inventory_out: string;
@@ -194,6 +195,7 @@ export const transformSingleVehicleRecordApiResponse = (
       check_ins: [...response.data.check_ins.data].reverse().map((checkIn) => ({
         check_in_time: checkIn.check_in_time,
         check_out_time: checkIn.check_out_time,
+        visitor_name: vehicleRecord.name,
         created_at: checkIn.created_at,
         deleted_at: checkIn?.deleted_at || "",
         id: checkIn.id,

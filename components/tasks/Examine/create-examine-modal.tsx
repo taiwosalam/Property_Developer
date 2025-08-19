@@ -12,12 +12,13 @@ import { useState } from "react";
 
 interface IExamineModal {
   setIsOpen?: (isOpen: boolean) => void
+ 
 }
 const CreateExamineModal = ({ setIsOpen }: IExamineModal) => {
   const { activeStep, changeStep } = useStep(2);
 
   return activeStep === 1 ? (
-    <CreateExamineDate next={() => changeStep("next")} setIsOpen={setIsOpen}/>
+    <CreateExamineDate next={() => changeStep("next")} setIsOpen={setIsOpen} />
   ) : (
     <ModalPreset type="success">
       <p className="text-text-disabled text-sm font-normal">

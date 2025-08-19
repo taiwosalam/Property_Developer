@@ -13,6 +13,7 @@ import { empty } from "@/app/config";
 
 interface checkInOutData {
   id: number;
+  visitor_name: string;
   check_in_time: string;
   in_by: string;
   passengers_in: string;
@@ -54,12 +55,13 @@ const PreviousRecord: React.FC<
   }
 > = (props) => {
   const { pictureSrc, category, userId, registrationDate, ...record } = props;
-  const [status, setStatus] = useState<string>("");
+  const [status, setStatus] = useState<string>(record.status);
   const [recordData, setRecordData] = useState<checkInOutData>(record);
 
   const checkIn = {
     date: dayjs(recordData.check_in_time).format("MMM DD YYYY hh:mma"),
     name: recordData.in_by,
+    visitor_name: recordData?.visitor_name,
     passenger: recordData.passengers_in,
     inventory: recordData.inventory_in,
   };
@@ -71,7 +73,10 @@ const PreviousRecord: React.FC<
     name: recordData.out_by,
     passenger: recordData.passengers_out,
     inventory: recordData.inventory_out,
+    visitor_name: recordData?.visitor_name,
   };
+
+  console.log(checkIn.passenger);
 
   // console.log("recordData", recordData);
 
@@ -112,10 +117,10 @@ const PreviousRecord: React.FC<
             <VehicleRecordModal
               status={status as "check-in" | "check-out"}
               pictureSrc={pictureSrc || empty}
-              name={checkIn.name}
+              name={checkIn.visitor_name}
               note={""}
               id={
-                recordData?.inventory_id?.toString() || userId?.toString() || ""
+                recordData?.vehicle_record_id || userId?.toString() || ""
               }
               category={category as "guest" | "visitor"}
               registrationDate={

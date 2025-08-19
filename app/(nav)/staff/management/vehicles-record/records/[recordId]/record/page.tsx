@@ -319,7 +319,7 @@ const RecordPage = () => {
             ) : (
               canCheckInAndManageVehicleRec && (
                 <>
-                  <Modal
+                  {/* <Modal
                     state={{
                       isOpen: updateUserModal,
                       setIsOpen: setUpdateUserModal,
@@ -330,7 +330,7 @@ const RecordPage = () => {
                         Edit
                       </Button>
                     </ModalTrigger>
-                    {/* <ModalContent>
+                  <ModalContent>
                     <EditPersonalDetailsFormModal
                       data={{
                         id: vehicleDetails.id,
@@ -345,7 +345,7 @@ const RecordPage = () => {
                       isOpen={updateUserModal}
                       setIsOpen={setUpdateUserModal}
                     />
-                  </ModalContent> */}
+                  </ModalContent> 
                   </Modal>
                   <Modal>
                     <ModalTrigger asChild>
@@ -356,7 +356,7 @@ const RecordPage = () => {
                     <ModalContent>
                       <UpdateVehicleWithEmail recordId={recordId.toString()} />
                     </ModalContent>
-                  </Modal>
+                  </Modal>*/}
                 </>
               )
             )}
@@ -429,7 +429,7 @@ const RecordPage = () => {
             <Detail label="Color" value={color || "N/A"} />
             <Detail label="Manufacture Year" value={manufacture_year} />
           </div>
-          {canCheckInAndManageVehicleRec && (
+          {/* {canCheckInAndManageVehicleRec && (
             <Button
               size="base_medium"
               className="py-2 px-8 ml-auto self-end"
@@ -437,7 +437,7 @@ const RecordPage = () => {
             >
               Edit
             </Button>
-          )}
+          )} */}
           <Modal
             state={{
               isOpen: updateVehicleModal,
@@ -465,24 +465,26 @@ const RecordPage = () => {
       </InfoBox>
 
       {/* Previous Records */}
-      <div className="space-y-4">
-        <h2 className="text-brand-9 font-bold text-lg lg:text-xl">
-          Previous Records
-        </h2>
-        <SectionSeparator />
+      {checkInsOutData && checkInsOutData?.check_ins.length > 0 && (
         <div className="space-y-4">
-          {checkInsOutData?.check_ins?.map((record) => (
-            <PreviousRecord
-              key={record.id}
-              category={category}
-              userId={Number(userId)}
-              registrationDate={record.created_at}
-              pictureSrc={pictureSrc}
-              {...record}
-            />
-          ))}
+          <h2 className="text-brand-9 font-bold text-lg lg:text-xl">
+            Previous Records
+          </h2>
+          <SectionSeparator />
+          <div className="space-y-4">
+            {checkInsOutData?.check_ins?.map((record) => (
+              <PreviousRecord
+                key={record.id}
+                category={category}
+                userId={Number(userId)}
+                registrationDate={record.created_at}
+                pictureSrc={pictureSrc}
+                {...record}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <Pagination
         totalPages={checkInsOutData?.last_page || 1}
         currentPage={checkInsOutData?.current_page || 1}

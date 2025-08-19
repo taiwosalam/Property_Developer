@@ -392,7 +392,7 @@ const Security = () => {
                     id="alt_email"
                     label="email"
                     type="email"
-                    disabled={!pageData?.isOwner}
+                    disabled
                     placeholder="write here"
                     inputClassName="rounded-[8px] setup-f bg-white"
                     defaultValue={pageData?.director_email ?? pageData?.email}
