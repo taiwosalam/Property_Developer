@@ -2,6 +2,17 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import api from "@/services/api";
 import axios, { AxiosRequestConfig } from "axios";
+import { cacheManager } from "./cacheManager";
+
+interface CacheOptions {
+  enabled?: boolean;
+  key?: string;
+  ttl?: number;
+}
+
+interface UseFetchOptions extends AxiosRequestConfig {
+  cache?: CacheOptions;
+}
 
 interface UseFetchResult<T> {
   data: T | null;
@@ -9,49 +20,155 @@ interface UseFetchResult<T> {
   silentLoading: boolean;
   error: string | null;
   isNetworkError: boolean;
-  refetch: (options?: { silent?: boolean }) => Promise<void>;
+  fromCache?: boolean;
+  refetch: (options?: {
+    silent?: boolean;
+    config?: AxiosRequestConfig;
+    url?: string;
+    skipCache?: boolean;
+  }) => Promise<void>;
+  clearCache?: () => void;
 }
 
 function useFetch<T>(
-  url: string | null, // Explicitly allow null
+  url: string | null,
   config?: AxiosRequestConfig
+): Omit<UseFetchResult<T>, "fromCache" | "clearCache">;
+
+function useFetch<T>(
+  url: string | null,
+  options: UseFetchOptions & { cache: CacheOptions }
+): UseFetchResult<T>;
+
+function useFetch<T>(
+  url: string | null,
+  configOrOptions?: AxiosRequestConfig | UseFetchOptions
 ): UseFetchResult<T> {
+  const isOptionsFormat = configOrOptions && "cache" in configOrOptions;
+  const { cache: cacheOptions, ...config } = isOptionsFormat
+    ? (configOrOptions as UseFetchOptions)
+    : { cache: undefined, ...(configOrOptions as AxiosRequestConfig) };
+
   const [data, setData] = useState<T | null>(null);
-  const [loading, setLoading] = useState(false); // Start with false
+  const [loading, setLoading] = useState(true);
   const [silentLoading, setSilentLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isNetworkError, setIsNetworkError] = useState(false);
+  const [fromCache, setFromCache] = useState(false);
+
   const isInitialLoad = useRef(true);
+  const urlRef = useRef<string | null>(url);
+  const configRef = useRef(config);
+  const cacheOptionsRef = useRef(cacheOptions);
 
+  const isCacheEnabled = cacheOptionsRef.current?.enabled === true;
+
+  // Cache key generator
+  const generateCacheKey = useCallback(
+    (fetchUrl: string, fetchConfig?: AxiosRequestConfig): string => {
+      if (cacheOptionsRef.current?.key) {
+        return cacheOptionsRef.current.key;
+      }
+
+      const configForKey = fetchConfig
+        ? {
+            params: fetchConfig.params,
+            headers: fetchConfig.headers,
+            method: fetchConfig.method || "GET",
+          }
+        : {};
+
+      return `${fetchUrl}:${JSON.stringify(configForKey)}`;
+    },
+    []
+  );
+
+  // Clear cache
+  const clearCache = useCallback(() => {
+    if (isCacheEnabled && urlRef.current) {
+      const cacheKey = generateCacheKey(urlRef.current, configRef.current);
+      cacheManager.delete(cacheKey);
+    }
+  }, [isCacheEnabled, generateCacheKey]);
+
+  // Get cache
+  const getFromCache = useCallback(
+    (cacheKey: string): T | null => {
+      if (!isCacheEnabled) return null;
+      return cacheManager.get(cacheKey);
+    },
+    [isCacheEnabled]
+  );
+
+  // Set cache
+  const setToCache = useCallback(
+    (cacheKey: string, responseData: T) => {
+      if (!isCacheEnabled) return;
+      const ttl = cacheOptionsRef.current?.ttl;
+      cacheManager.set(cacheKey, responseData, ttl);
+    },
+    [isCacheEnabled]
+  );
+
+  // Fetch data
   const fetchData = useCallback(
-    async (options: { silent?: boolean } = {}) => {
-      const { silent = false } = options;
+    async (
+      fetchOptions: {
+        silent?: boolean;
+        config?: AxiosRequestConfig;
+        url?: string;
+        skipCache?: boolean;
+      } = {}
+    ) => {
+      const { silent = false, config, url, skipCache = false } = fetchOptions;
 
-      // Skip fetching if URL is null or falsy
-      if (!url) {
+      // Update refs if provided
+      if (url !== undefined) urlRef.current = url;
+      if (config !== undefined) configRef.current = config;
+
+      // Handle null or falsy URL
+      if (!urlRef.current) {
         setData(null);
         setError(null);
         setIsNetworkError(false);
+        setFromCache(false);
         setLoading(false);
         setSilentLoading(false);
         return;
       }
 
-      try {
-        // Set loading state based on whether it's silent
-        if (silent) {
-          setSilentLoading(true);
-        } else {
-          setLoading(true);
+      const cacheKey = generateCacheKey(urlRef.current, configRef.current);
+
+      // Cache check
+      if (!skipCache && isCacheEnabled) {
+        const cachedData = getFromCache(cacheKey);
+        if (cachedData !== null) {
+          setData(cachedData);
+          setFromCache(true);
+          setError(null);
+          setIsNetworkError(false);
+          setLoading(false);
+          setSilentLoading(false);
+          return;
         }
+      }
+
+      try {
+        if (silent) setSilentLoading(true);
+        else setLoading(true);
+
         setError(null);
         setIsNetworkError(false);
+        setFromCache(false);
 
-        // Perform the fetch
-        const { data } = await api.get<T>(url, config);
-        setData(data);
+        const response = await api.get<T>(urlRef.current, configRef.current);
+
+        if (isCacheEnabled) {
+          setToCache(cacheKey, response.data);
+        }
+
+        setData(response.data);
       } catch (err) {
-        // Handle errors
         if (axios.isAxiosError(err)) {
           if (!err.response) {
             setIsNetworkError(true);
@@ -61,7 +178,7 @@ function useFetch<T>(
             const errorMessage =
               errorData?.message ||
               (typeof errorData?.error === "string"
-                ? errorData?.error
+                ? errorData.error
                 : typeof errorData?.error?.message === "string"
                 ? errorData.error.message
                 : "Something went wrong");
@@ -71,42 +188,67 @@ function useFetch<T>(
           setError((err as Error)?.message);
         }
       } finally {
-        // Reset loading states
-        if (silent) {
-          setSilentLoading(false);
-        } else {
-          setLoading(false);
-        }
+        if (silent) setSilentLoading(false);
+        else setLoading(false);
       }
     },
-    [url, config]
+    [generateCacheKey, getFromCache, setToCache, isCacheEnabled]
   );
 
+  // Initial fetch
   useEffect(() => {
-    // Only fetch if URL is truthy
-    if (url) {
+    if (urlRef.current) {
       fetchData({ silent: !isInitialLoad.current });
     } else {
-      // Reset states when URL is null
       setData(null);
       setError(null);
       setIsNetworkError(false);
+      setFromCache(false);
       setLoading(false);
       setSilentLoading(false);
     }
-    if (isInitialLoad.current) {
-      isInitialLoad.current = false;
-    }
-  }, [fetchData, url]);
+    isInitialLoad.current = false;
+  }, [fetchData]);
 
-  return {
+  // Refetch if url/config changes
+  useEffect(() => {
+    cacheOptionsRef.current = cacheOptions;
+
+    if (url === null) {
+      urlRef.current = null;
+      setData(null);
+      setError(null);
+      setIsNetworkError(false);
+      setFromCache(false);
+      setLoading(false);
+      setSilentLoading(false);
+      return;
+    }
+
+    if (config !== undefined) {
+      const oldConfigString = JSON.stringify(configRef.current || {});
+      const newConfigString = JSON.stringify(config || {});
+      const hasUrlChanged = urlRef.current !== url;
+      const hasConfigChanged = oldConfigString !== newConfigString;
+
+      if (hasUrlChanged || hasConfigChanged) {
+        urlRef.current = url;
+        configRef.current = config;
+        fetchData({ silent: true });
+      }
+    }
+  }, [url, config, cacheOptions, fetchData]);
+
+  const baseResult = {
     data,
     loading,
     silentLoading,
     error,
     isNetworkError,
-    refetch: (options) => fetchData(options),
+    refetch: fetchData,
   };
+
+  return isCacheEnabled ? { ...baseResult, fromCache, clearCache } : baseResult;
 }
 
 export default useFetch;

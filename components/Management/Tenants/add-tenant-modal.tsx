@@ -23,6 +23,7 @@ import { addTenantWithEmail } from "../Landlord/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useRole } from "@/hooks/roleContext";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { cacheManager } from "@/hooks/cacheManager";
 
 const AddTenantModal = () => {
   const router = useRouter();
@@ -55,6 +56,7 @@ const AddTenantModal = () => {
       router.push(switchPathname());
     } else {
       setTimeout(() => {
+        cacheManager.deleteCacheByUrl('tenants')
         window.dispatchEvent(new Event("refetchTenants"));
       }, 0);
     }
