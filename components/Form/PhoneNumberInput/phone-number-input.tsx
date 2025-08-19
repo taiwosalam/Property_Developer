@@ -28,7 +28,8 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
   const [phoneValue, setPhoneValue] = useState(defaultValue);
   const isDarkMode = useDarkMode();
   useEffect(() => {
-    setPhoneValue(value || defaultValue);
+    const newValue = (value || defaultValue || "").toString();
+    setPhoneValue(newValue);
   }, [value, resetKey, defaultValue]);
 
   const handleChange = (newValue: string) => {
@@ -76,7 +77,7 @@ const PhoneNumberInput: React.FC<PhoneNumberProps> = ({
         dropdownStyle={{
           borderRadius: "8px",
           background: isDarkMode ? "#121212" : "#FFFFFF",
-          border: "none", 
+          border: "none",
           color: isDarkMode ? "#FFFFFF" : "#000000",
           fontFamily: "inherit",
         }}

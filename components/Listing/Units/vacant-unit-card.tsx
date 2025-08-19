@@ -181,11 +181,11 @@ const VacantUnitCard = ({
         <div className="min-w-[800px] custom-flex-col gap-4">
           <div className="flex gap-6 items-center">
             <div className="custom-flex-col flex-1 gap-2">
-              <div className="flex">
+              <div className="flex gap-8 sm:gap-0">
                 <KeyValueList
                   data={keyValueData}
                   referenceObject={referenceObject}
-                  truncateLength={35}
+                  truncateLength={40}
                 />
               </div>
             </div>

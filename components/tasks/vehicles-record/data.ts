@@ -117,7 +117,7 @@ export const transformTenant = (
     local_government: tenant?.local_government || "",
     city: tenant?.city || "",
     address: tenant?.address || "",
-    phone_number: tenant?.phone || "",
+    phone_number: tenant?.phone.profile_phone || tenant?.phone?.user_phone || "",
     avatar: tenant?.picture || "",
   };
 };

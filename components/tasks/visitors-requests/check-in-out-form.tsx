@@ -98,7 +98,9 @@ const CheckInOutForm: React.FC<VisitorFormProps | VehicleFormProps> = (
                     <span className="text-text-primary dark:text-white text-base font-medium capitalize">
                       {userName}
                     </span>
-                    <BadgeIcon color={getBadgeColor(tier_id) ?? "gray"} />
+                    {useCase !== "vehicle" && (
+                      <BadgeIcon color={getBadgeColor(tier_id) ?? "gray"} />
+                    )}
                   </p>
                   <p className="flex items-center gap-1 text-sm font-normal">
                     <span className="text-text-tertiary dark:text-darkText-2">

@@ -62,6 +62,7 @@ import { DrawerComponent } from "../Drawer/drawer";
 import Marquee from "../Marquee/marquee";
 import { SmartMarquee } from "../Marquee/smart-marque";
 import { useMarqueeConfig } from "../Marquee/marque-config";
+import { useRole } from "@/hooks/roleContext";
 
 const Header = () => {
   const { isMobile } = useWindowWidth();
@@ -74,6 +75,8 @@ const Header = () => {
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+  const isOnline = useOnlineStatus();
+  const { role } = useRole();
 
   const pathname = usePathname();
 
@@ -280,8 +283,7 @@ const Header = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const isOnline = useOnlineStatus();
-
+  const isShowTheme = role !== "director";
   const lgIconsInteractionClasses =
     "flex items-center justify-center rounded-full transition-colors duration-150 hover:bg-neutral-2 dark:hover:bg-[#707165]";
 
@@ -369,6 +371,11 @@ const Header = () => {
                 </Modal>
               </div>
               <div className="flex items-center gap-2">
+                <NavIcon
+                  icon={<MoonIcon size={21} />}
+                  onClick={() => {}}
+                  alt="theme switcher"
+                />
                 <NavIcon
                   icon={<MailIcon size={21} />}
                   href="/messages"
@@ -510,6 +517,13 @@ const Header = () => {
             </div>
 
             <div className="flex gap-4 items-center text-[#5A5D61] dark:text-white">
+              {isShowTheme && (
+                <div className="flex justify-center items-center">
+                  <button onClick={toggleTheme}>
+                    <MoonIcon />
+                  </button>
+                </div>
+              )}
               <div className="relative">
                 <Link
                   href="/messages"

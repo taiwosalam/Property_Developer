@@ -52,7 +52,7 @@ const FlowProgress: React.FC<FlowProgressProps> = ({
     let value = input.value.trim();
 
     if (input.type === "tel") {
-      value = value.replace(/\s+/g, "");
+      value = value?.replace(/\s+/g, "");
       return value.length > 4;
     }
 

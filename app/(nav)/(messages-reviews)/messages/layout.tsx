@@ -28,16 +28,15 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
   const isMobileWithSelectedMessage = isMobileWithMessages && id;
 
   return (
-    <MessagesProvider> 
+    <MessagesProvider>
       <>
         {/* Sidebar: Show on large screens OR on mobile when there are messages but no specific message selected */}
         {showSidebar && !isMobileWithSelectedMessage && (
           <div
-            className={`${
-              isMobileWithMessages 
-                ? "w-full flex-none p-4" // Full width on mobile with messages
-                : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
-            }`}
+            className={`${isMobileWithMessages
+              ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll" // Mobile: full width with overflow hidden
+              : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
+              }`}
           >
             <MessagesSidebar
               anchorEl={anchorEl}
@@ -52,13 +51,13 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex-1 overflow-hidden flex flex-col">
             {!id && (
               <div className="custom-flex-col w-full h-full">
-                <NoMessage />
+                <NoMessage /> 
               </div>
             )}
             <div className="custom-flex-col w-full h-full flex-1">
               {children}
               {id && (
-                <AuthForm onFormSubmit={() => {}}>
+                <AuthForm onFormSubmit={() => { }}>
                   <MessageInputArea />
                 </AuthForm>
               )}
@@ -98,13 +97,13 @@ export default MessagesLayout;
 //   const isMobileWithMessages = isCustom && hasMessages;
 
 //   return (
-//     <MessagesProvider> 
+//     <MessagesProvider>
 //       <>
 //         {/* Sidebar: Show on large screens OR on mobile when there are messages */}
 //         {showSidebar && (
 //           <div
 //             className={`${
-//               isMobileWithMessages 
+//               isMobileWithMessages
 //                 ? "w-full flex-none" // Full width on mobile with messages
 //                 : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
 //             }`}
@@ -168,7 +167,7 @@ export default MessagesLayout;
 //   const hasMessages = usersMessages && Array.isArray(usersMessages) && usersMessages.length > 0;
 
 //   return (
-//     <MessagesProvider> 
+//     <MessagesProvider>
 //       <>
 //         {/* Sidebar: Show on large screens OR on mobile when there are messages */}
 //         {(!isCustom || hasMessages) && (
@@ -227,9 +226,9 @@ export default MessagesLayout;
 //   const handleMenuClose = () => setAnchorEl(null);
 
 //   return (
-//     <MessagesProvider> 
+//     <MessagesProvider>
 //       <>
-//         {/* Sidebar only on large screens */} 
+//         {/* Sidebar only on large screens */}
 //         {!isCustom && (
 //           <div
 //             className="flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0"
