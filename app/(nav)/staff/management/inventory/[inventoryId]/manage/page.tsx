@@ -333,7 +333,7 @@ const ManageInventory = () => {
                   variant="light_red"
                   className="delete-inventory-button py-2 px-7"
                 >
-                  delete inventory
+                  Remove
                 </Button>
               </ModalTrigger>
               <ModalContent>
@@ -361,7 +361,7 @@ const ManageInventory = () => {
                 type="button"
                 className="add-more-button py-2 px-7"
               >
-                Add more to inventory
+                Add more
               </Button>
               <Button
                 size="sm_medium"
