@@ -82,7 +82,6 @@ const NavGlobalSearchItem: React.FC<NavGlobalSearchItemProps> = ({
             <SVG
               type={icon}
               color={primaryColor || "#0033C4"}
-              className="md:w-[30px] w-[10px] md:h-[30px] h-[10px]"
             />
           </div>
           <div className="custom-flex-col gap-1 font-medium">

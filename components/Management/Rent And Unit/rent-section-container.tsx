@@ -82,7 +82,7 @@ export const FeeDetails: React.FC<{
   return (
     <RentSectionContainer title={title}>
       <div className="space-y-6">
-        <div className="grid md:grid-cols-2 gap-y-4 gap-x-2">
+        <div className="grid grid-cols-2 gap-y-4 gap-x-2">
           {validFeeDetails.map((fee, index) => (
             <DetailItem
               key={index}
