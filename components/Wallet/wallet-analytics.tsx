@@ -20,19 +20,20 @@ const WalletAnalytics: React.FC<WalletAnalyticsProps> = ({
   className,
   amount = 0,
   trend = { from: "none", type: "none", percent: 0 },
+  // widthClassName,
 }) => {
   const { from, type, percent } = trend;
 
   return (
     <div
       className={clsx(
-        "py-[18px] px-5 rounded-lg overflow-hidden custom-flex-col gap-6 flex-1",
+        "py-[18px] px-5 rounded-lg overflow-hidden custom-flex-col gap-6 flex-1 md:w-full min-w-[240px]",
         {
           "bg-brand-1": title === "funds",
           "bg-status-error-1": title === "debit",
           "bg-status-success-1": title === "credit",
         },
-        className
+        className,
       )}
     >
       <div className="custom-flex-col gap-2">
@@ -57,10 +58,10 @@ const WalletAnalytics: React.FC<WalletAnalyticsProps> = ({
             type === "up"
               ? TrendingUpIcon
               : type === "down"
-              ? TrendingDownIcon
-              : type === "equal"
-              ? EqualArrow
-              : empty
+                ? TrendingDownIcon
+                : type === "equal"
+                  ? EqualArrow
+                  : empty
           }
           alt={`trending ${type}`}
           size={24}

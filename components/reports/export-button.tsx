@@ -29,7 +29,7 @@ const ExportButton: React.FC<{
       className="rounded-lg py-2 px-4 max-sm:p-2 flex items-center sm:gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
     >
       {type === "pdf" ? <PDFIcon /> : <ExcelIcon />}
-      <span className="text-text-secondary dark:text-darkText-1 hidden sm:text-sm font-medium">
+      <span className="text-text-secondary dark:text-darkText-1 hidden md:block sm:text-sm font-medium">
         Export
       </span>
     </button>
@@ -39,7 +39,7 @@ const ExportButton: React.FC<{
       className="rounded-lg py-2 px-4 max-sm:p-2 flex items-center sm:gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
     >
       {type === "pdf" ? <PDFIcon /> : <ExcelIcon />}
-      <span className="text-text-secondary dark:text-darkText-1 hidden sm:text-sm font-medium">
+      <span className="text-text-secondary dark:text-darkText-1 hidden md:block sm:text-sm font-medium">
         Export
       </span>
     </Link>
