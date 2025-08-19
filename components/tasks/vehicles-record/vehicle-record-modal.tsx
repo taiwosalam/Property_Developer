@@ -51,14 +51,13 @@ const VehicleRecordModal: React.FC<
     role === "director" ||
     role === "staff";
 
-  console.log(canCheckInAndManageVehicleRec, status);
-
-  console.log(latest_check_in.vehicle_record_id)
-
   const checkIn = {
-    id: latest_check_in?.vehicle_record_id,
+    id: latest_check_in?.id,
     name: latest_check_in?.in_by || "---",
-    passenger: latest_check_in?.passengers_in !== null ? latest_check_in?.passengers_in : "--- ---",
+    passenger:
+      latest_check_in?.passengers_in !== null
+        ? latest_check_in?.passengers_in
+        : "--- ---",
     date: latest_check_in?.check_in_time
       ? dayjs(latest_check_in?.check_in_time).format("MMM DD YYYY hh:mma")
       : "---",
@@ -66,7 +65,7 @@ const VehicleRecordModal: React.FC<
   };
 
   const [checkOut, setCheckOut] = useState({
-    id: latest_check_in?.vehicle_record_id,
+    id: latest_check_in?.id,
     name: latest_check_in?.out_by || "---",
     passenger: latest_check_in?.passengers_out || "---",
     date: latest_check_in?.check_out_time
@@ -253,7 +252,10 @@ const VehicleRecordModal: React.FC<
             <p className="text-text-label dark:text-white font-normal mb-1">
               Inventory
             </p>
-            <div dangerouslySetInnerHTML={{ __html: checkIn.inventory }} />
+            <TruncatedText>
+              <div dangerouslySetInnerHTML={{ __html: checkIn.inventory }} />
+            </TruncatedText>
+
             {/* <TruncatedText lines={2}>{checkIn.inventory}</TruncatedText> */}
           </div>
           {/* Check Out */}
@@ -290,21 +292,14 @@ const VehicleRecordModal: React.FC<
             <p className="text-text-label dark:text-white font-normal mb-1">
               Inventory
             </p>
-            <div dangerouslySetInnerHTML={{ __html: checkOut.inventory }} />
+            <TruncatedText>
+              <div dangerouslySetInnerHTML={{ __html: checkOut.inventory }} />
+            </TruncatedText>
           </div>
         </div>
         {/* Buttons */}
         <div className="mt-8 flex items-center justify-center gap-4 md:gap-[70px]">
           {/* {status === "pending" && ( */}
-          {status === "pending" && canCheckInAndManageVehicleRec && (
-            <Button
-              size="sm_bold"
-              className="py-[10px] px-6 rounded-lg"
-              onClick={() => setActiveStep("check-out")}
-            >
-              Check Out
-            </Button>
-          )}
           {showOpenRecordsButton && (
             <Button
               size="sm_bold"
@@ -315,6 +310,28 @@ const VehicleRecordModal: React.FC<
               Open Records
             </Button>
           )}
+
+          {status === "check-in" ||
+          (status === "pending" && canCheckInAndManageVehicleRec) ? (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("check-out")}
+            >
+              Check Out
+            </Button>
+          ) : status === "pending" && canCheckInAndManageVehicleRec ? (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("check-in")}
+            >
+              Check In
+            </Button>
+          ) : (
+            ""
+          )}
+
           {/* {(status === "no_record" || status === "completed") && ( 
           {(status === "pending" || status === "check-out") &&
             canCheckInAndManageVehicleRec && (

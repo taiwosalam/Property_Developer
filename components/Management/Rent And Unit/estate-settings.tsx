@@ -6,6 +6,7 @@ import EditWarningModal from "./edit-warning-modal";
 import { RentSectionTitle } from "./rent-section-container";
 import { Skeleton } from "@mui/material";
 import { useRouter } from "next/navigation";
+import { useRole } from "@/hooks/roleContext";
 
 const EstateSettings = ({
   title,
@@ -21,6 +22,20 @@ const EstateSettings = ({
   noEdit?: boolean;
 }) => {
   const router = useRouter();
+  const { role } = useRole();
+
+  const getRoutes = () => {
+    switch(role){
+      case "manager":
+        return `/manager/management/properties/${id}/edit-property?page=rent-unit`;
+      case "staff":
+        return `/staff/tenant/properties/${id}/edit-property?page=rent-unit`;
+      case "account":
+        return `/accountant/staff/tenant/properties/${id}/edit-property?page=rent-unit`;
+      default:
+        return `/management/properties/${id}/edit-property?page=rent-unit`;
+    }
+  }
   return (
     <div
       className="estate-settings-wrapper py-6 px-6 bg-white dark:bg-darkText-primary rounded-md space-y-4"
@@ -48,7 +63,7 @@ const EstateSettings = ({
             <Button
               size="base_medium"
               className="py-2 px-6"
-              href={`/management/properties/${id}/edit-property?page=rent-unit`}
+              href={getRoutes()}
             >
               Edit
             </Button>

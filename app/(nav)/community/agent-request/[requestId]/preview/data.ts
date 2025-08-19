@@ -15,7 +15,7 @@ export const calculateYearsInIndustry = (dateString: string) => {
   const registrationDate = new Date(dateString);
   const today = new Date();
   const years = today.getFullYear() - registrationDate.getFullYear();
-  return `${years}+ years`;
+  return `${years} years +`;
 };
 export const getThreads = async () => {
   try {
@@ -181,6 +181,7 @@ export const transformPropertyRequestResponse = (
       dark_logo: company_summary.dark_logo,
       company_bio: company_summary.company_bio,
       name: company_summary.name,
+      industry: company_summary.industry,
       email: company_summary.email,
       company_is_verified: company_summary.company_is_verified,
       company_status: company_summary.company_status,

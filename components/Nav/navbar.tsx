@@ -374,7 +374,7 @@ const Header = () => {
               <div className="flex items-center gap-2">
                 <NavIcon
                   icon={<MoonIcon size={21} />}
-                  onClick={() => {}}
+                  onClick={toggleTheme}
                   alt="theme switcher"
                 />
                 <NavIcon
@@ -464,6 +464,11 @@ const Header = () => {
                       count={notificationCounts}
                       alt="notifications"
                       href="/notifications"
+                    />
+                    <NavIcon
+                      icon={<MoonIcon size={21} />}
+                      onClick={toggleTheme}
+                      alt="theme switcher"
                     />
                   </motion.div>
                 )}
