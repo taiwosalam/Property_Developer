@@ -31,17 +31,17 @@ interface UseFetchResult<T> {
 }
 
 function useFetch<T>(
-  url: string,
+  url: string | null,
   config?: AxiosRequestConfig
 ): Omit<UseFetchResult<T>, "fromCache" | "clearCache">;
 
 function useFetch<T>(
-  url: string,
+  url: string | null,
   options: UseFetchOptions & { cache: CacheOptions }
 ): UseFetchResult<T>;
 
 function useFetch<T>(
-  url: string,
+  url: string | null,
   configOrOptions?: AxiosRequestConfig | UseFetchOptions
 ): UseFetchResult<T> {
   const isOptionsFormat = configOrOptions && "cache" in configOrOptions;
@@ -57,7 +57,7 @@ function useFetch<T>(
   const [fromCache, setFromCache] = useState(false);
 
   const isInitialLoad = useRef(true);
-  const urlRef = useRef(url);
+  const urlRef = useRef<string | null>(url);
   const configRef = useRef(config);
   const cacheOptionsRef = useRef(cacheOptions);
 
@@ -85,7 +85,7 @@ function useFetch<T>(
 
   // Clear cache
   const clearCache = useCallback(() => {
-    if (isCacheEnabled) {
+    if (isCacheEnabled && urlRef.current) {
       const cacheKey = generateCacheKey(urlRef.current, configRef.current);
       cacheManager.delete(cacheKey);
     }
@@ -122,8 +122,20 @@ function useFetch<T>(
     ) => {
       const { silent = false, config, url, skipCache = false } = fetchOptions;
 
-      if (url) urlRef.current = url;
+      // Update refs if provided
+      if (url !== undefined) urlRef.current = url;
       if (config !== undefined) configRef.current = config;
+
+      // Handle null or falsy URL
+      if (!urlRef.current) {
+        setData(null);
+        setError(null);
+        setIsNetworkError(false);
+        setFromCache(false);
+        setLoading(false);
+        setSilentLoading(false);
+        return;
+      }
 
       const cacheKey = generateCacheKey(urlRef.current, configRef.current);
 
@@ -185,13 +197,33 @@ function useFetch<T>(
 
   // Initial fetch
   useEffect(() => {
-    fetchData({ silent: !isInitialLoad.current });
+    if (urlRef.current) {
+      fetchData({ silent: !isInitialLoad.current });
+    } else {
+      setData(null);
+      setError(null);
+      setIsNetworkError(false);
+      setFromCache(false);
+      setLoading(false);
+      setSilentLoading(false);
+    }
     isInitialLoad.current = false;
   }, [fetchData]);
 
   // Refetch if url/config changes
   useEffect(() => {
     cacheOptionsRef.current = cacheOptions;
+
+    if (url === null) {
+      urlRef.current = null;
+      setData(null);
+      setError(null);
+      setIsNetworkError(false);
+      setFromCache(false);
+      setLoading(false);
+      setSilentLoading(false);
+      return;
+    }
 
     if (config !== undefined) {
       const oldConfigString = JSON.stringify(configRef.current || {});
