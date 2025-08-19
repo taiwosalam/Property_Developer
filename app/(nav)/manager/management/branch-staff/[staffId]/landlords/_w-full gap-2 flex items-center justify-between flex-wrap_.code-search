@@ -1,0 +1,63 @@
+# Query: ="w-full gap-2 flex items-center justify-between flex-wrap"
+
+22 results - 19 files
+
+app\(nav)\accountant\management\inventory\[inventoryId]\page.tsx:
+  72:         className="w-full gap-2 flex items-center justify-between max-sm:mt-2"
+
+app\(nav)\management\inventory\[inventoryId]\page.tsx:
+  72:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
+
+app\(nav)\management\staff-branch\[branchId]\branch-staff\page.tsx:
+  237:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\branch-staff\[staffId]\landlords\page.tsx:
+  222: //       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+  482:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
+
+app\(nav)\management\staff-branch\[branchId]\branch-staff\[staffId]\properties\page.tsx:
+  121:             <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\branch-staff\[staffId]\tenants\page.tsx:
+  157: //       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+  391:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
+
+app\(nav)\management\staff-branch\[branchId]\complaints\page.tsx:
+  266:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\expired-units\page.tsx:
+  182:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\inquiries\page.tsx:
+  187:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\landlords\page.tsx:
+  240:             <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\listings\page.tsx:
+  222:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\properties\page.tsx:
+  150:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\tenants\page.tsx:
+  215:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\management\staff-branch\[branchId]\vacant-units\page.tsx:
+  190:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\manager\management\branch-staff\[staffId]\landlords\page.tsx:
+  167:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
+
+app\(nav)\manager\management\branch-staff\[staffId]\properties\page.tsx:
+  121:       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+
+app\(nav)\manager\management\branch-staff\[staffId]\tenants\page.tsx:
+  157: //       <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
+  391:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
+
+app\(nav)\manager\management\inventory\[inventoryId]\page.tsx:
+  72:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
+
+app\(nav)\staff\management\inventory\[inventoryId]\page.tsx:
+  72:         className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2"
