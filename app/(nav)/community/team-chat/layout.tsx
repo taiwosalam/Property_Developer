@@ -19,12 +19,18 @@ const TeamChatContent: React.FC<MessagesLayoutProps> = ({ children }) => {
   const { isCustom } = useWindowWidth(900);
   const params = useParams();
   const paramId = params.id;
-  const { isNetworkError, loading, error } = useTeamChat();
+  const { isNetworkError, loading, error, teamChatPageData } = useTeamChat();
   const { role } = useRole();
 
   // PERMISSIONS
   const canViewAndreplyMessages =
-    usePermission(role,   "Can view and reply branch messages") || role === "director";
+    usePermission(role, "Can view and reply branch messages") || role === "director";
+
+  // Mirror messages layout responsive behavior
+  const hasGroups = !!(teamChatPageData?.team && teamChatPageData.team.length > 0);
+  const showSidebar = !isCustom || hasGroups;
+  const isMobileWithGroups = isCustom && hasGroups;
+  const isMobileWithSelectedGroup = isMobileWithGroups && paramId;
 
   if (loading) return <PageCircleLoader />;
   if (error) return <ServerError error={error} />;
@@ -32,22 +38,30 @@ const TeamChatContent: React.FC<MessagesLayoutProps> = ({ children }) => {
 
   return (
     <>
-      {/* <TeamChatHeader /> */}
-      <div className="flex bg-white dark:bg-darkText-primary h-[70vh] relative">
-        {/* Sidebar only on large screens */}
-        {!isCustom && (
-          <div className="flex flex-1 p-4 pr-0 w-full overflow-x-hidden custom-round-scrollbar">
-            <TeamChatSidebar />
-          </div>
-        )}
-        {/* Main chat area */}
+      <div className="flex bg-white dark:bg-darkText-primary h-[80vh] md:h-[70vh] relative">
+
+      {/* Sidebar: Show on large screens OR on mobile when there are groups but no specific group selected */}
+      {showSidebar && !isMobileWithSelectedGroup && (
+        <div
+          className={`${isMobileWithGroups
+            ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll"
+            : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0"
+            }`}
+        >
+          <TeamChatSidebar />
+        </div>
+      )}
+
+      {/* Main chat area - show on large screens OR on mobile when a specific group is selected */}
+      {(!isCustom || isMobileWithSelectedGroup) && (
         <div className="flex-1 relative">
           <div className="custom-flex-col h-full justify-end">
             {children}
             {paramId && canViewAndreplyMessages && <TeamChatInputArea />}
           </div>
         </div>
-      </div>
+      )}
+    </div>
     </>
   );
 };
