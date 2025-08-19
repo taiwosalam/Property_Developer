@@ -152,8 +152,8 @@ const Documents = () => {
 
   return (
     <div className="custom-flex-col gap-8">
-      <div className="account-card-container">
-        <div className="pt-2">
+      <div className="page-header-container-variant">
+        <div className="pt-4">
           <ManagementStatistcsCard
             title="Total Document"
             newData={total_month ?? 0}

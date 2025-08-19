@@ -15,13 +15,11 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
   const { isCustom } = useWindowWidth(900);
   const { id } = useParams();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
   const handleMenuClose = () => setAnchorEl(null);
-
   // Get messages data from store to determine if sidebar should show on mobile
   const usersMessages = useChatStore((state) => state?.data?.users_messages);
-  const hasMessages = usersMessages && Array.isArray(usersMessages) && usersMessages.length > 0;
-
+  const hasMessages =
+    usersMessages && Array.isArray(usersMessages) && usersMessages.length > 0;
   // Determine sidebar visibility and layout
   const showSidebar = !isCustom || hasMessages;
   const isMobileWithMessages = isCustom && hasMessages;
@@ -33,10 +31,11 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Sidebar: Show on large screens OR on mobile when there are messages but no specific message selected */}
         {showSidebar && !isMobileWithSelectedMessage && (
           <div
-            className={`${isMobileWithMessages
-              ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll" // Mobile: full width with overflow hidden
-              : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
-              }`}
+            className={`${
+              isMobileWithMessages
+                ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll" // Mobile: full width with overflow hidden
+                : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
+            }`}
           >
             <MessagesSidebar
               anchorEl={anchorEl}
@@ -51,13 +50,13 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
           <div className="flex-1 overflow-hidden flex flex-col">
             {!id && (
               <div className="custom-flex-col w-full h-full">
-                <NoMessage /> 
+                <NoMessage />
               </div>
             )}
             <div className="custom-flex-col w-full h-full flex-1">
               {children}
               {id && (
-                <AuthForm onFormSubmit={() => { }}>
+                <AuthForm onFormSubmit={() => {}}>
                   <MessageInputArea />
                 </AuthForm>
               )}
@@ -141,7 +140,6 @@ export default MessagesLayout;
 
 // export default MessagesLayout;
 
-
 // "use client";
 // import { useState } from "react";
 // import { useParams } from "next/navigation";
@@ -204,7 +202,6 @@ export default MessagesLayout;
 // };
 
 // export default MessagesLayout;
-
 
 // "use client";
 // import { useState } from "react";

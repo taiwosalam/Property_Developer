@@ -382,7 +382,7 @@ const SettingsSignature = () => {
                         </Modal>
                       </div>
                       <div className="flex  flex-col md:flex-row gap-5 justify-start md:justify-end md:items-end items-start">
-                        <div className="flex-1 w-full  p-2">
+                        <div className="flex-1 w-full pb-0  p-2">
                           <Select
                             id={`personal_title_qualification_${index}`}
                             options={titles}

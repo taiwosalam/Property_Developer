@@ -18,9 +18,7 @@ const MessagesPage = () => {
   const logo = loggedInUserDetails?.company?.company_logo || empty;
   const usersMessages = useChatStore((state) => state?.data?.users_messages);
   const usersData = useChatStore((state) => state?.data?.users);
-
   const isLoading = !usersData;
-
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="custom-flex-col gap-6 max-w-[80%]">

@@ -86,10 +86,13 @@ const Message: React.FC<MessageProps> = ({
         </div>
       )}
       <div
-        className={clsx("py-2 px-4 flex gap-4 rounded-2xl max-w-[70%] max-sm:max-w-[80%]", {
-          "bg-brand-primary rounded-tr-none": type === "from user",
-          "bg-status-caution-1 rounded-tl-none": type === "to user",
-        })}
+        className={clsx(
+          "py-2 px-4 flex gap-4 rounded-2xl max-w-[70%] max-sm:max-w-[80%]",
+          {
+            "bg-brand-primary rounded-tr-none": type === "from user",
+            "bg-status-caution-1 rounded-tl-none": type === "to user",
+          }
+        )}
       >
         <div className="custom-flex-col gap-1">
           {/* SENDER INFORMATION FOR GROUP CHAT */}
@@ -111,7 +114,7 @@ const Message: React.FC<MessageProps> = ({
 
           {/* <div className={`flex flex-row gap-x-4 ${(content_type === "audio" || content_type === 'image') && "flex-col gap-y-1"}`}> */}
           <div className={`flex flex-col gap-x-4`}>
-          {/* <div className={clsx((content_type === "audio" || 'image') ? "flex flex-col gap-y-1" : "flex flex-row gap-x-4")}> */}
+            {/* <div className={clsx((content_type === "audio" || 'image') ? "flex flex-col gap-y-1" : "flex flex-row gap-x-4")}> */}
 
             <div>
               {/* Text Content */}

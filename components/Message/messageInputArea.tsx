@@ -170,7 +170,7 @@ const MessageInputArea = () => {
         </button>
       ) : (
         <>
-        {/* MICRO BUTTON */}
+          {/* MICRO BUTTON */}
           {!audioUrl && !voiceControls.isRecordingInProgress && (
             <button
               type="button"

@@ -130,7 +130,7 @@ const ManagerProfile = () => {
     if (data.years_experience) {
       const selectedDate = dayjs(data.years_experience as string);
       const selectedYear = selectedDate.year();
-      const currentYear = dayjs().year(); 
+      const currentYear = dayjs().year();
       yearsExperience = Math.max(0, currentYear - selectedYear);
     }
 
@@ -360,7 +360,7 @@ const ManagerProfile = () => {
                         <Button
                           size="sm_medium"
                           disabled={pageData?.is_bvn_verified}
-                          className="text-white flex items-center justify-center text-center absolute top-9 right-2 py-2 px-4 h-9"
+                          className="text-white flex items-center justify-center text-center absolute sm:top-10 right-2 py-4 h-9 top-8"
                         >
                           {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>
