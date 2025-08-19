@@ -37,6 +37,7 @@ import { currencySymbols } from "@/utils/number-formatter";
 import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit-rent/type";
 import { ExclamationMark } from "@/public/icons/icons";
 import { useTourStore } from "@/store/tour-store";
+import { useRole } from "@/hooks/roleContext";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -139,6 +140,20 @@ const CreateInvoicePage = () => {
   } = useTourStore();
 
   const pathname = usePathname();
+  const { role } = useRole();
+
+  const getRoutes = () => {
+    switch (role) {
+      case "manager":
+        return `/manager/accounting/invoice`;
+      case "staff":
+        return `/staff/accounting/invoice`;
+      case "account":
+        return `/accountant/accounting/invoice`;
+      default:
+        return `/accounting/invoice`;
+    }
+  };
 
   useEffect(() => {
     setPersist(false);
@@ -158,8 +173,9 @@ const CreateInvoicePage = () => {
   ];
 
   const handleCreateInvoice = async (data: any) => {
-    if (!data.tenant_name) {
-      return toast.warning("Please select a tenant");
+    if (!data.tenant_name && !isSelectDisabled) {
+      toast.warning("Please select a tenant");
+      return;
     }
     const payload = {
       property_id: selectedProperty,
@@ -175,7 +191,7 @@ const CreateInvoicePage = () => {
       const res = await createInvoice(objectToFormData(payload));
       if (res) {
         toast.success("Invoice Created Successfully");
-        router.push(`/accounting/invoice`);
+        router.push(getRoutes());
       }
     } catch (e) {
       console.error(e);

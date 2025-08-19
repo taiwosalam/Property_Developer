@@ -107,10 +107,7 @@ export const transformCautionDeposit = (
       requestDate: d.created_at
         ? dayjs(d.created_at).format("DD/MM/YYYY hh:mm A")
         : "--- ---",
-      status:
-        d.status && d.status?.toLowerCase() === "approved"
-          ? "completed"
-          : d.status,
+      status: d.status,
       pictureSrc: d.user?.picture,
       accountOfficer: d.accountOfficer || "--- ---",
       tier_id: d.user?.tier_id,

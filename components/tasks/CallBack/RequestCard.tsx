@@ -200,6 +200,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
                 : props.status === "decline" || props.status === "cancelled"
                 ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
+                : props.status === "approved"
+                ? "bg-blue-300/45 text-blue-600"
                 : ""
             )}
           >
@@ -331,7 +333,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               Message
             </button>
           ))}
-        {(cardType === "property" && userId) && (
+        {cardType === "property" && userId && (
           <button
             // onClick={() => router.push(`/messages/${props?.userId}`)}
             onClick={goToMessage}
@@ -403,14 +405,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 </Button>
               )
             ) : ( */}
-              <Button
-                disabled={isResolving}
-                size="sm_medium"
-                className="py-2 px-8"
-                onClick={handleButtonClick}
-              >
-                {buttonText()}
-              </Button>
+            <Button
+              disabled={isResolving}
+              size="sm_medium"
+              className="py-2 px-8"
+              onClick={handleButtonClick}
+            >
+              {buttonText()}
+            </Button>
             {/* )} */}
           </>
         )}

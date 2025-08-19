@@ -80,7 +80,7 @@ const CreateRecordForm = () => {
       let data: PersonalDataProps | null = null;
       if (selectedTenantId) {
         const apiData = await getTenantById(selectedTenantId);
-       
+
         data = transformTenant(apiData) ?? null; // Handle undefined case
       } else if (userId) {
         const apiData = await getUsers(userId);

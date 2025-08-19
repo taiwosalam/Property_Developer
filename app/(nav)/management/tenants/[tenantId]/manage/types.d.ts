@@ -336,6 +336,17 @@ interface TenantData {
   unitOptions: Array<{ label: string; value: string }>;
 }
 
+export interface ITenantResponse {
+  id: number;
+  name: string;
+  state: string | null;
+  lga: string | null;
+  city: string | null;
+  address: string | null;
+  phone: string;
+  picture: string;
+}
+
 export interface IndividualTenantAPIResponse {
   status: string;
   statusCode: number;
@@ -415,7 +426,8 @@ export interface IndividualTenantAPIResponse {
     updated_at: string;
   };
   message: string;
-}import { Currency } from "@/utils/number-formatter";
+}
+import { Currency } from "@/utils/number-formatter";
 
 // Define types based on the API response
 interface DocumentFile {

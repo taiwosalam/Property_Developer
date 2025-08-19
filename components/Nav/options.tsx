@@ -54,6 +54,12 @@ export const profile_actions: (
     label: "Request Call Back",
     modal: <NavRequestCallback />,
   },
+  {
+    label: "My Profile",
+    link: {
+      href: "/settings/security",
+    },
+  },
 ];
 
 export const manager_profile_actions: (
@@ -82,6 +88,12 @@ export const manager_profile_actions: (
   {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
+  },
+  {
+    label: "My Profile",
+    link: {
+      href: "/manager/settings/security",
+    },
   },
   // {
   //   label: "Request Call",
@@ -116,6 +128,12 @@ export const account_profile_actions: (
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
   },
+  {
+    label: "My Profile",
+    link: {
+      href: "/accountant/settings/security",
+    },
+  },
   // {
   //   label: "Request Call",
   //   modal: <NavRequestCallback />,
@@ -142,6 +160,12 @@ export const staff_profile_actions: (
   {
     label: "Create Suggestion",
     modal: <NavCreateSuggestion />,
+  },
+  {
+    label: "My Profile",
+    link: {
+      href: "/staff/settings/security",
+    },
   },
   // {
   //   label: "Request Call",

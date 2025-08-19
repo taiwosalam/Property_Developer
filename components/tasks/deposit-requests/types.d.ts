@@ -5,7 +5,7 @@ export type DepositRequestModalProps = {
   unitDetails: string;
   branch: string;
   amount: string;
-  status?: "pending" | "completed" | "progress";
+  status?: "pending" | "completed" | "progress" | "approved";
   request_from?: string;
   is_inventory?: boolean;
   is_examine?: boolean;
