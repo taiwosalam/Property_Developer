@@ -21,6 +21,11 @@ const AddPropertyModal = dynamic(
   { ssr: false }
 );
 
+const DynamicExamineModal = dynamic(
+  () => import("@/components/tasks/Examine/create-examine-modal"),
+  { ssr: false }
+);
+
 export const create_new_items: CreateNewItemsProps = [
   {
     type: "people",
@@ -39,7 +44,7 @@ export const create_new_items: CreateNewItemsProps = [
     type: "briefcase_timer",
     label: "tasks",
     content: [
-      { label: "examine", modal: <CreateExamineModal /> },
+      { label: "examine", modal: <DynamicExamineModal />},
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
       // { label: "event", modal: <CreateReminderMOdal /> },
       // { label: "task", modal: <CreateReminderMOdal /> },

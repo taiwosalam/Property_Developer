@@ -56,8 +56,9 @@ const CreateRecordForm = () => {
     setLoading(true);
     try {
       const data = await getTenants(propertyId);
-      const options = data.data.tenants.map((tenant) => ({
-        value: String(tenant.tenant_id), // Convert tenant_id to string
+
+      const options = data.tenants.map((tenant) => ({
+        value: String(tenant.id), // Convert tenant_id to string
         label: tenant.name,
         icon: tenant.picture,
       }));
@@ -79,6 +80,7 @@ const CreateRecordForm = () => {
       let data: PersonalDataProps | null = null;
       if (selectedTenantId) {
         const apiData = await getTenantById(selectedTenantId);
+       
         data = transformTenant(apiData) ?? null; // Handle undefined case
       } else if (userId) {
         const apiData = await getUsers(userId);
@@ -95,6 +97,8 @@ const CreateRecordForm = () => {
       setLoading(false);
     }
   }, [selectedTenantId, userId]);
+
+  //console.log(tenantData);
 
   // Reset form state
   const resetForm = useCallback(() => {
@@ -137,7 +141,7 @@ const CreateRecordForm = () => {
     setReqLoading(true);
     try {
       const res = await createVehicleRecord(Object.fromEntries(formData));
-      if (res){
+      if (res) {
         toast.success("Vehicle record created successfully");
         useVehicleRecordStore.setState({ selectedProperty: "" });
         // router.push(`/management/vehicles-record/${propertyId}`);
@@ -150,6 +154,8 @@ const CreateRecordForm = () => {
       setReqLoading(false);
     }
   };
+
+  console.log(tenantData);
 
   // Render form based on type and state
   const renderFormFields = () => {
@@ -186,6 +192,7 @@ const CreateRecordForm = () => {
         <SelectWithImage
           label="Select From Record"
           id="guest_id"
+          name="guest_id"
           options={tenantOptions}
           onChange={setSelectedTenantId}
           placeholder={
