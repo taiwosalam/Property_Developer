@@ -349,19 +349,36 @@ export const recentMessagesData = [
   },
 ];
 
+// export const getRecentMessages = (data: any) => {
+//   return data
+//     ?.slice(0, 7) // Limit to the first 7 messages
+//     .map((m: any) => ({
+//       id: m?.id,
+//       avatarSrc: m?.pfp || "/emp",
+//       name: m?.fullname,
+//       message: m?.desc,
+//       time: m?.time,
+//       count: m?.unread_count,
+//       content_type: m?.content_type,
+//       online: m?.online,
+//       badgeColor: m.badgeColor,
+//     }));
+// };
 export const getRecentMessages = (data: any) => {
+  if (!data || !Array.isArray(data)) return [];
+  
   return data
-    ?.slice(0, 7) // Limit to the first 7 messages
+    .slice(0, 7)
     .map((m: any) => ({
-      id: m?.id,
-      avatarSrc: m?.pfp,
-      name: m?.fullname,
-      message: m?.desc,
-      time: m?.time,
-      count: m?.unread_count,
-      content_type: m?.content_type,
-      online: m?.online,
-      badgeColor: m.badgeColor,
+      id: m?.id || "",
+      avatarSrc: m?.pfp || "/empty/avatar.png", // Always provide a fallback
+      name: m?.fullname || "Unknown User",
+      message: m?.desc || "",
+      time: m?.time || "",
+      count: m?.unread_count || 0,
+      content_type: m?.content_type || "text",
+      online: m?.online || false,
+      badgeColor: m.badgeColor || undefined,
     }));
 };
 

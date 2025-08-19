@@ -167,7 +167,7 @@ const NotificationCard: React.FC<notificationCardProps> = ({
               >
                 <div className="custom-secondary-bg rounded-full p-[1px]">
                   <Picture
-                    src={notification.avatarSrc || empty}
+                    src={notification.avatarSrc || "/empty/avatar.png"}
                     alt="profile picture"
                     status={notification.online}
                     size={36}
