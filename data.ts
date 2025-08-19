@@ -6266,6 +6266,7 @@ export const states: State[] = [
       Anaocha: [
         "Adazi-Ani",
         "Adazi-Enu",
+        "Adazi-Nnukwu",
         "Agbadani",
         "Agulu",
         "Agulu-Uzoigbo",
@@ -7094,7 +7095,7 @@ export const states: State[] = [
         "Umunewo",
         "Umunwozonde",
         "Umunwozonokebe",
-        "Umunz",
+        "Umunze",
         "Urualor",
         "Ururo",
         "Uziza",
