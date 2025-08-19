@@ -47,7 +47,7 @@ const TeamChatLayout: React.FC<MessagesLayoutProps> = ({ children }) => {
   return (
     <>
       <TeamChatHeader />
-      <div className="flex bg-white dark:bg-darkText-primary h-[70vh]">
+      <div className="flex bg-white dark:bg-darkText-primary h-[80vh] md:h-[70vh]">
         {isCustom && id ? null : (
           <div className="flex flex-1 p-4 pr-0">
             <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar">
