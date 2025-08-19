@@ -6268,7 +6268,7 @@ export const states: State[] = [
         "Adazi-Enu",
         "Agbadani",
         "Agulu",
-        "Agulu-Uzoigbo",
+        "Aguluzigbo",
         "Akamkpisi",
         "Akwaeze",
         "Amata",
