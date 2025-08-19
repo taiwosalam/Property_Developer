@@ -79,7 +79,6 @@ const BranchBalanceCard = ({
   const defaultWalletIsActive = useWalletStore((s) => s.sub_wallet.is_active);
   const managerWalletIsActive = branchWallet?.is_active;
 
-  console.log("managerWalletIsActive", managerWalletIsActive);
   // Normalize statuses
   const walletPinStatus =
     role === "manager"
@@ -90,7 +89,6 @@ const BranchBalanceCard = ({
       ? normalizeIsActive(managerWalletIsActive as any)
       : normalizeIsActive(defaultWalletIsActive);
 
-  console.log("is_active", is_active);
   const hasWalletAccess =
     usePermission(role, "Full Wallet Access") || isCompanyOwner;
   const { branch } = useBranchStore();
