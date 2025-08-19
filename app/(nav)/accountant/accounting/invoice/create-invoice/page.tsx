@@ -38,6 +38,7 @@ import { PropertyListResponse } from "@/app/(nav)/management/rent-unit/[id]/edit
 import { ExclamationMark } from "@/public/icons/icons";
 import { useTourStore } from "@/store/tour-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useRole } from "@/hooks/roleContext";
 
 const CreateInvoicePage = () => {
   const searchParams = useSearchParams();
@@ -59,6 +60,24 @@ const CreateInvoicePage = () => {
   const [selectedTenant, setSelectedTenant] = useState("");
 
   const [paymentAmount, setPaymentAmount] = useState("");
+  const { role } = useRole();
+
+  const navigateRoute = () => {
+    switch (role) {
+      case "manager":
+        router.push("/manager/accounting/invoice");
+        break;
+      case "staff":
+        router.push("/staff/accounting/invoice");
+        break;
+      case "account":
+        router.push("/accountant/accounting/invoice");
+        break;
+      default:
+        router.push("/accounting/invoice");
+        break;
+    }
+  };
 
   // PROPERTY SELECTION LOGIC
   const propertyURL =
@@ -171,7 +190,7 @@ const CreateInvoicePage = () => {
       const res = await createInvoice(objectToFormData(payload));
       if (res) {
         toast.success("Invoice Created Successfully");
-        router.push(`/accounting/invoice`);
+        navigateRoute();
       }
     } catch (e) {
       console.error(e);

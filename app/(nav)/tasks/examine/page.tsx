@@ -32,6 +32,12 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
 import { useSearchParams } from "next/navigation";
 import { PlusIcon } from "@/public/icons/icons";
+import dynamic from "next/dynamic";
+
+const DynamicExamineModal = dynamic(
+  () => import("@/components/tasks/Examine/create-examine-modal"),
+  { ssr: false }
+);
 
 const Examine = () => {
   const [examineData, setExamineData] = useState<ExamineApiResponse | null>(
@@ -201,7 +207,8 @@ const Examine = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateExamineModal setIsOpen={setIsOpen} />
+            <DynamicExamineModal setIsOpen={setIsOpen}/>
+            {/* <CreateExamineModal setIsOpen={setIsOpen} /> */}
           </ModalContent>
         </Modal>
       </div>
@@ -303,7 +310,7 @@ const Examine = () => {
           </AutoResizingGrid>
         )}
 
-        <Modal
+        {/* <Modal
           state={{
             isOpen: isOpen,
             setIsOpen: setIsOpen,
@@ -315,9 +322,9 @@ const Examine = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <CreateExamineModal setIsOpen={setIsOpen} />
+            <CreateExamineModal setIsOpen={setIsOpen} textAreaId="note"/>
           </ModalContent>
-        </Modal>
+        </Modal> */}
 
         <Pagination
           className="pb-3"

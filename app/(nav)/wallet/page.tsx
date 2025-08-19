@@ -105,13 +105,12 @@ const Wallet = () => {
             t.type === "debit" || t.transaction_type === "withdrawal",
         })}
       >
-        {`${
-          t.type === "credit" || t.transaction_type === "funding"
+        {`${t.type === "credit" || t.transaction_type === "funding"
             ? "+"
             : t.type === "debit" || t.transaction_type === "withdrawal"
-            ? "-"
-            : ""
-        }${t.amount}`}
+              ? "-"
+              : ""
+          }${t.amount}`}
       </span>
     ),
     icon: (
@@ -138,7 +137,7 @@ const Wallet = () => {
   }));
 
   const walletChartData = transformWalletChartData(transactions);
-  
+
   return (
     <div className="custom-flex-col gap-10">
       <div className="flex items-center gap-1">
@@ -148,63 +147,63 @@ const Wallet = () => {
       </div>
       <div className="flex flex-col xl:flex-row gap-8">
         <div className="custom-flex-col gap-10 flex-1">
-          <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex overflow-x-auto hide-scrollbar gap-6">
             <WalletAnalytics
               title="funds"
               amount={currentTotals.total_funds}
               trend={{
-                from: `previous ${
-                  timeRange === "90d"
+                from: `previous ${timeRange === "90d"
                     ? "3 months"
                     : timeRange === "30d"
-                    ? "30 days"
-                    : timeRange === "7d"
-                    ? "7 days"
-                    : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
+                      ? "30 days"
+                      : timeRange === "7d"
+                        ? "7 days"
+                        : timeRange === "1d"
+                          ? "day"
+                          : "period"
+                  }`,
                 type: fundsUpDown as "up" | "down" | "none",
                 percent: Number(fundsPercent),
               }}
+              className="min-w-[240px]"
             />
             <WalletAnalytics
               title="debit"
               amount={currentTotals.total_debit}
               trend={{
-                from: `previous ${
-                  timeRange === "90d"
+                from: `previous ${timeRange === "90d"
                     ? "3 months"
                     : timeRange === "30d"
-                    ? "30 days"
-                    : timeRange === "7d"
-                    ? "7 days"
-                    : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
+                      ? "30 days"
+                      : timeRange === "7d"
+                        ? "7 days"
+                        : timeRange === "1d"
+                          ? "day"
+                          : "period"
+                  }`,
                 type: debitUpDown as "up" | "down" | "none",
                 percent: Number(debitPercent),
               }}
+              className="min-w-[240px] md:w-full"
             />
             <WalletAnalytics
               title="credit"
               amount={currentTotals.total_credit}
               trend={{
-                from: `previous ${
-                  timeRange === "90d"
+                from: `previous ${timeRange === "90d"
                     ? "3 months"
                     : timeRange === "30d"
-                    ? "30 days"
-                    : timeRange === "7d"
-                    ? "7 days"
-                    : timeRange === "1d"
-                    ? "day"
-                    : "period"
-                }`,
+                      ? "30 days"
+                      : timeRange === "7d"
+                        ? "7 days"
+                        : timeRange === "1d"
+                          ? "day"
+                          : "period"
+                  }`,
                 type: creditUpDown as "up" | "down" | "none",
                 percent: Number(creditPercent),
               }}
+              className="min-w-[240px] md:w-full"
             />
           </div>
           <DashboardChart

@@ -49,12 +49,12 @@ const MessagesSidebar = ({
   ).length;
 
   return (
-    <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
-      <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
-        <div className="flex-1 relative">
+    <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative max-w-full">
+      <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2 ">
+        <div className="flex-1 relative min-w-0">
           <Input
             id="search"
-            className="w-full"
+            className="w-full min-w-0"
             placeholder="Search for messages..."
             leftIcon={"/icons/search-icon.svg"}
             inputClassName="pr-[52px] border-transparent"
@@ -113,7 +113,7 @@ const MessagesSidebar = ({
         <Modal>
           <ModalTrigger asChild>
             <button
-              onClick={() => {}}
+              onClick={() => { }}
               className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
             >
               <PlusIcon />

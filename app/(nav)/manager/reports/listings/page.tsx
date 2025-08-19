@@ -23,8 +23,8 @@ const ListingsReport = () => {
 
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
+      <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
+      <ManagementStatistcsCard
           title="Total Listings"
           newData={23}
           total={200}

@@ -78,7 +78,7 @@ export const fetchBranchDependentData = async (
 export const getTenants = async (propertyId: string) => {
   try {
     const res = await api.get<TenantApiResponse>(
-      `/report/tenants?property_id=${propertyId}`
+      `/all-tenant/${propertyId}`
     );
     if (res.status === 200) {
       return res.data;

@@ -26,20 +26,20 @@ const ExportButton: React.FC<{
     <button 
       // onClick={type === "pdf" ? handlePrint : handleDownload}
       onClick={type === "pdf" ? handleDownload : () => exportToXLSX(data, fileLabel || "default-file-label")}
-      className="rounded-lg py-2 px-4 flex items-center gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
+      className="rounded-lg py-2 px-4 max-sm:p-2 flex items-center sm:gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
     >
       {type === "pdf" ? <PDFIcon /> : <ExcelIcon />}
-      <span className="text-text-secondary dark:text-darkText-1 text-sm font-medium">
+      <span className="text-text-secondary dark:text-darkText-1 hidden md:block sm:text-sm font-medium">
         Export
       </span>
     </button>
   ) : (
     <Link
       href={href}
-      className="rounded-lg py-2 px-4 flex items-center gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
+      className="rounded-lg py-2 px-4 max-sm:p-2 flex items-center sm:gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
     >
       {type === "pdf" ? <PDFIcon /> : <ExcelIcon />}
-      <span className="text-text-secondary dark:text-darkText-1 text-sm font-medium">
+      <span className="text-text-secondary dark:text-darkText-1 hidden md:block sm:text-sm font-medium">
         Export
       </span>
     </Link>
