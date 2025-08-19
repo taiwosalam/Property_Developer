@@ -90,6 +90,7 @@ import {
 } from "@/components/BadgeIcon/badge-icon";
 import { usePermission } from "@/hooks/getPermission";
 import RestrictUsersForm from "./ResrtrictedUsersForm";
+import SoundSelector from "./NotificationSound";
 
 const companyTypes = [
   {
@@ -1208,6 +1209,10 @@ Once restricted, they will no longer have access to participate in the property'
           </div>
         </SettingsSection>
       )}
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
+      </SettingsSection>
 
       {/* RESET SETTINGS */}
       {(canResetSystem || IS_COMPANY_OWNER) && (

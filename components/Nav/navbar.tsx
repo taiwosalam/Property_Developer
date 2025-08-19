@@ -74,9 +74,7 @@ const Header = () => {
   const [mobileToggleOpen, setMobileToggleOpen] = useState(false);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
-
   const pathname = usePathname();
-
   const { company_id } = usePersonalInfoStore();
   const unreadMessageCount =
     usePersonalInfoStore((state) => state.unread_messages_count) || 0;
@@ -122,6 +120,9 @@ const Header = () => {
     error,
     refetch: refetchNotifications,
   } = useFetch<NotificationApiResponse>(`/notifications`);
+  useRefetchOnEvent("refetchNotifications", () =>
+    refetchNotifications({ silent: true })
+  );
 
   useEffect(() => {
     if (apiData) {
@@ -129,7 +130,6 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
-
       const unreadCount = apiData?.data.filter(
         (notification) => !notification.read_at
       ).length;
