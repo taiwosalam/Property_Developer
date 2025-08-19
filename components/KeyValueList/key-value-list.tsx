@@ -42,7 +42,7 @@ const KeyValueList = <T extends object>({
         <div
           key={chunkIndex}
           className={clsx("flex-1 text-base font-medium capitalize", {
-            "flex gap-10": direction === "row",
+            "flex gap-10 max-sm:gap-4": direction === "row",
             "custom-flex-col gap-6": direction === "column",
           })}
         >

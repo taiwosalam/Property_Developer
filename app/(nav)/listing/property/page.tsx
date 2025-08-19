@@ -192,8 +192,9 @@ const Property = () => {
 
   return (
     <div className="custom-flex-col gap-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
+      {/* <div className="hidden md:flex gap-5 flex-wrap"> */}
+      <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
+      <ManagementStatistcsCard
           title="Total Property"
           newData={pageData.current_month_property}
           total={pageData.total_property}

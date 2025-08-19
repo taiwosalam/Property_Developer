@@ -114,8 +114,8 @@ const Statistics = () => {
     <div className="custom-flex-col gap-10">
       <div className="custom-flex-col gap-5">
         <BackButton bold>Statistics</BackButton>
-        <div className="hidden md:flex gap-5 flex-wrap">
-          <ManagementStatistcsCard
+        <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
+        <ManagementStatistcsCard
             title="Total Views"
             newData={pageData?.total_month_views ?? 0}
             total={pageData?.total_views ?? 0}

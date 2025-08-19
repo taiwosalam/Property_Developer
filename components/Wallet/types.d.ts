@@ -19,6 +19,7 @@ export interface WalletAnalyticsProps {
   };
 
   className?: string;
+  // widthClassName?: string;
 }
 
 export interface FundingCardProps {

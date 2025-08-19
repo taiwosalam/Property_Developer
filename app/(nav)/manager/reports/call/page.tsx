@@ -177,8 +177,8 @@ const Call = () => {
 
   return (
     <div className="space-y-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
+      <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
+      <ManagementStatistcsCard
           title="Call Request"
           newData={pageData?.monthly_callback || 0}
           total={pageData?.total_callback || 0}

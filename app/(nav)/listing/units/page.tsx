@@ -236,8 +236,9 @@ const Units = () => {
 
   return (
     <div className="custom-flex-col gap-9">
-      <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}>
-        <ManagementStatistcsCard
+      {/* <div className="hidden md:flex gap-5 flex-wrap" ref={contentTopRef}> */}
+      <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap" ref={contentTopRef}>
+      <ManagementStatistcsCard
           title="Total Units"
           newData={pageData.month_vacant}
           total={pageData.total_vacant}
