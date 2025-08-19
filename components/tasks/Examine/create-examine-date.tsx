@@ -25,6 +25,7 @@ import { useModal } from "@/components/Modal/modal";
 const CreateExamineDate: React.FC<CreateExamineDateProps> = ({
   next,
   setIsOpen,
+
 }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();

@@ -477,7 +477,7 @@ const VehiclesRecordPage = () => {
             >
               <ModalContent>
                 <VehicleRecordModal
-                  page="account"
+                  page="staff"
                   {...(selectedRecord as VehicleRecord)}
                 />
               </ModalContent>

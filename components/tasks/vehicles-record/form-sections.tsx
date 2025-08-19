@@ -1,6 +1,12 @@
 import Input from "@/components/Form/Input/input";
 import Select from "@/components/Form/Select/select";
-import { getAllStates, getLocalGovernments, getCities, getAllLocalGovernments, getAllCities } from "@/utils/states";
+import {
+  getAllStates,
+  getLocalGovernments,
+  getCities,
+  getAllLocalGovernments,
+  getAllCities,
+} from "@/utils/states";
 import { useState } from "react";
 import { useImageUploader } from "@/hooks/useImageUploader";
 import CameraCircle from "@/public/icons/camera-circle.svg";
@@ -41,7 +47,7 @@ export interface PersonalDataProps {
   //   profile_phone: string;
   // };
   avatar?: string;
-  phone_number: string;
+  phone_number: string
 }
 
 type BaseFieldProps = {
@@ -118,7 +124,6 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
     originalHandleImageChange(e);
   };
 
-  console.log("props", props)
   return (
     <div className="relative">
       <div
@@ -194,13 +199,14 @@ export const PersonalDetailsFormFields: React.FC<PersonalFieldProps> = (
             }}
           />
 
-            <PhoneNumberInput
-              required
-              id="phone"
-              label="Phone Number"
-              inputContainerClassName="bg-neutral-2"
-              defaultValue={editMode ? props.data.phone_number : ""}
-            />
+          <PhoneNumberInput
+            required
+            id="phone"
+            label="Phone Number"
+            inputContainerClassName="bg-neutral-2"
+            defaultValue={editMode ? props?.data.phone_number : ""}
+            //defaultValue={editMode ? props.data.phone_number : ""}
+          />
         </div>
         <div className="flex gap-4 justify-between items-end flex-wrap">
           <div className="flex items-end gap-3">

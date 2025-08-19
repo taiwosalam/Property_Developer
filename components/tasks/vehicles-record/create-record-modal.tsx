@@ -105,6 +105,8 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
         return `/manager/management/vehicles-record/create?type=${type}&p=${propertyId}`;
       case "account":
         return `/accountant/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+      case "staff":
+        return `/staff/management/vehicles-record/create?type=${type}&p=${propertyId}`;
       default:
         return `/management/vehicles-record/create?type=${type}&p=${propertyId}`;
     }
@@ -263,6 +265,8 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
         return `/manager/management/vehicles-record/records/${id}/record`;
       case "account":
         return `/accountant/management/vehicles-record/records/${id}/record`;
+      case "staff":
+        return `/staff/management/vehicles-record/records/${id}/record`;
       default:
         return `/management/vehicles-record/records/${id}/record`;
     }

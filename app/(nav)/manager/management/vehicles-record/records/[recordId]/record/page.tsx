@@ -472,24 +472,26 @@ const RecordPage = () => {
       </InfoBox>
 
       {/* Previous Records */}
-      <div className="space-y-4">
-        <h2 className="text-brand-9 font-bold text-lg lg:text-xl">
-          Previous Records
-        </h2>
-        <SectionSeparator />
+      {checkInsOutData && checkInsOutData?.check_ins.length > 0 && (
         <div className="space-y-4">
-          {checkInsOutData?.check_ins?.map((record) => (
-            <PreviousRecord
-              key={record.id}
-              category={category}
-              userId={Number(userId)}
-              registrationDate={record.created_at}
-              pictureSrc={pictureSrc}
-              {...record}
-            />
-          ))}
+          <h2 className="text-brand-9 font-bold text-lg lg:text-xl">
+            Previous Records
+          </h2>
+          <SectionSeparator />
+          <div className="space-y-4">
+            {checkInsOutData?.check_ins?.map((record) => (
+              <PreviousRecord
+                key={record.id}
+                category={category}
+                userId={Number(userId)}
+                registrationDate={record.created_at}
+                pictureSrc={pictureSrc}
+                {...record}
+              />
+            ))}
+          </div>
         </div>
-      </div>
+      )}
       <Pagination
         totalPages={checkInsOutData?.last_page || 1}
         currentPage={checkInsOutData?.current_page || 1}
