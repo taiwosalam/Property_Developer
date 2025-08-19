@@ -1,7 +1,8 @@
 "use client";
 
+// Imports
 import dayjs from "dayjs";
-import { useEffect, useState, useCallback, useRef, useMemo } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import AddLandlordModal from "@/components/Management/Landlord/add-landlord-modal";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import LandlordCard from "@/components/Management/landlord-and-tenant-card";
@@ -30,8 +31,9 @@ import { LandlordHelpInfo } from "./types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useView from "@/hooks/useView";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
+import { ExclamationMark } from "@/public/icons/icons";
 import CardsLoading from "@/components/Loader/CardsLoading";
+import TableLoading from "@/components/Loader/TableLoading";
 import type { AllBranchesResponse } from "@/components/Management/Properties/types";
 import useFetch from "@/hooks/useFetch";
 import type { FilterResult } from "@/components/Management/Landlord/types";
@@ -41,151 +43,64 @@ import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import ServerError from "@/components/Error/ServerError";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
-import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 const states = getAllStates();
 
 const Landlord = () => {
   const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
+
   const { role } = useRole();
+
+  // PERMISSIONS
   const canCreateAndManageLandlord = usePermission(
     role,
     "Can add and manage landlords/landlady"
   );
-  const [view, setView] = useState<string | null>(storedView);
-  const [page, setPage] = useState(() => {
-    const savedPage = sessionStorage.getItem("landlord_page");
-    return savedPage ? parseInt(savedPage, 10) : 1;
-  });
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
-    options: [],
-    menuOptions: {},
-    startDate: null,
-    endDate: null,
-  });
-  const [pageData, setPageData] = useState<LandlordsPageData>(
-    initialLandlordsPageData
-  );
-  const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
-    useState<LandlordHelpInfo>();
-  const contentTopRef = useRef<HTMLDivElement>(null);
 
-  const config = useMemo(() => {
-    const queryParams: LandlordRequestParams = { page, search: searchQuery };
-    const sort = appliedFilters.menuOptions["Sort"]?.[0];
-    if (sort === "asc" || sort === "desc") {
-      queryParams.sort_order = sort;
-    } else {
-      queryParams.sort_order = "asc";
-    }
-    if (appliedFilters.menuOptions["State"]?.length > 0) {
-      queryParams.states = appliedFilters.menuOptions["State"].join(",");
-    }
-    if (appliedFilters.menuOptions["Branch"]?.length > 0) {
-      queryParams.branch_ids = appliedFilters.menuOptions["Branch"].join(",");
-    }
-    if (appliedFilters.menuOptions["Landlord/Landlady Type"]?.[0]) {
-      queryParams.agent =
-        appliedFilters.menuOptions["Landlord/Landlady Type"][0];
-    }
-    if (appliedFilters.startDate) {
-      queryParams.start_date = dayjs(appliedFilters.startDate).format(
-        "YYYY-MM-DD"
-      );
-    }
-    if (appliedFilters.endDate) {
-      queryParams.end_date = dayjs(appliedFilters.endDate).format("YYYY-MM-DD");
-    }
-    return { params: queryParams };
-  }, [page, searchQuery, appliedFilters]);
+  const [pageData, setPageData] = useState<LandlordsPageData>(() => {
+    const savedPage = sessionStorage.getItem("landlord_page");
+    return {
+      ...initialLandlordsPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
 
   const {
-    data: apiData,
-    loading,
-    silentLoading,
-    isNetworkError,
-    error,
-    refetch,
-    fromCache,
-    clearCache,
-  } = useFetch<LandlordApiResponse>("landlords", {
-    ...config,
-    cache: {
-      enabled: true,
-      key: `landlords-page-${config.params.page}-search-${
-        config.params.search || "none"
-      }-states-${config.params.states || "none"}-branch_ids-${
-        config.params.branch_ids || "none"
-      }-agent-${config.params.agent || "none"}-dates-${
-        config.params.start_date || "none"
-      }-${config.params.end_date || "none"}-sort-${
-        config.params.sort_order || "none"
-      }`,
-      ttl: 5 * 60 * 1000,
-    },
+    total_pages,
+    current_page,
+    total_landlords,
+    new_landlords_this_month,
+    mobile_landlords,
+    new_mobile_landlords_this_month,
+    web_landlords,
+    new_web_landlords_this_month,
+    landlords,
+  } = pageData;
+
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("landlord_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as LandlordRequestParams,
+    };
   });
 
-  const { data: branchesData } = useFetch<AllBranchesResponse>(
-    "/branches/select",
-    {
-      cache: {
-        enabled: true,
-        key: "branches-select",
-        ttl: 10 * 60 * 1000,
-      },
-    }
-  );
-
-  useRefetchOnEvent("refetchLandlords", () => {
-    clearCache?.();
-    refetch({ silent: true });
-  });
-
-  // Infinite scroll callback
-  const handleInfiniteScroll = useCallback(async () => {
-    console.log("handleInfiniteScroll called, current page:", page);
-    setPage((prev) => {
-      const nextPage = prev + 1;
-      console.log("Incrementing to page:", nextPage);
-      sessionStorage.setItem("landlord_page", nextPage.toString());
-      return nextPage;
-    });
-  }, [page]);
-
-  const { isLoading: infiniteScrollLoading, lastElementRef } =
-    useInfiniteScroll({
-      callback: handleInfiniteScroll,
-      hasMore: pageData.current_page < pageData.total_pages,
-    });
-
-  useEffect(() => {
-    console.log("Infinite scroll state:", {
-      page,
-      currentPage: pageData.current_page,
-      totalPages: pageData.total_pages,
-      hasMore: pageData.current_page < pageData.total_pages,
-      infiniteScrollLoading,
-      silentLoading,
-      fromCache,
-    });
-  }, [
-    page,
-    pageData.current_page,
-    pageData.total_pages,
-    infiniteScrollLoading,
-    silentLoading,
-    fromCache,
-  ]);
+  const [fetchedLandlordHelpInfo, setFetchedLandlordHelpInfo] =
+    useState<LandlordHelpInfo>();
 
   const fetchLandlordHelp = useCallback(async () => {
     try {
       const data = await getLandlordsHelpInfo();
+      //
       setFetchedLandlordHelpInfo(data.res[0]);
-    } catch (error) {
-      console.error("fetchLandlordHelp error:", error);
-    }
+    } catch (error) {}
   }, []);
+
+  const { data: branchesData } =
+    useFetch<AllBranchesResponse>("/branches/select");
 
   useEffect(() => {
     fetchLandlordHelp();
@@ -195,16 +110,17 @@ const Landlord = () => {
     setView(storedView);
   }, [storedView]);
 
+  // Save page number to sessionStorage whenever it changes
   useEffect(() => {
-    sessionStorage.setItem("landlord_page", page.toString());
-  }, [page]);
+    sessionStorage.setItem("landlord_page", current_page.toString());
+  }, [current_page]);
 
-  useEffect(() => {
-    setPage(1);
-    sessionStorage.setItem("landlord_page", "1");
-    clearCache?.();
-    refetch({ silent: true });
-  }, [view, clearCache, refetch]);
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
 
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -218,69 +134,72 @@ const Landlord = () => {
 
   const handleFilterApply = (filters: FilterResult) => {
     setAppliedFilters(filters);
-    setPage(1);
+    const { menuOptions, startDate, endDate } = filters;
+    const statesArray = menuOptions["State"] || [];
+    const agent = menuOptions["Landlord/Landlady Type"]?.[0];
+    const branchIdsArray = menuOptions["Branch"] || [];
+
+    const queryParams: LandlordRequestParams = {
+      page: 1,
+      search: "",
+    };
+    if (statesArray.length > 0) {
+      queryParams.states = statesArray.join(",");
+    }
+    if (branchIdsArray.length > 0) {
+      queryParams.branch_ids = branchIdsArray.join(",");
+    }
+    if (agent && agent !== "all") {
+      queryParams.agent = agent;
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+    }
+    setConfig({
+      params: queryParams,
+    });
+
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
     sessionStorage.setItem("landlord_page", "1");
-    clearCache?.();
   };
 
+  // Added a ref to the top of the content section
+  const contentTopRef = useRef<HTMLDivElement>(null);
+
   const handlePageChange = (page: number) => {
-    setPage(page);
-    sessionStorage.setItem("landlord_page", page.toString());
-    if (view === "grid" && contentTopRef.current) {
+    setConfig({
+      params: { ...config.params, page },
+    });
+    // Scroll to the top where LandlordCards start
+    if (contentTopRef.current) {
       contentTopRef.current.scrollIntoView({ behavior: "smooth" });
     }
   };
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    setPage(1);
-    sessionStorage.setItem("landlord_page", "1");
-    clearCache?.();
-  };
-
   const handleSort = (order: "asc" | "desc") => {
-    setAppliedFilters((prev) => ({
-      ...prev,
-      menuOptions: { ...prev.menuOptions, Sort: [order] },
-    }));
-    setPage(1);
-    sessionStorage.setItem("landlord_page", "1");
-    clearCache?.();
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
   };
 
-  useEffect(() => {
-    if (apiData?.data && Array.isArray(apiData.data.landlords)) {
-      console.log("API data received:", {
-        page: config.params.page,
-        total_pages: apiData.data.pagination.total_pages,
-        landlords: apiData.data.landlords.length,
-        fromCache,
-        apiData,
-      });
-      const transformedData = transformLandlordApiResponse(apiData);
-      setPageData((prevData) => {
-        const updatedLandlords =
-          view === "grid" || transformedData.current_page === 1
-            ? transformedData.landlords
-            : [...prevData.landlords, ...transformedData.landlords];
-        return {
-          ...transformedData,
-          landlords: updatedLandlords,
-          total_landlords: apiData.total_data_count,
-          new_landlords_this_month: apiData.total_count_monthly,
-          web_landlords: apiData.web_landlord_count,
-          mobile_landlords: apiData.mobile_landlord_count,
-          new_web_landlords_this_month: apiData.web_monthly_count,
-          new_mobile_landlords_this_month: apiData.mobile_monthly_count,
-        };
-      });
-    } else {
-      console.warn(
-        "apiData is invalid or data.landlords is not an array:", 
-        apiData
-      );
-    }
-  }, [apiData, view, fromCache]);
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query },
+    });
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
+  };
 
   const branchOptions =
     branchesData?.data.map((branch) => ({
@@ -288,7 +207,69 @@ const Landlord = () => {
       value: branch.id,
     })) || [];
 
-  const transformedLandlords = pageData.landlords.map((l) => ({
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<LandlordApiResponse>("landlords", config);
+  useRefetchOnEvent("refetchLandlords", () => refetch({ silent: true }));
+
+  // IF VIEW CHANGE., REFETCH DATA FROM PAGE 1
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      landlords: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("landlord_page", "1");
+    window.dispatchEvent(new Event("refetchLandlords"));
+  }, [view]);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedData = transformLandlordApiResponse(apiData);
+      setPageData((prevData) => {
+        const updatedLandlords =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.landlords
+            : [...prevData.landlords, ...transformedData.landlords];
+        return { ...transformedData, landlords: updatedLandlords };
+      });
+    }
+  }, [apiData, view]);
+
+  // --- Infinite Scroll Logic ---
+  // Create an observer to detect when the last row is visible
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < total_pages &&
+          !silentLoading
+        ) {
+          // Load next page when the last row becomes visible
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, total_pages, silentLoading]
+  );
+
+  // Transform landlord data to table rows.
+  // Attach the lastRowRef to the last row if there are more pages.
+  const transformedLandlords = landlords.map((l, index) => ({
     ...l,
     full_name: (
       <p className="flex items-center whitespace-nowrap">
@@ -300,9 +281,11 @@ const Landlord = () => {
       </p>
     ),
     user_tag: (
-      <div className="flex gap-2 mb-2 items-center">
-        <UserTag type={l.user_tag} />
-      </div>
+      <>
+        <div className="flex gap-2 mb-2 items-center">
+          <UserTag type={l.user_tag} />
+        </div>
+      </>
     ),
     "manage/chat": (
       <div className="flex gap-x-[4%] items-center justify-end w-full">
@@ -326,9 +309,14 @@ const Landlord = () => {
         )}
       </div>
     ),
+    // Attach the lastRowRef to the final row if more pages exist.
+    ref:
+      index === landlords.length - 1 && current_page < total_pages
+        ? lastRowRef
+        : undefined,
   }));
 
-  if (loading) {
+  if (loading)
     return (
       <CustomLoader
         layout="page"
@@ -336,7 +324,6 @@ const Landlord = () => {
         pageTitle="Landlords/Landladies (Owners)"
       />
     );
-  }
 
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
@@ -347,41 +334,26 @@ const Landlord = () => {
         <div className="management-cardstat-wrapper">
           <ManagementStatistcsCard
             title="Total Landlords"
-            newData={pageData.new_landlords_this_month}
-            total={pageData.total_landlords}
+            newData={new_landlords_this_month}
+            total={total_landlords}
             className="w-[260px]"
             colorScheme={1}
           />
           <ManagementStatistcsCard
             title="Web Landlords"
-            newData={pageData.new_web_landlords_this_month}
-            total={pageData.web_landlords}
+            newData={new_web_landlords_this_month}
+            total={web_landlords}
             className="w-[260px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Mobile Landlords"
-            newData={pageData.new_mobile_landlords_this_month}
-            total={pageData.mobile_landlords}
+            newData={new_mobile_landlords_this_month}
+            total={mobile_landlords}
             className="w-[260px]"
             colorScheme={3}
           />
         </div>
-        {canCreateAndManageLandlord && (
-          <Modal>
-            <ModalTrigger asChild>
-              <Button
-                type="button"
-                className="page-header-button md:block hidden"
-              >
-                + create new landlord
-              </Button>
-            </ModalTrigger>
-            <ModalContent>
-              <AddLandlordModal />
-            </ModalContent>
-          </Modal>
-        )}
       </div>
 
       <FilterBar
@@ -414,13 +386,10 @@ const Landlord = () => {
               { label: "All Landlords", value: "all" },
             ],
           },
-          ...(branchOptions.length > 0
-            ? [{ label: "Branch", value: branchOptions }]
-            : []),
         ]}
       />
       <section>
-        {pageData.landlords.length === 0 && !silentLoading ? (
+        {landlords.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
             <SearchError />
           ) : (
@@ -439,10 +408,10 @@ const Landlord = () => {
           <>
             {view === "grid" ? (
               <AutoResizingGrid minWidth={284} gap={16}>
-                {silentLoading || infiniteScrollLoading ? (
+                {silentLoading ? (
                   <CardsLoading />
                 ) : (
-                  pageData.landlords.map((l) => (
+                  landlords.map((l) => (
                     <Link
                       href={`/staff/management/landlord/${l.id}/manage`}
                       key={l.id}
@@ -461,49 +430,28 @@ const Landlord = () => {
                 )}
               </AutoResizingGrid>
             ) : (
-              <div style={{ maxHeight: "500px", overflowY: "auto" }}>
+              <>
                 <CustomTable
                   displayTableHead={false}
                   fields={landlordTableFields}
                   data={transformedLandlords}
                   tableBodyCellSx={{ color: "#3F4247" }}
                 />
-                {pageData.current_page < pageData.total_pages &&
-                  view === "list" && (
-                    <div
-                      ref={lastElementRef}
-                      style={{ height: "20px", background: "transparent" }}
-                    />
-                  )}
-                {(silentLoading || infiniteScrollLoading) && page > 1 && (
+                {silentLoading && current_page > 1 && (
                   <div className="flex items-center justify-center py-4">
                     <div className="loader" />
                   </div>
                 )}
-              </div>
+              </>
             )}
             {view === "grid" && (
               <Pagination
-                totalPages={pageData.total_pages}
-                currentPage={pageData.current_page}
+                totalPages={total_pages}
+                currentPage={current_page}
                 onPageChange={handlePageChange}
               />
             )}
           </>
-        )}
-        {canCreateAndManageLandlord && (
-          <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
-            <Modal>
-              <ModalTrigger asChild>
-                <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
-                  <PlusIcon />
-                </button>
-              </ModalTrigger>
-              <ModalContent>
-                <AddLandlordModal />
-              </ModalContent>
-            </Modal>
-          </div>
         )}
       </section>
     </div>

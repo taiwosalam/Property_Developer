@@ -207,6 +207,15 @@ const StaffAndBranches = () => {
     sessionStorage.setItem("branches_page", "1");
   };
 
+  // const {
+  //   data: apiData,
+  //   loading,
+  //   silentLoading,
+  //   isNetworkError,
+  //   error,
+  //   refetch,
+  // } = useFetch<BranchApiResponse>("branches", config);
+
   const {
     data: apiData,
     loading,
@@ -214,7 +223,22 @@ const StaffAndBranches = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<BranchApiResponse>("branches", config);
+    // fromCache,
+    // clearCache,
+  } = useFetch<BranchApiResponse>("branches", {
+    ...config,
+    // cache: {
+    //   enabled: true,
+    //   key: `branches-page-${config.params.page}-search-${
+    //     config.params.search || "none"
+    //   }-states-${config.params.states || "none"}-dates-${
+    //     config.params.start_date || "none"
+    //   }-${config.params.end_date || "none"}-sort-${
+    //     config.params.sort_order || "none"
+    //   }`,
+    //   ttl: 5 * 60 * 1000, // 5 minutes
+    // },
+  });
   useRefetchOnEvent("refetchBranches", () => refetch({ silent: true }));
 
   // Merge fetched data with current list.
@@ -353,7 +377,7 @@ const StaffAndBranches = () => {
         handleSearch={handleSearch}
         onSort={handleSort}
       />
-      <section className="findthezero">
+      <section className="findthezero mt-4">
         {branches.length === 0 ? (
           config.params.search || isFilterApplied() ? (
             <SearchError />
