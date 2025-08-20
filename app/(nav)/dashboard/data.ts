@@ -15,6 +15,7 @@ import type { Field } from "@/components/Table/types";
 import api, { handleAxiosError } from "@/services/api";
 import { Task } from "@/components/dashboard/kanban/TaskCard";
 import { formatNumber } from "@/utils/number-formatter";
+import { empty } from "@/app/config";
 
 export function getBackgroundColor(title: string): string {
   let backgroundColor: string;
@@ -371,7 +372,7 @@ export const getRecentMessages = (data: any) => {
     .slice(0, 7)
     .map((m: any) => ({
       id: m?.id || "",
-      avatarSrc: m?.pfp || "/empty/avatar.png", // Always provide a fallback
+      avatarSrc: m?.pfp || empty, // Always provide a fallback
       name: m?.fullname || "Unknown User",
       message: m?.desc || "",
       time: m?.time || "",
