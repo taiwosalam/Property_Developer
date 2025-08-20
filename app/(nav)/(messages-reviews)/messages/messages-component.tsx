@@ -9,11 +9,10 @@ import SelectChatUsersModal from "@/components/Message/user-modal";
 import { getLocalStorage } from "@/utils/local-storage";
 import { empty } from "@/app/config";
 import { useChatStore } from "@/store/message";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 
 const NoMessage: React.FC<{ loading?: boolean }> = ({ loading }) => {
-  const usersData = useChatStore((state) => state?.data?.users);
-  const loggedInUserDetails = getLocalStorage("additional_details");
-  const logo = loggedInUserDetails?.company?.company_logo || empty;
+  const { company_logo } = usePersonalInfoStore();
 
   return (
     <div className="w-full h-full flex items-center justify-center">
@@ -21,7 +20,7 @@ const NoMessage: React.FC<{ loading?: boolean }> = ({ loading }) => {
         <div className="custom-flex-col gap-4">
           <div className="flex justify-center h-[40px] w-[40px]">
             <Image
-              src={logo}
+              src={company_logo || empty}
               alt="logo"
               width={1000}
               height={1000}

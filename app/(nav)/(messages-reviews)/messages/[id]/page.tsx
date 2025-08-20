@@ -1,20 +1,24 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useChatStore } from "@/store/message";
 import {
+  ChatAPIResponse,
   DirectChatAPIResponse,
   GroupChatAPIResponse,
   groupMessagesByDay,
   isDirectChatResponse,
   isGroupChatResponse,
+  mapConversationsArray,
+  NormalizedMessage,
+  transformMessageFromAPI,
   transformMessagesFromAPI,
 } from "../data";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { empty } from "@/app/config";
-import { UsersProps } from "../types";
+import { ConversationsUpdatedReturn, ReadEvent, UsersProps } from "../types";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { useGlobalStore } from "@/store/general-store";
@@ -28,7 +32,9 @@ import useFetch from "@/hooks/useFetch";
 import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ChevronLeftIcon } from "lucide-react";
-import useConversationListener from "@/hooks/useConversationListen";
+import { useEcho } from "@/lib/echo";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useMessages } from "@/contexts/messageContext";
 
 const useUserProfile = (id: string | number) => {
   const { data, loading } = useFetch<UserDetailsResponse>(
@@ -59,6 +65,9 @@ const Chat = () => {
   const user_id = useAuthStore((state) => state.user_id);
   const users = data?.users?.users || [];
   const messageUserData = useGlobalStore((s) => s.messageUserData);
+  const [normalizedMessagesState, setNormalizedMessagesState] = useState<
+    NormalizedMessage[]
+  >([]);
 
   const [isLoading, setIsLoading] = useState(true);
   // Local conversations state, always reset on id change.
@@ -109,15 +118,17 @@ const Chat = () => {
     refetch,
   } = useFetch<GroupChatAPIResponse | DirectChatAPIResponse>(endpoint);
 
-  useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
+  const { setPageUsersMsg } = useMessages();
+
+  // useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
 
   // Poll for new messages every 10 seconds
-  useEffect(() => {
-    const interval = setInterval(() => {
-      window.dispatchEvent(new Event("refetchMessages"));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     window.dispatchEvent(new Event("refetchMessages"));
+  //   }, 10000);
+  //   return () => clearInterval(interval);
+  // }, []);
 
   // Clear all messages on id change (store and local)
   useEffect(() => {
@@ -141,6 +152,7 @@ const Chat = () => {
     if (isGroupChat && isGroupChatResponse(apiData)) {
       if (String(apiData.group_chat?.id) !== String(id)) return; // don't update for a race
       const normalizedMessages = transformMessagesFromAPI(apiData, true);
+      setNormalizedMessagesState(normalizedMessages);
       setChatData("conversations", normalizedMessages);
       setGroupedConversations(groupMessagesByDay(normalizedMessages));
       setIsLoading(false);
@@ -148,6 +160,7 @@ const Chat = () => {
       // No reliable id to check for direct, but should be fine
       const normalizedMessages = transformMessagesFromAPI(apiData, false);
       setChatData("conversations", normalizedMessages);
+      setNormalizedMessagesState(normalizedMessages);
       setGroupedConversations(groupMessagesByDay(normalizedMessages));
       if (apiData.messages.length > 0) {
         setChatData("receiver", apiData.messages[0].receiver);
@@ -156,9 +169,111 @@ const Chat = () => {
     }
   }, [apiData, setChatData, isGroupChat, id]);
 
+  const { echo, isConnected, error: Echoerror } = useEcho();
+
+  React.useEffect(() => {
+    if (!echo || !isConnected || !id) return;
+    const token = window.localStorage.getItem("user_id");
+    const channel = echo.private(`user.${token}`);
+    console.log("channel connected to", { channel });
+    channel.listen(".message.received", (data: any) => {
+      console.log("New message:", data);
+      const event = new CustomEvent("refetch-users-msg", {
+        detail: data,
+      });
+      window.dispatchEvent(event);
+      console.log(data.sender_id, data.sender_id === Number(id), { id });
+      if (data.sender_id !== Number(id)) {
+        console.log("Not the sanr");
+        return;
+      }
+      const cleanedMessage = transformMessageFromAPI(
+        data as unknown as ChatAPIResponse,
+        false
+      );
+      // setChatData("conversations", [...data, cleanedMessage]);
+      setGroupedConversations(
+        groupMessagesByDay([...normalizedMessagesState, cleanedMessage])
+      );
+      setNormalizedMessagesState((prev) => [...prev, cleanedMessage]);
+    });
+
+    channel.listen(".messages.read", (data: ReadEvent) => {
+      console.log("Message read:", data);
+      const ids = data.message_ids;
+      console.log("do you get this", ids);
+
+      // Fix: Update messages within existing day groups instead of flattening
+      setGroupedConversations((prev) =>
+        prev.map((dayGroup) => ({
+          ...dayGroup,
+          messages: dayGroup.messages.map((msg: { id: number }) =>
+            data.message_ids.includes(msg.id)
+              ? { ...msg, seen: true, is_read: true }
+              : msg
+          ),
+        }))
+      );
+
+      // This part is fine - it updates the flat array
+      setNormalizedMessagesState((prev) =>
+        prev.map((msg) =>
+          data.message_ids.includes(msg.id)
+            ? { ...msg, seen: true, is_read: true }
+            : msg
+        )
+      );
+    });
+
+    channel.listen(".message.sent", (data: any) => {
+      const event = new CustomEvent("refetch-users-msg", {
+        detail: data,
+      });
+      window.dispatchEvent(event);
+      const cleanedMessage = transformMessageFromAPI(
+        data as unknown as ChatAPIResponse,
+        false
+      );
+      // setChatData("conversations", [...data, cleanedMessage]);
+      setGroupedConversations(
+        groupMessagesByDay([...normalizedMessagesState, cleanedMessage])
+      );
+      setNormalizedMessagesState((prev) => [...prev, cleanedMessage]);
+    });
+    // channel.listen(".message.read", (data: ReadEvent) => {});
+
+    channel.listen(
+      ".conversation.created",
+      (data: ConversationsUpdatedReturn) => {
+        setPageUsersMsg((prev) => {
+          const updates = mapConversationsArray(data.conversation_data);
+          const updatesById = new Map(updates.map((u) => [u.id, u]));
+          return prev.map((conv) =>
+            updatesById.has(conv.id) ? updatesById.get(conv.id)! : conv
+          );
+        });
+      }
+    );
+
+    return () => {
+      channel.stopListening(".message.received");
+      channel.stopListening(".message.sent");
+      channel.stopListening(".messages.read");
+      channel.stopListening(".conversations.created");
+      echo.leave(`user.${token}`);
+    };
+  }, [
+    echo,
+    isConnected,
+    id,
+    groupedConversations,
+    setChatData,
+    normalizedMessagesState,
+    setPageUsersMsg,
+  ]);
 
   // UI Guards
-  if (!user) {
+  if (!userId) {
     router.replace("/messages");
     return null;
   }
@@ -208,7 +323,7 @@ const Chat = () => {
                       className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal"
                     >
                       {showContactInfo
-                        ? user.last_seen
+                        ? user?.last_seen
                         : "Tap here for contact info"}
                     </motion.p>
                   </AnimatePresence>

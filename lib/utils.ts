@@ -1,3 +1,6 @@
+
+
+
 import {
   BadgeIconColors,
   tierColorMap,
@@ -89,6 +92,25 @@ function getCurrencyCode(currency: SupportedCurrency): string {
     default:
       return "NGN"; // fallback
   }
+}
+
+
+
+
+export function hexToRgba(hex: string, alpha = 1) {
+  hex = hex.replace(/^#/, "");
+  if (hex.length === 3) hex = hex.split("").map(c => c + c).join("");
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+}
+
+export function capitalizeName(name: string): string {
+  return name
+    .split(" ") // split into words
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" "); // join back
 }
 
 // Helper to get locale for correct formatting

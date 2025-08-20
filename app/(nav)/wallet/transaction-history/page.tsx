@@ -446,7 +446,7 @@ const TransactionHistory = () => {
           exports
           isDateTrue
           exportHref="/wallet/audit-trail/export"
-          filterOptionsMenu={transactionHistoryFilterMenu}
+          filterOptionsMenu={transactionHistoryFilterMenu} 
           appliedFilters={appliedFilters}
           fileLabel={"Wallet Transactions"}
           xlsxData={filteredTransactions}

@@ -46,6 +46,7 @@ export interface CompanySummary {
   company_logo: string;
   dark_logo: string;
   name: string;
+  industry: string;
   company_bio: string;
   email: string;
   company_is_verified: boolean;

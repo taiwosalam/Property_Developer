@@ -243,13 +243,14 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   <p className="text-[10px] text-text-disabled">
                     {notification.time}
                   </p>
-                  {notification.count !== undefined && (
-                    <div className="ml-auto bg-brand-9 inline-flex items-center justify-center min-w-[30px] h-[20px] px-1 rounded-full whitespace-nowrap">
-                      <p className="text-white text-[10px] font-medium text-center">
-                        {roundUptoNine(notification.count)}
-                      </p>
-                    </div>
-                  )}
+                  {notification.count !== undefined &&
+                    notification.count !== 0 && (
+                      <div className="ml-auto bg-brand-9 inline-flex items-center justify-center !size-[20px] px-1 rounded-full whitespace-nowrap">
+                        <p className="text-white text-[10px] font-medium text-center">
+                          {roundUptoNine(notification.count)}
+                        </p>
+                      </div>
+                    )}
                 </div>
               )}
             </div>

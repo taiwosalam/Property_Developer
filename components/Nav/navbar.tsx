@@ -79,7 +79,6 @@ const Header = () => {
   const { role } = useRole();
 
   const pathname = usePathname();
-
   const { company_id } = usePersonalInfoStore();
   const unreadMessageCount =
     usePersonalInfoStore((state) => state.unread_messages_count) || 0;
@@ -125,6 +124,9 @@ const Header = () => {
     error,
     refetch: refetchNotifications,
   } = useFetch<NotificationApiResponse>(`/notifications`);
+  useRefetchOnEvent("refetchNotifications", () =>
+    refetchNotifications({ silent: true })
+  );
 
   useEffect(() => {
     if (apiData) {
@@ -132,7 +134,6 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
-
       const unreadCount = apiData?.data.filter(
         (notification) => !notification.read_at
       ).length;
@@ -373,7 +374,7 @@ const Header = () => {
               <div className="flex items-center gap-2">
                 <NavIcon
                   icon={<MoonIcon size={21} />}
-                  onClick={() => {}}
+                  onClick={toggleTheme}
                   alt="theme switcher"
                 />
                 <NavIcon
@@ -463,6 +464,11 @@ const Header = () => {
                       count={notificationCounts}
                       alt="notifications"
                       href="/notifications"
+                    />
+                    <NavIcon
+                      icon={<MoonIcon size={21} />}
+                      onClick={toggleTheme}
+                      alt="theme switcher"
                     />
                   </motion.div>
                 )}

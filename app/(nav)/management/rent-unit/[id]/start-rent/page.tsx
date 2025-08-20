@@ -51,6 +51,7 @@ import { parseCurrency } from "@/app/(nav)/accounting/expenses/[expenseId]/manag
 import CreateTenancyAggrementModal from "@/components/BadgeIcon/create-tenancy-aggrement-modal";
 import ProgressCardLoader from "@/components/Loader/setup-card-loader";
 import { StartRentLLoadingSteps } from "@/services/loading-steps";
+import { useRole } from "@/hooks/roleContext";
 
 const StartRent = () => {
   const searchParams = useSearchParams();
@@ -74,6 +75,7 @@ const StartRent = () => {
   const [pdfLoading, setPdfLoading] = useState(false);
   const [dueDate, setDueDate] = useState<Dayjs | null>(null);
   const [disableInput, setDisableInput] = useState(false);
+  const { role } = useRole();
 
   const isWebUser = selectedOccupant?.userTag?.toLocaleLowerCase() === "web";
 
@@ -227,6 +229,19 @@ const StartRent = () => {
       RentalObj.doc_file = doc_file;
     }
 
+    const getRoutes = () => {
+      switch (role) {
+        case "manager":
+          return `/manager/management/rent-unit/`;
+        case "staff":
+          return `/staff/management/rent-unit/`;
+        case "account":
+          return `/accounting/management/rent-unit/`;
+        default:
+          return `/management/rent-unit/`;
+      }
+    };
+
     // const payloadObj = IS_WEB_TENANT ? FacilityObj : RentalObj;
     const payloadObj = IS_FACILITY ? FacilityObj : RentalObj;
     // const payloadObj = MobilepayloadObj;
@@ -236,7 +251,7 @@ const StartRent = () => {
       const res = await startRent(payload);
       if (res) {
         toast.success(successMsg);
-        router.push("/management/rent-unit");
+        router.push(getRoutes());
         localStorage.removeItem("selectedTenantId");
       }
     } catch (err) {
@@ -300,6 +315,19 @@ const StartRent = () => {
     }
   }, [unit_data?.unit_id, unit_data?.propertyId]);
 
+    const documentRoutes = () => {
+      switch (role) {
+        case "manager":
+          return `/manager`;
+        case "staff":
+          return `/staff`;
+        case "account":
+          return `/accounting`;
+        default:
+          return `/management`;
+      }
+    };
+
   const handleAgreementClick = () => {
     if (unit_data?.unit_id) {
       sessionStorage.setItem("return_to_start_rent_unit_id", unit_data.unit_id);
@@ -313,8 +341,12 @@ const StartRent = () => {
     }
     router.push(
       HAS_DOCUMENT
-        ? `/documents/manage-tenancy-agreement?d=${unit_data.property_document.document_id}`
-        : `/documents/create-tenancy-agreement/?p=${unit_data.propertyId}`
+        ? `${documentRoutes()}/documents/manage-tenancy-agreement?d=${
+            unit_data.property_document.document_id
+          }`
+        : `${documentRoutes()}/documents/create-tenancy-agreement/?p=${
+            unit_data.propertyId
+          }`
     );
   };
 
@@ -341,7 +373,10 @@ const StartRent = () => {
 
   return (
     <>
-      <ProgressCardLoader loading={reqLoading || pdfLoading} steps={StartRentLLoadingSteps} />
+      <ProgressCardLoader
+        loading={reqLoading || pdfLoading}
+        steps={StartRentLLoadingSteps}
+      />
       <div className="space-y-6 pb-[100px]">
         <BackButton>Start {isRental ? "Rent" : "Counting"}</BackButton>
         <section className="space-y-6">

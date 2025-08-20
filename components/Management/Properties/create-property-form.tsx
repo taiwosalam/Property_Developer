@@ -134,7 +134,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
-    { label: "Escrow it", value: "Admin" },
+    { label: "Escrow it", value: "Escrow" }, //NB: OCHUKO SAID TO CHANGE TO Escrow
     { label: "None", value: "" },
   ];
 
@@ -240,7 +240,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: branch.branch_name,
     })) || [];
 
-  console.log("selectedStaffs", selectedStaffs);
+  // console.log("selectedStaffs", selectedStaffs);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -489,9 +489,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     return CautionDepositOptions.filter((opt) => opt.value !== "Landlord");
   }, [selectedLandlordAgent]);
 
-  if (requestLoading) {
-    return <FullPageLoader text="Submitting..." />;
-  }
+  // if (requestLoading) {
+  //   return <FullPageLoader text="Submitting..." />;
+  // }
 
   const handleSectionTour = () => {
     if (formType === "rental" && editMode && pathname.startsWith("/manager")) {

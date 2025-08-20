@@ -93,6 +93,7 @@ import {
 } from "@/components/BadgeIcon/badge-icon";
 import { usePermission } from "@/hooks/getPermission";
 import RestrictUsersForm from "./ResrtrictedUsersForm";
+import SoundSelector from "./NotificationSound";
 
 const companyTypes = [
   {
@@ -1324,9 +1325,9 @@ const Others = () => {
                         back={
                           activeStep === "choose-avatar"
                             ? {
-                              handleBack: () =>
-                                setStepForDirector(directorId, "options"),
-                            }
+                                handleBack: () =>
+                                  setStepForDirector(directorId, "options"),
+                              }
                             : undefined
                         }
                       >
@@ -1593,13 +1594,16 @@ Once restricted, they will no longer have access to participate in the property'
             <SettingsUpdateButton
               loading={loadingNotification}
               action={saveSettings}
-            //action={userPlan === "professional" ? saveSettings : undefined}
+              //action={userPlan === "professional" ? saveSettings : undefined}
             />
           </div>
         </SettingsSection>
       )}
 
       {/* NOTIFICATION SETTINGS*/}
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
+      </SettingsSection>
       {
         <SettingsSection title="Notification Settings">
           <div className="custom-flex-col gap-8 mt-4">
@@ -1612,7 +1616,9 @@ Once restricted, they will no longer have access to participate in the property'
                     <div className="flex items-center gap-2">
                       {/* <div className="w-2 h-2 bg-black rounded-full"></div>  */}
                       {/* <h4 className="text-lg font-semibold text-text-primary">{category.title}</h4> */}
-                      <h4 className="text-lg text-text-primary">{category.title}</h4>
+                      <h4 className="text-lg text-text-primary">
+                        {category.title}
+                      </h4>
                     </div>
                     {/* Category Description */}
                     <p className="text-sm text-text-disabled ml-0 mt-1 mb-3">
@@ -1624,16 +1630,16 @@ Once restricted, they will no longer have access to participate in the property'
                   <div className="flex items-center gap-2">
                     {/* <span className="text-sm text-text-disabled">Enable all</span> */}
                     <Switch
-                      checked={category.options.some(option =>
-                        notificationSettings[option.name]
+                      checked={category.options.some(
+                        (option) => notificationSettings[option.name]
                       )}
                       onClick={() => {
                         // Toggle all options in this category
-                        const anyChecked = category.options.some(option =>
-                          notificationSettings[option.name]
+                        const anyChecked = category.options.some(
+                          (option) => notificationSettings[option.name]
                         );
                         const newValue = !anyChecked;
-                        category.options.forEach(option => {
+                        category.options.forEach((option) => {
                           handleSetIsChecked(option.name, newValue);
                         });
                       }}
@@ -1663,10 +1669,10 @@ Once restricted, they will no longer have access to participate in the property'
                 {/* Separator line between categories */}
                 {categoryIndex < notificationCategories.length - 1 && (
                   // <div className="border-t border-gray-200 pt-6"></div>
-                  <>                  <SectionSeparator />
-
+                  <>
+                    {" "}
+                    <SectionSeparator />
                   </>
-
                 )}
               </div>
             ))}
@@ -1699,7 +1705,7 @@ Once restricted, they will no longer have access to participate in the property'
                 name={option.name}
                 state={{
                   isChecked: resetOptions.includes(option.name),
-                  setIsChecked: () => { },
+                  setIsChecked: () => {},
                 }}
                 checked={resetOptions.includes(option.name)}
                 //onChange={() => handleResetCheckboxChange(option.name)}

@@ -42,7 +42,10 @@ import Avatars from "@/components/Avatars/avatars";
 import useFetch from "@/hooks/useFetch";
 import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
 import { debounce } from "lodash";
-import { otherNotificationSettings, updateCompanyNotification } from "@/app/(nav)/settings/others/data";
+import {
+  otherNotificationSettings,
+  updateCompanyNotification,
+} from "@/app/(nav)/settings/others/data";
 import Switch from "@/components/Form/Switch/switch";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { notificationCategories } from "@/app/(nav)/settings/others/data";

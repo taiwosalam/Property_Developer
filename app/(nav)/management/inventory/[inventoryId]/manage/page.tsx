@@ -69,6 +69,7 @@ const ManageInventory = () => {
     useState<boolean>(false);
   const [inventoryFiles, setInventoryFiles] = useState<any[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [showRemoveButton, setShowRemoveButton] = useState(false);
   const [video, setVideo] = useState<string>("");
 
   const { data, loading, error, isNetworkError } = useFetch<InventoryFetchData>(
@@ -105,8 +106,18 @@ const ManageInventory = () => {
     fetchAllBranches();
   }, [data]);
 
+  useEffect(() => {
+    setShowRemoveButton(moreInventory > 0);
+  }, [moreInventory]);
+
   const handleAddMoreInventory = () => {
     setMoreInventory((prev) => prev + 1);
+  };
+
+  const handleRemoveInventory = () => {
+    if (moreInventory > 0) {
+      setMoreInventory((prev) => prev - 1);
+    }
   };
 
   const handleUpdateInventory = async (
@@ -261,11 +272,11 @@ const ManageInventory = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px]">
+    <div className="custom-flex-col gap-10 min-h-[80vh] pb-[150px] lg:pb-[100px] px-4 md:px-0">
       {loading ? (
         <ManageInventorySkeleton />
       ) : (
-        <form onSubmit={handleUpdateInventory}>
+        <form onSubmit={handleUpdateInventory} className="md:py-0 my-4">
           <div className="custom-flex-col gap-4">
             <div className="flex items-center gap-2">
               <BackButton>Manage Inventory</BackButton>
@@ -321,7 +332,18 @@ const ManageInventory = () => {
             )}
           </div>
           <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-            <Modal
+            {showRemoveButton && (
+              <Button
+                size="sm_medium"
+                variant="light_red"
+                type="button"
+                onClick={handleRemoveInventory}
+                className="delete-inventory-button py-2 px-7"
+              >
+                Remove
+              </Button>
+            )}
+            {/* <Modal
               state={{
                 isOpen: deleteInventoryModal,
                 setIsOpen: setDeleteInventoryModal,
@@ -342,8 +364,8 @@ const ManageInventory = () => {
                   isDeleting={isDeleting}
                 />
               </ModalContent>
-            </Modal>
-            <Modal
+            </Modal> */}
+            {/* <Modal
               state={{
                 isOpen: deleteInventorySuccessModal,
                 setIsOpen: setDeleteInventorySuccessModal,
@@ -352,8 +374,8 @@ const ManageInventory = () => {
               <ModalContent>
                 <DeleteInventoryModalSuccess />
               </ModalContent>
-            </Modal>
-            <div className="flex gap-6">
+            </Modal> */}
+            <div className="flex gap-6 ml-auto">
               <Button
                 size="sm_medium"
                 variant="border"

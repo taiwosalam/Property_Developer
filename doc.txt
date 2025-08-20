@@ -1,37 +1,366 @@
-const default_border = "border-2 border-solid border-transparent";
-const default_interaction = "active:bg-transparent hover:opacity-70";
+"use client";
+import clsx from "clsx";
+import { ThichDownArrow } from "@/public/icons/icons";
+import { SectionSeparator } from "@/components/Section/section-components";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { motion, AnimatePresence } from "framer-motion";
+import { DetailItem } from "../detail-item";
+import Picture from "@/components/Picture/picture";
+import CustomTable from "@/components/Table/table";
+import { LandlordTenantInfoDocument } from "../landlord-tenant-info-components";
+import {
+  previousRentRecordsTableFields as tableFields,
+  previousRentRecordsData as tableData,
+  debounce,
+  transformDocuments,
+} from "./data";
+import { groupDocumentsByType } from "@/utils/group-documents";
+import { empty } from "@/app/config";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
+import useFetch from "@/hooks/useFetch";
+import { TenancyRecordProps } from "./types";
+import dayjs from "dayjs";
+import NetworkError from "@/components/Error/NetworkError";
+import TableLoading from "@/components/Loader/TableLoading";
 
-export const button_variants = {
-  variant: {
-    border: "custom-border-button",
-    change: "bg-neutral-2 text-brand-9",
-    default: "custom-default-button text-white",
+const TenancyRecord = ({
+  name,
+  period,
+  email,
+  phone,
+  picture,
+  renew_rent,
+  renew_total_package,
+  renewalPackage,
+  tenant,
+  unit_id,
+  unit_documents, // Use documents prop instead of unit_documents
+  currency,
+  index,
+  move_in,
+  move_out,
+}: {
+  unit_id?: string;
+  name?: string;
+  move_in?: string;
+  move_out?: string;
+  period?: string;
+  email?: string;
+  picture?: string;
+  phone?: string;
+  renew_rent?: string;
+  renew_total_package?: string;
+  renewalPackage?: string;
+  tenant?: any;
+  unit_documents?: any[]; // Updated to include documents prop
+  currency?: Currency;
+  index?: number;
+}) => {
+  const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+  const transformedDocs = transformDocuments(unit_documents || []); // changed to use unit_documents instead document again. WTF ::)
+  const groupedDocuments = groupDocumentsByType(transformedDocs);
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
 
-    sky_blue: `${default_border} bg-brand-1 text-brand-9 active:border-brand-1 ${default_interaction}`,
-    light_red: `${default_border} bg-status-error-1 text-status-error-primary active:border-status-error-1 ${default_interaction}`,
-    light_green: `${default_border} bg-status-success-1 text-status-success-primary active:border-success-1 ${default_interaction}`,
-    red: `${default_border} bg-status-error-primary text-white active:border-status-error-primary active:text-status-error-primary ${default_interaction}`,
-    blank: `${default_border}`,
-    custom: "",
-  },
-  size: {
-    sm: "py-[clamp(0.5rem,1.5vw,0.75rem)] px-[clamp(0.75rem,2.5vw,1rem)] text-[clamp(0.875rem,2.5vw,1rem)] font-normal",
-    mid: "py-[clamp(0.625rem,2vw,0.875rem)] px-[clamp(0.75rem,2.5vw,1rem)] text-[clamp(1rem,3vw,1.125rem)] font-medium",
-    default:
-      "py-[clamp(0.5rem,2vw,0.875rem)] px-[clamp(0.75rem,3vw,3rem)] text-[clamp(0.875rem,3vw,1.125rem)] font-bold",
-    xs_medium: "text-[clamp(0.75rem,2vw,0.875rem)] font-medium",
-    xs_normal: "text-[clamp(0.75rem,2vw,0.875rem)] font-normal",
-    xs_bold: "text-[clamp(0.75rem,2vw,0.875rem)] font-bold",
-    sm_normal: "text-[clamp(0.875rem,2.5vw,1rem)] font-normal",
-    sm_medium: "text-[clamp(0.875rem,2.5vw,1rem)] font-medium",
-    sm_bold: "text-[clamp(0.875rem,2.5vw,1rem)] font-bold",
-    base_medium: "text-[clamp(1rem,3vw,1.125rem)] font-medium",
-    base_bold: "text-[clamp(1rem,3vw,1.125rem)] font-bold",
-    "16_bold": "text-[clamp(1rem,3vw,1.125rem)] font-bold",
-    custom: "",
-  },
+  // Initialize records and pagination from the tenant prop
+  const [records, setRecords] = useState<any[]>(tenant?.rents || []);
+  const [pagination, setPagination] = useState<{
+    current_page: number;
+    total_pages: number;
+    hasMore: boolean;
+  }>({
+    current_page: tenant?.pagination?.current_page || 1,
+    total_pages: tenant?.pagination?.total_pages || 1,
+    hasMore:
+      (tenant?.pagination?.current_page || 1) <
+      (tenant?.pagination?.total_pages || 1),
+  });
+
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  // Memoize fetch options so that the fetch hook only re-runs when page changes
+  const fetchOptions = useMemo(
+    () => ({
+      params: { page: pagination.current_page },
+    }),
+    [pagination.current_page]
+  );
+
+  const { data, loading, silentLoading, error, isNetworkError } = useFetch<{
+    data: { previous_records: { data: any[]; pagination: any } };
+  }>(`/unit/${unit_id}/view`, fetchOptions);
+
+  const fetchNextPage = useCallback(
+    debounce(() => {
+      if (pagination.hasMore && !silentLoading) {
+        setPagination((prev) => ({
+          ...prev,
+          current_page: prev.current_page + 1,
+        }));
+      }
+    }, 500),
+    [pagination.hasMore, silentLoading]
+  );
+
+  // Attach an IntersectionObserver to the last row so that scrolling to it triggers fetching next page
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && pagination.hasMore) {
+          fetchNextPage();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [fetchNextPage, pagination.hasMore]
+  );
+
+  // When new API data arrives, update records and pagination
+  useEffect(() => {
+    if (data && data.data?.previous_records) {
+      const newRecords = data.data.previous_records.data || [];
+      setRecords((prevRecords) => {
+        const combined = [...prevRecords, ...newRecords];
+        return combined.filter(
+          (record, index, self) =>
+            index === self.findIndex((r) => r.id === record.id)
+        );
+      });
+      const newPagination = data.data.previous_records.pagination;
+      if (newPagination) {
+        setPagination({
+          current_page: newPagination.current_page,
+          total_pages: newPagination.total_pages,
+          hasMore: newPagination.current_page < newPagination.total_pages,
+        });
+      }
+    }
+  }, [data]);
+
+  // Map records to tableData ensuring keys match tableFields accessors.
+  const tableData = records.map((record, index) => ({
+    "S/N": index + 1,
+    payment_date: record.payment_date
+      ? record.payment_date
+      : "",
+    amount_paid: record.amount_paid
+      ? `${CURRENCY} ${formatNumber(record.amount_paid)}`
+      : "",
+    rent_amount: record.rent_amount
+      ? `${CURRENCY} ${formatNumber(record.rent_amount)}`
+      : "",
+    details: record.details || "",
+    start_date: record.start_date
+      ? record.start_date
+      : "",
+    due_date: record.due_date
+      ? record.due_date
+      : "",
+    // Attach a ref for the last row to trigger pagination (if more pages exist)
+    ref: index === records.length - 1 && pagination.hasMore ? lastRowRef : null,
+  }));
+
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+  return (
+    <div
+      className="bg-white dark:bg-darkText-primary p-6 space-y-4 rounded-2xl"
+      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
+    >
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex gap-2">
+          <p className="text-base font-bold text-brand-10">( {index} ) </p>
+          <h3 className="text-base font-bold text-brand-10">Tenancy Record</h3>
+        </div>
+        <button
+          type="button"
+          className="rounded bg-brand-9 py-2 px-8"
+          onClick={() => {
+            setIsCollapsibleOpen((x) => !x);
+          }}
+        >
+          <div
+            className={clsx("transition-transform duration-300", {
+              "rotate-180": isCollapsibleOpen,
+            })}
+          >
+            <ThichDownArrow />
+          </div>
+        </button>
+      </div>
+      <SectionSeparator className="h-[2px]" />
+      <div className="flex items-center gap-4 py-4 justify-between overflow-auto custom-round-scrollbar">
+        <div className="grid grid-cols-2 gap-4 flex-shrink-0">
+          <DetailItem
+            label="Name"
+            value={
+              <span className="flex items-center">
+                {name}
+                {/* <BadgeIcon color="yellow" /> */}
+              </span>
+            }
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Email"
+            value={email}
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Renewal Rent"
+            value={
+              renew_rent
+                ? `${
+                    currencySymbols[currency as keyof typeof currencySymbols] ||
+                    "₦"
+                  }${formatNumber(parseFloat(renew_rent))}`
+                : undefined
+            }
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Phone Number"
+            value={phone}
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Move In"
+            value={dayjs(move_in).format("MMM DD YYYY")}
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Move Out"
+            value={dayjs(move_out).format("MMM DD YYYY")}
+            style={{ width: "130px" }}
+          />
+        </div>
+        <Picture
+          containerClassName="flex-shrink-0 custom-secondary-bg rounded-md"
+          className="rounded-[12px]"
+          src={picture || empty}
+          size={168}
+          width={100}
+          height={100}
+          alt="tenant name"
+        />
+      </div>
+      <AnimatePresence initial={false}>
+        {isCollapsibleOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            <div className="space-y-4">
+              <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+                Statement
+              </h4>
+              {loading ? (
+                <TableLoading length={10} />
+              ) : (
+                <CustomTable
+                  fields={tableFields}
+                  data={tableData}
+                  tableHeadCellSx={{
+                    fontSize: "1rem",
+                    paddingTop: "18px",
+                    paddingBottom: "18px",
+                  }}
+                  tableBodyCellSx={{
+                    fontSize: "1rem",
+                    paddingTop: "18px",
+                    paddingBottom: "18px",
+                  }}
+                />
+              )}
+              {silentLoading && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="loader" />
+                </div>
+              )}
+            </div>
+            {/* SHARED DOCUMENTS */}
+            <div className="space-y-4">
+              <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+                Shared Documents
+              </h4>
+              {Object.keys(groupedDocuments).length === 0 ? (
+                <p className="text-center text-gray-500 text-md py-4">
+                  No documents available for this tenant
+                </p>
+              ) : (
+                <>
+                  {Object.entries(groupedDocuments).map(
+                    ([documentType, documents]) => {
+                      if (documentType === "others") return null; // Skip "other document" for now
+                      return (
+                        <div key={documentType} className="space-y-[6px]">
+                          <h6 className="text-text-secondary text-base font-medium capitalize">
+                            {documentType} Documents
+                          </h6>
+                          <div className="flex flex-wrap gap-4">
+                            {documents?.map((document) => (
+                              <LandlordTenantInfoDocument
+                                key={document.id}
+                                {...document}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
+                  {groupedDocuments?.["others"] && (
+                    <div className="space-y-[6px]">
+                      <h6 className="text-text-secondary text-base font-medium">
+                        Other Documents
+                      </h6>
+                      <div className="flex flex-wrap gap-4">
+                        {groupedDocuments?.["others"].map((document) => (
+                          <LandlordTenantInfoDocument
+                            key={document.id}
+                            {...document}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            {/* CLOSE BUTTON */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="rounded bg-brand-9 py-2 px-8"
+                onClick={() => {
+                  setIsCollapsibleOpen(false);
+                }}
+              >
+                <div className="rotate-180">
+                  <ThichDownArrow />
+                </div>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
 };
 
+export default TenancyRecord;
 
 
 
@@ -42,169 +371,441 @@ export const button_variants = {
 
 
 
-/* Spacing System - Responsive */
-.gap-xs {
-  gap: clamp(0.25rem, 1vw, 0.5rem);
-}
-.gap-sm {
-  gap: clamp(0.5rem, 2vw, 0.75rem);
-}
-.gap-md {
-  gap: clamp(0.75rem, 3vw, 1rem);
-}
-.gap-lg {
-  gap: clamp(1rem, 4vw, 1.5rem);
-}
-.gap-xl {
-  gap: clamp(1.5rem, 5vw, 2rem);
-}
-
-.p-xs {
-  padding: clamp(0.25rem, 1vw, 0.5rem);
-}
-.p-sm {
-  padding: clamp(0.5rem, 2vw, 0.75rem);
-}
-.p-md {
-  padding: clamp(0.75rem, 3vw, 1rem);
-}
-.p-lg {
-  padding: clamp(1rem, 4vw, 1.5rem);
-}
-.p-xl {
-  padding: clamp(1.5rem, 5vw, 2rem);
-}
-
-.px-xs {
-  padding-left: clamp(0.25rem, 1vw, 0.5rem);
-  padding-right: clamp(0.25rem, 1vw, 0.5rem);
-}
-.px-sm {
-  padding-left: clamp(0.5rem, 2vw, 0.75rem);
-  padding-right: clamp(0.5rem, 2vw, 0.75rem);
-}
-.px-md {
-  padding-left: clamp(0.75rem, 3vw, 1rem);
-  padding-right: clamp(0.75rem, 3vw, 1rem);
-}
-.px-lg {
-  padding-left: clamp(1rem, 4vw, 1.5rem);
-  padding-right: clamp(1rem, 4vw, 1.5rem);
-}
-.px-xl {
-  padding-left: clamp(1.5rem, 5vw, 2rem);
-  padding-right: clamp(1.5rem, 5vw, 2rem);
-}
-
-.py-xs {
-  padding-top: clamp(0.25rem, 1vw, 0.5rem);
-  padding-bottom: clamp(0.25rem, 1vw, 0.5rem);
-}
-.py-sm {
-  padding-top: clamp(0.5rem, 2vw, 0.75rem);
-  padding-bottom: clamp(0.5rem, 2vw, 0.75rem);
-}
-.py-md {
-  padding-top: clamp(0.75rem, 3vw, 1rem);
-  padding-bottom: clamp(0.75rem, 3vw, 1rem);
-}
-.py-lg {
-  padding-top: clamp(1rem, 4vw, 1.5rem);
-  padding-bottom: clamp(1rem, 4vw, 1.5rem);
-}
-.py-xl {
-  padding-top: clamp(1.5rem, 5vw, 2rem);
-  padding-bottom: clamp(1.5rem, 5vw, 2rem);
-}
-
-.pl-xs {
-  padding-left: clamp(0.25rem, 1vw, 0.5rem);
-}
-.pl-sm {
-  padding-left: clamp(0.5rem, 2vw, 0.75rem);
-}
-.pl-md {
-  padding-left: clamp(0.75rem, 3vw, 1rem);
-}
-.pl-lg {
-  padding-left: clamp(1rem, 4vw, 1.5rem);
-}
-.pl-xl {
-  padding-left: clamp(1.5rem, 5vw, 2rem);
-}
-.pl-2xl {
-  padding-left: clamp(2rem, 6vw, 2.5rem);
-}
-
-.pr-xs {
-  padding-right: clamp(0.25rem, 1vw, 0.5rem);
-}
-.pr-sm {
-  padding-right: clamp(0.5rem, 2vw, 0.75rem);
-}
-.pr-md {
-  padding-right: clamp(0.75rem, 3vw, 1rem);
-}
-.pr-lg {
-  padding-right: clamp(1rem, 4vw, 1.5rem);
-}
-.pr-xl {
-  padding-right: clamp(1.5rem, 5vw, 2rem);
-}
-
-/* Border Radius - Responsive */
-.rounded-xs {
-  border-radius: clamp(0.125rem, 0.5vw, 0.25rem);
-}
-.rounded-sm {
-  border-radius: clamp(0.25rem, 1vw, 0.375rem);
-}
-.rounded-md {
-  border-radius: clamp(0.375rem, 1.5vw, 0.5rem);
-}
-.rounded-lg {
-  border-radius: clamp(0.5rem, 2vw, 0.75rem);
-}
-.rounded-xl {
-  border-radius: clamp(0.75rem, 3vw, 1rem);
-}
-
-/* Width/Height Responsive Utilities */
-.w-xs {
-  width: clamp(1rem, 4vw, 1.5rem);
-}
-.w-sm {
-  width: clamp(1.5rem, 5vw, 2rem);
-}
-.w-md {
-  width: clamp(2rem, 6vw, 2.5rem);
-}
-.w-lg {
-  width: clamp(2.5rem, 7vw, 3rem);
-}
-.w-xl {
-  width: clamp(3rem, 8vw, 4rem);
-}
-
-.h-xs {
-  height: clamp(1rem, 4vw, 1.5rem);
-}
-.h-sm {
-  height: clamp(1.5rem, 5vw, 2rem);
-}
-.h-md {
-  height: clamp(2rem, 6vw, 2.5rem);
-}
-.h-lg {
-  height: clamp(2.5rem, 7vw, 3rem);
-}
-.h-xl {
-  height: clamp(3rem, 8vw, 4rem);
-}
-
-/* min-width responsive utilities for badges */
-.min-w-xs { min-width: clamp(1rem, 2.5vw, 1.125rem); }
-.min-w-sm { min-width: clamp(1.125rem, 3vw, 1.25rem); }
-.min-w-md { min-width: clamp(1.25rem, 3.5vw, 1.5rem); }
 
 
+
+
+
+
+=================================== REFACTORED
+"use client";
+import clsx from "clsx";
+import { ThichDownArrow } from "@/public/icons/icons";
+import { SectionSeparator } from "@/components/Section/section-components";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { motion, AnimatePresence } from "framer-motion";
+import { DetailItem } from "../detail-item";
+import Picture from "@/components/Picture/picture";
+import CustomTable from "@/components/Table/table";
+import { LandlordTenantInfoDocument } from "../landlord-tenant-info-components";
+import {
+  previousRentRecordsTableFields as tableFields,
+  previousRentRecordsData as tableData,
+  debounce,
+  transformDocuments,
+} from "./data";
+import { groupDocumentsByType } from "@/utils/group-documents";
+import { empty } from "@/app/config";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
+import useFetch from "@/hooks/useFetch";
+import { TenancyRecordProps } from "./types";
+import dayjs from "dayjs";
+import NetworkError from "@/components/Error/NetworkError";
+import TableLoading from "@/components/Loader/TableLoading";
+
+// Define the record type
+type RecordType = "previous_tenants" | "current_records" | "previous_records";
+
+interface TenancyRecordComponentProps {
+  unit_id?: string;
+  name?: string;
+  move_in?: string;
+  move_out?: string;
+  period?: string;
+  email?: string;
+  picture?: string;
+  phone?: string;
+  renew_rent?: string;
+  renew_total_package?: string;
+  renewalPackage?: string;
+  tenant?: any;
+  unit_documents?: any[];
+  currency?: Currency;
+  index?: number;
+  record: RecordType;
+  documents?: any[]; // Add documents prop as alternative to unit_documents
+}
+
+const TenancyRecord = ({
+  unit_id,
+  name,
+  move_in,
+  move_out,
+  period,
+  email,
+  picture,
+  phone,
+  renew_rent,
+  renew_total_package,
+  renewalPackage,
+  tenant,
+  unit_documents,
+  documents, // New documents prop
+  currency,
+  index,
+  record,
+}: TenancyRecordComponentProps) => {
+  const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
+
+  // Use documents prop if provided, otherwise fallback to unit_documents
+  // const docsToTransform = documents || unit_documents || [];
+  const docsToTransform = unit_documents || [];
+  const transformedDocs = transformDocuments(docsToTransform);
+  const groupedDocuments = groupDocumentsByType(transformedDocs);
+
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+
+  // Get initial data based on record type
+  const getInitialData = () => {
+    switch (record) {
+      case "previous_tenants":
+        return {
+          records: tenant?.rents || [],
+          pagination: tenant?.pagination || { current_page: 1, total_pages: 1 },
+        };
+      case "current_records":
+        return {
+          records: tenant?.rents || [],
+          pagination: tenant?.pagination || { current_page: 1, total_pages: 1 },
+        };
+      case "previous_records":
+        return {
+          records: tenant?.rents || [],
+          pagination: tenant?.pagination || { current_page: 1, total_pages: 1 },
+        };
+      default:
+        return {
+          records: [],
+          pagination: { current_page: 1, total_pages: 1 },
+        };
+    }
+  };
+
+  const initialData = getInitialData();
+
+  // Initialize records and pagination from the tenant prop
+  const [records, setRecords] = useState<any[]>(initialData.records);
+  const [pagination, setPagination] = useState<{
+    current_page: number;
+    total_pages: number;
+    hasMore: boolean;
+  }>({
+    current_page: initialData.pagination.current_page,
+    total_pages: initialData.pagination.total_pages,
+    hasMore:
+      initialData.pagination.current_page < initialData.pagination.total_pages,
+  });
+
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  // Memoize fetch options so that the fetch hook only re-runs when page changes
+  const fetchOptions = useMemo(
+    () => ({
+      params: { page: pagination.current_page },
+    }),
+    [pagination.current_page]
+  );
+
+  // Only fetch if we need pagination (more than initial data)
+  const shouldFetch =
+    pagination.hasMore &&
+    pagination.current_page > initialData.pagination.current_page;
+
+  const { data, loading, silentLoading, error, isNetworkError } = useFetch<{
+    data: {
+      previous_records: { data: any[]; pagination: any };
+      current_records: { data: any[]; pagination: any };
+      previous_tenants: any[];
+    };
+  }>(`/unit/${unit_id}/view`, shouldFetch ? fetchOptions : { skip: true });
+
+  const fetchNextPage = useCallback(
+    debounce(() => {
+      if (pagination.hasMore && !silentLoading) {
+        setPagination((prev) => ({
+          ...prev,
+          current_page: prev.current_page + 1,
+        }));
+      }
+    }, 500),
+    [pagination.hasMore, silentLoading]
+  );
+
+  // Attach an IntersectionObserver to the last row so that scrolling to it triggers fetching next page
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && pagination.hasMore) {
+          fetchNextPage();
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [fetchNextPage, pagination.hasMore]
+  );
+
+  // When new API data arrives, update records and pagination based on record type
+  useEffect(() => {
+    if (data && data.data) {
+      let newData;
+
+      switch (record) {
+        case "previous_records":
+          newData = data.data.previous_records;
+          break;
+        case "current_records":
+          newData = data.data.current_records;
+          break;
+        case "previous_tenants":
+          // Previous tenants don't have pagination in the same way
+          return;
+        default:
+          return;
+      }
+
+      if (newData && newData.data) {
+        const newRecords = newData.data || [];
+        setRecords((prevRecords) => {
+          const combined = [...prevRecords, ...newRecords];
+          return combined.filter(
+            (record, index, self) =>
+              index === self.findIndex((r) => r.id === record.id)
+          );
+        });
+
+        const newPagination = newData.pagination;
+        if (newPagination) {
+          setPagination({
+            current_page: newPagination.current_page,
+            total_pages: newPagination.total_pages,
+            hasMore: newPagination.current_page < newPagination.total_pages,
+          });
+        }
+      }
+    }
+  }, [data, record]);
+
+  // Map records to tableData ensuring keys match tableFields accessors.
+  const tableData = records.map((record, index) => ({
+    "S/N": index + 1,
+    payment_date: record.payment_date || "",
+    amount_paid: record.amount_paid
+      ? `${CURRENCY} ${formatNumber(record.amount_paid)}`
+      : "",
+    rent_amount: record.rent_amount
+      ? `${CURRENCY} ${formatNumber(record.rent_amount)}`
+      : "",
+    details: record.details || "",
+    start_date: record.start_date || "",
+    due_date: record.due_date || "",
+    invoice_status: record.invoice_status || "",
+    // Attach a ref for the last row to trigger pagination (if more pages exist)
+    ref: index === records.length - 1 && pagination.hasMore ? lastRowRef : null,
+  }));
+
+  if (isNetworkError) return <NetworkError />;
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
+
+  return (
+    <div
+      className="bg-white dark:bg-darkText-primary p-6 space-y-4 rounded-2xl"
+      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
+    >
+      <div className="flex items-center justify-between gap-4 flex-wrap">
+        <div className="flex gap-2">
+          <p className="text-base font-bold text-brand-10">( {index} ) </p>
+          <h3 className="text-base font-bold text-brand-10">
+            {record === "previous_tenants" && "Previous Tenancy Record"}
+            {record === "current_records" && "Current Records"}
+            {record === "previous_records" && "Previous Records"}
+          </h3>
+        </div>
+        <button
+          type="button"
+          className="rounded bg-brand-9 py-2 px-8"
+          onClick={() => {
+            setIsCollapsibleOpen((x) => !x);
+          }}
+        >
+          <div
+            className={clsx("transition-transform duration-300", {
+              "rotate-180": isCollapsibleOpen,
+            })}
+          >
+            <ThichDownArrow />
+          </div>
+        </button>
+      </div>
+      <SectionSeparator className="h-[2px]" />
+      <div className="flex items-center gap-4 py-4 justify-between overflow-auto custom-round-scrollbar">
+        <div className="grid grid-cols-2 gap-4 flex-shrink-0">
+          <DetailItem
+            label="Name"
+            value={
+              <span className="flex items-center">
+                {name}
+                {/* <BadgeIcon color="yellow" /> */}
+              </span>
+            }
+            style={{ width: "130px" }}
+          />
+          <DetailItem label="Email" value={email} style={{ width: "130px" }} />
+          <DetailItem
+            label="Renewal Rent"
+            value={
+              renew_rent
+                ? `${
+                    currencySymbols[currency as keyof typeof currencySymbols] ||
+                    "₦"
+                  }${formatNumber(parseFloat(renew_rent))}`
+                : undefined
+            }
+            style={{ width: "130px" }}
+          />
+          <DetailItem
+            label="Phone Number"
+            value={phone}
+            style={{ width: "130px" }}
+          />
+          {move_in && (
+            <DetailItem
+              label="Move In"
+              value={dayjs(move_in).format("MMM DD YYYY")}
+              style={{ width: "130px" }}
+            />
+          )}
+          {move_out && (
+            <DetailItem
+              label="Move Out"
+              value={dayjs(move_out).format("MMM DD YYYY")}
+              style={{ width: "130px" }}
+            />
+          )}
+        </div>
+        <Picture
+          containerClassName="flex-shrink-0 custom-secondary-bg rounded-md"
+          className="rounded-[12px]"
+          src={picture || empty}
+          size={168}
+          width={100}
+          height={100}
+          alt="tenant name"
+        />
+      </div>
+      <AnimatePresence initial={false}>
+        {isCollapsibleOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-4"
+          >
+            <div className="space-y-4">
+              <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+                Statement
+              </h4>
+              {loading ? (
+                <TableLoading length={10} />
+              ) : (
+                <CustomTable
+                  fields={tableFields}
+                  data={tableData}
+                  tableHeadCellSx={{
+                    fontSize: "1rem",
+                    paddingTop: "18px",
+                    paddingBottom: "18px",
+                  }}
+                  tableBodyCellSx={{
+                    fontSize: "1rem",
+                    paddingTop: "18px",
+                    paddingBottom: "18px",
+                  }}
+                />
+              )}
+              {silentLoading && (
+                <div className="flex items-center justify-center py-4">
+                  <div className="loader" />
+                </div>
+              )}
+            </div>
+            {/* SHARED DOCUMENTS */}
+            <div className="space-y-4">
+              <h4 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+                Shared Documents
+              </h4>
+              {Object.keys(groupedDocuments).length === 0 ? (
+                <p className="text-center text-gray-500 text-md py-4">
+                  No documents available for this tenant
+                </p>
+              ) : (
+                <>
+                  {Object.entries(groupedDocuments).map(
+                    ([documentType, documents]) => {
+                      if (documentType === "others") return null; // Skip "other document" for now
+                      return (
+                        <div key={documentType} className="space-y-[6px]">
+                          <h6 className="text-text-secondary text-base font-medium capitalize">
+                            {documentType} Documents
+                          </h6>
+                          <div className="flex flex-wrap gap-4">
+                            {documents?.map((document) => (
+                              <LandlordTenantInfoDocument
+                                key={document.id}
+                                {...document}
+                              />
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    }
+                  )}
+                  {groupedDocuments?.["others"] && (
+                    <div className="space-y-[6px]">
+                      <h6 className="text-text-secondary text-base font-medium">
+                        Other Documents
+                      </h6>
+                      <div className="flex flex-wrap gap-4">
+                        {groupedDocuments?.["others"].map((document) => (
+                          <LandlordTenantInfoDocument
+                            key={document.id}
+                            {...document}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+            {/* CLOSE BUTTON */}
+            <div className="flex justify-end">
+              <button
+                type="button"
+                className="rounded bg-brand-9 py-2 px-8"
+                onClick={() => {
+                  setIsCollapsibleOpen(false);
+                }}
+              >
+                <div className="rotate-180">
+                  <ThichDownArrow />
+                </div>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
+
+export default TenancyRecord;

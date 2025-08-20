@@ -21,6 +21,7 @@ const SendFunds: React.FC<SendFundsProps> = ({ changeStep, setRecipient }) => {
   const beneficiaries = useWalletStore((state) => state.beneficiaries);
   const [walletId, setWalletId] = useState("");
   const [loading, setLoading] = useState(false);
+  
   const handleNext = (beneficiary: Omit<Beneficiary, "id">) => {
     setRecipient(beneficiary);
     changeStep("recipient");

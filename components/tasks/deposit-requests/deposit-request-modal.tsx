@@ -294,14 +294,13 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           )}
         </div>
         <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
-        {/* <form
+        <form
           className="space-y-4"
           onSubmit={(e) => {
             e.preventDefault();
             handleDepositRequest();
           }}
-        > */}
-        <div>
+        >
           <p className="text-text-tertiary dark:text-white">
             Caution Deposits Details:
           </p>
@@ -364,8 +363,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
                 </div>
               </div>
             )}
-          {/* </form> */}
-        </div>
+        </form>
       </div>
     </ModalPreset>
   );

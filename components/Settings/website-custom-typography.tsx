@@ -281,7 +281,10 @@ const WebsiteTypography = () => {
                       >
                         Font Size
                       </label>
-                      <div className="flex pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out">
+                      <div
+                        id="inputt"
+                        className="flex !h-full pr-2 gap-2 items-center rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out"
+                      >
                         <input
                           className="typography w-[200px] px-3 py-[11px] text-xs md:text-sm rounded-[8px] font-normal focus:outline-none keep-spinner appearance-auto opacity-100 dark:bg-transparent"
                           type="number"

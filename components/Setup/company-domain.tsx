@@ -59,6 +59,7 @@ const CompanyDomain: React.FC<CompanyDomainProps> = ({
   useEffect(() => {
     // Skip API check if in editMode and isOwner (domain is already owned)
     if (isEditMode && isOwner) {
+      setGlobalStore("domainAvailable", true);
       return;
     }
 

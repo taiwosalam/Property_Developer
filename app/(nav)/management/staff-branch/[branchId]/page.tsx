@@ -174,14 +174,14 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
     recent_transactions &&
     recent_transactions.map((t: any) => ({
       date: t.date,
-      totalfunds: t.amount,
+      totalfunds: t.amount - 1000,
       credit:
         t.transaction_type === "funding" || t.transaction_type === "transfer_in"
-          ? t.amount
+          ? t.amount - 1000
           : 0,
       debit:
         t.transaction_type === "debit" || t.transaction_type === "transfer_out"
-          ? t.amount
+          ? t.amount - 1000
           : 0,
     }));
 
@@ -335,7 +335,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Paid Invoice"
-               className="account-card"
+              className="account-card"
               balance={Number(receipt_statistics?.total_paid_receipt || 0)}
               percentage={
                 Number(
@@ -352,7 +352,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
             />
             <AccountStatsCard
               title="Total Pending Invoice"
-               className="account-card"
+              className="account-card"
               balance={Number(receipt_statistics?.total_pending_receipt) || 0}
               percentage={
                 Number(

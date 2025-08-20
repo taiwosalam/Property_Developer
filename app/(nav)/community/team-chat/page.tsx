@@ -3,19 +3,19 @@ import { empty } from "@/app/config";
 import NetworkError from "@/components/Error/NetworkError";
 import Button from "@/components/Form/Button/button";
 import useFetch from "@/hooks/useFetch";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { getLocalStorage } from "@/utils/local-storage";
 import Image from "next/image";
 
 const TeamChat = () => {
-  const loggedInUserDetails = getLocalStorage("additional_details");
-  const logo = loggedInUserDetails?.company?.company_logo || empty;
+  const { company_logo } = usePersonalInfoStore();
   return (
     <div className="w-full h-full flex items-center justify-center">
       <div className="custom-flex-col gap-6 max-w-[100%]">
         <div className="custom-flex-col gap-4 px-10">
           <div className="flex justify-center h-[70px] w-[70px]">
             <Image
-              src={logo}
+              src={company_logo || empty}
               alt="logo"
               width={500}
               height={500}
