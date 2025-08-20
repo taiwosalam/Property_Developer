@@ -153,16 +153,17 @@ const Dashboard = () => {
     return yesNo === "Yes" ? true : false;
   };
 
-  setWalletStore("sub_wallet", {
-    status: branch_wallet !== null ? "active" : "inactive",
-    wallet_id:
-      branch_wallet !== null
-        ? Number(branchData?.branch_wallet?.wallet_id)
-        : undefined,
-    is_active:
-      branch_wallet !== null &&
-      yesNoToActiveInactive(branchData?.branch_wallet?.is_active as string),
-  });
+  useEffect(() => {
+    if (branchData?.branch_wallet) {
+      setWalletStore("sub_wallet", {
+        status: branch_wallet !== null ? "active" : "inactive",
+        wallet_id: Number(branchData.branch_wallet.wallet_id),
+        is_active: yesNoToActiveInactive(
+          branchData.branch_wallet.is_active as string
+        ),
+      });
+    }
+  }, [branchData, setWalletStore]);
 
   const updatedDashboardCardData = dashboardCardData.map((card) => {
     let stats: Stats | undefined;
@@ -220,14 +221,14 @@ const Dashboard = () => {
     recent_transactions &&
     recent_transactions.map((t: any) => ({
       date: t.date,
-      totalfunds: t.amount,
+      totalfunds: t.amount - 1000,
       credit:
         t.transaction_type === "funding" || t.transaction_type === "transfer_in"
-          ? t.amount
+          ? t.amount - 1000
           : 0,
       debit:
         t.transaction_type === "debit" || t.transaction_type === "transfer_out"
-          ? t.amount
+          ? t.amount - 1000
           : 0,
     }));
 

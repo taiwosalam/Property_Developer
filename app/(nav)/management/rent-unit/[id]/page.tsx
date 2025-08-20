@@ -199,6 +199,7 @@ const UnitPreviewPage = () => {
                 unit_id={id}
                 {...t}
                 currency={unit_data.currency}
+                record="previous_tenants"
               />
             ))
           )}

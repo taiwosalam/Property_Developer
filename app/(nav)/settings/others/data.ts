@@ -47,7 +47,6 @@ export const updateDirector = async (
 };
 
 export const deleteDirector = async (id: string): Promise<boolean> => {
-
   try {
     const response = await api.delete(`/directors/${id}`);
 
@@ -62,9 +61,7 @@ export const deleteDirector = async (id: string): Promise<boolean> => {
   }
 };
 
-
 export const lockDirector = async (id: string): Promise<boolean> => {
-
   try {
     const response = await api.post(`/directors/${id}/lock`);
 
@@ -254,24 +251,21 @@ export function transfromToDirectorCards(
   return {
     card: apiData?.directors.map((item) => {
       return {
-        id: item?.id,
-        is_verified: item?.user?.profile.bvn ? true : false,
-        picture: item?.profile_picture ?? item?.user?.profile?.picture,
-        //avatar: item?.user?.profile?.picture ?? "/empty/avatar.png",
-        full_name: item?.user?.profile?.title
-          ? `${item?.user?.profile?.title} ${item.full_name}`
-          : item.full_name,
-        email: item?.user?.email,
-        is_active: item?.user?.is_active,
+        id: item?.user_id,
+        is_verified: item?.is_verified,
+        picture: item?.picture,
+        full_name: item?.name,
+        email: item?.email,
+        is_active: item?.is_active,
         name: item?.full_name,
-        tier_id: item?.user?.tier_id,
+        tier_id: item?.tier_id,
         phone_number: item?.phone_number || "___ ___",
         professional_title: item?.professional_title ?? "___ ___",
         about_director: item?.about_director ?? "___ ___",
         years_in_business: item?.years_in_business ?? "___ ___",
-        state: item?.user?.profile?.state ?? "___ ___",
-        lga: item?.user?.profile?.lga ?? "___ ___",
-        title: item?.user?.profile?.title ?? "___ ___",
+        state: item?.state ?? "___ ___",
+        lga: item?.lga ?? "___ ___",
+        title: item?.title ?? "",
       };
     }),
   };

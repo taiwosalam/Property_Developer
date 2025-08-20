@@ -844,6 +844,8 @@ const Others = () => {
   const { data: apiData, refetch } =
     useFetch<ApiResponseDirector>(`/directors`);
 
+  console.log(apiData);
+
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -1197,8 +1199,8 @@ const Others = () => {
     if (cardView?.card) {
       const initialState = cardView.card.reduce((acc, director) => {
         acc[director.id] = {
-          id: director?.id?.toString(),
-          full_name: director.name || "",
+          id: director.id.toString(),
+          full_name: director.full_name || "",
           email: director.email || "",
           phone_number: director.phone_number || "",
           title: director.title || "",
@@ -1229,6 +1231,8 @@ const Others = () => {
   };
 
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
+
+  console.log(cardView);
 
   // PERMISSIONS TO RENDER COMPONENTS
   // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
@@ -1303,6 +1307,7 @@ const Others = () => {
                       <UserCard
                         is_active={director.is_active}
                         key={director.id}
+                        title={director.title}
                         name={director.full_name}
                         email={director.email}
                         phone_number={director.phone_number}

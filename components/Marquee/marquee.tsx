@@ -1,5 +1,4 @@
 import { useRef, useState, useEffect } from "react";
-import parse from "html-react-parser";
 
 interface IMarqueeProps {
   text: string;
@@ -9,6 +8,7 @@ interface IMarqueeProps {
   urlText?: string;
   showMarquee?: boolean;
 }
+
 const Marquee = ({
   text,
   speed,
@@ -33,9 +33,11 @@ const Marquee = ({
     }
   }, [speed, text]);
 
-  const handleLinkClick = (e: any) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    window.open(url, "_blank", "noopener,noreferrer");
+    if (url) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -52,7 +54,10 @@ const Marquee = ({
               ref={textRef}
               className="whitespace-nowrap flex items-center gap-4"
               style={{
-                animation: `marquee ${animationDuration}s linear infinite`,
+                animationName: "marquee",
+                animationDuration: `${animationDuration}s`,
+                animationTimingFunction: "linear",
+                animationIterationCount: "infinite",
                 animationPlayState: isHovered ? "paused" : "running",
               }}
             >
@@ -60,13 +65,15 @@ const Marquee = ({
                 className="text-brand-9 text-sm"
                 dangerouslySetInnerHTML={{ __html: text }}
               />
-              <a
-                href={url}
-                onClick={handleLinkClick}
-                className="text-blue-600 text-sm hover:text-blue-800 underline font-medium transition-colors duration-200"
-              >
-                {urlText}
-              </a>
+              {url && urlText && (
+                <a
+                  href={url}
+                  onClick={handleLinkClick}
+                  className="text-blue-600 text-sm hover:text-blue-800 underline font-medium transition-colors duration-200"
+                >
+                  {urlText}
+                </a>
+              )}
             </div>
           </div>
 

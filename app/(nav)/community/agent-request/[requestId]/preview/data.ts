@@ -237,7 +237,7 @@ export const transformPropertyRequestResponse = (
       ...reader,
       tier_id: AgentRequest.tier_id,
     })),
-    comments: comments.map((comment) =>
+    comments: comments.reverse().map((comment) =>
       transformComment(comment, AgentRequest.slug)
     ),
     // similar posts

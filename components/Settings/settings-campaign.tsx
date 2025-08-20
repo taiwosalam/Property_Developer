@@ -18,7 +18,7 @@ import { ChevronRight, Upload, UploadIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import FileInput from "../Form/FileInput/file-input";
 import { PERIOD_OPTIONS } from "./subscription-components";
-import FileUploadInput from "./fileInput";
+import FileUploadInput, { FileUploadInputRef } from "./fileInput";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { toast } from "sonner";
 import { base64ToBlob } from "@/app/(nav)/settings/security/data";
@@ -55,10 +55,13 @@ export const Campaign = () => {
   const [selectedPage, setSelectedPage] = useState("");
   const [totalAmount, setTotalAmount] = useState(0);
   const [campaignName, setCampaignName] = useState("");
-  const [campaignValue, setCampaignValue] = useState("https://");
+  const [campaignLink, setCampaignLink] = useState("https://");
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
+
   const campSectionRef = useRef<HTMLDivElement | null>(null);
+  // Update the ref type
+  const fileInputRef = useRef<FileUploadInputRef | null>(null);
 
   const searchParams = useSearchParams();
   const campaignParams = searchParams.get("q");
@@ -87,7 +90,7 @@ export const Campaign = () => {
 
   const isFormIncomplete =
     !campaignName ||
-    !campaignValue ||
+    !campaignLink ||
     !selectedPage ||
     !selectedPeriod ||
     !uploadedFile;
@@ -113,55 +116,18 @@ export const Campaign = () => {
     tableHeadClassName: "h-[45px]",
   };
 
-  // const handlePostCampaign = async () => {
-  //   if (!company_id) return;
-
-  //   const monthString = selectedPeriod.split(" ")[0];
-
-  //   try {
-  //     const formData = new FormData();
-
-  //     formData.append("period", String(Number(monthString)));
-  //     formData.append("amount", String(totalAmount));
-  //     //formData.append("company_id", company_id);
-  //     formData.append("link", `https://${campaignValue}`);
-  //     formData.append("name", campaignName);
-  //     formData.append("type", selectedPage);
-
-  //     if (uploadedFile) {
-  //       if (uploadedFile.type !== "image/svg+xml") {
-  //         toast.error("Only SVG files are allowed");
-  //         return;
-  //       }
-
-  //       if (uploadedFile.size > 1024 * 1024) {
-  //         toast.error("File size must be less than 1MB");
-  //         return;
-  //       }
-
-  //       formData.append("attachment", uploadedFile);
-  //     }
-
-  //     const res = await postCampaign(formData, company_id);
-  //     if (res) {
-  //       // toast.success("Campaign sent successfully");
-  //       return true;
-  //     }
-  //   } catch (error) {}
-  // };
-
   const handlePostCampaign = async () => {
     if (!company_id) return;
 
     const monthString = selectedPeriod.split(" ")[0];
 
     // === 1. Validate the campaignValue ===
-    if (!campaignValue || typeof campaignValue !== "string") {
+    if (!campaignLink || typeof campaignLink !== "string") {
       toast.warning("Campaign link is required");
       return;
     }
 
-    const trimmedLink = campaignValue.trim();
+    const trimmedLink = campaignLink.trim();
 
     // Check if it starts with https:// (only that, not http://)
     const isHttpsLink = trimmedLink.startsWith("https://");
@@ -204,7 +170,15 @@ export const Campaign = () => {
 
       const res = await postCampaign(formData, company_id);
       if (res) {
-        // toast.success("Campaign sent successfully");
+        setCampaignName("");
+        setCampaignLink("https://");
+        setUploadedFile(null);
+        setSelectedPage("");
+        setSelectedPeriod("");
+      
+        // Clear the file input using the ref
+        fileInputRef.current?.clearFile();
+
         return true;
       }
     } catch (error) {
@@ -233,15 +207,17 @@ export const Campaign = () => {
                 label="campaign name"
                 placeholder="Write here"
                 onChange={(val) => setCampaignName(val)}
+                value={campaignName}
               />
               <Input
                 id="campaign_link"
                 label="campaign link"
-                value={campaignValue}
-                onChange={(val) => setCampaignValue(val)}
+                value={campaignLink}
+                onChange={(val) => setCampaignLink(val)}
               />
 
               <FileUploadInput
+                ref={fileInputRef}
                 required
                 id="upload_campaign"
                 label="upload campaign"
@@ -249,6 +225,7 @@ export const Campaign = () => {
                 sizeUnit="MB"
                 size={2}
                 onChange={(file) => setUploadedFile(file)}
+                onClear={() => setUploadedFile(null)}
               />
               {/* <FileInput
               required
@@ -369,7 +346,9 @@ export const Campaign = () => {
               </div>
 
               <CustomTable
-                data={campaignTable ? campaignTable?.campaigns?.slice(0, 3) : []}
+                data={
+                  campaignTable ? campaignTable?.campaigns?.slice(0, 3) : []
+                }
                 fields={CampaignFields}
                 {...table_style_props}
               />

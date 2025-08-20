@@ -69,6 +69,8 @@ const DirectorsForm: React.FC<DirectorsFormProps> = ({
 
   const { selectedState, selectedLGA, activeAvatar, errorMsgs } = state;
 
+  console.log(formData);
+
   useEffect(() => {
     if (initialImage) {
       setPreview(initialImage);
