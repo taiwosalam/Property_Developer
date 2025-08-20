@@ -86,12 +86,12 @@ const Notifications = () => {
     const loadInitial = async () => {
       setInitialLoading(true);
       const data = await fetchNotifications(1);
+      console.log("notifications", { data });
       if (data) {
         // Filter notifications based on role permissions
         const filteredNotifications = role
           ? filterNotificationsByRole(data.notifications, role as UserRole)
           : data.notifications;
-
         setNotifications(filteredNotifications);
         setMeta(data.meta);
       }
