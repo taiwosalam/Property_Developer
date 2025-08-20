@@ -156,18 +156,22 @@ const PreviewInventory = () => {
           <h2 className="text-black dark:text-white text-xl font-medium">
             Added Inventory
           </h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {inventoryItems?.map((item: any, index: number) => (
-              <InventoryItem
-                key={index}
-                index={index}
-                data={item}
-                video={video}
-                setInventoryFiles={setInventoryFiles}
-                inventoryFiles={inventoryFiles}
-              />
-            ))}
-          </div>
+          {inventoryItems.length === 0 ? (
+            <div>No Inventory Added Yet!</div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {inventoryItems?.map((item: any, index: number) => (
+                <InventoryItem
+                  key={index}
+                  index={index}
+                  data={item}
+                  video={video}
+                  setInventoryFiles={setInventoryFiles}
+                  inventoryFiles={inventoryFiles}
+                />
+              ))}
+            </div>
+          )}
         </div>
         <FixedFooter className="flex gap-6 justify-end">
           <Button

@@ -66,8 +66,10 @@ export const RentDetails: React.FC<{
     { label: "Due Date", value: dueDate },
     { label: `${period} ${isRental ? "Rent" : "Fee"}`, value: rentFee },
     { label: `Inspection Fee`, value: unitData.inspectionFee },
+    { label: `Agency Fee`, value: unitData.unitAgentFee },
     { label: `Legal Fee`, value: unitData.legalFee },
     { label: `Caution Fee`, value: unitData.caution_fee },
+    { label: `Service Charge`, value: unitData.service_charge },
     { label: `VAT Amount`, value: unitData.vat_amount },
     { label: "Other Fees", value: unitData.other_charge },
   ].filter((item) => isValidAmount(item.value));
@@ -91,6 +93,14 @@ export const RentDetails: React.FC<{
             />
           ))}
         </div>
+        <p className="text-[#747474] dark:text-white text-base font-normal mt-4">
+          Total Package
+        </p>
+        <p className="text-lg lg:text-xl text-brand-9 font-bold mt-1">
+          {unitData.newTenantTotalPrice
+            ? `${formatFee(unitData.newTenantTotalPrice, unitData.currency)}`
+            : `${unitData.currency}0`}
+        </p>
       </RentSectionContainer>
     </div>
   );

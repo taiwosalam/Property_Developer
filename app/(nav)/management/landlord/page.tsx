@@ -157,24 +157,6 @@ const Landlord = () => {
       hasMore: pageData.current_page < pageData.total_pages,
     });
 
-  // useEffect(() => {
-  //   console.log("Infinite scroll state:", {
-  //     page,
-  //     currentPage: pageData.current_page,
-  //     totalPages: pageData.total_pages,
-  //     hasMore: pageData.current_page < pageData.total_pages,
-  //     infiniteScrollLoading,
-  //     silentLoading,
-  //     fromCache,
-  //   });
-  // }, [
-  //   page,
-  //   pageData.current_page,
-  //   pageData.total_pages,
-  //   infiniteScrollLoading,
-  //   silentLoading,
-  //   fromCache,
-  // ]);
 
   const fetchLandlordHelp = useCallback(async () => {
     try {
