@@ -28,7 +28,7 @@ export const transformInventoryUnitApiResponse = (
 
   // Transform unit data for InventoryUnitCard
   const inventoryUnitData: InventoryUnitData[] = unit
-    .filter((u) => ["vacant", "occupied", "relocate"].includes(u?.is_active))
+    // .filter((u) => ["vacant", "occupied", "relocate"].includes(u?.is_active))
     .map((u) => ({
       unitName: u?.unit_name || "--- ---",
       unitId: u?.id?.toString() || "0",

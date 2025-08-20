@@ -12,9 +12,7 @@ import {
   ClauseList,
   WitnessSignatureDate,
 } from "@/app/(nav)/documents/preview/component";
-import {
-  witness,
-} from "@/app/(nav)/documents/preview/data";
+import { witness } from "@/app/(nav)/documents/preview/data";
 import Button from "../Form/Button/button";
 import { useAgreementData } from "@/hooks/useAgreementData";
 import { useAgreementExport } from "@/hooks/useAgreementExport";
@@ -22,6 +20,7 @@ import { compressImage } from "@/utils/compress-image";
 import PageCircleLoader from "../Loader/PageCircleLoader";
 import { useModal } from "./modal";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { NavCloseIcon, XIcon } from "@/public/icons/icons";
 
 interface AgreementPreviewProps {
   onClose?: () => void;
@@ -119,14 +118,21 @@ export const AgreementPreview = ({
   // If the device is mobile or tablet, render a message instead of the agreement preview
   if (isMobile || isTablet) {
     return (
-      <div className="agreement-preview-container flex flex-col items-center justify-center h-full text-center p-4">
-        <h2 className="text-xl font-semibold mb-4">
-          Desktop or Laptop Required
-        </h2>
-        <p className="text-gray-600">
-          To view, download, or print this agreement, please open this page on a
-          desktop or laptop device.
-        </p>
+      <div className="agreement-preview-container h-full p-4">
+        <div className="flex ml-auto justify-end w-full ml-auto">
+          <button onClick={() => setIsOpen(false)}>
+            <NavCloseIcon size={30} />
+          </button>
+        </div>
+        <div className="flex flex-col items-center justify-center h-full text-center">
+          <h2 className="text-xl font-semibold mb-4">
+            Desktop or Laptop Required
+          </h2>
+          <p className="text-gray-600">
+            To view, download, or print this agreement, please open this page on
+            a desktop or laptop device.
+          </p>
+        </div>
       </div>
     );
   }

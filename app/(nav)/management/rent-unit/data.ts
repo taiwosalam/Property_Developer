@@ -1229,7 +1229,9 @@ export const calculateRentPenalty = (
     console.log("No penalty percentage for period:", feePeriod);
     return 0;
   }
-
+console.log("rentAmount", rentAmount)
+console.log("penaltyPercentage", penaltyPercentage)
+console.log("penaltyPeriods", penaltyPeriods)
   const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
   const totalPenalty = penaltyPerPeriod * penaltyPeriods;
 
