@@ -117,7 +117,7 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
         </div> */}
 
         <div
-          className="flex items-center justify-between border border-solid border-[#C1C2C366] p-2 bg-white dark:bg-darkText-primary cursor-pointer rounded-lg max-h-[70px] overflow-auto"
+          className="flex items-center justify-between border border-solid border-[#C1C2C366] p-2 bg-white dark:bg-darkText-primary cursor-pointer rounded-lg min-h-[44px] max-h-[70px] overflow-auto"
           onClick={handleToggleDropdown}
         >
           <span
