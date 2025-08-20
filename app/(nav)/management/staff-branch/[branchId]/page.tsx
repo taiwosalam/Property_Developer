@@ -265,7 +265,7 @@ const BranchDashboard = ({ params }: { params: { branchId: string } }) => {
 
   return (
     <div className="custom-flex-col gap-6">
-      <div className="w-full gap-2 flex items-center justify-between flex-wrap">
+      <div className="w-full gap-2 flex items-center justify-between flex-wrap max-sm:mt-2">
         <BackButton reducePaddingTop as="div" className="items-start">
           <div className="flex gap-2 items-center">
             <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">

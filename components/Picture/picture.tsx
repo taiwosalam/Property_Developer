@@ -24,7 +24,6 @@ const Picture: React.FC<PictureProps> = ({
 }) => {
   const imageWidth = width ?? size;
   const imageHeight = height ?? size;
-
   const status_wh = Math.min(12, Math.floor(size / 3));
 
   const srcImage = src || empty

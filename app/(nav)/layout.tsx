@@ -258,7 +258,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </button>
             )}
             <p
-              className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate"
+              className="capitalize text-text-primary dark:text-darkText-2 text-sm font-medium truncate md:mr-4"
               style={{
                 direction: "rtl", // RTL direction for truncating from the start
               }}

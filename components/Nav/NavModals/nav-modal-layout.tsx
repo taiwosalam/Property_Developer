@@ -9,7 +9,7 @@ import { CloseCircle } from "@/public/icons/icons";
 const NavModalLayout: React.FC<NavModalLayoutProps> = ({ title, children }) => {
   return (
     <div
-      className="w-[85%] max-w-[786px] max-h-[90vh] rounded-2xl bg-white dark:bg-darkText-primary overflow-auto custom-round-scrollbar"
+      className="w-[85%] max-w-[786px] max-h-[90vh] rounded-2xl bg-white dark:bg-darkText-primary overflow-auto custom-round-scrollbar border border-red-500"
       style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05" }}
     >
       <div className="w-full custom-flex-col gap-12">

@@ -152,8 +152,13 @@ const Documents = () => {
 
   return (
     <div className="custom-flex-col gap-8">
+<<<<<<< HEAD
       <div className="page-header-container-variant">
         <div className="pt-4">
+=======
+      <div className="account-card-container flex items-center  justify-between">
+        <div className="pt-2">
+>>>>>>> 9c3c9834296f181180f55db02bee5a15aaa8a43c
           <ManagementStatistcsCard
             title="Total Document"
             newData={total_month ?? 0}
@@ -165,7 +170,7 @@ const Documents = () => {
           <ModalTrigger asChild>
             <Button
               type="button"
-              className="page-header-button md:block hidden !h-max self-end"
+              className="page-header-button md:block hidden !h-max"
             >
               + create document
             </Button>

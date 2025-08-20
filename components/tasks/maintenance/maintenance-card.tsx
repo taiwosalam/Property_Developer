@@ -62,7 +62,7 @@ const MaintenanceCard: React.FC<MaintenanceCardProps> = ({ card, modal }) => {
           "0px 1px 2px 0px rgba(21, 30, 43, 0.08), 0px 2px 4px 0px rgba(13, 23, 33, 0.08)",
       }}
     >
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-2 max-md:pt-4">
         <p>
           <span className="text-base text-text-tertiary dark:text-darkText-2">
             Maintenance ID:{" "}
