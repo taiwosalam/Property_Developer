@@ -305,7 +305,7 @@ export const FeatureCompany = () => {
         // toast.success("Company feature requested successfully"); 
         return true;
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const table_style_props: Partial<CustomTableProps> = {
@@ -342,14 +342,12 @@ export const FeatureCompany = () => {
               className="w-full"
               id="period"
               options={PERIOD_OPTIONS.map((option) => ({
-                value: `${option.value} ${
-                  option.value === 1 ? "month" : "months"
-                }`,
-                label: `${option.label}${
-                  option.discount
+                value: `${option.value} ${option.value === 1 ? "month" : "months"
+                  }`,
+                label: `${option.label}${option.discount
                     ? ` (-${(option.discount * 100).toFixed(1)}%)`
                     : ""
-                }`,
+                  }`,
               }))}
               placeholder="Select subscription period..."
               label="Period"
@@ -362,11 +360,10 @@ export const FeatureCompany = () => {
                   (opt) => opt.value === periodValue
                 );
                 return option
-                  ? `${option.label}${
-                      option.discount
-                        ? ` (-${(option.discount * 100).toFixed(1)}%)`
-                        : ""
-                    }`
+                  ? `${option.label}${option.discount
+                    ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                    : ""
+                  }`
                   : "";
               }}
             />
@@ -381,28 +378,29 @@ export const FeatureCompany = () => {
                 }
                 readOnly
                 style={{ outline: "none" }}
+                inputClassName="pr-28"
+                endAdornment={
+                  <Modal>
+                    <ModalTrigger>
+                      <Button
+                        variant="change"
+                        size="xs_normal"
+                        className="py-2 px-3 bg-brand-9 text-white"
+                        disabled={isFormInComplete}
+                      >
+                        Activate
+                      </Button>
+                    </ModalTrigger>
+                    <ModalContent>
+                      <SponsorModal
+                        count={parseInt(selectedPeriod)}
+                        cost={totalAmount / parseInt(selectedPeriod)}
+                        onSubmit={handleRequestFeature}
+                      />
+                    </ModalContent>
+                  </Modal>
+                }
               />
-              <div className="absolute top-2 bottom-0 right-2">
-                <Modal>
-                  <ModalTrigger>
-                    <Button
-                      variant="change"
-                      size="xs_normal"
-                      className="py-2 px-3 mt-8 bg-brand-9 text-white"
-                      disabled={isFormInComplete}
-                    >
-                      Activate
-                    </Button>
-                  </ModalTrigger>
-                  <ModalContent>
-                    <SponsorModal
-                      count={parseInt(selectedPeriod)}
-                      cost={totalAmount / parseInt(selectedPeriod)}
-                      onSubmit={handleRequestFeature}
-                    />
-                  </ModalContent>
-                </Modal>
-              </div>
             </div>
           </AutoResizingGrid>
         </div>
