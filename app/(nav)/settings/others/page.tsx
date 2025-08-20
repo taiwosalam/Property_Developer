@@ -1196,7 +1196,7 @@ const Others = () => {
     if (cardView?.card) {
       const initialState = cardView.card.reduce((acc, director) => {
         acc[director.id] = {
-          id: director.id.toString(),
+          id: director?.id?.toString(),
           full_name: director.name || "",
           email: director.email || "",
           phone_number: director.phone_number || "",
@@ -1264,7 +1264,7 @@ const Others = () => {
               {cardView?.card?.map((director) => {
                 if (director.id === director_id) return null;
 
-                const directorId = director.id.toString();
+                const directorId = director?.id?.toString();
                 const formData = formStateById[directorId];
                 const activeStep = activeStepById[directorId] || "options";
 
