@@ -95,6 +95,7 @@ export const SMSUnit = () => {
     try {
       const res = await buySMS(payload);
       if (res) {
+        setCount(1);
         // toast.success("SMS bought successfully"); //NO need duplicate as handleAxioerror
         return true;
       }
@@ -302,7 +303,10 @@ export const FeatureCompany = () => {
     try {
       const response = await requestCompanyFeature(payload, company_id);
       if (response) {
-        // toast.success("Company feature requested successfully"); 
+        // toast.success("Company feature requested successfully");
+        setSelectedPage("");
+        setTotalAmount(0);
+        setSelectedPeriod("");
         return true;
       }
     } catch (error) {}

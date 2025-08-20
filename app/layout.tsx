@@ -35,7 +35,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${primaryFont.className} antialiased`}
         suppressHydrationWarning
@@ -64,8 +64,8 @@ export default async function RootLayout({
                 position="top-right"
                 duration={5000}
               />
-            <CustomTour />
-            <RequestWarningModal />
+              <CustomTour />
+              <RequestWarningModal />
             </div>
           </Theme>
         </RoleProvider>

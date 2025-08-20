@@ -93,6 +93,7 @@ const SponsorUnit = () => {
 
       const res = await BuySponsor(objectToFormData(payload));
       if (res) {
+        setCount(1)
         // toast.success("Sponsor bought successfully!");
         window.dispatchEvent(new Event("refetchRentSponsors"));
         return true;

@@ -114,9 +114,9 @@ export const transformAnnouncementDetailsData = (
     dislikes: announcement?.dislikes_count,
     my_dislike: announcement?.my_dislike,
     my_like: announcement?.my_like,
-    comments: announcement?.comments.map((comment) =>
-      transformComment(comment, "slug")
-    ),
+    comments: announcement?.comments
+      .reverse()
+      .map((comment) => transformComment(comment, "slug")),
     media: [
       ...(announcement.video_link
         ? [{ src: announcement.video_link, isVideo: true }]
