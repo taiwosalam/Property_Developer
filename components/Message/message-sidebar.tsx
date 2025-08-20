@@ -90,7 +90,7 @@ const MessagesSidebar = ({
           ))}
         </div>
       ) : (
-        <div className="custom-flex-col overflow-x-hidden relative z-[1] pb-4">
+        <div className="custom-flex-col  overflow-x-hidden relative z-[1] pb-4">
           {filteredMessages.map((message, idx) =>
             message.type === "group" && canViewAndreplyMessages ? (
               <MessageCard
@@ -113,7 +113,7 @@ const MessagesSidebar = ({
         <Modal>
           <ModalTrigger asChild>
             <button
-              onClick={() => { }}
+              onClick={() => {}}
               className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
             >
               <PlusIcon />

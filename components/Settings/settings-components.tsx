@@ -109,7 +109,11 @@ export const SettingsSectionTitle: React.FC<SettingsTitleProps> = ({
         </p>
       )}
     </div>
-    {desc && <p className="text-text-disabled text-xs md:text-sm font-normal">{desc}</p>}
+    {desc && (
+      <p className="text-text-disabled text-xs md:text-sm font-normal">
+        {desc}
+      </p>
+    )}
   </div>
 );
 
@@ -125,7 +129,7 @@ export const SettingsUpdateButton: React.FC<SettingsUpdateButtonProps> = ({
 }) => {
   const button_props: ButtonProps = {
     size: "base_bold",
-    className: "py-[10px] px-8",
+    className: "sm:py-[10px] sm:px-8  py-[6px] px-4",
     ...(submit && { type: "submit" }),
   };
 
@@ -445,6 +449,9 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 }) => {
   const [showProfessionalMessage, setShowProfessionalMessage] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  // Add this state to your component
+  const [imageLoaded, setImageLoaded] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   const validPlans = plan !== "free";
 
@@ -469,25 +476,70 @@ export const ThemeCard: React.FC<ThemeCardProps> = ({
 
   return (
     <div
-      className="themesWrapper shrink-0 w-[85%] sm:w-auto shadow-lg rounded-md flex items-center flex-wrap gap-4 cursor-pointer relative"
+      className="themesWrapper shrink-0 w-[85%] max-w-[330px] sm:w-auto shadow-lg rounded-md flex items-center flex-wrap gap-4 cursor-pointer relative"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
     >
       <div className="flex justify-center items-center">
         <div className="relative">
+          {/* Skeleton loader */}
+          {!imageLoaded && !imageError && (
+            <div className="w-[300px] h-[200px] bg-gray-200 animate-pulse rounded-lg flex items-center justify-center">
+              <div className="text-gray-400">
+                <svg
+                  className="w-10 h-10"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+              </div>
+            </div>
+          )}
+
+          {/* Error state */}
+          {imageError && (
+            <div className="w-full h-64 bg-gray-100 rounded-lg flex items-center justify-center">
+              <div className="text-gray-500 text-center">
+                <svg
+                  className="w-12 h-12 mx-auto mb-2"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                    clipRule="evenodd"
+                  />
+                </svg>
+                <p>Failed to load image</p>
+              </div>
+            </div>
+          )}
+
+          {/* Actual image */}
           <Image
             src={img}
             alt="Theme"
             width={1000}
             height={1000}
-            className={`w-full h-full object-contain ${
-              isSelected ? "border-4 border-brand-9 rounded-lg" : ""
-            }`}
+            className={`w-full h-full object-contain transition-opacity duration-300 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            } ${isSelected ? "border-4 border-brand-9 rounded-lg" : ""}`}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => {
+              setImageError(true);
+              setImageLoaded(false);
+            }}
           />
 
           <AnimatePresence>
-            {isHovered && profile && (
+            {isHovered && profile && imageLoaded && (
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -526,13 +578,13 @@ export const CustomColorPicker: React.FC<{
   setModalOpen: (isOpen: boolean) => void;
 }> = ({ color, onChange, setModalOpen }) => {
   return (
-    <div className="bg-white rounded-lg shadow-xl pb-6 w-[390px] flex flex-col items-center justify-center">
+    <div className="bg-white rounded-lg shadow-xl pb-6 w-[min(80vw,390px)] flex flex-col items-center justify-center">
       <div className="w-full">
         <HexColorPicker
           color={color}
           onChange={onChange}
           className="w-full"
-          style={{ width: "390px" }}
+          style={{ width: "min(80vw,390px)" }}
         />
       </div>
       <div className="p w-full flex flex-col items-center justify-center">

@@ -40,9 +40,13 @@ import {
 } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
 import { debounce } from "lodash";
-import { otherNotificationSettings, updateCompanyNotification } from "@/app/(nav)/settings/others/data";
+import {
+  otherNotificationSettings,
+  updateCompanyNotification,
+} from "@/app/(nav)/settings/others/data";
 import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
 import useFetch from "@/hooks/useFetch";
+import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
 const notificationSettingOptions = [
   {
     title: "Email Notification",
@@ -88,7 +92,7 @@ const Others = () => {
   const [activeStep, setActiveStep] = useState<DirectorsFormOptions>("options");
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
   const [userPlan, setUserPlan] = useState<string>("");
-   const [loadingNotification, setLoadingNotification] = useState(false);
+  const [loadingNotification, setLoadingNotification] = useState(false);
   const handleBack = () => setActiveStep("options");
   const [checkedStates, setCheckedStates] = useState<{
     [key: string]: boolean;
@@ -274,6 +278,10 @@ const Others = () => {
             //action={userPlan === "professional" ? saveSettings : undefined}
           />
         </div>
+      </SettingsSection>
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
       </SettingsSection>
     </>
   );

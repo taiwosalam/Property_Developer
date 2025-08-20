@@ -46,6 +46,7 @@ import {
   otherNotificationSettings,
   updateCompanyNotification,
 } from "@/app/(nav)/settings/others/data";
+import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
 const notificationSettingOptions = [
   {
     title: "System Notification",
@@ -250,6 +251,10 @@ const Others = () => {
             //action={userPlan === "professional" ? saveSettings : undefined}
           />
         </div>
+      </SettingsSection>
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
       </SettingsSection>
     </>
   );

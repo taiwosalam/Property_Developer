@@ -35,7 +35,7 @@ export default function SoundSelector({
   }, [selectedSound, previewSound]);
 
   const handlePreview = (path: string) => {
-    previewSound(path); // updates the store immediately
+    previewSound(path);
     if (audioRef.current) {
       audioRef.current.src = path;
       audioRef.current.play();

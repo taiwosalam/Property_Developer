@@ -42,7 +42,11 @@ import Avatars from "@/components/Avatars/avatars";
 import useFetch from "@/hooks/useFetch";
 import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
 import { debounce } from "lodash";
-import { otherNotificationSettings, updateCompanyNotification } from "@/app/(nav)/settings/others/data";
+import {
+  otherNotificationSettings,
+  updateCompanyNotification,
+} from "@/app/(nav)/settings/others/data";
+import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
 const notificationSettingOptions = [
   {
     title: "System Notification",
@@ -150,7 +154,7 @@ const Others = () => {
       [name]: checked,
     }));
   };
-  
+
   const saveSettings = async () => {
     try {
       setLoadingNotification(true);
@@ -247,6 +251,10 @@ const Others = () => {
             //action={userPlan === "professional" ? saveSettings : undefined}
           />
         </div>
+      </SettingsSection>
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
       </SettingsSection>
     </>
   );

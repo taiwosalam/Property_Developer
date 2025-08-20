@@ -302,7 +302,7 @@ export const FeatureCompany = () => {
     try {
       const response = await requestCompanyFeature(payload, company_id);
       if (response) {
-        // toast.success("Company feature requested successfully"); 
+        // toast.success("Company feature requested successfully");
         return true;
       }
     } catch (error) {}
@@ -382,7 +382,7 @@ export const FeatureCompany = () => {
                 readOnly
                 style={{ outline: "none" }}
               />
-              <div className="absolute top-2 bottom-0 right-2">
+              <div className="absolute  top-[2px] sm:top-2 bottom-0 right-2">
                 <Modal>
                   <ModalTrigger>
                     <Button

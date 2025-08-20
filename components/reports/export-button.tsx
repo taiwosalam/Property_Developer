@@ -10,22 +10,34 @@ const ExportButton: React.FC<{
   printRef?: React.RefObject<HTMLDivElement>;
   firstPageRef?: React.RefObject<HTMLDivElement>;
   restOfContentRef?: React.RefObject<HTMLDivElement>;
-  data?: any
-  fileLabel?: string
-}> = ({ type, href, printRef, firstPageRef, restOfContentRef, data, fileLabel }) => {
+  data?: any;
+  fileLabel?: string;
+}> = ({
+  type,
+  href,
+  printRef,
+  firstPageRef,
+  restOfContentRef,
+  data,
+  fileLabel,
+}) => {
   const { handlePrint, handleDownload } = useExport(
     firstPageRef,
     restOfContentRef,
     printRef
   );
-  const { exportToXLSX } = useExportToXLSX()
+  const { exportToXLSX } = useExportToXLSX();
 
   const isDownload = !href;
 
   return isDownload ? (
-    <button 
+    <button
       // onClick={type === "pdf" ? handlePrint : handleDownload}
-      onClick={type === "pdf" ? handleDownload : () => exportToXLSX(data, fileLabel || "default-file-label")}
+      onClick={
+        type === "pdf"
+          ? handleDownload
+          : () => exportToXLSX(data, fileLabel || "default-file-label")
+      }
       className="rounded-lg py-2 px-4 max-sm:p-2 flex items-center sm:gap-2 bg-white dark:bg-darkText-primary border border-[#D0D5DD]"
     >
       {type === "pdf" ? <PDFIcon /> : <ExcelIcon />}

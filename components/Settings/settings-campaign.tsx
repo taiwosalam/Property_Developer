@@ -69,7 +69,7 @@ export const Campaign = () => {
     }
   }, [campaignParams]);
 
-  const [campaignTable, setCampaignTable] = useState<ICampaignTable| null>(
+  const [campaignTable, setCampaignTable] = useState<ICampaignTable | null>(
     null
   );
 
@@ -326,7 +326,7 @@ export const Campaign = () => {
                   style={{ outline: "none" }}
                 />
 
-                <div className="absolute top-2 bottom-0 right-2">
+                <div className="absolute  top-[2px] sm:top-2 bottom-0 right-2">
                   <Modal>
                     <ModalTrigger>
                       <Button
@@ -372,7 +372,9 @@ export const Campaign = () => {
               </div>
 
               <CustomTable
-                data={campaignTable ? campaignTable?.campaigns?.slice(0, 3) : []}
+                data={
+                  campaignTable ? campaignTable?.campaigns?.slice(0, 3) : []
+                }
                 fields={CampaignFields}
                 {...table_style_props}
               />

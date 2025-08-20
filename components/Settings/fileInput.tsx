@@ -2,8 +2,8 @@
 import { useState, useRef, useEffect, ChangeEvent } from "react";
 import { toast } from "sonner";
 import clsx from "clsx";
-import Label from "../Form/Label/label";// Adjust import based on your setup
-import { UploadIcon, DeleteIcon } from "lucide-react"
+import Label from "../Form/Label/label"; // Adjust import based on your setup
+import { UploadIcon, DeleteIcon } from "lucide-react";
 import { DeleteIconX } from "@/public/icons/icons";
 
 export interface FileUploadInputProps {
@@ -91,7 +91,7 @@ const FileUploadInput = ({
           {label}
         </Label>
       )}
-      <div className="relative flex items-center w-full">
+      <div className="relative  flex items-center w-full">
         <input
           id={id}
           name={id}
@@ -107,7 +107,7 @@ const FileUploadInput = ({
           aria-label="upload"
           onClick={handleClick}
           className={clsx(
-            "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
+            "p-3 rounded-[8px] w-full !min-h-[45px] border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
             fileName ? "bg-neutral-2 dark:bg-transparent" : "bg-none",
             disabled && "cursor-not-allowed opacity-50"
           )}
