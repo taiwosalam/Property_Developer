@@ -35,7 +35,7 @@ const Picture: React.FC<PictureProps> = ({
       onClick={onClick ? onClick : undefined}
     >
       <Image
-        src={src}
+        src={src || empty}
         alt={alt}
         width={imageWidth * resolutionMultiplier}
         height={imageHeight * resolutionMultiplier}
