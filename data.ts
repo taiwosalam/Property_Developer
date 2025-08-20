@@ -412,7 +412,7 @@ export const employmentTypeOptions = [
 ];
 
 export const visitorCategories = [
-  "Agent",
+  "Estate Agent",
   "Guest",
   "Manager",
   "Occupant",
@@ -422,7 +422,27 @@ export const visitorCategories = [
   "Visitor",
   "Workers",
   "Others",
+  "Resident",
+  "Homeowner",
+  "Developer",
+  "Delivery Agent",
+  "Contractor",
+  "Lawyer",
+  "Tenant",
+  "Management",
 ];
+// export const visitorCategories = [
+//   "Agent",
+//   "Guest",
+//   "Manager",
+//   "Occupant",
+//   "Staff",
+//   "Supervisor",
+//   "Tenants",
+//   "Visitor",
+//   "Workers",
+//   "Others",
+// ];
 
 export const states: State[] = [
   {

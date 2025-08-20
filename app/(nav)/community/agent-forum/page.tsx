@@ -227,7 +227,7 @@ const AgentCommunityPage = () => {
   if (error) return <ServerError error={error} />;
   return (
     <div className="space-y-7">
-      <div className="flex gap-5 pt-4  items-center justify-between">
+      <div className="flex gap-5 pt-4 overflow-x-auto hide-scrollbar items-center justify-between">
         <ManagementStatistcsCard
           title="Total Thread"
           colorScheme={1}

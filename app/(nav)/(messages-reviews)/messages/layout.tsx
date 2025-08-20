@@ -31,11 +31,10 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
         {/* Sidebar: Show on large screens OR on mobile when there are messages but no specific message selected */}
         {showSidebar && !isMobileWithSelectedMessage && (
           <div
-            className={`${
-              isMobileWithMessages
-                ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll" // Mobile: full width with overflow hidden
-                : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
-            }`}
+            className={`${isMobileWithMessages
+              ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll" // Mobile: full width with overflow hidden
+              : "w-full flex-1 overflow-x-hidden overflow-y-auto custom-round-scrollbar p-4 pr-0" // Original layout for large screens
+              }`}
           >
             <MessagesSidebar
               anchorEl={anchorEl}

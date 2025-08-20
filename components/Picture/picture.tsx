@@ -24,8 +24,9 @@ const Picture: React.FC<PictureProps> = ({
 }) => {
   const imageWidth = width ?? size;
   const imageHeight = height ?? size;
-
   const status_wh = Math.min(12, Math.floor(size / 3));
+
+  const srcImage = src || empty
 
   return (
     <div
@@ -34,7 +35,7 @@ const Picture: React.FC<PictureProps> = ({
       onClick={onClick ? onClick : undefined}
     >
       <Image
-        src={src || empty}
+        src={srcImage}
         alt={alt}
         width={imageWidth * resolutionMultiplier}
         height={imageHeight * resolutionMultiplier}

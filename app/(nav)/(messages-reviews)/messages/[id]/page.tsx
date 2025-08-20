@@ -197,23 +197,25 @@ const Chat = () => {
       );
       setNormalizedMessagesState((prev) => [...prev, cleanedMessage]);
     });
+
     channel.listen(".messages.read", (data: ReadEvent) => {
       console.log("Message read:", data);
       const ids = data.message_ids;
       console.log("do you get this", ids);
 
+      // Fix: Update messages within existing day groups instead of flattening
       setGroupedConversations((prev) =>
-        groupMessagesByDay(
-          prev
-            .flatMap((day) => day.messages)
-            .map((msg) =>
-              data.message_ids.includes(msg.id)
-                ? { ...msg, seen: true, is_read: true }
-                : msg
-            )
-        )
+        prev.map((dayGroup) => ({
+          ...dayGroup,
+          messages: dayGroup.messages.map((msg: { id: number }) =>
+            data.message_ids.includes(msg.id)
+              ? { ...msg, seen: true, is_read: true }
+              : msg
+          ),
+        }))
       );
 
+      // This part is fine - it updates the flat array
       setNormalizedMessagesState((prev) =>
         prev.map((msg) =>
           data.message_ids.includes(msg.id)
@@ -222,6 +224,7 @@ const Chat = () => {
         )
       );
     });
+
     channel.listen(".message.sent", (data: any) => {
       const event = new CustomEvent("refetch-users-msg", {
         detail: data,
@@ -237,7 +240,7 @@ const Chat = () => {
       );
       setNormalizedMessagesState((prev) => [...prev, cleanedMessage]);
     });
-    channel.listen(".message.read", (data: ReadEvent) => {});
+    // channel.listen(".message.read", (data: ReadEvent) => {});
 
     channel.listen(
       ".conversation.created",

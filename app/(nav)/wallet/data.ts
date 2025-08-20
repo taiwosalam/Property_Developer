@@ -103,7 +103,7 @@ export const computeTotals = (
   });
 
   // Log filtered transactions for debugging
-  console.log("Filtered transactions:", filtered);
+  // console.log("Filtered transactions:", filtered);
 
   const totals = filtered.reduce(
     (acc, t) => {
@@ -156,7 +156,7 @@ export const computeStatsTotals = (
     return date >= range.from! && date <= range.to!;
   });
 
-  console.log("Filtered transactions:", filtered); // For debugging
+  // console.log("Filtered transactions:", filtered); // For debugging
 
   const totals = filtered.reduce(
     (acc, t) => {

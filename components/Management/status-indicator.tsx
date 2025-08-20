@@ -21,7 +21,7 @@ const StatusIndicator = ({ statusTitle }: { statusTitle: string }) => {
       break;
   }
   return (
-    <div className="flex items-center space-x-2">
+    <div className="flex items-center space-x-2 mt-4 sm:mt-6">
       <div
         className="w-5 h-5 rounded-full"
         style={{

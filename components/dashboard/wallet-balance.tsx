@@ -39,6 +39,13 @@ import CautionDepositModal from "../Modal/caution-deposit-modal";
 import { usePermission } from "@/hooks/getPermission";
 import { useRole } from "@/hooks/roleContext";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import dayjs from "dayjs";
+
+// Extend dayjs with plugins
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   noHeader,
@@ -53,7 +60,9 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
   const { role, setRole } = useRole();
   const isCompanyOwner = usePersonalInfoStore((state) => state.is_owner);
   const hasWalletAccess =
-    usePermission(role, "Full Wallet Access") || isCompanyOwner || role === "manager";
+    usePermission(role, "Full Wallet Access") ||
+    isCompanyOwner ||
+    role === "manager";
   const hideWalletBalance = () => {
     setHideBalance((prevHideBalance) => {
       const newHideBalance = !prevHideBalance;
@@ -87,34 +96,34 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
     refetch({ silent: true });
   });
 
+  const userTimeZone =
+    Intl.DateTimeFormat().resolvedOptions().timeZone || "Africa/Lagos";
+
   useEffect(() => {
     if (data) {
       // console.log("data", data)
       if (data.transactions.length > 0) {
         const recentTransactions = data.transactions.map((t) => {
-          // Parse the date and time strings into a Date object (assuming UTC from server)
-          const dateTimeString = `${t.date}T${t.time}Z`; // Add 'Z' to indicate UTC
-          const serverDateTime = new Date(dateTimeString);
+          // Validate date and time
+          const dateTimeString = `${t.date}T${t.time}`; // e.g., "2025-08-19T19:46:43"
+          if (!dayjs(dateTimeString).isValid()) {
+            console.error("Invalid date or time:", {
+              date: t.date,
+              time: t.time,
+            });
+            return {
+              ...t,
+              date: "Invalid Date",
+              time: "Invalid Time",
+              amount:
+                currencySymbols.naira +
+                formatNumber(t.amount, { forceTwoDecimals: true }),
+            };
+          }
+          const localDateTime = dayjs(dateTimeString).tz(userTimeZone, true); // true keeps local time
 
-          // Get the user's time zone (replace with your actual method)
-          const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone; //Gets from browser
-
-          // Convert to user's local time
-          const localDateTime = new Date(
-            serverDateTime.toLocaleString("en-US", { timeZone: userTimeZone })
-          );
-
-          // Format the date and time as needed
-          const formattedDate = localDateTime.toLocaleDateString("en-GB", {
-            day: "numeric",
-            month: "short",
-            year: "numeric",
-          });
-          const formattedTime = localDateTime.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "numeric",
-            hour12: true,
-          });
+          const formattedDate = localDateTime.format("DD MMM YYYY"); // e.g., "19 Aug 2025"
+          const formattedTime = localDateTime.format("h:mm A");
 
           return {
             ...t,

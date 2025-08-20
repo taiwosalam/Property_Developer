@@ -114,7 +114,7 @@ const Landlord = () => {
     cache: {
       enabled: true,
       key: `landlords-page-${config.params.page}-search-${
-        config.params.search || "none"
+        searchQuery || "none"
       }-states-${config.params.states || "none"}-branch_ids-${
         config.params.branch_ids || "none"
       }-agent-${config.params.agent || "none"}-dates-${
@@ -144,10 +144,8 @@ const Landlord = () => {
 
   // Infinite scroll callback
   const handleInfiniteScroll = useCallback(async () => {
-    console.log("handleInfiniteScroll called, current page:", page);
     setPage((prev) => {
       const nextPage = prev + 1;
-      console.log("Incrementing to page:", nextPage);
       sessionStorage.setItem("landlord_page", nextPage.toString());
       return nextPage;
     });
@@ -159,24 +157,24 @@ const Landlord = () => {
       hasMore: pageData.current_page < pageData.total_pages,
     });
 
-  useEffect(() => {
-    console.log("Infinite scroll state:", {
-      page,
-      currentPage: pageData.current_page,
-      totalPages: pageData.total_pages,
-      hasMore: pageData.current_page < pageData.total_pages,
-      infiniteScrollLoading,
-      silentLoading,
-      fromCache,
-    });
-  }, [
-    page,
-    pageData.current_page,
-    pageData.total_pages,
-    infiniteScrollLoading,
-    silentLoading,
-    fromCache,
-  ]);
+  // useEffect(() => {
+  //   console.log("Infinite scroll state:", {
+  //     page,
+  //     currentPage: pageData.current_page,
+  //     totalPages: pageData.total_pages,
+  //     hasMore: pageData.current_page < pageData.total_pages,
+  //     infiniteScrollLoading,
+  //     silentLoading,
+  //     fromCache,
+  //   });
+  // }, [
+  //   page,
+  //   pageData.current_page,
+  //   pageData.total_pages,
+  //   infiniteScrollLoading,
+  //   silentLoading,
+  //   fromCache,
+  // ]);
 
   const fetchLandlordHelp = useCallback(async () => {
     try {
@@ -235,7 +233,7 @@ const Landlord = () => {
     setSearchQuery(query);
     setPage(1);
     sessionStorage.setItem("landlord_page", "1");
-    clearCache?.();
+    // clearCache?.();
   };
 
   const handleSort = (order: "asc" | "desc") => {
@@ -374,7 +372,7 @@ const Landlord = () => {
               type="button"
               className="page-header-button md:block hidden"
             >
-              + create new landlord
+              + new landlord
             </Button>
           </ModalTrigger>
           <ModalContent>

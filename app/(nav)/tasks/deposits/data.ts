@@ -175,7 +175,7 @@ export const updateCautionDeposit = async (
       }
     );
     if (res.status === 200 || res.status === 201) {
-      //window.dispatchEvent(new Event("dispatchDeposit"));
+      window.dispatchEvent(new Event("dispatchDeposit"));
       return true;
     }
   } catch (error) {
