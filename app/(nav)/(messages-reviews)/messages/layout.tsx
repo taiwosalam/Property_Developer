@@ -35,7 +35,7 @@ const MessagesLayout = ({ children }: { children: React.ReactNode }) => {
           <div
             className={`${isMobileWithMessages
               ? "w-full flex-none p-4 max-w-full overflow-hidden overflow-y-scroll" // Mobile: full width with overflow hidden
-              : "flex flex-1 overflow-x-hidden custom-round-scrollbar p-4 pr-0" // Original layout for large screens
+              : "w-full flex-1 overflow-x-hidden overflow-y-auto custom-round-scrollbar p-4 pr-0" // Original layout for large screens
               }`}
           >
             <MessagesSidebar
