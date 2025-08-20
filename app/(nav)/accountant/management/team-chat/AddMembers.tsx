@@ -48,7 +48,7 @@ const AddMembers = () => {
           <input
             type="text"
             placeholder="Search members"
-            value={searchTerm}
+            value={searchTerm} 
             onChange={(e) => setSearchTerm(e.target.value)}
             className="text-sm w-full focus:outline-none dark:bg-darkText-primary"
           />

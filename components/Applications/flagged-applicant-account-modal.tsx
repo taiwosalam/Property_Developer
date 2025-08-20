@@ -100,7 +100,7 @@ const FlaggedApplicantAccountModal = ({
               disabled={isLoading}
               onClick={() => handleRejectApplication("reject")}
             >
-              {isLoading ? "please wait..." : "reject application"}
+              {isLoading ? "please wait..." : "reject"}
             </Button>
 
             <Button

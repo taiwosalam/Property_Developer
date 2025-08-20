@@ -12,7 +12,7 @@ import {
   type DepositRequestDataType,
 } from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import useFetch from "@/hooks/useFetch";
 import { ICautionApiResponse } from "./type";
 import { AxiosRequestConfig } from "axios";
@@ -122,10 +122,19 @@ const DepositRequest = () => {
     isNetworkError,
     refetch,
   } = useFetch<ICautionApiResponse>(`cautions-deposit/company`, config);
-  useRefetchOnEvent("dispatchDeposit", () => refetch({ silent: true }));
+
+  // Create a stable refetch callback that always fetches fresh data
+  const handleSilentRefetch = useCallback(() => {
+    console.log("Silent refetch triggered"); // Debug log
+    refetch({ silent: true });
+  }, [refetch]);
+
+  // Use the fixed useRefetchOnEvent hook for full page updates
+  useRefetchOnEvent("dispatchDeposit", handleSilentRefetch);
 
   useEffect(() => {
     if (cautionData) {
+      console.log("New caution data received:", cautionData); // Debug log
       const transformData = transformCautionDeposit(cautionData);
       setPageData(transformData);
     }
@@ -137,7 +146,7 @@ const DepositRequest = () => {
     ? [
         ...new Map(
           propertiesData.data.properties.data.map((property: any) => [
-            property.title, // Use property title as the unique key
+            property.title,
             {
               label: property.title?.toLowerCase(),
               value: property.id.toString(),
@@ -165,14 +174,14 @@ const DepositRequest = () => {
     ],
   };
 
+  if (loading && !error && !isNetworkError) {
+    return <PropertyRequestPageLoader pageTitle="Caution Deposit Request" />;
+  }
   if (isNetworkError) {
     return <NetworkError />;
   }
-  if (silentLoading) {
-    return <PropertyRequestPageLoader pageTitle="Caution Deposit Request" />;
-  }
   if (error) {
-    <ServerError error={error} />;
+    return <ServerError error={error} />;
   }
 
   return (
@@ -197,6 +206,7 @@ const DepositRequest = () => {
           colorScheme={3}
         />
       </div>
+
       <FilterBar
         azFilter
         pageTitle="Caution Deposit Request"
@@ -225,12 +235,19 @@ const DepositRequest = () => {
       />
 
       <section ref={eleScrollIn}>
-        {loading || silentLoading ? (
+        {/* Show subtle loading indicator during silent loading 
+        {silentLoading && (
+          <div className="text-sm text-blue-600 dark:text-blue-400 mb-2 flex items-center gap-2">
+            <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            Updating data...
+          </div>
+        )}*/}
+
+        {loading ? (
           <AutoResizingGrid gap={28} minWidth={400}>
             <PropertyrequestSkeletonLoader length={10} />
           </AutoResizingGrid>
         ) : !pageData?.deposit?.length ? (
-          // Show empty state when no visitors exist
           <EmptyList
             noButton
             title="No Caution Deposit Records Available"
@@ -245,31 +262,29 @@ const DepositRequest = () => {
             }
           />
         ) : !!config.params.search || hasActiveFilters(appliedFilter) ? (
-          // If we have data but search/filters return nothing, show search error
           pageData?.deposit?.length === 0 ? (
             <SearchError />
           ) : (
-            // Show filtered/searched results?
             <section>
               <AutoResizingGrid gap={28} minWidth={400}>
                 {pageData?.deposit?.map((details, index) => (
                   <DepositRequestCard
-                    key={index}
+                    key={`${details.requestId}-${details.status}-${index}`} // Include status in key to force re-render
                     {...transformToDepositRequestCardProps(details)}
-                    //onDataUpdate={handleSilentRefetch}
+                    onDataUpdate={handleSilentRefetch}
                   />
                 ))}
               </AutoResizingGrid>
             </section>
           )
         ) : (
-          // Show all results when no search/filters active
           <section>
             <AutoResizingGrid gap={28} minWidth={400}>
               {pageData?.deposit?.map((details, index) => (
                 <DepositRequestCard
-                  key={index}
+                  key={`${details.requestId}-${details.status}-${index}`} // Include status in key to force re-render
                   {...transformToDepositRequestCardProps(details)}
+                  onDataUpdate={handleSilentRefetch}
                 />
               ))}
             </AutoResizingGrid>

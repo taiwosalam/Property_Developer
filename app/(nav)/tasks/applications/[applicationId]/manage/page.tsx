@@ -607,10 +607,10 @@ const ManageApplication = () => {
               : application_status === "rejected"
               ? "Rejected"
               : application_status === "evaluated"
-              ? "Reject Application"
+              ? "Reject"
               : application_status === "approved"
-              ? "Application approved"
-              : "reject application"}
+              ? "Approved"
+              : "reject"}
           </Button>
           <div className="flex gap-6">
             {application_status !== "approved" ? (
@@ -620,7 +620,7 @@ const ManageApplication = () => {
                 onClick={handleApproveApplication}
                 disabled={isFlagged || reqLoading}
               >
-                {reqLoading ? "Please wait" : "Approve Application"}
+                {reqLoading ? "Please wait" : "Approve"}
               </Button>
             ) : (
               <Button

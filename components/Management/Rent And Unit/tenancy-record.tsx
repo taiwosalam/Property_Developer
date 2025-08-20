@@ -44,6 +44,7 @@ const TenancyRecord = ({
   index,
   move_in,
   move_out,
+  record,
 }: {
   unit_id?: string;
   name?: string;
@@ -60,6 +61,7 @@ const TenancyRecord = ({
   unit_documents?: any[]; // Updated to include documents prop
   currency?: Currency;
   index?: number;
+  record: "previous_tenants" | "current_records" | "previous_records";
 }) => {
   const [isCollapsibleOpen, setIsCollapsibleOpen] = useState(false);
   const transformedDocs = transformDocuments(unit_documents || []); // changed to use unit_documents instead document again. WTF ::)

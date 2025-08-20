@@ -12,13 +12,21 @@ export type ApiResponseDirector = {
 type Director = {
   id: number;
   user_id: number;
+  tier_id: number;
+  name: string;
   company_id: number;
+  state: string;
+  lga: string;
+  title: string;
   personal_title: string | null;
   years_in_business: string | null;
   professional_title: string;
+  is_active: boolean;
   phone_number: string;
+  email: string;
   about_director: string | null;
   profile_picture: string | null;
+  picture: string | null;
   is_verified: boolean;
   full_name: string;
   alt_email: string | null;

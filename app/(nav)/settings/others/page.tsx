@@ -844,6 +844,8 @@ const Others = () => {
   const { data: apiData, refetch } =
     useFetch<ApiResponseDirector>(`/directors`);
 
+  console.log(apiData);
+
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -880,16 +882,15 @@ const Others = () => {
 
       // Extract notification settings safely
       const notification = transformedSettings?.notification ?? {};
-
-      setNotificationSettings({
-        profile_changes: notification.profile_changes ?? true,
-        new_messages: notification.new_messages ?? true,
-        task_updates: notification.task_updates ?? true,
-        profile_approval: notification.profile_approval ?? true,
-        property_approval: notification.property_approval ?? true,
-        property_vacant: notification.property_vacant ?? true,
-        document_creation: notification.document_creation ?? true,
+      // List of all possible notification keys (from initial state)
+      const allKeys = Object.keys(notificationSettings);
+      // Build new settings, defaulting missing/undefined to true
+      const newSettings: Record<string, boolean> = {};
+      const notificationRecord = notification as Record<string, any>;
+      allKeys.forEach(key => {
+        newSettings[key] = typeof notificationRecord[key] === 'undefined' ? true : notificationRecord[key];
       });
+      setNotificationSettings(newSettings);
 
       setCheckedStates({
         sms_notification: notification.sms_notification ?? true,
@@ -899,7 +900,7 @@ const Others = () => {
         general_notification: notification.general_notification ?? true,
       });
     }
-  }, [otherSettingResponse, userPlan]);
+  }, [otherSettingResponse]);
 
   useEffect(() => {
     if (planData) {
@@ -1199,7 +1200,7 @@ const Others = () => {
       const initialState = cardView.card.reduce((acc, director) => {
         acc[director.id] = {
           id: director.id.toString(),
-          full_name: director.name || "",
+          full_name: director.full_name || "",
           email: director.email || "",
           phone_number: director.phone_number || "",
           title: director.title || "",
@@ -1230,6 +1231,8 @@ const Others = () => {
   };
 
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
+
+  console.log(cardView);
 
   // PERMISSIONS TO RENDER COMPONENTS
   // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
@@ -1266,7 +1269,7 @@ const Others = () => {
               {cardView?.card?.map((director) => {
                 if (director.id === director_id) return null;
 
-                const directorId = director.id.toString();
+                const directorId = director?.id?.toString();
                 const formData = formStateById[directorId];
                 const activeStep = activeStepById[directorId] || "options";
 
@@ -1304,6 +1307,7 @@ const Others = () => {
                       <UserCard
                         is_active={director.is_active}
                         key={director.id}
+                        title={director.title}
                         name={director.full_name}
                         email={director.email}
                         phone_number={director.phone_number}

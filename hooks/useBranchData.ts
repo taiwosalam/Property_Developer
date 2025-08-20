@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useBranchInfoStore } from "@/store/branch-info-store";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -22,12 +22,12 @@ const useBranchData = (branchId: number | undefined) => {
     }
   });
 
-  // Memoize branch data handling
-  useMemo(() => {
+  // Handle branch data updates in useEffect
+  useEffect(() => {
     if (branchId && branchData?.data) {
       // Cache the fetched data
       branchCache.current.set(branchId, branchData.data);
-      // Batch update the store with fetched data
+      // Update store with fetched data
       const { branch, manager, sub_wallet, recent_transactions } = branchData.data;
       setBranchInfo("branch_id", branch.id);
       setBranchInfo("company_id", branch.company_id);
@@ -73,7 +73,7 @@ const useBranchData = (branchId: number | undefined) => {
       setBranchInfo("sub_wallet", sub_wallet);
       setBranchInfo("recent_transactions", recent_transactions);
     } else if (branchId && branchCache.current.has(branchId)) {
-      // Use cached data if available
+      // Use cached data
       const cachedData = branchCache.current.get(branchId)!;
       const { branch, manager, sub_wallet, recent_transactions } = cachedData;
       setBranchInfo("branch_id", branch.id);

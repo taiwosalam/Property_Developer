@@ -12,6 +12,7 @@ import Picture from "../Picture/picture";
 import {
   normalizeNotificationType,
   notification_icons,
+  
   notification_links,
 } from "./data";
 import { SectionSeparator } from "../Section/section-components";
