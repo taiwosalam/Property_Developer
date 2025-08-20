@@ -23,6 +23,7 @@ import ServerError from "@/components/Error/ServerError";
 import { useGlobalStore } from "@/store/general-store";
 import { useRouter } from "next/navigation";
 import { debounce } from "lodash";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const VehiclesRecordReport = () => {
   const router = useRouter();
@@ -135,8 +136,10 @@ const VehiclesRecordReport = () => {
     []
   );
 
-  const { data, loading, error, isNetworkError } =
+  const { data, loading, error, isNetworkError, refetch } =
     useFetch<VehicleRecordsResponse>("report/vehicle-records", config);
+
+  useRefetchOnEvent("refetchVehicleRecord", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (!loading && data) {

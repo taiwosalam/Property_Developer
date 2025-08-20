@@ -353,6 +353,11 @@ export const formatCompanySummary = (
       value:
         calculateYearsInIndustry(details?.date_of_registration) ?? "--- ---",
     },
+    {
+      label: "Industry",
+      value: details?.industry ?? ""
+       
+    },
     { label: "Total Branch", value: details?.total_branches || 0 },
     { label: "Total Staff", value: details?.total_staff || 0 },
     {

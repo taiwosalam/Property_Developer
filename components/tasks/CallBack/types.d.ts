@@ -101,7 +101,7 @@ export interface PropertyRequestCardProps extends RequestCardBaseProps {
 
 export interface DepositRequestCardProps extends RequestCardBaseProps {
   cardType: "deposit";
-  status: "completed" | "pending" | "progress";
+  status: "completed" | "pending" | "progress" | "approved";
   propertyName: string;
   accountOfficer?: string
   unitDetails: string;

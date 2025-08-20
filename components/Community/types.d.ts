@@ -56,6 +56,7 @@ export interface SocialHandles {
 
 export interface CompanySummaryTypes {
   addresses: Address;
+  industry: string;
   company_is_verified: boolean;
   company_logo: string;
   dark_logo: string;

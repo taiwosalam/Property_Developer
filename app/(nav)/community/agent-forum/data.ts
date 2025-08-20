@@ -12,7 +12,7 @@ export const calculateYearsInIndustry = (dateString: string) => {
   const registrationDate = new Date(dateString);
   const today = new Date();
   const years = today.getFullYear() - registrationDate.getFullYear();
-  return `${years}+ years`;
+  return `${years} years +`;
 };
 
 // Helper function to format phone numbers
@@ -129,9 +129,7 @@ export const updatePropertyRequest = async (id: string, data: any) => {
 
   if (missingFields.length > 0) {
     const missingFieldLabels = missingFields.map((f) => f.label).join(", ");
-    toast.error(
-      `Please fill in all required fields: ${missingFieldLabels}`
-    );
+    toast.error(`Please fill in all required fields: ${missingFieldLabels}`);
     return;
   }
 
@@ -184,12 +182,12 @@ export const updatePropertyRequest = async (id: string, data: any) => {
 
   try {
     const response = await api.post(`/agent_requests/${id}`, formattedData);
-    if(response.status === 200 || response.status === 201){
+    if (response.status === 200 || response.status === 201) {
       return true;
     }
   } catch (error) {
     console.error("Error updating property request:", error);
-    return false
+    return false;
   }
 };
 

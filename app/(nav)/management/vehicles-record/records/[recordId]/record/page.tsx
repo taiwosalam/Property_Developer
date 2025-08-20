@@ -188,8 +188,6 @@ const RecordPage = () => {
     registrationDate,
   } = userData;
 
-  console.log(phone_number)
-
   const {
     id,
     brand,

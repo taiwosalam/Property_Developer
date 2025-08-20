@@ -7,7 +7,6 @@ import type { PictureProps } from "./types";
 import clsx from "clsx";
 import { empty } from "@/app/config";
 
-
 const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",

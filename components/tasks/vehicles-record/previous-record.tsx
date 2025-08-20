@@ -10,6 +10,7 @@ import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import { CheckInOut } from "./types";
 import dayjs from "dayjs";
 import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
 
 interface checkInOutData {
   id: number;
@@ -58,6 +59,8 @@ const PreviousRecord: React.FC<
   const [status, setStatus] = useState<string>(record.status);
   const [recordData, setRecordData] = useState<checkInOutData>(record);
 
+  const { role } = useRole();
+
   const checkIn = {
     date: dayjs(recordData.check_in_time).format("MMM DD YYYY hh:mma"),
     name: recordData.in_by,
@@ -76,9 +79,7 @@ const PreviousRecord: React.FC<
     visitor_name: recordData?.visitor_name,
   };
 
-  console.log(checkIn.passenger);
-
-  // console.log("recordData", recordData);
+  //
 
   return (
     <InfoBox>
@@ -107,33 +108,33 @@ const PreviousRecord: React.FC<
           <Detail label="Check Out by" value={checkOut?.name || "---"} />
           <Detail label="Passengers Out" value={checkOut?.passenger || "---"} />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
-              Preview
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <VehicleRecordModal
-              status={status as "check-in" | "check-out"}
-              pictureSrc={pictureSrc || empty}
-              name={checkIn.visitor_name}
-              note={""}
-              id={
-                recordData?.vehicle_record_id || userId?.toString() || ""
-              }
-              category={category as "guest" | "visitor"}
-              registrationDate={
-                dayjs(registrationDate).format("DD MM YYYY hh:mma") ||
-                "__,__,__"
-              }
-              latest_check_in={recordData as CheckInOut}
-              showOpenRecordsButton={false}
-              plate_number={recordData?.plate_number || ""}
-              last_update={recordData?.last_update || ""}
-            />
-          </ModalContent>
-        </Modal>
+        {role !== "staff" && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
+                Preview
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <VehicleRecordModal
+                status={status as "check-in" | "check-out"}
+                pictureSrc={pictureSrc || empty}
+                name={checkIn.visitor_name}
+                note={""}
+                id={recordData?.id || userId?.toString() || ""}
+                category={category as "guest" | "visitor"}
+                registrationDate={
+                  dayjs(registrationDate).format("DD MM YYYY hh:mma") ||
+                  "__,__,__"
+                }
+                latest_check_in={recordData as CheckInOut}
+                showOpenRecordsButton={false}
+                plate_number={recordData?.plate_number || ""}
+                last_update={recordData?.last_update || ""}
+              />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
     </InfoBox>
   );
