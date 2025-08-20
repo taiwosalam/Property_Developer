@@ -28,6 +28,8 @@ const Picture: React.FC<PictureProps> = ({
 
   const status_wh = Math.min(12, Math.floor(size / 3));
 
+  const srcImage = src || empty
+
   return (
     <div
       role={onClick ? "button" : undefined}
@@ -35,7 +37,7 @@ const Picture: React.FC<PictureProps> = ({
       onClick={onClick ? onClick : undefined}
     >
       <Image
-        src={src}
+        src={srcImage}
         alt={alt}
         width={imageWidth * resolutionMultiplier}
         height={imageHeight * resolutionMultiplier}
