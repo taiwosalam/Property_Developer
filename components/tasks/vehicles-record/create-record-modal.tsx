@@ -27,7 +27,7 @@ import {
   VehicleDetails,
 } from "./components";
 import ServerError from "@/components/Error/ServerError";
-import { VehicleData } from "@/app/(nav)/management/vehicles-record/data";
+import { VehicleData } from "@/app/(nav)/tasks/vehicles-record/data";
 import { checkInVehicle, checkOutVehicle } from "./data";
 import dayjs from "dayjs";
 import { VehicleRecord } from "./types";
@@ -102,13 +102,13 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   const getCreateLink = (type: "manual" | "id") => {
     switch (role) {
       case "manager":
-        return `/manager/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+        return `/manager/tasks/vehicles-record/create?type=${type}&p=${propertyId}`;
       case "account":
-        return `/accountant/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+        return `/accountant/tasks/vehicles-record/create?type=${type}&p=${propertyId}`;
       case "staff":
-        return `/staff/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+        return `/staff/tasks/vehicles-record/create?type=${type}&p=${propertyId}`;
       default:
-        return `/management/vehicles-record/create?type=${type}&p=${propertyId}`;
+        return `/tasks/vehicles-record/create?type=${type}&p=${propertyId}`;
     }
   };
   // Handle create actions
@@ -262,13 +262,13 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
   const getRecordLink = (id: number) => {
     switch (role) {
       case "manager":
-        return `/manager/management/vehicles-record/records/${id}/record`;
+        return `/manager/tasks/vehicles-record/records/${id}/record`;
       case "account":
-        return `/accountant/management/vehicles-record/records/${id}/record`;
+        return `/accountant/tasks/vehicles-record/records/${id}/record`;
       case "staff":
-        return `/staff/management/vehicles-record/records/${id}/record`;
+        return `/staff/tasks/vehicles-record/records/${id}/record`;
       default:
-        return `/management/vehicles-record/records/${id}/record`;
+        return `/tasks/vehicles-record/records/${id}/record`;
     }
   };
 
@@ -319,7 +319,6 @@ const CreateRecordModal: React.FC<CreateRecordModalProps> = ({
                   <Button
                     size="sm_medium"
                     className="bg-brand-9 px-6 py-2 rounded-md"
-                    // href={`/management/vehicles-record/records/${selectedPlate.id}/record`}
                     href={getRecordLink(selectedPlate.id)}
                   >
                     Open Record

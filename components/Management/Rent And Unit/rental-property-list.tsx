@@ -25,6 +25,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
   expiry_date,
   rent,
   caution_deposit,
+  cautionDepositStatus,
   service_charge,
   status,
   badge_color,
@@ -234,7 +235,7 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 propertyType={propertyType}
                 invoice_id={invoice_id}
                 tenantId={Number(occupant.tenant_id) ?? 0}
-                cautionDeposit={Number(caution_deposit)}
+                cautionDepositStatus={cautionDepositStatus}
                 tenantAgent={occupant.agent}
                 {...action}
                 route={

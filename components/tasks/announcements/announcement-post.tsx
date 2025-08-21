@@ -124,7 +124,7 @@ const AnnouncementPost = ({ data }: AnnouncementPostProps) => {
               ))}
               {excessImagesCount > 0 && (
                 <div className="bg-brand-9 h-6 pl-[14px] pr-[10px] -ml-3 rounded-[24px] text-[10px] text-text-invert font-semibold flex items-center justify-end">
-                  +{excessImagesCount}
+                  +{excessImagesCount + 1}
                 </div>
               )}
             </div>

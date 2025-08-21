@@ -1261,7 +1261,7 @@ const Others = () => {
 
         <div className="custom-flex-col gap-6 mt-4">
           <SettingsSectionTitle
-            title="Company Director"
+            title="Director And Access Control"
             desc="Please provide the details of the additional user you wish to grant the same Director-level access as your account within the company."
           />
           <div className="">

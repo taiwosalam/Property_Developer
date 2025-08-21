@@ -67,10 +67,12 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               {data?.full_name}
             </p>
 
-            <BadgeIcon
-              color={getBadgeColor(data?.tier_id) || "gray"}
-              noMargin
-            />
+            {data?.tier_id ? (
+              <BadgeIcon
+                color={getBadgeColor(data?.tier_id) || "gray"}
+                noMargin
+              />
+            ) : null}
           </div>
 
           <p
@@ -116,8 +118,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
             </p>
             <p className="text-text-disabled text-base font-medium capitalize truncate  max-w-[150px]">
               <span className="text-highlight">
-                {(data?.currency ?? "") +
-                  data?.yearly_amount}
+                {(data?.currency ?? "") + data?.yearly_amount}
               </span>{" "}
               / <span className="">{data?.renew_fee_period}</span>
             </p>
@@ -174,10 +175,7 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <Content />
         </div>
       ) : (
-        <Link
-          href={getManageRoute()}
-          className="custom-flex-col gap-3 px-2"
-        >
+        <Link href={getManageRoute()} className="custom-flex-col gap-3 px-2">
           <Content />
         </Link>
       )}

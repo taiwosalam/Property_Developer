@@ -223,6 +223,7 @@ const Header = () => {
         setPersonalInfo("company_id", company.company_id);
         setPersonalInfo("company_logo", company.company_logo);
         setPersonalInfo("company_domain", company.domain);
+        saveLocalStorage("company_domain", company.domain);
         setPersonalInfo("company_name", company.company_name);
         setPersonalInfo("company_state", company.state);
         setPersonalInfo("company_status", company.company_status);

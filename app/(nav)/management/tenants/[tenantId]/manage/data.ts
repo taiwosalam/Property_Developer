@@ -518,9 +518,9 @@ export const transformIndividualTenantAPIResponse = ({
         : undefined,
     contact_address: {
       address: data?.address || "",
-      city: data?.city || "",
-      state: data?.state || "",
-      local_govt: data?.local_government || "",
+      city: data?.city || "--- ---",
+      state: data?.state || "--- ---",
+      local_govt: data?.local_government || "--- ---",
     },
     next_of_kin: nextOfKin,
     others: {

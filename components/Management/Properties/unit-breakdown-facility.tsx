@@ -148,7 +148,7 @@ const UnitBreakdownFacility = () => {
         <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
           Unit Fee Breakdown
         </h4>
-        <button
+        {/* <button
           onClick={() => {
             if (pathname.startsWith("/manager")) {
               handleGoToTourStep(27);
@@ -162,7 +162,7 @@ const UnitBreakdownFacility = () => {
           className="text-orange-normal"
         >
           <ExclamationMark />
-        </button>
+        </button> */}
       </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">

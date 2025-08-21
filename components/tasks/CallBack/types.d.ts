@@ -103,7 +103,7 @@ export interface DepositRequestCardProps extends RequestCardBaseProps {
   cardType: "deposit";
   status: "completed" | "pending" | "progress" | "approved";
   propertyName: string;
-  accountOfficer?: string
+  accountOfficer?: string;
   unitDetails: string;
   state: string;
   amount: string;
@@ -129,6 +129,11 @@ export interface DepositRequestCardProps extends RequestCardBaseProps {
     accessor: keyof DepositRequestCardProps;
   }[];
   onDataUpdate?: () => void;
+  has_inventory?: boolean;
+  inventory_media?: {
+    src: string;
+    isVideo: boolean;
+  }[];
 }
 
 export interface AgentCommunityRequestCardProps extends RequestCardBaseProps {

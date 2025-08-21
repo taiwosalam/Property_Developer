@@ -318,13 +318,13 @@ const StartRent = () => {
     const documentRoutes = () => {
       switch (role) {
         case "manager":
-          return `/manager`;
+          return "/manager";
         case "staff":
-          return `/staff`;
+          return "/staff";
         case "account":
-          return `/accounting`;
+          return "/accounting";
         default:
-          return `/management`;
+          return "";
       }
     };
 
