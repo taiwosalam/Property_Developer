@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
     <Link
       href={href}
       className={cn(
-        "rounded-[4px] capitalize flex items-center text-center",
+        "rounded-[4px] h-[44px] capitalize flex items-center text-center",
         button_variants.size[size],
         button_variants.variant[variant],
         className
@@ -38,7 +38,7 @@ const Button: React.FC<ButtonProps> = ({
     <button
       type="button"
       className={cn(
-        "rounded-[4px] capitalize",
+        "rounded-[4px] capitalize h-[44px]",
         button_variants.size[size],
         button_variants.variant[variant],
         className
