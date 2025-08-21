@@ -24,7 +24,7 @@ import dayjs from "dayjs";
 import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { PropertyApiResponse } from "../../listing/property/data";
+import { PropertyApiResponse } from "../../management/property-draft/data";
 import { IPropertyApi } from "../../settings/others/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";

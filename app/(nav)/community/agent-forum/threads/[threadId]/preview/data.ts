@@ -55,7 +55,7 @@ export const transformApiData = (apiData: ThreadResponse | null) => {
     post: data.post.post ?? null,
     companySummary: data?.post?.company_summary ?? null,
     contributors: data?.post?.contributor ?? null,
-    comments: data?.post.comments ?? [],
+    comments: data?.post.comments?.reverse() ?? [],
     targetAudience: `${data?.post?.post?.state ?? ""}, ${data?.post?.post?.lga ?? ""}`,
     readByData: data?.post?.readByData ?? [],
     similarPosts: transformedThreadCardProps ?? [],

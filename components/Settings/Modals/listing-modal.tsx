@@ -1,4 +1,4 @@
-import { declineOrApproveInvite } from "@/app/(nav)/listing/property/data";
+import { declineOrApproveInvite } from "@/app/(nav)/management/property-draft/data";
 import Button from "@/components/Form/Button/button";
 import { ModalTrigger } from "@/components/Modal/modal";
 import ModalPreset from "@/components/Modal/modal-preset";

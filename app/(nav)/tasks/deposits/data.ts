@@ -152,7 +152,7 @@ export interface IDepositPayload {
   is_examine?: boolean;
   is_maintain?: boolean;
 }
-export const updateCautionDeposit = async (
+export const updateCautionDeposits = async (
   depositId: string,
   data: IDepositPayload
 ) => {
@@ -190,3 +190,75 @@ export const depositChecklist = [
   "request for examine",
   "request for maintenance",
 ];
+
+
+// Updated portion of data.ts file - updateCautionDeposit function
+export const updateCautionDeposit = async (
+  depositId: string,
+  data: IDepositPayload
+) => {
+  const payload = {
+    refunded_amount: data?.refunded_amount,
+    status: data?.status,
+    is_examine: data?.is_examine,
+    is_maintain: data?.is_maintain,
+    is_inventory: data?.is_inventory,
+  };
+
+  try {
+    const res = await api.patch(
+      `cautions-deposit/company/${depositId}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (res.status === 200 || res.status === 201) {
+      // Only dispatch event for final actions (like refund completion)
+      // Remove this line to prevent automatic dispatching on every update
+      // window.dispatchEvent(new Event("dispatchDeposit"));
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+// Alternative: Create a separate function for refund completion
+export const completeCautionDepositRefund = async (
+  depositId: string,
+  data: IDepositPayload
+) => {
+  const payload = {
+    refunded_amount: data?.refunded_amount,
+    status: data?.status,
+    is_examine: data?.is_examine,
+    is_maintain: data?.is_maintain,
+    is_inventory: data?.is_inventory,
+  };
+
+  try {
+    const res = await api.patch(
+      `cautions-deposit/company/${depositId}`,
+      payload,
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (res.status === 200 || res.status === 201) {
+      // Only dispatch event for completion actions
+      window.dispatchEvent(new Event("dispatchDeposit"));
+      return true;
+    }
+  } catch (error) {
+    console.log(error);
+    handleAxiosError(error);
+    return false;
+  }
+};

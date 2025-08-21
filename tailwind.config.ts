@@ -11,6 +11,9 @@ const config = {
   prefix: "",
   theme: {
     extend: {
+      screens: {
+        'xs': '480px',
+      },
       colors: {
         background: {
           1: "#FBFBFB",
