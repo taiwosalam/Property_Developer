@@ -22,4 +22,5 @@ export type DepositRequestModalProps = {
   resolved_by?: string | null;
   resolved_date?: string | null;
   onDataUpdate?: () => void;
+  inventory?: { src: string; isVideo: boolean}[];
 };

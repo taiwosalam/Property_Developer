@@ -19,6 +19,9 @@ import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
 import api, { handleAxiosError } from "@/services/api";
 import { useModal } from "@/components/Modal/modal";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import { empty } from "@/app/config";
+import PopupVideoModal from "@/components/VideoPlayer/PopupVideoModal";
 
 dayjs.extend(utc);
 
@@ -59,11 +62,40 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   resolved_by,
   resolved_date,
   onDataUpdate,
+  inventory,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [updatingField, setUpdatingField] = useState<string | null>(null);
   const { role } = useRole();
   const { setIsOpen } = useModal();
+
+  const [showImages, setShowImages] = useState(true);
+  const [screenModal, setScreenModal] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [videoModal, setVideoModal] = useState(false);
+  const [videoUrl, setVideoUrl] = useState("");
+
+  const openModal = (index: number) => {
+    if (!inventory) return;
+
+    const selected = inventory[index];
+
+    if (selected.isVideo) {
+      setVideoUrl(selected.src);
+      setVideoModal(true);
+    } else {
+      setCurrentIndex(index);
+      setTimeout(() => {
+        setScreenModal(true);
+      }, 0);
+    }
+  };
+
+  const imageOnly = (inventory ?? []).filter((img) => !img.isVideo);
+  const adjustedIndex = imageOnly.findIndex(
+    (img, i) => (inventory ?? []).indexOf(img) === currentIndex
+  );
 
   const canApproveCautionDeposit =
     usePermission(role, "Can approve and refund caution deposit") ||
@@ -382,9 +414,13 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
         <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
 
         <form className="space-y-4" onSubmit={handleDepositRequest}>
-          <p className="text-text-tertiary dark:text-white">
-            Caution Deposits Details:
-          </p>
+          <div className="flex justify-between items-center">
+            <p className="text-text-tertiary dark:text-white">
+              Caution Deposits Details:
+            </p>
+
+            {is_inventory && <Button className="py-1 font-normal px-2" onClick={() =>setScreenModal(true)}>View inventory</Button>}
+          </div>
 
           <div className="space-y-2 relative">
             {depositChecklist.map((deposit, index) => {
@@ -452,6 +488,20 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
             )}
         </form>
       </div>
+
+      {/* Image Modal */}
+      <PopupImageModal
+        isOpen={screenModal}
+        onClose={() => setScreenModal(false)}
+        images={imageOnly}
+        currentIndex={adjustedIndex}
+      />
+
+      <PopupVideoModal
+        isOpen={videoModal}
+        videoUrl={videoUrl}
+        onClose={() => setVideoModal(false)}
+      />
     </ModalPreset>
   );
 };

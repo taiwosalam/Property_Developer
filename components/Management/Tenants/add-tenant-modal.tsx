@@ -41,13 +41,13 @@ const AddTenantModal = () => {
         return `/manager/management/tenants`;
       case "director":
         return `/management/tenants`;
-      case "account": 
+      case "account":
         return `/accountant/management/tenants`;
       default:
         return `/management/tenants`;
     }
   };
-  
+
   const closeModalAndRefresh = () => {
     setIsOpen(false);
     window.dispatchEvent(new Event("refetchTenants"));
@@ -80,8 +80,6 @@ const AddTenantModal = () => {
     const success = await addTenant(data);
     if (success) {
       closeModalAndRefresh();
-    } else {
-      setIsOpen(false);
     }
   };
 
@@ -89,8 +87,6 @@ const AddTenantModal = () => {
     const success = await inviteTenantEmail(data);
     if (success) {
       closeModalAndRefresh();
-    } else {
-      setIsOpen(false);
     }
   };
 
@@ -101,8 +97,6 @@ const AddTenantModal = () => {
     const success = await addTenantWithEmail(objectToFormData(payload));
     if (success) {
       closeModalAndRefresh();
-    } else {
-      setIsOpen(false);
     }
   };
 
@@ -112,8 +106,6 @@ const AddTenantModal = () => {
     const status = await multipleInviteTenants(formData);
     if (status) {
       closeModalAndRefresh();
-    } else {
-      setIsOpen(false);
     }
   };
 
