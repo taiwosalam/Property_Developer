@@ -26,6 +26,10 @@ import Select from "@/components/Form/Select/select";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { flagTenant } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
 
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+import { empty } from "@/app/config";
+import PopupVideoModal from "@/components/VideoPlayer/PopupVideoModal";
+
 dayjs.extend(utc);
 
 const LabelValuePair: React.FC<LabelValuePairProps> = ({ label, value }) => {
@@ -66,6 +70,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   resolved_by,
   resolved_date,
   onDataUpdate,
+  has_inventory,
   inventory,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -81,22 +86,23 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   const [screenModal, setScreenModal] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  console.log(screenModal);
+
   const [videoModal, setVideoModal] = useState(false);
   const [videoUrl, setVideoUrl] = useState("");
 
   const openModal = (index: number) => {
-    if (!inventory) return;
+    if (!inventory || inventory.length === 0) return;
 
     const selected = inventory[index];
-
-    if (selected.isVideo) {
-      setVideoUrl(selected.src);
-      setVideoModal(true);
-    } else {
-      setCurrentIndex(index);
-      setTimeout(() => {
+    if (selected) {
+      if (selected.isVideo) {
+        setVideoUrl(selected.src);
+        setVideoModal(true);
+      } else {
+        setCurrentIndex(index);
         setScreenModal(true);
-      }, 0);
+      }
     }
   };
 
@@ -339,7 +345,10 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     };
     try {
       setIsLoading(true);
-      const res = await flagTenant(Number(tenant_id), objectToFormData(payload));
+      const res = await flagTenant(
+        Number(tenant_id),
+        objectToFormData(payload)
+      );
       if (res) {
         toast.success("Flagged Successfully");
         // Close modal after flagging
@@ -453,9 +462,20 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
           </div>
 
           <form className="space-y-4" onSubmit={handleDepositRequest}>
-            <p className="text-text-tertiary dark:text-white">
-              Caution Deposits Details:
-            </p>
+            <div className="flex justify-between items-center py-4">
+              <p className="text-text-tertiary dark:text-white">
+                Caution Deposits Details:
+              </p>
+
+              {inventory && inventory.length > 0 && (
+                <Button
+                  className="py-1 font-normal px-2"
+                  onClick={() => openModal(0)} // Open first item by default
+                >
+                  View {inventory[0]?.isVideo ? "inventory" : "inventory"}
+                </Button>
+              )}
+            </div>
 
             <div className="space-y-2 relative">
               {depositChecklist.map((deposit, index) => {
@@ -523,6 +543,23 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
               )}
           </form>
         </div>
+
+        {inventory && inventory.length > 0 && (
+          <>
+            <PopupImageModal
+              isOpen={screenModal}
+              onClose={() => setScreenModal(false)}
+              images={imageOnly}
+              currentIndex={adjustedIndex}
+            />
+
+            <PopupVideoModal
+              isOpen={videoModal}
+              videoUrl={videoUrl}
+              onClose={() => setVideoModal(false)}
+            />
+          </>
+        )}
       </ModalPreset>
     );
   }

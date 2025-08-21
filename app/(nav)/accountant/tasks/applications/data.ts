@@ -135,7 +135,7 @@ export const transformApplicationData = (
       user_id: item?.user?.encodedId,
 
       photo: item?.user?.profile,
-      flagged: item?.flags.some((flag) => flag.is_flagged)
+      flagged: item?.flags?.some((flag) => flag?.is_flagged)
         ? "flagged"
         : "unflagged",
       user_type: item?.user?.user_type || "mobile",
@@ -143,7 +143,7 @@ export const transformApplicationData = (
       property_name: `${item?.unit.name} - ${item?.unit?.property_title}`,
       renew_fee_period: item?.unit?.renew_fee_period,
       address: `${item?.unit?.property_address} ${item?.unit?.property_local_government} ${item?.unit?.property_city_area} ${item?.unit?.property_state}`,
-      phone_number: `${item?.user?.phone}` || `${item?.user?.profile_phone}`,
+      phone_number: item?.user?.phone || item?.user?.profile_phone || "",
       date: item?.application_date,
       total_package: item?.unit?.renew_total_package
         ? Math.round(Number(item?.unit?.renew_total_package))?.toLocaleString()
@@ -153,7 +153,7 @@ export const transformApplicationData = (
         : "--- ---", //item?.unit?.fee_amount,
       period_type: item?.unit?.period, //item?.unit?.fee_period,
       currency: currencies[item?.unit?.currency],
-      flag_details: item?.flags.map((flag) => ({
+      flag_details: item?.flags?.map((flag) => ({
         flagger_id: flag?.flagger?.user_id,
         flagger_name: flag.flagger.name?.toLowerCase(),
         email: flag.flagger.email,
