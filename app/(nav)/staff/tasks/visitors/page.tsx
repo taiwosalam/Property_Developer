@@ -23,7 +23,7 @@ import dayjs from "dayjs";
 import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { PropertyApiResponse } from "@/app/(nav)/listing/property/data";
+import { PropertyApiResponse } from "@/app/(nav)/management/property-draft/data";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
