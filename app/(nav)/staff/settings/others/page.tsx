@@ -46,6 +46,7 @@ import {
   otherNotificationSettings,
   updateCompanyNotification,
 } from "@/app/(nav)/settings/others/data";
+import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
 import Switch from "@/components/Form/Switch/switch";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { notificationCategories } from "@/app/(nav)/settings/others/data";
@@ -253,6 +254,10 @@ const Others = () => {
           //action={userPlan === "professional" ? saveSettings : undefined}
           />
         </div>
+      </SettingsSection>
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
       </SettingsSection>
 
       {/* NOTIFICATION SETTINGS */}

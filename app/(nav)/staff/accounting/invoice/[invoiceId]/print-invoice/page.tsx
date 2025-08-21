@@ -23,7 +23,7 @@ const PreviewExpenses = () => {
         <BackButton as="p">Back</BackButton>
         <ExportPageHeader />
         <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
-        <div className="rounded-lg bg-white p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+        <div className="rounded-lg bg-white p-8 list-style">
           <KeyValueList
             data={{}}
             chunkSize={2}
@@ -44,7 +44,7 @@ const PreviewExpenses = () => {
             Lagos
           </p>
           <div className="p-6 rounded-lg space-y-5 bg-white">
-            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+            <div className="list-style">
               <KeyValueList
                 data={{}}
                 chunkSize={2}
@@ -67,7 +67,7 @@ const PreviewExpenses = () => {
         </AccountingTitleSection>
         <AccountingTitleSection title="Account Details">
           <div className="p-6 rounded-lg bg-white">
-            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+            <div className="list-style">
               <KeyValueList
                 data={{}}
                 chunkSize={1}

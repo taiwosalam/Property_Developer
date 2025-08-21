@@ -42,7 +42,11 @@ import Avatars from "@/components/Avatars/avatars";
 import useFetch from "@/hooks/useFetch";
 import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
 import { debounce } from "lodash";
-import { otherNotificationSettings, updateCompanyNotification, notificationCategories } from "@/app/(nav)/settings/others/data";
+import {
+  otherNotificationSettings,
+  updateCompanyNotification, notificationCategories,
+} from "@/app/(nav)/settings/others/data";
+import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
 import Switch from "@/components/Form/Switch/switch";
 import { SectionSeparator } from "@/components/Section/section-components";
 const notificationSettingOptions = [
@@ -249,6 +253,10 @@ const Others = () => {
           //action={userPlan === "professional" ? saveSettings : undefined}
           />
         </div>
+      </SettingsSection>
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
       </SettingsSection>
 
       {/* NOTIFICATION SETTINGS */}

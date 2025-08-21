@@ -1200,7 +1200,7 @@ const Others = () => {
       const initialState = cardView.card.reduce((acc, director) => {
         acc[director.id] = {
           id: director.id.toString(),
-          full_name: director.full_name || "",
+          full_name: director?.full_name || "",
           email: director.email || "",
           phone_number: director.phone_number || "",
           title: director.title || "",

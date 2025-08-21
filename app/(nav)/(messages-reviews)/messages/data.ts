@@ -507,12 +507,20 @@ export function isDirectChatResponse(obj: any): obj is DirectChatAPIResponse {
 }
 
 export function isGroupChatResponse(obj: any): obj is GroupChatAPIResponse {
+
+  console.log("haaaaaahahhahahhhhhhhhahahhaha", { obj })
+  console.log("returning", !!obj &&
+    typeof obj === "object" &&
+    "group_chat" in obj &&
+    Array.isArray(obj.messages))
   return (
     !!obj &&
     typeof obj === "object" &&
     "group_chat" in obj &&
     Array.isArray(obj.messages)
   );
+
+
 }
 
 export const groupMessagesByDay = (

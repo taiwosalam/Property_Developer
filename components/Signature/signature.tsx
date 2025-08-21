@@ -20,7 +20,7 @@ export interface CompanySignaturesResponse {
   signatures: CompanySignature[];
 }
 
-const Signature = ({ noTitle } : {noTitle?: boolean}) => {
+const Signature = ({ noTitle }: { noTitle?: boolean }) => {
   const { data, loading, error } = useFetch<CompanySignaturesResponse>(
     "/company-signatures"
   );
@@ -32,7 +32,7 @@ const Signature = ({ noTitle } : {noTitle?: boolean}) => {
   return (
     <>
       {!noTitle && <p>Authorized Signature</p>}
-      <div className="space-y- flex gap-4">
+      <div className="space-y- grid grid-cols-2 xs:flex gap-4">
         {data.signatures.map((sig) => (
           <div
             key={sig.id}
@@ -43,7 +43,7 @@ const Signature = ({ noTitle } : {noTitle?: boolean}) => {
                 src={sig.signature}
                 alt="signature"
                 height={200}
-                width={200} 
+                width={200}
                 className="h-full w-full object-contain"
               />
             </div>
