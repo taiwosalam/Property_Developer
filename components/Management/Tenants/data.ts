@@ -5,9 +5,11 @@ export const addTenant = async (
   formData: Record<string, any>
 ): Promise<boolean | any> => {
   try {
-    const { data } = await api.post("tenant", formData);
-    toast.success(data?.message || "Tenant created successfully");
-    return true;
+    const data = await api.post("tenant", formData);
+    if (data?.status === 200 || data?.status === 201) {
+      toast.success("Tenant created successfully");
+      return true;
+    }
   } catch (error) {
     handleAxiosError(error, "Failed to create tenant");
     return false;
@@ -36,7 +38,6 @@ export const multipleInviteTenants = async (formData: FormData) => {
   }
 };
 
-
 export const addMultipleTenants = async (formData: any) => {
   try {
     const response = await fetch(
@@ -61,7 +62,6 @@ export const multipleCreateTenants = async (formData: FormData) => {
   }
 };
 
-
 export const deleteTenant = async (id: number) => {
   try {
     const { data } = await api.delete(`tenant/${id}`);
@@ -72,7 +72,6 @@ export const deleteTenant = async (id: number) => {
     return false;
   }
 };
-
 
 export const deleteLanlord = async (id: number) => {
   try {

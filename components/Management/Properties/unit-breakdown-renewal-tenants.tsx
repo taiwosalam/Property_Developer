@@ -187,13 +187,13 @@ const UnitBreakdownRenewalTenant = () => {
           Unit Fee Breakdown -{" "}
           {IS_RENTAL ? " Renewal Tenants" : " Renewal Occupants"}
         </h4>
-        <button
+        {/* <button
           onClick={handleTourSection}
           type="button"
           className="text-orange-normal"
         >
           <ExclamationMark />
-        </button>
+        </button> */}
       </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3">

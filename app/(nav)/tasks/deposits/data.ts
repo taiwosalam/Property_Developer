@@ -26,8 +26,13 @@ export interface DepositRequestDataType {
   accountOfficer?: string;
   state: string;
   unitDetails: string;
+  has_inventory?: boolean;
   amount: string;
   branch: string;
+  inventory_media?: {
+    src: string;
+    isVideo: boolean;
+  }[];
   request_from?: string;
   is_inventory?: boolean;
   is_examine?: boolean;
@@ -119,6 +124,18 @@ export const transformCautionDeposit = (
       amount: d.deposit_amount ? formatToNaira(d.deposit_amount) : "--- ---",
       branch: d.branch_name,
       is_inventory: d.is_inventory,
+      has_inventory: d.inventory?.id ? true : false,
+      inventory_media: [
+        ...(d.inventory?.video
+          ? [{ src: d.inventory.video, isVideo: true }]
+          : []),
+        ...(d.inventory?.attributes ?? []).map((attr) => {
+          return {
+            src: attr,
+            isVideo: false,
+          };
+        }),
+      ],
       request_from: d.request_from?.toLowerCase(),
       is_examine: d.is_examine,
       is_maintain: d.is_maintain,
@@ -190,7 +207,6 @@ export const depositChecklist = [
   "request for examine",
   "request for maintenance",
 ];
-
 
 // Updated portion of data.ts file - updateCautionDeposit function
 export const updateCautionDeposit = async (

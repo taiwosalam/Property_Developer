@@ -63,8 +63,8 @@ const PreviousRecord: React.FC<
 
   const checkIn = {
     date: dayjs(recordData.check_in_time).format("MMM DD YYYY hh:mma"),
-    name: recordData.in_by,
-    visitor_name: recordData?.visitor_name,
+    name: recordData.in_by?.toLowerCase(),
+    visitor_name: recordData?.visitor_name?.toLowerCase(),
     passenger: recordData.passengers_in,
     inventory: recordData.inventory_in,
   };
@@ -73,10 +73,10 @@ const PreviousRecord: React.FC<
     date: recordData.check_out_time
       ? dayjs(recordData.check_out_time).format("MMM DD YYYY hh:mma")
       : "__,__,__",
-    name: recordData.out_by,
-    passenger: recordData.passengers_out,
+    name: recordData.out_by?.toLowerCase(),
+    passenger: recordData.passengers_out?.toLowerCase(),
     inventory: recordData.inventory_out,
-    visitor_name: recordData?.visitor_name,
+    visitor_name: recordData?.visitor_name?.toLowerCase(),
   };
 
   //

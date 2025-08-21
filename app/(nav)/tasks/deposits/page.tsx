@@ -272,6 +272,8 @@ const DepositRequest = () => {
                     key={`${details.requestId}-${details.status}-${index}`} // Include status in key to force re-render
                     {...transformToDepositRequestCardProps(details)}
                     onDataUpdate={handleSilentRefetch}
+                    inventory_media={details.inventory_media || []}
+                    has_inventory={details.has_inventory}
                   />
                 ))}
               </AutoResizingGrid>
@@ -285,6 +287,8 @@ const DepositRequest = () => {
                   key={`${details.requestId}-${details.status}-${index}`} // Include status in key to force re-render
                   {...transformToDepositRequestCardProps(details)}
                   onDataUpdate={handleSilentRefetch}
+                  has_inventory={details.has_inventory}
+                  inventory_media={details.inventory_media || []}
                 />
               ))}
             </AutoResizingGrid>
