@@ -130,8 +130,8 @@ const SponsorUnit = () => {
               <span className="text-xs font-normal">{`₦${SPONSOR_COST.toLocaleString()}/ per unit`}</span>
             </p>
             <div className="flex gap-4 flex-col md:flex-row">
-              <div className="flex gap-2 items-end justify-end">
-                <div className="flex justify-between max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
+              <div className="flex gap-2 ">
+                <div className="flex justify-between  max-w-[150px] px-2 items-center gap-2 border-2 border-text-disabled dark:border-[#3C3D37] rounded-md">
                   <input
                     type="number"
                     value={count}

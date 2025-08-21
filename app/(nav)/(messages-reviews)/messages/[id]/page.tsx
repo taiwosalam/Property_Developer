@@ -1,20 +1,30 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { useChatStore } from "@/store/message";
 import {
+  ChatAPIResponse,
   DirectChatAPIResponse,
   GroupChatAPIResponse,
   groupMessagesByDay,
   isDirectChatResponse,
   isGroupChatResponse,
+  mapConversationsArray,
+  NormalizedMessage,
+  transformMessageFromAPI,
   transformMessagesFromAPI,
 } from "../data";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { empty } from "@/app/config";
-import { UsersProps } from "../types";
+import { ConversationsUpdatedReturn, ReadEvent, UsersProps } from "../types";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { useGlobalStore } from "@/store/general-store";
@@ -28,7 +38,10 @@ import useFetch from "@/hooks/useFetch";
 import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ChevronLeftIcon } from "lucide-react";
-import useConversationListener from "@/hooks/useConversationListen";
+import { useEcho } from "@/lib/echo";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useMessages } from "@/contexts/messageContext";
+import { useChatMessages, useEchoMessages } from "../hooks";
 
 const useUserProfile = (id: string | number) => {
   const { data, loading } = useFetch<UserDetailsResponse>(
@@ -59,21 +72,21 @@ const Chat = () => {
   const user_id = useAuthStore((state) => state.user_id);
   const users = data?.users?.users || [];
   const messageUserData = useGlobalStore((s) => s.messageUserData);
-
-  const [isLoading, setIsLoading] = useState(true);
   // Local conversations state, always reset on id change.
-  const [groupedConversations, setGroupedConversations] = useState<any[]>([]);
   // Track which chat id last loaded
   const lastLoadedId = useRef<string | null>(null);
-
   // User lookup and info - UserId is the participant ID (user u're chatting...)
-  const userId = Number(id);
+  const userId = useMemo(() => {
+    const parsed = Number(id);
+    return isNaN(parsed) ? null : parsed;
+  }, [id]);
+
+  const { messages, setMessages, groupedMessages, isLoading, setIsLoading } =
+    useChatMessages(id, isGroupChat);
   const user: UsersProps | undefined =
     messageUserData || users.find((u: UsersProps) => Number(u.id) === userId);
-
   // Remote profile fetch
   const { profile: userProfileData, loading: loadingUser } = useUserProfile(id);
-
   // Compose role/badge logic
   const role = getCleanRoleName(userProfileData);
   const specialRoles = [
@@ -95,73 +108,72 @@ const Chat = () => {
 
   // Contact status cycling
   const showContactInfo = useShowContactInfo(user);
+  // const token = localStorage.getItem("user_id");
 
-  // Endpoint logic
-  const endpoint = isGroupChat
-    ? `/group-chats/${id}`
-    : `/messages/conversations/${id}`;
+  const endpoint = useMemo(
+    () =>
+      isGroupChat ? `/group-chats/${id}` : `/messages/conversations/${id}`,
+    [isGroupChat, id]
+  );
 
-  // Message API fetch
-  const {
-    data: apiData,
-    loading,
-    error,
-    refetch,
-  } = useFetch<GroupChatAPIResponse | DirectChatAPIResponse>(endpoint);
+  const handleNewMessage = useCallback(
+    (message: NormalizedMessage) => {
+      setMessages((prev) => [...prev, message]);
+    },
+    [setMessages]
+  );
 
-  useRefetchOnEvent("refetchMessages", () => refetch({ silent: true }));
+  // Handle read status updates
+  const handleMessagesRead = useCallback(
+    (messageIds: number[]) => {
+      setMessages((prev) =>
+        prev.map((msg) =>
+          messageIds.includes(msg.id)
+            ? { ...msg, seen: true, is_read: true }
+            : msg
+        )
+      );
+    },
+    [setMessages]
+  );
 
-  // Poll for new messages every 10 seconds
+  const { data: apiData, loading, error, refetch } = useFetch<any>(endpoint);
+  useEchoMessages(id, handleNewMessage, handleMessagesRead, isGroupChat);
+
+  const { setPageUsersMsg } = useMessages();
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      window.dispatchEvent(new Event("refetchMessages"));
-    }, 10000);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Clear all messages on id change (store and local)
-  useEffect(() => {
-    setChatData("conversations", []);
-    setGroupedConversations([]);
-    lastLoadedId.current = id;
-    setIsLoading(true);
-  }, [id, setChatData]);
-
-  // When store data updates, update groupedConversations (but only for current id)
-  useEffect(() => {
-    // Only group if this is the chat id we want
-    if (data?.conversations && lastLoadedId.current === id) {
-      setGroupedConversations(groupMessagesByDay(data.conversations));
+    if (!apiData) {
+      console.log("there is no api data", { apiData });
+      // refetch({ silent: true });
+      return;
     }
-  }, [data?.conversations, id]);
 
-  // On API fetch, set store and groupedConversations but only for current id
-  useEffect(() => {
-    if (!apiData) return;
-    if (isGroupChat && isGroupChatResponse(apiData)) {
-      if (String(apiData.group_chat?.id) !== String(id)) return; // don't update for a race
-      const normalizedMessages = transformMessagesFromAPI(apiData, true);
-      setChatData("conversations", normalizedMessages);
-      setGroupedConversations(groupMessagesByDay(normalizedMessages));
-      setIsLoading(false);
-    } else if (!isGroupChat && isDirectChatResponse(apiData)) {
-      // No reliable id to check for direct, but should be fine
-      const normalizedMessages = transformMessagesFromAPI(apiData, false);
-      setChatData("conversations", normalizedMessages);
-      setGroupedConversations(groupMessagesByDay(normalizedMessages));
-      if (apiData.messages.length > 0) {
-        setChatData("receiver", apiData.messages[0].receiver);
+    try {
+      let normalizedMessages: NormalizedMessage[] = [];
+      if (isGroupChat && isGroupChatResponse(apiData.data)) {
+        // Ensure this is for the current chat
+        if (String(apiData.data.group_chat?.id) === String(id)) {
+          normalizedMessages = transformMessagesFromAPI(apiData.data, true);
+        }
+      } else if (!isGroupChat && isDirectChatResponse(apiData)) {
+        normalizedMessages = transformMessagesFromAPI(apiData, false);
       }
+
+      setMessages(normalizedMessages);
+      setIsLoading(false);
+    } catch (err) {
+      console.error("Error processing API data:", err);
       setIsLoading(false);
     }
-  }, [apiData, setChatData, isGroupChat, id]);
+  }, [apiData, isGroupChat, id, setMessages, setIsLoading, endpoint]);
 
-
-  // UI Guards
-  if (!user) {
+  // Early returns with proper guards
+  if (userId === null) {
     router.replace("/messages");
     return null;
   }
+
   if (loading || isLoading) {
     return <ChatSkeleton />;
   }
@@ -208,7 +220,7 @@ const Chat = () => {
                       className="text-text-disabled dark:text-darkText-2 text-[10px] font-normal"
                     >
                       {showContactInfo
-                        ? user.last_seen
+                        ? user?.last_seen
                         : "Tap here for contact info"}
                     </motion.p>
                   </AnimatePresence>
@@ -225,8 +237,8 @@ const Chat = () => {
       {/* Messages */}
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
         {error && <div className="text-red-500 text-center p-2">{error}</div>}
-        {groupedConversations.length > 0
-          ? groupedConversations.map((group, index) => (
+        {groupedMessages.length > 0
+          ? groupedMessages.map((group, index) => (
               <Messages
                 key={index}
                 day={group.day}

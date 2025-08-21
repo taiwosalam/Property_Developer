@@ -296,7 +296,7 @@ const Landlord = () => {
                         "No Search/Filter Found"
                     ) : (
                         <EmptyList
-                            buttonText="+ Create New Landlord"
+                            buttonText="+ New Landlord"
                             modalContent={<AddLandlordModal />}
                             title="No landlord or landlady has been assigned to this branch yet."
                             body={

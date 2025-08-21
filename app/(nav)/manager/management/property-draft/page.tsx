@@ -26,6 +26,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { hasActiveFilters } from "../../reports/data/utils";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
@@ -34,7 +35,6 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import ServerError from "@/components/Error/ServerError";
 import { IPropertyApi } from "@/app/(nav)/settings/others/types";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
-import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
 
 const Property = () => {
   const { branch } = usePersonalInfoStore();
@@ -126,7 +126,7 @@ const Property = () => {
     isNetworkError,
     error,
     refetch,
-  } = useFetch<PropertyApiResponse | any>("/property/invite/lists", config);
+    } = useFetch<PropertyApiResponse | any>("/property/invite/lists", config);
 
   const { data: propertiesData } = useFetch<IPropertyApi>(`/property/list`);
 
@@ -165,6 +165,16 @@ const Property = () => {
   // Listen for the refetch event
   useRefetchOnEvent("refetchPropertyDraft", () => refetch({ silent: true }));
 
+  // TODO: FIX THIS WITH SOMETHING LIKE LOADING
+  // Render an error message if BRANCH_ID is invalid
+  // if (!BRANCH_ID || BRANCH_ID === 0) {
+  //   return (
+  //     <div className="text-base text-red-500 font-medium">
+  //       Invalid branch ID. Please select a valid branch.
+  //     </div>
+  //   );
+  // }
+
   if (loading)
     return (
       <CustomLoader
@@ -180,8 +190,8 @@ const Property = () => {
 
   return (
     <div className="custom-flex-col gap-9">
-      <div className="hidden md:flex gap-5 flex-wrap">
-        <ManagementStatistcsCard
+      <div className="flex gap-5 overflow-x-auto hide-scrollbar md:flex-wrap">
+      <ManagementStatistcsCard
           title="Total Property"
           newData={pageData.current_month_property}
           total={pageData.total_property}
@@ -285,6 +295,7 @@ const Property = () => {
                   data={property as any}
                   status={property.status}
                   propertyType={property.property_type as "rental" | "gated"}
+                  page="manager"
                 />
               ))}
             </div>

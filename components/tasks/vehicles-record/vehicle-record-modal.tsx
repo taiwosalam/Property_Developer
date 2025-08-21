@@ -10,7 +10,7 @@ import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import { AuthForm } from "@/components/Auth/auth-components";
 import { checkInVehicle, checkOutVehicle } from "./data";
 import { toast } from "sonner";
-import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
+// import { format_date_time } from "@/app/(nav)/management/vehicles-record/data";
 import ModalPreset from "@/components/Modal/modal-preset";
 import dayjs from "dayjs";
 import { empty } from "@/app/config";
@@ -21,6 +21,7 @@ import DOMPurify from "dompurify";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { format_date_time } from "@/app/(nav)/tasks/vehicles-record/data";
 
 const VehicleRecordModal: React.FC<
   VehicleRecord & {
@@ -161,13 +162,13 @@ const VehicleRecordModal: React.FC<
   const getRecordLink = (id: number) => {
     switch (page) {
       case "manager":
-        return `/manager/management/vehicles-record/records/${id}/record`;
+        return `/manager/tasks/vehicles-record/records/${id}/record`;
       case "account":
-        return `/accountant/management/vehicles-record/records/${id}/record`;
+        return `/accountant/tasks/vehicles-record/records/${id}/record`;
       case "staff":
-        return `/staff/management/vehicles-record/records/${id}/record`;
+        return `/staff/tasks/vehicles-record/records/${id}/record`;
       default:
-        return `/management/vehicles-record/records/${id}/record`;
+        return `/tasks/vehicles-record/records/${id}/record`;
     }
   };
   if (activeStep === "default") {
@@ -304,7 +305,6 @@ const VehicleRecordModal: React.FC<
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
-              // href={`/management/vehicles-record/records/${id}/record`}
               href={getRecordLink(Number(id))}
             >
               Open Records

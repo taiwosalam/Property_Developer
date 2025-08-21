@@ -412,7 +412,7 @@ export const employmentTypeOptions = [
 ];
 
 export const visitorCategories = [
-  "Agent",
+  "Estate Agent",
   "Guest",
   "Manager",
   "Occupant",
@@ -422,7 +422,27 @@ export const visitorCategories = [
   "Visitor",
   "Workers",
   "Others",
+  "Resident",
+  "Homeowner",
+  "Developer",
+  "Delivery Agent",
+  "Contractor",
+  "Lawyer",
+  "Tenant",
+  "Management",
 ];
+// export const visitorCategories = [
+//   "Agent",
+//   "Guest",
+//   "Manager",
+//   "Occupant",
+//   "Staff",
+//   "Supervisor",
+//   "Tenants",
+//   "Visitor",
+//   "Workers",
+//   "Others",
+// ];
 
 export const states: State[] = [
   {
@@ -6266,9 +6286,10 @@ export const states: State[] = [
       Anaocha: [
         "Adazi-Ani",
         "Adazi-Enu",
+        "Adazi-Nnukwu",
         "Agbadani",
         "Agulu",
-        "Agulu-Uzoigbo",
+        "Aguluzigbo",
         "Akamkpisi",
         "Akwaeze",
         "Amata",
@@ -7094,7 +7115,7 @@ export const states: State[] = [
         "Umunewo",
         "Umunwozonde",
         "Umunwozonokebe",
-        "Umunz",
+        "Umunze",
         "Urualor",
         "Ururo",
         "Uziza",
@@ -49728,6 +49749,7 @@ export const adminRoutes = [
   "/management/vehicles-record",
   "/management/team-chat",
   "/management/agent-community",
+  "/management/property-draft",
   "/tasks/schedule",
   "/tasks/announcement",
   "/tasks/applications",
@@ -49740,6 +49762,7 @@ export const adminRoutes = [
   "/tasks/calendars",
   "/tasks/inquires",
   "/tasks/visitors",
+  "/tasks/vehicles-record",
   "/tasks/property-request",
   "/tasks/undo",
   "/listing/units",
@@ -49989,6 +50012,7 @@ export const managerRoutes = [
   "/manager/management/rent-unit",
   "/manager/management/service-providers",
   "/manager/management/vehicles-record",
+  "/manager/management/property-draft",
   "/manager/management/team-chat",
   "/management/agent-community",
   "/manager/tasks/schedule",
@@ -50035,6 +50059,7 @@ export const managerRoutes = [
   "/manager/tasks/inspections",
   "/manager/tasks/inquires",
   "/manager/tasks/visitors",
+  "/manager/tasks/vehicles-record",
   "/manager/tasks/property-request",
   "/manager/documents",
   "/manager/settings",

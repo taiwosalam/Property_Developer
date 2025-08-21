@@ -20,7 +20,10 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import { Loader2 } from "lucide-react";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import NotificationsSkeleton from "./notification-skeleton";
-import { filterNotificationsByRole, UserRole } from "@/components/Notification/notification-permission";
+import {
+  filterNotificationsByRole,
+  UserRole,
+} from "@/components/Notification/notification-permission";
 import { useRole } from "@/hooks/roleContext";
 
 const Notifications = () => {
@@ -40,16 +43,15 @@ const Notifications = () => {
     const data = await fetchNotifications(page + 1);
     if (data) {
       // Filter notifications based on role permissions
-      const filteredNotifications = role 
+      const filteredNotifications = role
         ? filterNotificationsByRole(data.notifications, role as UserRole)
         : data.notifications;
-        
+
       setNotifications((prev) => [...prev, ...filteredNotifications]);
       setMeta(data.meta);
       setPage((prev) => prev + 1);
     }
   };
-
   const { isLoading, lastElementRef } = useInfiniteScroll({
     callback: loadMore,
     hasMore: page < (meta?.last_page || 1),
@@ -59,10 +61,9 @@ const Notifications = () => {
     const data = await fetchNotifications(1);
     if (data) {
       // Filter notifications based on role permissions
-      const filteredNotifications = role 
+      const filteredNotifications = role
         ? filterNotificationsByRole(data.notifications, role as UserRole)
         : data.notifications;
-        
       setNotifications(filteredNotifications);
       setMeta(data.meta);
       setPage(1);
@@ -85,12 +86,12 @@ const Notifications = () => {
     const loadInitial = async () => {
       setInitialLoading(true);
       const data = await fetchNotifications(1);
+      console.log("notifications", { data });
       if (data) {
         // Filter notifications based on role permissions
-        const filteredNotifications = role 
+        const filteredNotifications = role
           ? filterNotificationsByRole(data.notifications, role as UserRole)
           : data.notifications;
-          
         setNotifications(filteredNotifications);
         setMeta(data.meta);
       }

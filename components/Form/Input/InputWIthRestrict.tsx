@@ -93,13 +93,13 @@ const RestrictInput: React.FC<InputProps> = ({
     if (restrictedWordsOptions && hasRestrictedWord) {
       setGlobalStore("hasRestrictedWords", true);
       const formattedWords = matchedRestrictedWords
-      .map((w) => `"${w}"`)
-      .join(", ");
+        .map((w) => `"${w}"`)
+        .join(", ");
       setValidationError(
         restrictedWordsOptions?.errorMessage ||
         `Please don’t include ${formattedWords} as it refers to an area, LGA, or state.`
       );
-      
+
       // Handle both signatures
       if (onChange) {
         if (onChange.length === 1) {
@@ -200,7 +200,7 @@ const RestrictInput: React.FC<InputProps> = ({
           onChange={handleChange}
           type={type === "password" && isPasswordVisible ? "text" : type}
           className={clsx(
-            "p-3 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out",
+            "p-3 text-xs md:text-sm font-normal rounded-[4px] w-full h-[44px] custom-primary-outline border border-solid border-[#C1C2C366] bg-neutral-2 dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2 transition-colors duration-300 ease-in-out",
             {
               "pr-11": type === "password",
               "pl-11": leftIcon,

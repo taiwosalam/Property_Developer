@@ -64,12 +64,12 @@ export const PrintContent = ({
     <>
       <div>
         <button
-          className="flex gap-1 items-center"
+          className="flex gap-1 items-center "
           onClick={() => handleExport("print")}
           disabled={loading !== null}
         >
           <Printer />
-          {loading === "print" ? "Please wait..." : buttonText}
+         <p className="hidden sm:block"> {loading === "print" ? "Please wait..." : buttonText}</p>
         </button>
       </div>
     </>

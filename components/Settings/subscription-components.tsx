@@ -309,7 +309,7 @@ export const FeatureCompany = () => {
         setSelectedPeriod("");
         return true;
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   const table_style_props: Partial<CustomTableProps> = {
@@ -346,14 +346,12 @@ export const FeatureCompany = () => {
               className="w-full"
               id="period"
               options={PERIOD_OPTIONS.map((option) => ({
-                value: `${option.value} ${
-                  option.value === 1 ? "month" : "months"
-                }`,
-                label: `${option.label}${
-                  option.discount
+                value: `${option.value} ${option.value === 1 ? "month" : "months"
+                  }`,
+                label: `${option.label}${option.discount
                     ? ` (-${(option.discount * 100).toFixed(1)}%)`
                     : ""
-                }`,
+                  }`,
               }))}
               placeholder="Select subscription period..."
               label="Period"
@@ -366,11 +364,10 @@ export const FeatureCompany = () => {
                   (opt) => opt.value === periodValue
                 );
                 return option
-                  ? `${option.label}${
-                      option.discount
-                        ? ` (-${(option.discount * 100).toFixed(1)}%)`
-                        : ""
-                    }`
+                  ? `${option.label}${option.discount
+                    ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                    : ""
+                  }`
                   : "";
               }}
             />
@@ -386,7 +383,7 @@ export const FeatureCompany = () => {
                 readOnly
                 style={{ outline: "none" }}
               />
-              <div className="absolute top-2 bottom-0 right-2">
+              <div className="absolute  top-[2px] sm:top-2 bottom-0 right-2">
                 <Modal>
                   <ModalTrigger>
                     <Button

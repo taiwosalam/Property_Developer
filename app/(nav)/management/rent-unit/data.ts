@@ -14,6 +14,7 @@ import {
 import { getAllStates } from "@/utils/states";
 import dayjs from "dayjs";
 import { number } from "zod";
+import { transformUnitDetails } from "../../listing/data";
 //
 export interface RentAndUnitState {
   gridView?: boolean;
@@ -125,8 +126,6 @@ export const transformRentUnitApiResponse = (
     return "total_unit" in response.data;
   };
 
-
-
   const unitData = isUnitApiResponse(response)
     ? (response.data.unit as any)
     : (response.data.unit as any);
@@ -159,7 +158,16 @@ export const transformRentUnitApiResponse = (
         : undefined,
       tenant_id: u?.occupant?.tenant_id || 0,
       partial_pending: u?.partial_pending ? true : false,
+      cautionDepositStatus: u?.occupant?.caution_status,
       occupant: u?.occupant,
+      depositRequestInfo: {
+        requestId: "",
+        propertyName: u?.property?.name || "",
+        state: u?.property?.state || "",
+        unitDetails: transformUnitDetails(u),
+        branch: "",
+        amount: "",
+      },
     };
   });
   if (isUnitApiResponse(response)) {
@@ -336,6 +344,7 @@ export interface RentalPropertyCardProps {
   expiry_date: string;
   rent: string;
   caution_deposit: string | number;
+  cautionDepositStatus?: boolean;
   service_charge: string | number;
   status: string;
   badge_color?: BadgeIconColors;
@@ -1229,7 +1238,9 @@ export const calculateRentPenalty = (
     console.log("No penalty percentage for period:", feePeriod);
     return 0;
   }
-
+console.log("rentAmount", rentAmount)
+console.log("penaltyPercentage", penaltyPercentage)
+console.log("penaltyPeriods", penaltyPeriods)
   const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
   const totalPenalty = penaltyPerPeriod * penaltyPeriods;
 

@@ -17,6 +17,7 @@ import { useRef, useState, useEffect } from "react";
 import { toggleAutoRenewPlan } from "@/app/(nav)/settings/subscription/data";
 import { toast } from "sonner";
 import NavRequestCallback from "@/components/Nav/NavModals/nav-request-callback";
+import { usePathname, useRouter } from "next/navigation";
 
 export const PlanHeader: React.FC<{
   planTitle?: string;
@@ -454,7 +455,6 @@ interface SelectPlanButtonProps {
   hovered?: boolean;
   expiry_date?: string; // Add expiry_date prop
 }
-
 export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   isFree = false,
   price,
@@ -464,8 +464,10 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   page,
   changeStep,
   hovered,
-  expiry_date, // Add expiry_date prop
+  expiry_date,
 }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const subCost = parseFormattedNumber(price);
   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
   const currentExpiryDate = usePersonalInfoStore(
@@ -480,7 +482,6 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
 
-  // const isProfessionalPlan = currentPlanKeyword === "professional";
   const isProfessionalPlan = thisPlanKeyword === "professional";
 
   // Plan rank mapping (higher number = higher rank)
@@ -510,23 +511,23 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
   const buttonText = (() => {
     if (isCurrentPlan) {
       if (currentPlanKeyword === "free") return "Current Plan";
-      if (expiry_date === "Lifetime") return "Current Plan"; // Lifetime plans can't be extended
-      return "Extend Plan"; // For Basic or Premium, if it's the current plan
+      if (expiry_date === "Lifetime") return "Current Plan";
+      return "Extend Plan";
     }
     if (currentPlanKeyword === "free") {
-      return "Upgrade Plan"; // Free plan users see "Upgrade" for Basic/Premium
+      return "Upgrade Plan";
     }
     if (currentPlanKeyword === "basic" && thisPlanKeyword === "premium") {
-      return "Upgrade Plan"; // Basic plan users see "Upgrade" for Premium
+      return "Upgrade Plan";
     }
 
     if (currentPlanKeyword === "premium") {
       if (thisPlanKeyword === "premium") return "Extend Plan";
-      if (thisPlanKeyword === "professional") return "Upgrade Plan"; // FIX
+      if (thisPlanKeyword === "professional") return "Upgrade Plan";
       return "Basic Plan";
     }
 
-    return "Select Plan"; // Fallback
+    return "Select Plan";
   })();
 
   // Determine if the button should have an action
@@ -537,17 +538,40 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
 
   const notMessage = buttonText === "Extend Plan";
 
+  // Helper function to handle navigation and refresh
+  const handleNavigationAndRefresh = () => {
+    if (pathname !== "/settings/subscription") {
+      router.push("/settings/subscription");
+      // Small delay to ensure navigation completes before refresh
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    } else {
+      // If already on the correct path, just refresh
+      window.location.reload();
+    }
+  };
+
   const handleSelectPlan = async () => {
-    if (!hasAction) return; // Prevent action if button is disabled
+    if (!hasAction) return;
+
     if (page === "modal" && changeStep) {
-      await onSelectPlan?.();
-      window.dispatchEvent(new Event("refetchSubscriptionPlan"));
-      window.dispatchEvent(new Event("refetchEnrollments"));
-      changeStep(3);
+      const result = await onSelectPlan?.();
+      if (result) {
+        window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+        window.dispatchEvent(new Event("refetchEnrollments"));
+        changeStep(3);
+        // Navigate and refresh after successful plan selection
+        handleNavigationAndRefresh();
+      }
     } else if (!useModal) {
-      await onSelect?.(); // Direct action for non-modal actionable scenarios
-      window.dispatchEvent(new Event("refetchSubscriptionPlan"));
-      window.dispatchEvent(new Event("refetchEnrollments"));
+      const result = await onSelect?.();
+      if (result) {
+        window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+        window.dispatchEvent(new Event("refetchEnrollments"));
+        // Navigate and refresh after successful plan selection
+        handleNavigationAndRefresh();
+      }
     }
   };
 
@@ -580,7 +604,6 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
             <ModalTrigger asChild className="w-full text-white">
               <button
                 className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
-                onClick={hasAction ? handleSelectPlan : undefined}
                 disabled={isButtonDisabled}
               >
                 {displayText}
@@ -593,8 +616,19 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
                   count={10}
                   cost={subCost ?? 0}
                   message={!notMessage}
-                  onSubmit={onSelectPlan}
-                  onSelect={onSelect}
+                  onSubmit={async () => {
+                    const result = await onSelectPlan?.();
+                    if (result) {
+                      handleNavigationAndRefresh();
+                    }
+                    return result;
+                  }}
+                  onSelect={async () => {
+                    const result = await onSelect?.();
+                    if (result) {
+                      handleNavigationAndRefresh();
+                    }
+                  }}
                 />
               ) : (
                 <NavRequestCallback />
@@ -614,3 +648,163 @@ export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
     </div>
   );
 };
+
+// export const SelectPlanButton: React.FC<SelectPlanButtonProps> = ({
+//   isFree = false,
+//   price,
+//   planTitle,
+//   onSelectPlan,
+//   onSelect,
+//   page,
+//   changeStep,
+//   hovered,
+//   expiry_date, // Add expiry_date prop
+// }) => {
+//   const subCost = parseFormattedNumber(price);
+//   const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+//   const currentExpiryDate = usePersonalInfoStore(
+//     (state) => state.currentExpiryDate
+//   );
+
+//   const isExpired = currentExpiryDate
+//     ? dayjs(currentExpiryDate).isSameOrBefore(dayjs(), "day")
+//     : false;
+
+//   const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+//   const thisPlanKeyword = planTitle?.split(" ")[0]?.toLowerCase();
+//   const isCurrentPlan = currentPlanKeyword === thisPlanKeyword;
+
+//   // const isProfessionalPlan = currentPlanKeyword === "professional";
+//   const isProfessionalPlan = thisPlanKeyword === "professional";
+
+//   // Plan rank mapping (higher number = higher rank)
+//   const planRank: { [key: string]: number } = {
+//     free: 0,
+//     basic: 1,
+//     premium: 2,
+//     professional: 3,
+//   };
+
+//   // Determine if the current plan is lifetime
+//   const isCurrentPlanLifetime = expiry_date === "Lifetime" && isCurrentPlan;
+
+//   // Determine if the button should be disabled
+//   const isDowngradeBlocked =
+//     (currentPlanKeyword &&
+//       thisPlanKeyword &&
+//       planRank[currentPlanKeyword] > planRank[thisPlanKeyword]) ||
+//     (currentPlanKeyword === "premium" && thisPlanKeyword === "basic");
+
+//   const isButtonDisabled =
+//     (isCurrentPlanLifetime &&
+//       planRank[currentPlanKeyword] >= planRank[thisPlanKeyword]) ||
+//     isDowngradeBlocked;
+
+//   // Determine button text based on plan context
+//   const buttonText = (() => {
+//     if (isCurrentPlan) {
+//       if (currentPlanKeyword === "free") return "Current Plan";
+//       if (expiry_date === "Lifetime") return "Current Plan"; // Lifetime plans can't be extended
+//       return "Extend Plan"; // For Basic or Premium, if it's the current plan
+//     }
+//     if (currentPlanKeyword === "free") {
+//       return "Upgrade Plan"; // Free plan users see "Upgrade" for Basic/Premium
+//     }
+//     if (currentPlanKeyword === "basic" && thisPlanKeyword === "premium") {
+//       return "Upgrade Plan"; // Basic plan users see "Upgrade" for Premium
+//     }
+
+//     if (currentPlanKeyword === "premium") {
+//       if (thisPlanKeyword === "premium") return "Extend Plan";
+//       if (thisPlanKeyword === "professional") return "Upgrade Plan"; // FIX
+//       return "Basic Plan";
+//     }
+
+//     return "Select Plan"; // Fallback
+//   })();
+
+//   // Determine if the button should have an action
+//   const hasAction = !isButtonDisabled;
+
+//   // Determine if the modal should be used (only for actionable cases when not in modal page)
+//   const useModal = page !== "modal" && hasAction && !isFree;
+
+//   const notMessage = buttonText === "Extend Plan";
+
+//   const handleSelectPlan = async () => {
+//     if (!hasAction) return; // Prevent action if button is disabled
+//     if (page === "modal" && changeStep) {
+//       await onSelectPlan?.();
+//       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+//       window.dispatchEvent(new Event("refetchEnrollments"));
+//       changeStep(3);
+//     } else if (!useModal) {
+//       await onSelect?.(); // Direct action for non-modal actionable scenarios
+//       window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+//       window.dispatchEvent(new Event("refetchEnrollments"));
+//     }
+//   };
+
+//   const displayText =
+//     isDowngradeBlocked && hovered
+//       ? "Plan cannot be downgraded"
+//       : isExpired && hovered && isCurrentPlan && expiry_date !== "Lifetime"
+//       ? "Renew Plan"
+//       : !hovered && isCurrentPlan
+//       ? "Current Plan"
+//       : buttonText;
+
+//   return (
+//     <div className="px-6 pb-4 flex justify-end">
+//       <div
+//         className={`buynowbtn w-full flex items-center justify-center p-[8px] gap-[10px] rounded-[4px] ${
+//           isFree ? "bg-brand-9 bg-opacity-40" : "bg-brand-9"
+//         } ${isButtonDisabled ? "opacity-50 cursor-not-allowed" : ""}`}
+//       >
+//         {page === "modal" ? (
+//           <button
+//             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
+//             onClick={hasAction ? handleSelectPlan : undefined}
+//             disabled={isButtonDisabled}
+//           >
+//             {displayText}
+//           </button>
+//         ) : useModal ? (
+//           <Modal>
+//             <ModalTrigger asChild className="w-full text-white">
+//               <button
+//                 className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
+//                 onClick={hasAction ? handleSelectPlan : undefined}
+//                 disabled={isButtonDisabled}
+//               >
+//                 {displayText}
+//               </button>
+//             </ModalTrigger>
+//             <ModalContent>
+//               {!isProfessionalPlan ? (
+//                 <SponsorModal
+//                   page="subscription"
+//                   count={10}
+//                   cost={subCost ?? 0}
+//                   message={!notMessage}
+//                   onSubmit={onSelectPlan}
+//                   onSelect={onSelect}
+//                 />
+//               ) : (
+//                 <NavRequestCallback />
+//               )}
+//             </ModalContent>
+//           </Modal>
+//         ) : (
+//           <button
+//             className="text-center text-[14px] w-full text-white font-medium tracking-[0px]"
+//             onClick={hasAction ? handleSelectPlan : undefined}
+//             disabled={isButtonDisabled}
+//           >
+//             {displayText}
+//           </button>
+//         )}
+//       </div>
+//     </div>
+//   );
+// };

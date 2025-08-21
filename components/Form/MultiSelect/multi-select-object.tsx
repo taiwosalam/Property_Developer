@@ -12,7 +12,7 @@ interface Option {
 interface MultiSelectProps {
   id: string;
   required?: boolean;
-  disabled?: boolean; 
+  disabled?: boolean;
   options: Option[];
   maxSelections?: number;
   label?: string;
@@ -48,10 +48,10 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
     if (disabled) return;
     setIsOpen((prev) => !prev);
   };
-  
+
   const handleSelect = (option: Option) => {
     if (disabled) return;
-  
+
     let newSelectedItems: (string | number)[];
     if (selectedItems.includes(option.value)) {
       newSelectedItems = selectedItems.filter((item) => item !== option.value);
@@ -60,18 +60,16 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
     } else {
       newSelectedItems = selectedItems;
     }
-  
+
     setSelectedItems(newSelectedItems);
     if (onValueChange) onValueChange(newSelectedItems);
   };
 
-  
   const isSelected = (option: Option) => selectedItems.includes(option.value);
 
   useOutsideClick(dropdownRef, () => {
     setIsOpen(false);
   });
-
 
   useEffect(() => {
     setSelectedItems(defaultSelections);
@@ -81,7 +79,7 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
   }, [resetKey]);
 
   return (
-    <div className={clsx("flex flex-col gap-2", className)}>
+    <div className={clsx("flex  flex-col gap-2", className)}>
       {label && (
         <Label id={id} required={required}>
           {label}
@@ -117,7 +115,7 @@ const MultiSelectObj: React.FC<MultiSelectProps> = ({
         </div> */}
 
         <div
-          className="flex items-center justify-between border border-solid border-[#C1C2C366] p-2 bg-white dark:bg-darkText-primary cursor-pointer rounded-lg max-h-[70px] overflow-auto"
+          className="flex !h-[45px] items-center justify-between border border-solid border-[#C1C2C366] p-2 bg-white dark:bg-darkText-primary cursor-pointer rounded-lg max-h-[70px] overflow-auto"
           onClick={handleToggleDropdown}
         >
           <span

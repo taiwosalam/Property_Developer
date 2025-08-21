@@ -196,7 +196,7 @@ const Examine = () => {
           />
         </div>
         <Modal
-          state={{
+          state={{ 
             isOpen: isOpen,
             setIsOpen: setIsOpen,
           }}

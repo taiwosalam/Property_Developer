@@ -2,6 +2,7 @@ import { empty } from "@/app/config";
 import {
   CompanyUsersAPIResponse,
   ConversationsAPIResponse,
+  ConversationsUpdatedMessage,
   PageMessages,
   UsersProps,
 } from "./types";
@@ -171,6 +172,34 @@ export const transformUsersMessages = (
   });
 };
 
+type MessageItem = {
+  latest_message_type: string;
+  latest_message: string;
+};
+
+export function getFinalContentType(c: MessageItem): string {
+  let finalContentType = "text"; // Default
+
+  if (c.latest_message_type !== "text" && typeof c.latest_message === "string") {
+    const extension = c.latest_message.split(".").pop()?.toLowerCase() || "";
+
+    if (["mp3", "wav", "ogg", "webm"].includes(extension)) {
+      finalContentType = "audio";
+    } else if (["mp4", "avi", "mov"].includes(extension)) {
+      finalContentType = "video";
+    } else if (["jpg", "jpeg", "png", "gif", "bmp"].includes(extension)) {
+      finalContentType = "image";
+    } else if (["pdf", "doc", "docx", "txt"].includes(extension)) {
+      finalContentType = "document";
+    } else {
+      finalContentType = "text"; // fallback
+    }
+  }
+
+  return finalContentType;
+}
+
+
 export const sumUnreadCount = (data: any[]) =>
   data.reduce((total, item) => total + item.unread_count, 0);
 
@@ -246,6 +275,7 @@ interface GroupedMessage {
 export interface NormalizedMessage {
   id: number;
   text: string | null;
+  is_read?: boolean;
   senderId: number;
   timestamp: string;
   content_type: string;
@@ -259,6 +289,7 @@ export interface NormalizedMessage {
 export interface Message {
   id: number;
   text: string | null;
+  is_read?: boolean;
   senderId: number;
   timestamp: string;
   content_type: string;
@@ -281,6 +312,37 @@ interface GroupedMessage {
     picture?: string;
     title?: string;
   };
+}
+interface SocketMessage {
+  id: number;
+  sender_id: number;
+  sender_name: string;
+  sender_profile_picture: string;
+  receiver_id: number;
+  receiver_name: string;
+  receiver_profile_picture: string;
+  content: string;
+  content_type: string;
+  created_at: string;
+  date: string;
+  timestamp: string;
+  download_url: string | null;
+  is_read: boolean;
+  read_at: string | null;
+  receiver: {
+    id: number;
+    name: string;
+    email: string;
+    tier_id: number;
+    role: string;
+  };
+}
+
+// Interface for the input object
+export interface ChatAPIResponse {
+  message: SocketMessage;
+  sender_id: number;
+  timestamp: string;
 }
 
 export type GroupChatAPIResponse = {
@@ -341,15 +403,14 @@ export const transformMessagesFromAPI = (
 ): NormalizedMessage[] => {
   let messagesRaw: any[] = [];
   if ("messages" in apiData) messagesRaw = apiData.messages;
-
   return messagesRaw.map((msg) => {
     // Determine timestamp
     const timestamp =
       isGroupChat && msg.created_at
         ? moment(msg.created_at).format("YYYY-MM-DD HH:mm:ss")
         : msg.date && msg.timestamp
-        ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
-        : "";
+          ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
+          : "";
 
     // Determine content_type
     let content_type = "text";
@@ -368,21 +429,72 @@ export const transformMessagesFromAPI = (
     const sender =
       isGroupChat && msg.sender
         ? {
-            fullname: msg.sender.name ?? "",
-            picture: msg.sender.profile?.picture ?? empty,
-            title: msg.sender.profile?.title ?? "",
-          }
+          fullname: msg.sender.name ?? "",
+          picture: msg.sender.profile?.picture ?? empty,
+          title: msg.sender.profile?.title ?? "",
+        }
         : undefined;
 
     return {
       id: msg.id,
       text: msg.content ?? null,
       senderId: Number(msg.sender_id),
+      is_read: msg.is_read,
       timestamp,
       content_type,
       sender,
     } as NormalizedMessage;
   });
+};
+
+
+// trans
+export const transformMessageFromAPI = (
+  apiData: ChatAPIResponse,
+  isGroupChat: boolean
+): NormalizedMessage => {
+  const msg = apiData.message;
+  const empty = ""; // Assumed constant from original
+
+  // Determine timestamp
+  const timestamp =
+    isGroupChat && msg.created_at
+      ? moment(msg.created_at).format("YYYY-MM-DD HH:mm:ss")
+      : msg.date && msg.timestamp
+        ? moment(`${msg.date} ${msg.timestamp}`).format("YYYY-MM-DD HH:mm:ss")
+        : "";
+
+  // Determine content_type
+  let content_type = "text";
+  if (
+    msg.content_type &&
+    msg.content_type !== "text" &&
+    typeof msg.content === "string"
+  ) {
+    content_type = getContentTypeFromExtension(msg.content);
+  } else if (msg.content_type && msg.content_type !== "text") {
+    content_type = msg.content_type;
+  }
+
+  // Sender info for group chat
+  const sender =
+    isGroupChat && msg.sender_name
+      ? {
+        fullname: msg.sender_name ?? "",
+        picture: msg.sender_profile_picture ?? empty,
+        title: "", // No profile.title in input
+      }
+      : undefined;
+
+  return {
+    id: msg.id,
+    text: msg.content ?? null,
+    is_read: msg.is_read,
+    senderId: Number(msg.sender_id),
+    timestamp,
+    content_type,
+    sender,
+  } as NormalizedMessage;
 };
 
 export function isDirectChatResponse(obj: any): obj is DirectChatAPIResponse {
@@ -395,12 +507,20 @@ export function isDirectChatResponse(obj: any): obj is DirectChatAPIResponse {
 }
 
 export function isGroupChatResponse(obj: any): obj is GroupChatAPIResponse {
+
+  console.log("haaaaaahahhahahhhhhhhhahahhaha", { obj })
+  console.log("returning", !!obj &&
+    typeof obj === "object" &&
+    "group_chat" in obj &&
+    Array.isArray(obj.messages))
   return (
     !!obj &&
     typeof obj === "object" &&
     "group_chat" in obj &&
     Array.isArray(obj.messages)
   );
+
+
 }
 
 export const groupMessagesByDay = (
@@ -435,7 +555,7 @@ export const groupMessagesByDay = (
       sender_id: message.senderId,
       time: moment(message.timestamp, "YYYY-MM-DD hh:mm A").format("hh:mm A"),
       content_type: message.content_type,
-      seen: false,
+      seen: message?.is_read as boolean,
       sender: {
         fullname: message.sender?.fullname ?? "",
         picture: message.sender?.picture ?? empty,
@@ -471,6 +591,35 @@ export const blobToBase64 = (blob: Blob): Promise<string> => {
     reader.readAsDataURL(blob);
   });
 };
+
+type EventMessage = any; // replace with proper type if available
+
+export const normalizeEventMessage = (
+  data: EventMessage,
+  isGroupChat: boolean
+) => {
+  const msg = data.message;
+
+  return {
+    id: msg.id,
+    content: msg.content,
+    content_type: msg.content_type,
+    created_at: msg.created_at,
+    date: msg.date,
+    timestamp: msg.timestamp,
+    sender_id: msg.sender_id,
+    sender: isGroupChat
+      ? {
+        name: msg.sender_name || "",
+        profile: {
+          picture: msg.sender_profile_picture || "",
+          title: msg.sender_title || "",
+        },
+      }
+      : undefined,
+  };
+};
+
 
 
 
@@ -519,3 +668,26 @@ export const convertToFormData = (audioBlob: Blob) => {
   formData.append("receiver_type", "user");
   return formData;
 };
+
+
+export function mapConversationsArray(
+  conversations: ConversationsUpdatedMessage[]
+): PageMessages[] {
+  return conversations.map((conv) => ({
+    pfp: conv.avatar,
+    desc: conv.latest_message,
+    time: conv.latest_message_time,
+    created_at: "",
+    fullname: conv.name,
+    id: String(conv.id),
+    messages: conv.participant_count ?? undefined,
+    verified: conv.is_online ?? undefined, // adjust if "verified" is different from "online"
+    content_type: conv.latest_message_type,
+    unread_count: conv.unread_count,
+    tier: conv.tier,
+    role: conv.role,
+    title: conv.title ?? "",
+    type: conv.type,
+  }));
+}
+

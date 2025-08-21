@@ -39,7 +39,7 @@ const TeamChatSidebar = () => {
       <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
         <div className="flex-1 relative">
           <Input
-            id="search"
+            id="search" 
             className="w-full"
             placeholder="Search for messages"
             leftIcon={"/icons/search-icon.svg"}

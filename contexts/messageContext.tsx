@@ -35,6 +35,7 @@ type MessagesContextType = {
   selectedFilters: string[];
   setSelectedFilters: (f: string[]) => void;
   selectedBranches: string[];
+  setPageUsersMsg: React.Dispatch<React.SetStateAction<PageMessages[]>>;
   setSelectedBranches: (b: string[]) => void;
   message: string;
   setMessage: React.Dispatch<React.SetStateAction<string>>;
@@ -78,9 +79,7 @@ export const MessagesProvider = ({
 }) => {
   const { setChatData } = useChatStore();
   const isGroupChat = useGlobalStore((s) => s.isGroupChat);
-
   const loggedInUserId = getLocalStorage("user_id");
-
   const [message, setMessage] = useState("");
   const [reqLoading, setReqLoading] = useState(false);
   const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[]>([]);
@@ -190,8 +189,8 @@ export const MessagesProvider = ({
       const res = await sendFn(objectToFormData(payload), `${id}`);
       if (res) {
         setMessage("");
-        window.dispatchEvent(new Event("refetch-users-msg"));
-        window.dispatchEvent(new Event("refetchMessages"));
+        // window.dispatchEvent(new Event("refetch-users-msg"));
+        // window.dispatchEvent(new Event("refetchMessages"));
       }
     } catch (err) {
       toast.error("Failed to send msg");
@@ -251,8 +250,8 @@ export const MessagesProvider = ({
       const sendFn = isGroupChat ? SendGroupMessage : SendMessage;
       const res = await sendFn(objectToFormData(payload), `${id}`);
       if (res) {
-        window.dispatchEvent(new Event("refetch-users-msg"));
-        window.dispatchEvent(new Event("refetchMessages"));
+        // window.dispatchEvent(new Event("refetch-users-msg"));
+        // window.dispatchEvent(new Event("refetchMessages"));
       }
     } catch (err) {
       toast.error("Failed to send image");
@@ -299,6 +298,7 @@ export const MessagesProvider = ({
         setSelectedFilters,
         selectedBranches,
         setSelectedBranches,
+        setPageUsersMsg,
         message,
         setMessage,
         reqLoading,

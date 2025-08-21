@@ -108,6 +108,7 @@ const CreateStaffModal: React.FC<CreateStaffModalProps> = ({
       star={formStep === 1}
       heading={formStep === 2 ? "Choose Avatar" : "Create New Staff"}
       back={formStep === 2 ? { handleBack: () => setFormStep(1) } : undefined}
+      className="w-[92%] sm:w-[90%] md:w-[85%] max-md:h-[70vh]"
     >
       <div className="relative">
         <AuthForm

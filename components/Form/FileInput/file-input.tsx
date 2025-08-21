@@ -199,7 +199,7 @@ const FileInput: React.FC<FileInputProps> = ({
             aria-label="upload"
             onClick={handleClick}
             className={`relative  ${clsx(
-              "p-3 rounded-[8px] w-full border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
+              "p-3 rounded-[8px] w-full [h-44px] border border-solid border-[#C1C2C366] text-text-disabled text-xs md:text-sm font-normal overflow-hidden whitespace-nowrap text-ellipsis flex items-center justify-between hover:border-[#00000099] transition-colors duration-300 ease-in-out",
               textStyles
               //fileName ? "bg-neutral-2" : "bg-none"
             )}`}

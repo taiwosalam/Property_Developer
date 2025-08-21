@@ -95,7 +95,7 @@ const TenancyRecord = ({
   );
 
   const { data, loading, silentLoading, error, isNetworkError } = useFetch<{
-    data: { previous_records: { data: any[]; pagination: any } };
+    data: { previous_tenants: { data: any[]; pagination: any } };
   }>(`/unit/${unit_id}/view`, fetchOptions);
 
   const fetchNextPage = useCallback(
@@ -126,8 +126,8 @@ const TenancyRecord = ({
 
   // When new API data arrives, update records and pagination
   useEffect(() => {
-    if (data && data.data?.previous_records) {
-      const newRecords = data.data.previous_records.data || [];
+    if (data && data.data?.previous_tenants) {
+      const newRecords = data.data.previous_tenants.data || [];
       setRecords((prevRecords) => {
         const combined = [...prevRecords, ...newRecords];
         return combined.filter(
@@ -135,7 +135,7 @@ const TenancyRecord = ({
             index === self.findIndex((r) => r.id === record.id)
         );
       });
-      const newPagination = data.data.previous_records.pagination;
+      const newPagination = data.data.previous_tenants.pagination;
       if (newPagination) {
         setPagination({
           current_page: newPagination.current_page,

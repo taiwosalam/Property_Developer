@@ -154,20 +154,20 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                 href={
                   sectionHeader === "Staffs"
                     ? getStaffsPageLink(
-                        branchId || "0",
-                        notification.staff_ID || "0"
-                      )
+                      branchId || "0",
+                      notification.staff_ID || "0"
+                    )
                     : sectionHeader === "Recent Messages"
-                    ? `/messages/${notification.id}`
-                    : sectionHeader === "Recent Complaints" && seeAllLink
-                    ? seeAllLink
-                    : "#"
+                      ? `/messages/${notification.id}`
+                      : sectionHeader === "Recent Complaints" && seeAllLink
+                        ? seeAllLink
+                        : "#"
                 }
                 className="flex items-center gap-3 w-[70%]"
               >
                 <div className="custom-secondary-bg rounded-full p-[1px]">
                   <Picture
-                    src={notification.avatarSrc || empty}
+                    src={notification.avatarSrc || "/empty/avatar.png"}
                     alt="profile picture"
                     status={notification.online}
                     size={36}
@@ -186,17 +186,17 @@ const NotificationCard: React.FC<notificationCardProps> = ({
 
                   {sectionHeader === "Staffs"
                     ? notification.position && (
-                        <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                          {notification.position === "manager"
-                            ? "Branch Manager"
-                            : notification.position}
-                        </p>
-                      )
+                      <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                        {notification.position === "manager"
+                          ? "Branch Manager"
+                          : notification.position}
+                      </p>
+                    )
                     : notification.title && (
-                        <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
-                          {notification.title}
-                        </p>
-                      )}
+                      <p className="line-clamp-1 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
+                        {notification.title}
+                      </p>
+                    )}
 
                   {sectionHeader === "Recent Complaints" && (
                     <p className="line-clamp-2 text-ellipsis text-xs text-text-secondary capitalize dark:text-text-disabled">
@@ -243,13 +243,14 @@ const NotificationCard: React.FC<notificationCardProps> = ({
                   <p className="text-[10px] text-text-disabled">
                     {notification.time}
                   </p>
-                  {notification.count !== undefined && (
-                    <div className="ml-auto bg-brand-9 inline-flex items-center justify-center min-w-[30px] h-[20px] px-1 rounded-full whitespace-nowrap">
-                      <p className="text-white text-[10px] font-medium text-center">
-                        {roundUptoNine(notification.count)}
-                      </p>
-                    </div>
-                  )}
+                  {notification.count !== undefined &&
+                    notification.count !== 0 && (
+                      <div className="ml-auto bg-brand-9 inline-flex items-center justify-center !size-[20px] px-1 rounded-full whitespace-nowrap">
+                        <p className="text-white text-[10px] font-medium text-center">
+                          {roundUptoNine(notification.count)}
+                        </p>
+                      </div>
+                    )}
                 </div>
               )}
             </div>

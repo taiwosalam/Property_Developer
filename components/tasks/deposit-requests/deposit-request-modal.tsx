@@ -19,9 +19,12 @@ import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
 import api, { handleAxiosError } from "@/services/api";
 import { useModal } from "@/components/Modal/modal";
-import PopupImageModal from "@/components/PopupSlider/PopupSlider";
-import { empty } from "@/app/config";
-import PopupVideoModal from "@/components/VideoPlayer/PopupVideoModal";
+import Switch from "@/components/Form/Switch/switch";
+import ActionModalPreset from "@/components/Modal/modal-preset";
+import { tenantRejectOptions } from "@/app/(nav)/management/tenants/data";
+import Select from "@/components/Form/Select/select";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { flagTenant } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
 
 dayjs.extend(utc);
 
@@ -46,6 +49,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   branch,
   amount,
   is_examine,
+  tenant_id,
   is_inventory,
   is_maintain,
   inventory_at,
@@ -66,6 +70,10 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [updatingField, setUpdatingField] = useState<string | null>(null);
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [openFlag, setOpenFlag] = useState(false);
+  const [flagSelectValue, setFlagSelectValue] = useState<string | null>(null);
+  const [modalView, setModalView] = useState<"menu" | "flag">("menu");
   const { role } = useRole();
   const { setIsOpen } = useModal();
 
@@ -320,6 +328,31 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     ]
   );
 
+  const handleFlagProceed = async () => {
+    if (!flagSelectValue) {
+      toast.warning("Please select a reason before flagging");
+      return;
+    }
+    const payload = {
+      is_flagged: 1,
+      reason: flagSelectValue,
+    };
+    try {
+      setIsLoading(true);
+      const res = await flagTenant(Number(tenant_id), objectToFormData(payload));
+      if (res) {
+        toast.success("Flagged Successfully");
+        // Close modal after flagging
+        // setIsOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong, try again");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const commonClasses =
     "bg-neutral-3 dark:bg-[#3C3D37] px-[18px] py-2 rounded-[4px] flex-row-reverse justify-between items-center w-full";
 
@@ -382,128 +415,155 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     },
   };
 
-  return (
-    <ModalPreset title="Caution Deposit Request">
-      <div className="pb-[45px] text-base">
-        <div className="space-y-2">
-          <LabelValuePair label="ID" value={requestId} />
-          <LabelValuePair label="Property Name" value={propertyName} />
-          <LabelValuePair label="Location (State)" value={state} />
-          <LabelValuePair label="Unit Details" value={unitDetails} />
-          <LabelValuePair label="Branch" value={branch} />
-          <LabelValuePair label="Deposit Amount" value={amount} />
+  if (modalView === "menu") {
+    return (
+      <ModalPreset title="Caution Deposit Request">
+        <div className="pb-[45px] text-base">
+          <div className="space-y-2">
+            <LabelValuePair label="ID" value={requestId} />
+            <LabelValuePair label="Property Name" value={propertyName} />
+            <LabelValuePair label="Location (State)" value={state} />
+            <LabelValuePair label="Unit Details" value={unitDetails} />
+            <LabelValuePair label="Branch" value={branch} />
+            <LabelValuePair label="Deposit Amount" value={amount} />
 
-          {(status === "completed" || status === "approved") && (
-            <div className="space-y-2">
-              <LabelValuePair
-                label="Amount Refunded"
-                value={refunded_amount || "--- ---"}
-              />
-              <LabelValuePair
-                label="Resolved By"
-                value={resolved_by || "--- ---"}
-              />
-              <LabelValuePair
-                label="Resolved Date"
-                value={resolved_date || "--- ---"}
-              />
-            </div>
-          )}
-        </div>
+            {(status === "completed" || status === "approved") && (
+              <div className="space-y-2">
+                <LabelValuePair
+                  label="Amount Refunded"
+                  value={refunded_amount || "--- ---"}
+                />
+                <LabelValuePair
+                  label="Resolved By"
+                  value={resolved_by || "--- ---"}
+                />
+                <LabelValuePair
+                  label="Resolved Date"
+                  value={resolved_date || "--- ---"}
+                />
+              </div>
+            )}
+          </div>
 
-        <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
+          <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
 
-        <form className="space-y-4" onSubmit={handleDepositRequest}>
-          <div className="flex justify-between items-center">
+          <div className="flex justify-between w-full items-center mb-2">
+            <span className={`text-text-secondary`}>Flag Tenant</span>
+            <Switch onClick={() => setOpenFlag(true)} checked={openFlag} />
+          </div>
+
+          <form className="space-y-4" onSubmit={handleDepositRequest}>
             <p className="text-text-tertiary dark:text-white">
               Caution Deposits Details:
             </p>
 
-            {is_inventory && <Button className="py-1 font-normal px-2" onClick={() =>setScreenModal(true)}>View inventory</Button>}
-          </div>
+            <div className="space-y-2 relative">
+              {depositChecklist.map((deposit, index) => {
+                const fieldKey = checklistMapping[deposit].field;
+                const isFieldUpdating = updatingField === fieldKey;
+                const isChecked = checkboxStates[fieldKey];
 
-          <div className="space-y-2 relative">
-            {depositChecklist.map((deposit, index) => {
-              const fieldKey = checklistMapping[deposit].field;
-              const isFieldUpdating = updatingField === fieldKey;
-              const isChecked = checkboxStates[fieldKey];
-
-              return (
-                <Checkbox
-                  key={`${deposit}-${index}`}
-                  id={`${deposit}-${requestId}`}
-                  name={fieldKey}
-                  className={commonClasses}
-                  checked={isChecked}
-                  onChange={() => handleCheckboxChange(fieldKey)}
-                  disabled={isFieldUpdating} // Disable if updating or already checked
-                  hoverContent={<HoverContent field={fieldKey} />}
-                >
-                  {isFieldUpdating
-                    ? "Please wait..."
-                    : checklistMapping[deposit].label}
-                </Checkbox>
-              );
-            })}
-          </div>
-
-          {((role === "manager" && canApproveCautionDeposit) ||
-            role === "director") &&
-            (status === "pending" || status === "progress") && (
-              <div className="space-y-5">
-                <div className="flex gap-1 items-center">
-                  <p className="text-red-500">*</p>
-                  <p className="text-text-tertiary dark:text-white">
-                    Caution deposit held in escrow by the{" "}
-                    {request_from === "company"
-                      ? "Management Company"
-                      : request_from === "landlord"
-                      ? "Landlord/Landlady"
-                      : request_from === "escrow"
-                      ? "Administrator"
-                      : "Management Company"}
-                  </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
-                  <Input
-                    id="refund_amount"
-                    label="Amount to be Refunded"
-                    CURRENCY_SYMBOL="₦"
-                    formatNumber
-                    value={formattedRefundAmount}
-                    onChange={handleRefundAmountChange}
-                    disabled={isLoading}
-                  />
-                  <Button
-                    type="submit"
-                    size="xs_normal"
-                    className="py-2 px-6"
-                    disabled={isLoading || updatingField !== null}
+                return (
+                  <Checkbox
+                    key={`${deposit}-${index}`}
+                    id={`${deposit}-${requestId}`}
+                    name={fieldKey}
+                    className={commonClasses}
+                    checked={isChecked}
+                    onChange={() => handleCheckboxChange(fieldKey)}
+                    disabled={isFieldUpdating} // Disable if updating or already checked
+                    hoverContent={<HoverContent field={fieldKey} />}
                   >
-                    {isLoading ? "Processing..." : "Refund Now"}
-                  </Button>
+                    {isFieldUpdating
+                      ? "Please wait..."
+                      : checklistMapping[deposit].label}
+                  </Checkbox>
+                );
+              })}
+            </div>
+
+            {((role === "manager" && canApproveCautionDeposit) ||
+              role === "director") &&
+              (status === "pending" || status === "progress") && (
+                <div className="space-y-5">
+                  <div className="flex gap-1 items-center">
+                    <p className="text-red-500">*</p>
+                    <p className="text-text-tertiary dark:text-white">
+                      Caution deposit held in escrow by the{" "}
+                      {request_from === "company"
+                        ? "Management Company"
+                        : request_from === "landlord"
+                        ? "Landlord/Landlady"
+                        : request_from === "escrow"
+                        ? "Administrator"
+                        : "Management Company"}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
+                    <Input
+                      id="refund_amount"
+                      label="Amount to be Refunded"
+                      CURRENCY_SYMBOL="₦"
+                      formatNumber
+                      value={formattedRefundAmount}
+                      onChange={handleRefundAmountChange}
+                      disabled={isLoading}
+                    />
+                    <Button
+                      type="submit"
+                      size="xs_normal"
+                      className="py-2 px-6"
+                      disabled={isLoading || updatingField !== null}
+                    >
+                      {isLoading ? "Processing..." : "Refund Now"}
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            )}
-        </form>
-      </div>
+              )}
+          </form>
+        </div>
+      </ModalPreset>
+    );
+  }
 
-      {/* Image Modal */}
-      <PopupImageModal
-        isOpen={screenModal}
-        onClose={() => setScreenModal(false)}
-        images={imageOnly}
-        currentIndex={adjustedIndex}
-      />
+  if (modalView === "flag") {
+    return (
+      <ActionModalPreset
+        type="warning"
+        back={() => setModalView("menu")}
+        customWidth="w-[60%] md:w-[40%] max-h-[85%]"
+        className="overflow-visible w-full"
+      >
+        <div className="flex items-center flex-col">
+          <p className="my-2">Are you sure you want to flag this user?</p>
+          <div className="flex w-full my-2 items-center relative z-[1000]">
+            <Select
+              label="Please select a reason from the options provided before proceeding."
+              id="reason"
+              options={tenantRejectOptions}
+              value={flagSelectValue ?? ""}
+              onChange={setFlagSelectValue}
+              className="w-full z-[100]"
+            />
+          </div>
+          <div className="flex gap-2 items-center mt-4">
+            <Button
+              size="base_medium"
+              variant="light_red"
+              className="py-2 px-8 w-full"
+              onClick={handleFlagProceed}
+              disabled={isLoading}
+            >
+              {isLoading ? "Please wait..." : "Flag"}
+            </Button>
+          </div>
+        </div>
+      </ActionModalPreset>
+    );
+  }
 
-      <PopupVideoModal
-        isOpen={videoModal}
-        videoUrl={videoUrl}
-        onClose={() => setVideoModal(false)}
-      />
-    </ModalPreset>
-  );
+  return null;
 };
 
 export default DepositRequestModal;

@@ -24,6 +24,7 @@ import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useRole } from "@/hooks/roleContext";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { cacheManager } from "@/hooks/cacheManager";
 
 type AddLandlordModalOptions =
   | "options"
@@ -78,6 +79,7 @@ const AddLandlordModal = () => {
       router.push(switchPathname());
     } else {
       setTimeout(() => {
+        cacheManager.deleteCacheByUrl('landlords')
         window.dispatchEvent(new Event("refetchLandlords"));
       }, 0);
     }

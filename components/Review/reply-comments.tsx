@@ -47,8 +47,9 @@ const ReplyComment: React.FC<ReplyCommentProps> = ({
       </div>
       <div className=" flex-1 space-y-2">
         <div className="flex gap-2 items-center">
-          <p className="text-text-primary dark:text-white text-sm font-medium capitalize">
-            {name.toLocaleLowerCase()}
+          <p className="text-text-primary text-sm font-medium capitalize">
+            {/* {name.toLocaleLowerCase()} */}
+            {name}
           </p>
           {tier && (
             <BadgeIcon color={getBadgeColor(Number(tier)) as BadgeIconColors} />

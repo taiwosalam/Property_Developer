@@ -74,11 +74,11 @@ const SettingsSMS = () => {
         <div className="custom-flex-col gap-8">
           <SettingsSectionTitle desc="Custom sender SMS name allows you to input a preferred name, providing a way to brand your SMS messages with a personalized touch.  replaces the sender numbers displayed on devices receiving your SMS messages with a name of your choice, up to 11 characters in length." />
           <AuthForm onFormSubmit={handleUpdateSMS} skipValidation>
-            <div className="flex gap-5">
+            <div className="flex mb-4 sm:mb-0  gap-5">
               <Input
                 id="desired_name"
                 label="input desired name"
-                className="w-[277px]"
+                className="sm:w-[277px] w-full"
                 maxLength={MAX_SMS_NAME_LENGTH}
                 name="desired_name"
                 value={name}

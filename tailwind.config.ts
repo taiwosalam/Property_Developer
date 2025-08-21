@@ -11,6 +11,9 @@ const config = {
   prefix: "",
   theme: {
     extend: {
+      screens: {
+        'xs': '480px',
+      },
       colors: {
         background: {
           1: "#FBFBFB",
@@ -25,7 +28,6 @@ const config = {
           7: "var(--brand-7)",
           9: "var(--brand-9)",
           10: "var(--brand-10)",
-
           primary: "var(--brand-primary)",
           secondary: "var(--brand-secondary)",
           tertiary: "var(--brand-tertiary)",

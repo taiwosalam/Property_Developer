@@ -210,6 +210,7 @@ const Undo = () => {
     <div className="space-y-9">
       <div className="flex gap-5 mt-4 overflow-x-auto scrollbar-hide">
         <ManagementStatistcsCard
+          className="mt-4"
           title="Total"
           newData={this_month}
           total={total}

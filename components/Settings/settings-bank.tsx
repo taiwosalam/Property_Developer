@@ -37,9 +37,7 @@ interface BankOption {
   label: string;
 }
 
-const SettingsBank: React.FC<SettingsBankProps> = ({
-  action,
-}) => {
+const SettingsBank: React.FC<SettingsBankProps> = ({ action }) => {
   const [reqLoading, setReqLoading] = useState(false);
   const [next, setNext] = useState(false);
   const [edit, setEdit] = useState(false);

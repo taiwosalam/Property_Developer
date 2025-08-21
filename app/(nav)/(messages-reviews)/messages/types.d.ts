@@ -1,3 +1,4 @@
+import { Conversations } from './types.d';
 export interface MessagesLayoutProps {
   children: React.ReactNode;
 }
@@ -155,3 +156,42 @@ export interface PageMessages {
     role: string;
   }[];
 }
+
+export interface ConversationsUpdatedMessage {
+  avatar: string;
+  created_by?: string | null;
+  id: number;
+  is_online?: boolean;
+  is_private?: boolean | null;
+  latest_message: string;
+  latest_message_time: string;
+  latest_message_type: string;
+  name: string;
+  participant_count?: number | null;
+  phone?: string | null;
+  director_phone?: string | null;
+  profile_phone?: string | null;
+  user_phone?: string | null;
+  role: string;
+  tier: number;
+  title?: string | null;
+  type: string;
+  unread_count: number;
+}
+
+export interface ConversationsUpdatedReturn {
+  has_new_conversations: boolean;
+  timestamp: string;
+  user_id: number;
+  conversation_data: ConversationsUpdatedMessage[]
+}
+
+
+type ReadEvent = {
+  event_type: "read";
+  message_ids: number[];
+  read_at: string;
+  reader_id: number;
+  sender_id: number;
+  timestamp: string;
+};

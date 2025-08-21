@@ -72,7 +72,7 @@ export const Campaign = () => {
     }
   }, [campaignParams]);
 
-  const [campaignTable, setCampaignTable] = useState<ICampaignTable | null>(
+  const [campaignTable, setCampaignTable] = useState<ICampaignTable| null>(
     null
   );
 
@@ -265,14 +265,12 @@ export const Campaign = () => {
                 className=""
                 id="period"
                 options={PERIOD_OPTIONS.map((option) => ({
-                  value: `${option.value} ${
-                    option.value === 1 ? "month" : "months"
-                  }`,
-                  label: `${option.label}${
-                    option.discount
+                  value: `${option.value} ${option.value === 1 ? "month" : "months"
+                    }`,
+                  label: `${option.label}${option.discount
                       ? ` (-${(option.discount * 100).toFixed(1)}%)`
                       : ""
-                  }`,
+                    }`,
                 }))}
                 placeholder="Select period"
                 label="Period"
@@ -285,11 +283,10 @@ export const Campaign = () => {
                     (opt) => opt.value === periodValue
                   );
                   return option
-                    ? `${option.label}${
-                        option.discount
-                          ? ` (-${(option.discount * 100).toFixed(1)}%)`
-                          : ""
-                      }`
+                    ? `${option.label}${option.discount
+                      ? ` (-${(option.discount * 100).toFixed(1)}%)`
+                      : ""
+                    }`
                     : "";
                 }}
               />
@@ -303,7 +300,7 @@ export const Campaign = () => {
                   style={{ outline: "none" }}
                 />
 
-                <div className="absolute top-2 bottom-0 right-2">
+                <div className="absolute  top-[2px] sm:top-2 bottom-0 right-2">
                   <Modal>
                     <ModalTrigger>
                       <Button

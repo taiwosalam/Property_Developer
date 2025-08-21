@@ -11,7 +11,7 @@ import useVehicleRecordStore from "@/store/vehicle-record";
 import { toast } from "sonner";
 import { empty } from "@/app/config";
 import Image from "next/image";
-import { VehicleData } from "@/app/(nav)/management/vehicles-record/data";
+import { VehicleData } from "@/app/(nav)/tasks/vehicles-record/data";
 
 export interface PlateData {
   id: string;

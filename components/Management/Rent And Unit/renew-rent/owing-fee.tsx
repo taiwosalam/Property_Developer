@@ -72,7 +72,8 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
       const calculatedPenalty = calculateRentPenalty(
         chargePenalty,
         rent_penalty_setting,
-        rentAmount,
+        renewalTenantTotalPrice,
+        // rentAmount, //NB: CHANGED TO RENEWAL AMOUNT AS ASKED
         renewfeePeriod as RentPeriod,
         due_date
       );

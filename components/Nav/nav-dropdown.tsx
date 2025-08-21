@@ -22,6 +22,7 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
   onToggle,
   isCollapsed,
   className,
+  href: topHref,
 }) => {
   const pathname = usePathname();
   const { role, setRole } = useRole();
@@ -52,29 +53,25 @@ const NavDropdown: React.FC<NavDropdownProps> = ({
             transition={{ duration: 0.3 }}
             key="drop-down-content"
           >
-            {content.map(({ href, label }, index) => (
-              <NavButton
-                onClick={onContentClick}
-                minimized_highlight={
-                  isDirector
-                    ? href
-                      ? pathname.includes(`${children}${href}`)
-                      : false
-                    : href
-                    ? pathname.includes(`${href}`)
-                    : false
-                }
-                href={
-                  isDirector ? href && `/${children}${href}` : href && `${href}`
-                }
-                key={index}
-                minimized
-                type="horizontal_line"
-                isCollapsed={isCollapsed}
-              >
-                {label}
-              </NavButton>
-            ))}
+            {content.map(({ href, label }, index) => {
+              // Construct the full href: use topHref + content href if topHref exists
+              const fullHref = topHref && href ? `${topHref}${href}` : href;
+              return (
+                <NavButton
+                  onClick={onContentClick}
+                  minimized_highlight={
+                    fullHref ? pathname.includes(fullHref) : false
+                  }
+                  href={fullHref}
+                  key={index}
+                  minimized
+                  type="horizontal_line"
+                  isCollapsed={isCollapsed}
+                >
+                  {label}
+                </NavButton>
+              );
+            })}
           </motion.div>
         )}
       </AnimatePresence>

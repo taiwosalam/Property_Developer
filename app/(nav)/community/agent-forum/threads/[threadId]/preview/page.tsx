@@ -74,7 +74,7 @@ const ThreadPreview = () => {
 
   return (
     <div className="mb-16">
-      <div className="flex items-center justify-between flex-wrap gap-2">
+      <div className="flex items-center justify-between flex-wrap gap-2 max-md:pt-4">
         <div className="flex items-center gap-1 mb-1">
           <button
             type="button"

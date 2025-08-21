@@ -163,7 +163,7 @@ const FilterModal: React.FC<FilterModalProps> = ({
   );
 
   return (
-    <div className="w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] custom-flex-col">
+    <div className="w-full sm:w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] mx-[20px] custom-flex-col">
       <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
         <div className="flex items-center gap-1">
           {view !== "default" && (

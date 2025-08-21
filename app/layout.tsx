@@ -11,6 +11,8 @@ import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { fetchProfile } from "@/lib/profile";
 import dynamic from "next/dynamic";
 import RequestWarningModal from "@/components/Modal/request-warning-modal";
+import NotificationListener from "@/services/NotificationListener";
+import NotificationPortal from "@/services/NotificationPortal";
 // import TourManager from "@/tour/components/tour-manager";
 
 const CustomTour = dynamic(() => import("@/tour/components/tour-manager"), {
@@ -58,6 +60,8 @@ export default async function RootLayout({
               <div className="w-full relative z-[1]">{children}</div>
             </Suspense>
             <div id="portal" className="z-[2]">
+              <NotificationListener />
+              <NotificationPortal />
               <Toaster
                 richColors
                 className={`${primaryFont.className} antialiased z-[1000]`}

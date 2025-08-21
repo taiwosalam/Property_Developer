@@ -79,7 +79,6 @@ const Header = () => {
   const { role } = useRole();
 
   const pathname = usePathname();
-
   const { company_id } = usePersonalInfoStore();
   const unreadMessageCount =
     usePersonalInfoStore((state) => state.unread_messages_count) || 0;
@@ -125,6 +124,9 @@ const Header = () => {
     error,
     refetch: refetchNotifications,
   } = useFetch<NotificationApiResponse>(`/notifications`);
+  useRefetchOnEvent("refetchNotifications", () =>
+    refetchNotifications({ silent: true })
+  );
 
   useEffect(() => {
     if (apiData) {
@@ -132,7 +134,6 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
-
       const unreadCount = apiData?.data.filter(
         (notification) => !notification.read_at
       ).length;
@@ -222,6 +223,7 @@ const Header = () => {
         setPersonalInfo("company_id", company.company_id);
         setPersonalInfo("company_logo", company.company_logo);
         setPersonalInfo("company_domain", company.domain);
+        saveLocalStorage("company_domain", company.domain);
         setPersonalInfo("company_name", company.company_name);
         setPersonalInfo("company_state", company.state);
         setPersonalInfo("company_status", company.company_status);

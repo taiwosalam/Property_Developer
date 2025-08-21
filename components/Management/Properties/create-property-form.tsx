@@ -134,7 +134,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
-    { label: "Escrow it", value: "Admin" },
+    { label: "Escrow it", value: "Escrow" }, //NB: OCHUKO SAID TO CHANGE TO Escrow
     { label: "None", value: "" },
   ];
 
@@ -240,7 +240,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       label: branch.branch_name,
     })) || [];
 
-  console.log("selectedStaffs", selectedStaffs);
+  // console.log("selectedStaffs", selectedStaffs);
 
   useEffect(() => {
     const fetchInventory = async () => {
@@ -447,7 +447,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       selectedStaffs
     );
     await handleSubmit(payload);
-    console.log("payload", payload);
+    // console.log("payload", payload);
     setRequestLoading(false);
   };
 
@@ -489,9 +489,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     return CautionDepositOptions.filter((opt) => opt.value !== "Landlord");
   }, [selectedLandlordAgent]);
 
-  if (requestLoading) {
-    return <FullPageLoader text="Submitting..." />;
-  }
+  // if (requestLoading) {
+  //   return <FullPageLoader text="Submitting..." />;
+  // }
 
   const handleSectionTour = () => {
     if (formType === "rental" && editMode && pathname.startsWith("/manager")) {
@@ -751,7 +751,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <>
                   <div className="coordinate-wrapper flex flex-col gap-2">
                     <label> Coordinates </label>
-                    <div className="flex items-center px-2 h-12 text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
+                    <div className="flex items-center px-2 h-[44px] text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                       <Modal>
                         <ModalTrigger asChild>
                           <button className="capitalize bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">

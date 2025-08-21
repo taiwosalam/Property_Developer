@@ -75,7 +75,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
       imageUrl: pfp,
       last_seen,
     });
-
+    const event = new CustomEvent("refetch-users-msg", {
+      detail: { timestamp: Date.now() },
+    });
+    window.dispatchEvent(event);
     setGlobalStore("isGroupChat", isGroupChat);
     if (onClick) {
       onClick();
@@ -97,9 +100,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
             status={online}
             containerClassName="custom-secondary-bg rounded-full"
           />
-          <div className="custom-flex-col gap-1 flex-1">
-            <div className="flex items-center gap-[10px]">
-              <p className="text-text-primary dark:text-white text-base font-medium capitalize">
+          <div className="custom-flex-col gap-1 flex-1 min-w-0">
+            <div className="flex items-center gap-[10px] min-w-0">
+              <p className="text-text-primary dark:text-white text-base font-medium capitalize truncate min-w-0">
                 {capitalizeWords(fullname)}
               </p>
               {!isGroupChat && badgeColor && (
@@ -107,13 +110,13 @@ const MessageCard: React.FC<MessageCardProps> = ({
               )}
             </div>
             {content_type === "text" ? (
-              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full">
+              <p className="text-text-quaternary dark:text-darkText-2 text-sm font-normal truncate w-full max-w-full min-w-0">
                 {truncateText(desc, 30) || ""}
               </p>
             ) : (
-              <div className="flex gap-1 text-sm items-center text-brand-9">
+              <div className="flex gap-1 text-sm items-center text-brand-9 min-w-0">
                 {IconComponent && <IconComponent />}
-                {content_type}
+                <span className="truncate">{content_type}</span>
               </div>
             )}
           </div>
@@ -145,7 +148,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
         }
       }}
       className={clsx(
-        "custom-flex-col gap-4 cursor-pointer transition-colors duration-200",
+        "custom-flex-col gap-4 cursor-pointer transition-colors duration-200 w-full max-w-full overflow-hidden",
         {
           "bg-neutral-2 dark:bg-[#3C3D37]": highlight,
           "hover:bg-neutral-1 dark:hover:bg-[#2A2B27]": !highlight,

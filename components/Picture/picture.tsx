@@ -7,7 +7,6 @@ import type { PictureProps } from "./types";
 import clsx from "clsx";
 import { empty } from "@/app/config";
 
-
 const Picture: React.FC<PictureProps> = ({
   src = empty,
   alt = "profile picture",
@@ -25,7 +24,6 @@ const Picture: React.FC<PictureProps> = ({
 }) => {
   const imageWidth = width ?? size;
   const imageHeight = height ?? size;
-
   const status_wh = Math.min(12, Math.floor(size / 3));
 
   const srcImage = src || empty

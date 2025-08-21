@@ -42,7 +42,14 @@ import Avatars from "@/components/Avatars/avatars";
 import useFetch from "@/hooks/useFetch";
 import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
 import { debounce } from "lodash";
-import { otherNotificationSettings, updateCompanyNotification } from "@/app/(nav)/settings/others/data";
+import {
+  otherNotificationSettings,
+  updateCompanyNotification,
+} from "@/app/(nav)/settings/others/data";
+import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
+import Switch from "@/components/Form/Switch/switch";
+import { SectionSeparator } from "@/components/Section/section-components";
+import { notificationCategories } from "@/app/(nav)/settings/others/data";
 const notificationSettingOptions = [
   {
     title: "System Notification",
@@ -150,7 +157,7 @@ const Others = () => {
       [name]: checked,
     }));
   };
-  
+
   const saveSettings = async () => {
     try {
       setLoadingNotification(true);
@@ -244,8 +251,66 @@ const Others = () => {
           <SettingsUpdateButton
             loading={loadingNotification}
             action={saveSettings}
-            //action={userPlan === "professional" ? saveSettings : undefined}
+          //action={userPlan === "professional" ? saveSettings : undefined}
           />
+        </div>
+      </SettingsSection>
+
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
+      </SettingsSection>
+
+      {/* NOTIFICATION SETTINGS */}
+      <SettingsSection title="Notification Settings">
+        <div className="custom-flex-col gap-8 mt-4">
+          {notificationCategories.map((category, categoryIndex) => (
+            <div key={category.title} className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-lg text-text-primary">{category.title}</h4>
+                  </div>
+                  <p className="text-sm text-text-disabled ml-0 mt-1 mb-3">{category.desc}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Switch
+                    checked={category.options.some(option => (notificationSettings[option.name] ?? true))}
+                    onClick={() => {
+                      const anyChecked = category.options.some(option => (notificationSettings[option.name] ?? true));
+                      const newValue = !anyChecked;
+                      category.options.forEach(option => {
+                        handleSetIsChecked(option.name, newValue);
+                      });
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="ml-4 space-y-3">
+                {category.options.map((option) => (
+                  <DocumentCheckbox
+                    key={option.name}
+                    name={option.name}
+                    darkText
+                    state={{
+                      isChecked: (notificationSettings[option.name] ?? true),
+                      setIsChecked: (value) => handleSetIsChecked(option.name, value),
+                    }}
+                    onChange={handleCheckboxChange}
+                  >
+                    {option.text}
+                  </DocumentCheckbox>
+                ))}
+              </div>
+              {categoryIndex < notificationCategories.length - 1 && (
+                <>
+                  <SectionSeparator />
+                </>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="flex justify-end mt-8">
+          <SettingsUpdateButton loading={loadingNotification} action={saveSettings} />
         </div>
       </SettingsSection>
     </>

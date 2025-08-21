@@ -43,9 +43,10 @@ const EstateSettings = ({
     >
       <RentSectionTitle>{title}</RentSectionTitle>
       <div className="h-[1px] bg-[#C0C2C8] bg-opacity-20" />
+      {/* <div className="flex flex-col xl:flex-row xl:items-center gap-2 xl:justify-between"> */}
       <div className="flex flex-col xl:flex-row xl:items-center gap-2 xl:justify-between">
         <div
-          className={`flex-1 grid gap-y-4 gap-x-2 md:grid-cols-2 ${
+          className={`flex-1 grid gap-y-4 gap-x-2 grid-cols-2 ${
             gridThree ? "lg:grid-cols-3" : "lg:max-w-fit"
           }`}
         >

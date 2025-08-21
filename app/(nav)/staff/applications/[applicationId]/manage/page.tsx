@@ -226,7 +226,7 @@ const ManageApplication = () => {
           className="py-2 px-8"
           disabled={isFlagged}
         >
-          reject application
+          Reject
         </Button>
         <div className="flex gap-6">
           <Button

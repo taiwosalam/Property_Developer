@@ -21,6 +21,7 @@ import { useEffect, useRef, useState } from "react";
 import { useMessages } from "@/contexts/messageContext";
 import { MessageInput } from "./messageInput";
 import { EmojiComponent } from "./message-attachments-components";
+import useWindowWidth from "@/hooks/useWindowWidth";
 
 const MessageInputArea = () => {
   const { id } = useParams();
@@ -33,6 +34,8 @@ const MessageInputArea = () => {
     handleSendMsg,
     handleSendAudio,
   } = useMessages();
+
+  const { isMobile } = useWindowWidth();
 
   // Voice logic
   const [isPlaying, setIsPlaying] = useState(false);
@@ -123,11 +126,12 @@ const MessageInputArea = () => {
               name="chat"
               id="chat"
               placeholder="Type your message here"
-              className="w-full text-sm w-[90%] border-none focus:ring-0 focus:outline-none focus:border-none bg-transparent"
+              // className="w-full text-sm w-[90%] border-none focus:ring-0 focus:outline-none focus:border-none bg-transparent"
+              className="w-full text-sm border-none focus:ring-0 focus:outline-none focus:border-none bg-transparent"
               value={message}
               onChange={handleMessageChange}
             />
-            <div className="flex relative items-center justify-end w-[10%] justify-center text-brand-9">
+            <div className="flex relative items-center justify-end w-[10%] text-brand-9">
               <button
                 type="button"
                 ref={emojiBtnRef}
@@ -140,6 +144,33 @@ const MessageInputArea = () => {
               </button>
               {/* Drop-up emoji popover */}
               {showEmoji && (
+                isMobile ? (
+                  <div
+                    ref={emojiPopoverRef}
+                    className="fixed inset-0 z-50 bottom-[8%] flex items-end bg-black/30"
+                    onClick={() => setShowEmoji(false)}
+                  >
+                    <div
+                      className="w-full bg-white dark:bg-darkText-primary rounded-t-lg p-2 shadow-lg max-h-[50vh] overflow-y-auto"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <EmojiComponent onEmojiSelect={handleEmojiSelect} />
+                    </div>
+                  </div>
+                ) : (
+                  <div
+                    ref={emojiPopoverRef}
+                    className="absolute right-0 bottom-[110%] z-50"
+                    style={{ minWidth: 260 }}
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="bg-white dark:bg-darkText-primary border shadow-md rounded-lg p-2">
+                      <EmojiComponent onEmojiSelect={handleEmojiSelect} />
+                    </div>
+                  </div>
+                )
+              )}
+              {/* {showEmoji && (
                 <div
                   ref={emojiPopoverRef}
                   className="absolute right-0 bottom-[110%] z-50"
@@ -150,7 +181,7 @@ const MessageInputArea = () => {
                     <EmojiComponent onEmojiSelect={handleEmojiSelect} />
                   </div>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
@@ -170,7 +201,7 @@ const MessageInputArea = () => {
         </button>
       ) : (
         <>
-        {/* MICRO BUTTON */}
+          {/* MICRO BUTTON */}
           {!audioUrl && !voiceControls.isRecordingInProgress && (
             <button
               type="button"
