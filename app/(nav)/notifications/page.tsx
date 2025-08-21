@@ -46,7 +46,6 @@ const Notifications = () => {
       const filteredNotifications = role
         ? filterNotificationsByRole(data.notifications, role as UserRole)
         : data.notifications;
-
       setNotifications((prev) => [...prev, ...filteredNotifications]);
       setMeta(data.meta);
       setPage((prev) => prev + 1);

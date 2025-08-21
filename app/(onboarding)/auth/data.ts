@@ -198,8 +198,7 @@ export const getRentalPropertyCreatePath = (
   landlordId?: number
 ): string => {
   const basePath = (prefix: string = "") =>
-    `${prefix}/management/properties/create-rental-property${
-      landlordId ? `?landlord=${landlordId}` : ""
+    `${prefix}/management/properties/create-rental-property${landlordId ? `?landlord=${landlordId}` : ""
     }`;
   switch (role) {
     case "director":
@@ -220,8 +219,7 @@ export const getFacilityPropertyCreatePath = (
   landlordId?: number
 ): string | undefined => {
   const basePath = (prefix: string = "") =>
-    `${prefix}/management/properties/create-gated-estate-property${
-      landlordId ? `?landlord=${landlordId}` : ""
+    `${prefix}/management/properties/create-gated-estate-property${landlordId ? `?landlord=${landlordId}` : ""
     }`;
   switch (role) {
     case "director":
@@ -244,11 +242,11 @@ interface LoginResponse {
   subscription_expired: boolean;
   data: {
     details: {
-      id: string | number; 
-      user_id?: string; 
-      userid?: string; 
+      id: string | number;
+      user_id?: string;
+      userid?: string;
       email: string;
-      role: string | string[]; 
+      role: string | string[];
       email_verification: boolean;
       unread_messages_count?: number;
       unread_notifications_count?: number;
@@ -259,9 +257,9 @@ interface LoginResponse {
   wallet_id: string | null;
   additional_details: {
     status: "approved" | "pending" | "rejected";
-    user_id?: string; 
+    user_id?: string;
     branch: {
-      id: string | number | null; 
+      id: string | number | null;
       picture: string | null;
     };
     company?: {
@@ -280,7 +278,7 @@ interface LoginResponse {
 }
 
 
-const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
+export const base_url = `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/`;
 
 export const auth_slider_content: AuthSliderContent = [
   {
@@ -356,6 +354,14 @@ export const login = async (formData: Record<string, any>) => {
       sameSite: "Strict",
       path: "/",
     });
+
+
+    await fetch("/api/auth/store-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token }),
+    });
+
 
     // SAVE TO ZUSTAND
     useAuthStore.getState().setAuthState("token", token);

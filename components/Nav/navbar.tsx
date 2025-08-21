@@ -137,8 +137,8 @@ const Header = () => {
       const unreadCount = apiData?.data.filter(
         (notification) => !notification.read_at
       ).length;
+      setPersonalInfo("unread_notifications_count", unreadCount);
       setNotificationCount(unreadCount);
-
       saveLocalStorage("notificationCount", unreadCount);
     }
   }, [apiData]);
@@ -153,6 +153,7 @@ const Header = () => {
 
         if (pathname === "/notifications") {
           saveLocalStorage("notificationCount", 0);
+          setPersonalInfo("unread_notifications_count", 0);
         }
         refetchNotifications();
       }
@@ -386,7 +387,7 @@ const Header = () => {
                 />
                 <NavIcon
                   icon={<BellIcon size={21} />}
-                  count={notificationCounts}
+                  count={notificationCount}
                   alt="notifications"
                   href="/notifications"
                 />
@@ -461,7 +462,7 @@ const Header = () => {
                     />
                     <NavIcon
                       icon={<BellIcon size={21} />}
-                      count={notificationCounts}
+                      count={notificationCount}
                       alt="notifications"
                       href="/notifications"
                     />
@@ -551,7 +552,7 @@ const Header = () => {
                 >
                   <BellIcon />
                   <NotificationBadge
-                    count={roundUptoNine(notificationCounts)}
+                    count={roundUptoNine(notificationCount)}
                     color="green"
                   />
                 </Link>
