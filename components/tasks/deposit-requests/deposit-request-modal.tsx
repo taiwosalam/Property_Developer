@@ -66,6 +66,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   resolved_by,
   resolved_date,
   onDataUpdate,
+  isRent,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [updatingField, setUpdatingField] = useState<string | null>(null);
@@ -310,7 +311,10 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     };
     try {
       setIsLoading(true);
-      const res = await flagTenant(Number(tenant_id), objectToFormData(payload));
+      const res = await flagTenant(
+        Number(tenant_id),
+        objectToFormData(payload)
+      );
       if (res) {
         toast.success("Flagged Successfully");
         // Close modal after flagging
@@ -418,10 +422,22 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
 
           <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
 
-          <div className="flex justify-between w-full items-center mb-2">
-            <span className={`text-text-secondary`}>Flag Tenant</span>
-            <Switch onClick={() => setOpenFlag(true)} checked={openFlag} />
-          </div>
+    
+          {isRent && (
+            <div className="flex justify-between w-full items-center mb-2">
+              <span className="text-text-secondary">Flag Tenant</span>
+              <Switch
+                onClick={() => {
+                  const newState = !openFlag;
+                  setOpenFlag(newState);
+                  if (newState)
+                    setModalView("flag"); 
+                  else setModalView("menu");
+                }}
+                checked={openFlag}
+              />
+            </div>
+          )}
 
           <form className="space-y-4" onSubmit={handleDepositRequest}>
             <p className="text-text-tertiary dark:text-white">
@@ -498,7 +514,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     );
   }
 
-  if (modalView === "flag") {
+  if (modalView === "flag" && isRent) {
     return (
       <ActionModalPreset
         type="warning"

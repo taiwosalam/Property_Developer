@@ -23,4 +23,5 @@ export type DepositRequestModalProps = {
   resolved_by?: string | null;
   resolved_date?: string | null;
   onDataUpdate?: () => void;
+  isRent?: boolean;
 };

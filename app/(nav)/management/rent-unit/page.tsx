@@ -38,11 +38,13 @@ import useStaffRoles from "@/hooks/getStaffs";
 import ServerError from "@/components/Error/ServerError";
 import { PropertyListResponse } from "./[id]/edit-rent/type";
 import { useSearchParams } from "next/navigation";
+import { useGlobalStore } from "@/store/general-store";
 
 const RentAndUnit = () => {
   const view = useView();
   const searchParams = useSearchParams();
   const { selectedOptions, setSelectedOption } = useSettingsStore();
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const {
     getManagers,
     getStaffs,

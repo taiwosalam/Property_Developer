@@ -14,27 +14,29 @@ import { empty } from "@/app/config";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 
-const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
-  propertyType,
-  images,
-  unitId,
-  unit_title,
-  unit_name,
-  unit_type,
-  tenant_name,
-  expiry_date,
-  rent,
-  caution_deposit,
-  cautionDepositStatus,
-  service_charge,
-  status,
-  badge_color,
-  tenant_id,
-  currency,
-  occupant,
-  invoice_id,
-  page,
-}) => {
+const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = (props) => {
+  const {
+    propertyType,
+    images,
+    unitId,
+    unit_title,
+    unit_name,
+    unit_type,
+    tenant_name,
+    expiry_date,
+    rent,
+    caution_deposit,
+    cautionDepositStatus,
+    service_charge,
+    status,
+    badge_color,
+    tenant_id,
+    currency,
+    occupant,
+    invoice_id,
+    page,
+  } = props;
+
   const [isOpened, setIsOpened] = useState(false);
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
@@ -235,8 +237,9 @@ const RentalPropertyListCard: React.FC<RentalPropertyCardProps> = ({
                 propertyType={propertyType}
                 invoice_id={invoice_id}
                 tenantId={Number(occupant.tenant_id) ?? 0}
-                cautionDepositStatus={cautionDepositStatus}
+                cautionDepositStatus={cautionDepositStatus || false}
                 tenantAgent={occupant.agent}
+                unitData={props} 
                 {...action}
                 route={
                   typeof action.route === "function"

@@ -66,7 +66,6 @@ const RenewalFee = ({
         <FeeDetails
           title={isRental ? "Breakdown" : `${periodString} Fee`}
           feeDetails={feeDetails}
-          // total_package={Number(unitData.renewalTenantTotalPrice)}
           total_package={TOTAL_FEE}
           id={unitData.propertyId as string}
           currency={currency}
