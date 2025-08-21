@@ -18,7 +18,7 @@ export const nav_items: NavItemsProps = [
     label: "management",
     href: "/management",
     content: [
-      { label: "staff & branches", href: "/man/staff-branch" },
+      { label: "staff & branches", href: "/staff-branch" },
       { label: "landlord & landlady", href: "/landlord" },
       { label: "tenants & occupants", href: "/tenants" },
       { label: "inventory", href: "/inventory" },
@@ -32,7 +32,7 @@ export const nav_items: NavItemsProps = [
   {
     type: "briefcase_timer",
     label: "tasks",
-    href:"/tasks",
+    href: "/tasks",
     content: [
       { label: "Applications", href: "/applications" },
       { label: "complaints", href: "/complaints" },
@@ -457,83 +457,83 @@ export const tabs: {
   icon: SVGType;
   label: string;
 }[] = [
-  {
-    icon: "people",
-    label: "management",
-  },
-  {
-    icon: "briefcase_timer",
-    label: "task",
-  },
-  {
-    icon: "chart",
-    label: "listing",
-  },
-  {
-    icon: "menu_board",
-    label: "accounting",
-  },
-  {
-    icon: "status_up",
-    label: "reports",
-  },
-  {
-    icon: "empty_wallet",
-    label: "wallet",
-  },
-  {
-    icon: "task",
-    label: "community",
-  },
-  {
-    icon: "folder",
-    label: "documents",
-  },
-  {
-    icon: "menu_board",
-    label: "tasks",
-  },
-  {
-    icon: "briefcase_timer",
-    label: "settings",
-  },
-];
+    {
+      icon: "people",
+      label: "management",
+    },
+    {
+      icon: "briefcase_timer",
+      label: "task",
+    },
+    {
+      icon: "chart",
+      label: "listing",
+    },
+    {
+      icon: "menu_board",
+      label: "accounting",
+    },
+    {
+      icon: "status_up",
+      label: "reports",
+    },
+    {
+      icon: "empty_wallet",
+      label: "wallet",
+    },
+    {
+      icon: "task",
+      label: "community",
+    },
+    {
+      icon: "folder",
+      label: "documents",
+    },
+    {
+      icon: "menu_board",
+      label: "tasks",
+    },
+    {
+      icon: "briefcase_timer",
+      label: "settings",
+    },
+  ];
 
 export const accountant_search_tabs: {
   icon: SVGType;
   label: string;
 }[] = [
-  {
-    icon: "people",
-    label: "managememt",
-  },
-  {
-    icon: "briefcase_timer",
-    label: "task",
-  },
-  {
-    icon: "menu_board",
-    label: "accounting",
-  },
-  {
-    icon: "task",
-    label: "applications",
-  },
-];
+    {
+      icon: "people",
+      label: "managememt",
+    },
+    {
+      icon: "briefcase_timer",
+      label: "task",
+    },
+    {
+      icon: "menu_board",
+      label: "accounting",
+    },
+    {
+      icon: "task",
+      label: "applications",
+    },
+  ];
 
 export const staff_search_tabs: {
   icon: SVGType;
   label: string;
 }[] = [
-  {
-    icon: "people",
-    label: "managememt",
-  },
-  {
-    icon: "briefcase_timer",
-    label: "task",
-  },
-];
+    {
+      icon: "people",
+      label: "managememt",
+    },
+    {
+      icon: "briefcase_timer",
+      label: "task",
+    },
+  ];
 
 export const getGreeting = () => {
   const currentHour = new Date().getHours();
