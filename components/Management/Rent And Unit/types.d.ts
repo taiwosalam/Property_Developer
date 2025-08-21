@@ -23,8 +23,9 @@ export interface ActionButtonProps {
   tenantAgent?: 'web' | 'mobile';
   invoice_id?: number | null;
   cautionDeposit?: number;
-  cautionDepositStatus?: boolean;
+  cautionDepositStatus: boolean;
   currency?: Currency;
+  unitData?: any;
 }
 
 interface PropertyImageSliderProps {

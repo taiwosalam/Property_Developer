@@ -37,9 +37,10 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
 
   const chargePenalty = unitData.chargePenalty ?? false;
   const rent_penalty_setting = unitData.rent_penalty_setting ?? {};
-  const rentAmount = Number(unitData.fee_amount) || 0;
+  const renew_fee_amount = Number(unitData.renew_fee_amount) || 0;
   const renewfeePeriod = unitData?.renew_fee_period || "monthly";
-  const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
+  // const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
+  const renewalTenantTotalPrice = Number(unitData.renew_fee_amount) || 0;
 
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
@@ -58,22 +59,21 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
       start_date &&
       due_date &&
       renewfeePeriod &&
-      renewalTenantTotalPrice > 0
+      renew_fee_amount > 0
     ) {
       // Calculate owing amount and periods
       const { overduePeriods, owingAmount } = calculateRentFeeAmountAndPeriods({
         start_date,
         due_date,
         feePeriod: renewfeePeriod as RentPeriod,
-        renewalTenantTotalPrice,
+        renew_fee_amount,
       });
 
       // Calculate penalty using due_date
       const calculatedPenalty = calculateRentPenalty(
         chargePenalty,
         rent_penalty_setting,
-        renewalTenantTotalPrice,
-        // rentAmount, //NB: CHANGED TO RENEWAL AMOUNT AS ASKED
+        renew_fee_amount,
         renewfeePeriod as RentPeriod,
         due_date
       );
@@ -85,17 +85,17 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
         start_date,
         due_date,
         renewfeePeriod,
-        renewalTenantTotalPrice,
+        renew_fee_amount,
       });
     }
   }, [
     start_date,
     due_date,
     renewfeePeriod,
-    renewalTenantTotalPrice,
+    renew_fee_amount,
     chargePenalty,
     rent_penalty_setting,
-    rentAmount,
+    renew_fee_amount,
     setPenaltyAmount,
     setOverduePeriods,
   ]);
@@ -119,7 +119,7 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
     return parsedAmount > 0;
   });
 
-  const TOTAL = renewalTenantTotalPrice + owingAmount + penaltyAmount;
+  const TOTAL = renew_fee_amount + owingAmount + penaltyAmount;
 
   const OWNING_PERIODS = feeDetails?.[1]?.amount;
 
@@ -136,13 +136,13 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
     {
       name: "Renewal Amount",
       amount: `${CURRENCY}${formatNumber(
-        parseFloat(renewalTenantTotalPrice.toString())
+        parseFloat(renew_fee_amount.toString())
       )}`,
     },
     {
       name: "Owing Amount (overdue periods × renewal amount)",
       amount: `${overduePeriods} × ${CURRENCY}${formatNumber(
-        parseFloat(renewalTenantTotalPrice.toString())
+        parseFloat(renew_fee_amount.toString())
       )}`,
     },
     {

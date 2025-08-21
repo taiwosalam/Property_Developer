@@ -72,6 +72,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
   onDataUpdate,
   has_inventory,
   inventory,
+  isRent,
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [updatingField, setUpdatingField] = useState<string | null>(null);
@@ -456,10 +457,22 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
 
           <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
 
-          <div className="flex justify-between w-full items-center mb-2">
-            <span className={`text-text-secondary`}>Flag Tenant</span>
-            <Switch onClick={() => setOpenFlag(true)} checked={openFlag} />
-          </div>
+    
+          {isRent && (
+            <div className="flex justify-between w-full items-center mb-2">
+              <span className="text-text-secondary">Flag Tenant</span>
+              <Switch
+                onClick={() => {
+                  const newState = !openFlag;
+                  setOpenFlag(newState);
+                  if (newState)
+                    setModalView("flag"); 
+                  else setModalView("menu");
+                }}
+                checked={openFlag}
+              />
+            </div>
+          )}
 
           <form className="space-y-4" onSubmit={handleDepositRequest}>
             <div className="flex justify-between items-center py-4">
@@ -564,7 +577,7 @@ const DepositRequestModal: React.FC<DepositRequestModalProps> = ({
     );
   }
 
-  if (modalView === "flag") {
+  if (modalView === "flag" && isRent) {
     return (
       <ActionModalPreset
         type="warning"
