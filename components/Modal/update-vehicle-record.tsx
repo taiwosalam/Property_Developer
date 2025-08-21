@@ -13,8 +13,9 @@ import { getUsers } from "@/utils/getData";
 import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
 import { updateVehicleDetails } from "../tasks/vehicles-record/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
-import { updateVehicle } from "@/app/(nav)/management/vehicles-record/records/[recordId]/record/data";
+// import { updateVehicle } from "@/app/(nav)/management/vehicles-record/records/[recordId]/record/data";
 import { useModal } from "./modal";
+import { updateVehicle } from "@/app/(nav)/tasks/vehicles-record/records/[recordId]/record/data";
 
 interface FormData {
   identifier?: string;

@@ -240,7 +240,7 @@ export const isValidAmount = (val: any) => {
 export const moveOut = async (data: any) => {
   try {
     const res = await api.post("/tenant-rent/move_out", data);
-    if (res.status === 201) {
+    if (res.status === 201 || res.status === 200) {
       return true;
     }
   } catch (error) {

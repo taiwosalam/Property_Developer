@@ -1,3 +1,548 @@
+
+
+
+"use client";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { useState } from "react";
+import ActionModalPreset from "@/components/Modal/modal-preset";
+import { ModalTrigger, useModal } from "@/components/Modal/modal";
+import Button from "@/components/Form/Button/button";
+import DepositRequestModal from "@/components/tasks/deposit-requests/deposit-request-modal";
+import { toast } from "sonner";
+import { moveOut } from "./Edit-Rent/data";
+import Switch from "@/components/Form/Switch/switch";
+import Select from "@/components/Form/Select/select";
+import { tenantRejectOptions } from "@/app/(nav)/management/tenants/data";
+import { flagTenant } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { Currency } from "@/utils/number-formatter";
+import api, { handleAxiosError } from "@/services/api";
+
+const FLAG_REASON = "Flag Tenant";
+
+type MoveOutModalProps = {
+  unit_id: string;
+  tenant_id: number;
+  // cautionDeposit: number;
+  cautionDepositStatus: boolean;
+  tenantAgent?: "web" | "mobile";
+  currency?: Currency;
+};
+
+const MoveOutModal = ({
+  unit_id,
+  tenantAgent,
+  tenant_id,
+  // cautionDeposit,
+  cautionDepositStatus,
+  currency,
+}: MoveOutModalProps) => {
+  const isNaira = currency === "naira";
+  const commonClasses =
+    "py-2 rounded-[4px] flex justify-between items-center w-full";
+  const [modalView, setModalView] = useState<
+    "warning" | "menu" | "success" | "deposit" | "flag"
+  >("menu");
+  const isWebUser = tenantAgent?.toLowerCase() === "web";
+  const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+  const [flagSelectValue, setFlagSelectValue] = useState<string | null>(null);
+  const [reqLoading, setReqLoading] = useState(false);
+  const [flagLoading, setFlagLoading] = useState(false);
+  const [hasMovedOut, setHasMovedOut] = useState(false);
+  const [updatingSwitch, setUpdatingSwitch] = useState<string | null>(null);
+  const { setIsOpen } = useModal();
+
+  const reasonOptions = [
+    "Check Inventory",
+    "Create Examine",
+    "Create Maintenance",
+    FLAG_REASON,
+  ];
+
+  // If cautionDeposit <= 0 OR not naira, show the "no caution deposit" + flag tenant block
+  const showNoCautionDepositBlock = !isNaira || cautionDepositStatus;
+
+  // Helper: is flag toggle visible in this modal (menu)?
+  const isFlagOptionVisible =
+    showNoCautionDepositBlock || reasonOptions.includes(FLAG_REASON);
+
+  // API call for inventory, examine, and maintenance switches
+  const handleSwitchAPICall = async (option: string, isChecked: boolean) => {
+    try {
+      setUpdatingSwitch(option);
+      let endpoint = "";
+      let payload = {};
+
+      switch (option) {
+        case "Check Inventory":
+          endpoint = `cautions-deposit/company/${unit_id}`;
+          payload = { is_inventory: isChecked };
+          break;
+        case "Create Examine":
+          endpoint = `cautions-deposit/company/${unit_id}`;
+          payload = { is_examine: isChecked };
+          break;
+        case "Create Maintenance":
+          endpoint = `cautions-deposit/company/${unit_id}`;
+          payload = { is_maintain: isChecked };
+          break;
+        default:
+          return true; // For Flag Tenant, handle separately
+      }
+
+      if (endpoint) {
+        const res = await api.patch(endpoint, payload, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (res.status === 200 || res.status === 201) {
+          toast.success(
+            `${option} ${isChecked ? "enabled" : "disabled"} successfully`
+          );
+          return true;
+        }
+      }
+      return false;
+    } catch (error) {
+      console.error(`Error updating ${option}:`, error);
+      handleAxiosError(error);
+      toast.error(`Failed to update ${option}`);
+      return false;
+    } finally {
+      setUpdatingSwitch(null);
+    }
+  };
+
+  // Toggle for all options - all require move out first
+  const toggleReason = async (reason: string) => {
+    // Check if user has moved out first for ALL options including Flag Tenant
+    if (!hasMovedOut) {
+      toast.warning(
+        "Please move out the tenant first before using this option"
+      );
+      return;
+    }
+
+    if (reason === FLAG_REASON) {
+      if (!selectedReasons.includes(FLAG_REASON)) {
+        setModalView("flag");
+      } else {
+        setSelectedReasons((prev) => prev.filter((r) => r !== FLAG_REASON));
+      }
+    } else {
+      // Prevent multiple simultaneous updates
+      if (updatingSwitch) {
+        return;
+      }
+
+      const isCurrentlySelected = selectedReasons.includes(reason);
+      const newState = !isCurrentlySelected;
+
+      // Make API call
+      const success = await handleSwitchAPICall(reason, newState);
+
+      if (success) {
+        setSelectedReasons((prev) =>
+          newState ? [...prev, reason] : prev.filter((r) => r !== reason)
+        );
+      }
+    }
+  };
+
+  const handleFlagProceed = async () => {
+    if (!flagSelectValue) {
+      toast.warning("Please select a reason before flagging");
+      return;
+    }
+    const payload = {
+      is_flagged: 1,
+      reason: flagSelectValue,
+    };
+    try {
+      setFlagLoading(true);
+      const res = await flagTenant(tenant_id, objectToFormData(payload));
+      if (res) {
+        toast.success("Flagged Successfully");
+        if (!selectedReasons.includes(FLAG_REASON)) {
+          setSelectedReasons((prev) => [...prev, FLAG_REASON]);
+        }
+        // Close modal after flagging
+        setIsOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong, try again");
+    } finally {
+      setFlagLoading(false);
+    }
+  };
+
+  const handleMoveOut = async () => {
+    const payload = {
+      unit_id,
+      reason: selectedReasons,
+    };
+    try {
+      setReqLoading(true);
+      const res = await moveOut(payload);
+      if (res) {
+        setHasMovedOut(true);
+        // window.dispatchEvent(new Event("refetchRentUnit"));
+        // window.dispatchEvent(new Event("property-updated"));
+        // window.dispatchEvent(new Event("refetchtenant"));
+
+        // Only show success modal if no caution deposit or all switches are handled
+        if (showNoCautionDepositBlock) {
+          setModalView("success");
+        } else {
+          // For caution deposit cases, stay in menu view to allow switch toggling
+          toast.success(
+            "Tenant moved out successfully. You can now use the additional options above."
+          );
+        }
+      }
+    } catch (error) {
+      toast.error("Fail to Move out. Please try again later.");
+    } finally {
+      setReqLoading(false);
+    }
+  };
+
+  // If web user, go straight to warning modal
+  if (isWebUser) {
+    return (
+      <ActionModalPreset type="warning">
+        <div className="flex flex-col gap-8">
+          <p className="text-text-tertiary text-[14px]">
+            Are you sure you want to proceed with your action of removing a
+            tenant&apos;s records from the unit?
+          </p>
+          <div className="flex flex-col gap-2">
+            <Button onClick={handleMoveOut} disabled={reqLoading}>
+              {reqLoading ? "Please wait..." : "Proceed"}
+            </Button>
+            <Button
+              variant="blank"
+              className="text-brand-9 font-medium"
+              onClick={() => setIsOpen(false)}
+            >
+              Back
+            </Button>
+          </div>
+        </div>
+      </ActionModalPreset>
+    );
+  }
+
+  if (modalView === "menu") {
+    return (
+      <WalletModalPreset title="Move Out">
+        <div className="space-y-6">
+          <p className="text-sm text-text-secondary dark:text-darkText-1">
+            Your actions indicate that the tenants have already moved out from
+            the current unit of the property, and the said unit is now available
+            for listing to other potential tenants. If you proceed, you will
+            lose unit data, and the tenants will await caution deposit approval.
+          </p>
+          <div className="space-y-4">
+            {showNoCautionDepositBlock ? (
+              <div className="custom-flex-col gap-2">
+                <div className="bg-gray-200 dark:bg-darkText-primary dark:border dark:border-gray-600 p-2 rounded-md shadow-sm">
+                  <p className="text-text-secondary dark:text-white text-sm font-medium">
+                    <span className="text-red-500">*</span> At the time the
+                    occupant moved into the apartment unit, there was no record
+                    of any caution deposit being made. This means that no
+                    financial security amount was submitted or documented to
+                    cover potential damages or breaches of the tenancy agreement
+                    during their stay.
+                  </p>
+                </div>
+                <div className={commonClasses}>
+                  <span className="text-text-secondary dark:text-white">
+                    Flag Tenant
+                    {!hasMovedOut && (
+                      <span className="text-xs text-gray-400 block">
+                        (Move out first)
+                      </span>
+                    )}
+                  </span>
+                  <Switch
+                    onClick={() => toggleReason("Flag Tenant")}
+                    checked={selectedReasons.includes("Flag Tenant")}
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <h3 className="text-black dark:text-white text-base font-medium">
+                  Caution Deposit Requirement
+                </h3>
+                <div className="space-y-3">
+                  <div className="custom-flex-col gap-4">
+                    {reasonOptions.map((option) => {
+                      const isUpdating = updatingSwitch === option;
+                      const isDisabled = !hasMovedOut; // All options require move out first
+
+                      return (
+                        <div key={option} className={commonClasses}>
+                          <span
+                            className={`text-text-secondary ${
+                              isDisabled ? "opacity-50" : ""
+                            }`}
+                          >
+                            {isUpdating ? `${option} (updating...)` : option}
+                            {!hasMovedOut && (
+                              <span className="text-xs text-gray-400 block">
+                                (Move out first)
+                              </span>
+                            )}
+                          </span>
+                          <Switch
+                            onClick={() => toggleReason(option)}
+                            checked={selectedReasons.includes(option)}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+
+          {/* Show different button states based on move out status */}
+          {!hasMovedOut ? (
+            <button
+              className="w-full bg-status-error-1 text-status-error-2 py-2 rounded mt-10"
+              onClick={() => {
+                if (isFlagOptionVisible) {
+                  handleMoveOut();
+                } else {
+                  setModalView("warning");
+                }
+              }}
+              disabled={reqLoading}
+            >
+              {reqLoading ? "Moving Out..." : "Move Out"}
+            </button>
+          ) : (
+            <div className="space-y-2">
+              <div className="bg-green-100 dark:bg-green-900 p-3 rounded-md">
+                <p className="text-green-800 dark:text-green-200 text-sm">
+                  ✓ Tenant has been moved out successfully. You can now toggle
+                  the options above.
+                </p>
+              </div>
+              <button
+                className="w-full bg-green-600 text-white py-2 rounded"
+                onClick={() => setModalView("success")}
+              >
+                Continue to Complete
+              </button>
+            </div>
+          )}
+        </div>
+      </WalletModalPreset>
+    );
+  }
+
+  if (modalView === "warning") {
+    return (
+      <ActionModalPreset type="warning">
+        <div className="flex flex-col gap-8">
+          <p className="text-text-tertiary text-[14px]">
+            Are you sure you want to proceed with your action of removing a
+            tenant&apos;s records from the unit?
+          </p>
+          <div className="flex flex-col gap-2">
+            <Button onClick={handleMoveOut} disabled={reqLoading}>
+              {reqLoading ? "Please wait..." : "Proceed"}
+            </Button>
+            <Button
+              variant="blank"
+              className="text-brand-9 font-medium"
+              onClick={() => setModalView("menu")}
+            >
+              Back
+            </Button>
+          </div>
+        </div>
+      </ActionModalPreset>
+    );
+  }
+
+  if (modalView === "success") {
+    return (
+      <ActionModalPreset type="success">
+        <div className="flex flex-col gap-8">
+          <p className="text-text-tertiary text-[14px]">
+            You have successfully removed the tenant&apos;s record from the unit
+            and the property has been automatically listed on the platforms.
+          </p>
+          <div className="flex flex-col gap-2">
+            <ModalTrigger asChild close>
+              <Button>OK</Button>
+            </ModalTrigger>
+            <Button
+              variant="blank"
+              className="text-brand-9 font-medium"
+              onClick={() => setModalView("deposit")}
+            >
+              Refund Deposits
+            </Button>
+          </div>
+        </div>
+      </ActionModalPreset>
+    );
+  }
+
+  if (modalView === "deposit") {
+    return (
+      <DepositRequestModal
+        requestId="123"
+        tenant_id="123"
+        propertyName="Moniya"
+        state="Oyo"
+        unitDetails="Akinleye"
+        branch="Moniya"
+        amount="₦200"
+      />
+    );
+  }
+
+  if (modalView === "flag") {
+    return (
+      <ActionModalPreset
+        type="warning"
+        back={() => setModalView("menu")}
+        customWidth="w-[60%] md:w-[40%] max-h-[85%]"
+        className="overflow-visible w-full"
+      >
+        <div className="flex items-center flex-col">
+          <p className="my-2">Are you sure you want to flag this user?</p>
+          <div className="flex w-full my-2 items-center relative z-[1000]">
+            <Select
+              label="Please select a reason from the options provided before proceeding."
+              id="reason"
+              options={tenantRejectOptions}
+              value={flagSelectValue ?? ""}
+              onChange={setFlagSelectValue}
+              className="w-full z-[100]"
+            />
+          </div>
+          <div className="flex gap-2 items-center mt-4">
+            <Button
+              size="base_medium"
+              variant="light_red"
+              className="py-2 px-8 w-full"
+              onClick={handleFlagProceed}
+              disabled={flagLoading}
+            >
+              {flagLoading ? "Please wait..." : "Flag"}
+            </Button>
+          </div>
+        </div>
+      </ActionModalPreset>
+    );
+  }
+
+  return null;
+};
+
+export default MoveOutModal;
+
+
+
+
+
+
+
+  // // Toggle for all except "Flag Tenant"
+  // const toggleReason = (reason: string) => {
+  //   if (reason === FLAG_REASON) {
+  //     if (!selectedReasons.includes(FLAG_REASON)) {
+  //       setModalView("flag");
+  //     } else {
+  //       setSelectedReasons((prev) => prev.filter((r) => r !== FLAG_REASON));
+  //     }
+  //   } else {
+  //     setSelectedReasons((prev) =>
+  //       prev.includes(reason)
+  //         ? prev.filter((r) => r !== reason)
+  //         : [...prev, reason]
+  //     );
+  //   }
+  // };
+
+  // const handleFlagProceed = async () => {
+  //   if (!flagSelectValue) {
+  //     toast.warning("Please select a reason before flagging");
+  //     return;
+  //   }
+  //   const payload = {
+  //     is_flagged: 1,
+  //     reason: flagSelectValue,
+  //   };
+  //   try {
+  //     setFlagLoading(true);
+  //     const res = await flagTenant(tenant_id, objectToFormData(payload));
+  //     if (res) {
+  //       toast.success("Flagged Successfully");
+  //       if (!selectedReasons.includes(FLAG_REASON)) {
+  //         setSelectedReasons((prev) => [...prev, FLAG_REASON]);
+  //       }
+  //       // Immediately move out and skip warning!
+  //       await handleMoveOut();
+  //     }
+  //   } catch (err) {
+  //     console.error(err);
+  //     toast.error("Something went wrong, try again");
+  //   } finally {
+  //     setFlagLoading(false);
+  //   }
+  // };
+
+  // const handleMoveOut = async () => {
+  //   const payload = {
+  //     unit_id,
+  //     reason: selectedReasons,
+  //   };
+  //   try {
+  //     setReqLoading(true);
+  //     const res = await moveOut(payload);
+  //     if (res) {
+  //       window.dispatchEvent(new Event("refetchRentUnit"));
+  //       window.dispatchEvent(new Event("property-updated"));
+  //       window.dispatchEvent(new Event("refetchtenant"));
+  //       setModalView("success");
+  //     }
+  //   } catch (error) {
+  //     toast.error("Fail to Move out. Please try again later.");
+  //   } finally {
+  //     setReqLoading(false);
+  //   }
+  // };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 "use client";
 import clsx from "clsx";
 import { ThichDownArrow } from "@/public/icons/icons";
@@ -809,3 +1354,502 @@ const TenancyRecord = ({
 };
 
 export default TenancyRecord;
+
+
+
+
+
+
+
+
+
+
+
+
+
+========================
+
+  // return (
+
+  //   <ModalPreset title="Caution Deposit Request">
+  //     <div className="pb-[45px] text-base">
+  //       <div className="space-y-2">
+  //         <LabelValuePair label="ID" value={requestId} />
+  //         <LabelValuePair label="Property Name" value={propertyName} />
+  //         <LabelValuePair label="Location (State)" value={state} />
+  //         <LabelValuePair label="Unit Details" value={unitDetails} />
+  //         <LabelValuePair label="Branch" value={branch} />
+  //         <LabelValuePair label="Deposit Amount" value={amount} />
+
+  //         {(status === "completed" || status === "approved") && (
+  //           <div className="space-y-2">
+  //             <LabelValuePair
+  //               label="Amount Refunded"
+  //               value={refunded_amount || "--- ---"}
+  //             />
+  //             <LabelValuePair
+  //               label="Resolved By"
+  //               value={resolved_by || "--- ---"}
+  //             />
+  //             <LabelValuePair
+  //               label="Resolved Date"
+  //               value={resolved_date || "--- ---"}
+  //             />
+  //           </div>
+  //         )}
+  //       </div>
+
+  //       <div className="border-t border-brand-7 my-5 -mx-6 border-dashed" />
+
+  //       <div className={""}>
+  //         <span className={`text-text-secondary`}>Flag Tenant</span>
+  //         <Switch onClick={() => setOpenFlag(true)} checked={openFlag} />
+  //       </div>
+
+  //       <form className="space-y-4" onSubmit={handleDepositRequest}>
+  //         <p className="text-text-tertiary dark:text-white">
+  //           Caution Deposits Details:
+  //         </p>
+
+  //         <div className="space-y-2 relative">
+  //           {depositChecklist.map((deposit, index) => {
+  //             const fieldKey = checklistMapping[deposit].field;
+  //             const isFieldUpdating = updatingField === fieldKey;
+  //             const isChecked = checkboxStates[fieldKey];
+
+  //             return (
+  //               <Checkbox
+  //                 key={`${deposit}-${index}`}
+  //                 id={`${deposit}-${requestId}`}
+  //                 name={fieldKey}
+  //                 className={commonClasses}
+  //                 checked={isChecked}
+  //                 onChange={() => handleCheckboxChange(fieldKey)}
+  //                 disabled={isFieldUpdating} // Disable if updating or already checked
+  //                 hoverContent={<HoverContent field={fieldKey} />}
+  //               >
+  //                 {isFieldUpdating
+  //                   ? "Please wait..."
+  //                   : checklistMapping[deposit].label}
+  //               </Checkbox>
+  //             );
+  //           })}
+  //         </div>
+
+  //         {((role === "manager" && canApproveCautionDeposit) ||
+  //           role === "director") &&
+  //           (status === "pending" || status === "progress") && (
+  //             <div className="space-y-5">
+  //               <div className="flex gap-1 items-center">
+  //                 <p className="text-red-500">*</p>
+  //                 <p className="text-text-tertiary dark:text-white">
+  //                   Caution deposit held in escrow by the{" "}
+  //                   {request_from === "company"
+  //                     ? "Management Company"
+  //                     : request_from === "landlord"
+  //                     ? "Landlord/Landlady"
+  //                     : request_from === "escrow"
+  //                     ? "Administrator"
+  //                     : "Management Company"}
+  //                 </p>
+  //               </div>
+
+  //               <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:justify-between">
+  //                 <Input
+  //                   id="refund_amount"
+  //                   label="Amount to be Refunded"
+  //                   CURRENCY_SYMBOL="₦"
+  //                   formatNumber
+  //                   value={formattedRefundAmount}
+  //                   onChange={handleRefundAmountChange}
+  //                   disabled={isLoading}
+  //                 />
+  //                 <Button
+  //                   type="submit"
+  //                   size="xs_normal"
+  //                   className="py-2 px-6"
+  //                   disabled={isLoading || updatingField !== null}
+  //                 >
+  //                   {isLoading ? "Processing..." : "Refund Now"}
+  //                 </Button>
+  //               </div>
+  //             </div>
+  //           )}
+  //       </form>
+  //     </div>
+  //   </ModalPreset>
+  // );
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // "use client";
+// import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+// import { useState } from "react";
+// import ActionModalPreset from "@/components/Modal/modal-preset";
+// import { ModalTrigger, useModal } from "@/components/Modal/modal";
+// import Button from "@/components/Form/Button/button";
+// import DepositRequestModal from "@/components/tasks/deposit-requests/deposit-request-modal";
+// import { toast } from "sonner";
+// import { moveOut } from "./Edit-Rent/data";
+// import Switch from "@/components/Form/Switch/switch";
+// import Select from "@/components/Form/Select/select";
+// import { tenantRejectOptions } from "@/app/(nav)/management/tenants/data";
+// import { flagTenant } from "@/app/(nav)/management/tenants/[tenantId]/manage/data";
+// import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+// import { Currency } from "@/utils/number-formatter";
+// import api, { handleAxiosError } from "@/services/api";
+
+// const FLAG_REASON = "Flag Tenant";
+
+// type MoveOutModalProps = {
+//   unit_id: string;
+//   tenant_id: number;
+//   cautionDepositStatus: boolean;
+//   tenantAgent?: "web" | "mobile";
+//   currency?: Currency;
+// };
+
+// const MoveOutModal = ({
+//   unit_id,
+//   tenantAgent,
+//   tenant_id,
+//   // cautionDepositStatus,
+//   currency,
+// }: MoveOutModalProps) => {
+//   const isNaira = currency === "naira";
+//   const commonClasses =
+//     "py-2 rounded-[4px] flex justify-between items-center w-full";
+//   // const [modalView, setModalView] = useState<
+//   //   "warning" | "menu" | "success" | "deposit" | "flag"
+//   // >("menu");
+//   const isWebUser = tenantAgent?.toLowerCase() === "web";
+//   const [selectedReasons, setSelectedReasons] = useState<string[]>([]);
+//   const [flagSelectValue, setFlagSelectValue] = useState<string | null>(null);
+//   const [reqLoading, setReqLoading] = useState(false);
+//   const [flagLoading, setFlagLoading] = useState(false);
+//   const [hasMovedOut, setHasMovedOut] = useState(false);
+//   const [updatingSwitch, setUpdatingSwitch] = useState<string | null>(null);
+//   const { setIsOpen } = useModal();
+
+//   const [modalView, setModalView] = useState<
+//     "warning" | "menu" | "success" | "deposit" | "flag"
+//   >(isWebUser ? "warning" : "menu");
+
+//   const reasonOptions = [
+//     "Check Inventory",
+//     "Create Examine",
+//     "Create Maintenance",
+//     FLAG_REASON,
+//   ];
+
+//   // const showNoCautionDepositBlock = !isNaira || !cautionDepositStatus;
+//   const cautionDepositStatus = false
+
+//   console.log("isNaira", isNaira);
+//   console.log("cautionDepositStatus", cautionDepositStatus);
+
+//   const handleSwitchAPICall = async (option: string, isChecked: boolean) => {
+//     try {
+//       setUpdatingSwitch(option);
+//       let endpoint = "";
+//       let payload = {};
+
+//       switch (option) {
+//         case "Check Inventory":
+//           endpoint = `cautions-deposit/company/${unit_id}`;
+//           payload = { is_inventory: isChecked };
+//           break;
+//         case "Create Examine":
+//           endpoint = `cautions-deposit/company/${unit_id}`;
+//           payload = { is_examine: isChecked };
+//           break;
+//         case "Create Maintenance":
+//           endpoint = `cautions-deposit/company/${unit_id}`;
+//           payload = { is_maintain: isChecked };
+//           break;
+//         default:
+//           return true; // For Flag Tenant, handle separately
+//       }
+
+//       if (endpoint) {
+//         const res = await api.patch(endpoint, payload, {
+//           headers: {
+//             "Content-Type": "application/json",
+//           },
+//         });
+
+//         if (res.status === 200 || res.status === 201) {
+//           toast.success(
+//             `${option} ${isChecked ? "enabled" : "disabled"} successfully`
+//           );
+//           return true;
+//         }
+//       }
+//       return false;
+//     } catch (error) {
+//       console.error(`Error updating ${option}:`, error);
+//       handleAxiosError(error);
+//       toast.error(`Failed to update ${option}`);
+//       return false;
+//     } finally {
+//       setUpdatingSwitch(null);
+//     }
+//   };
+
+//   // Toggle for all options - all require move out first
+//   const toggleReason = async (reason: string) => {
+//     // Check if user has moved out first for ALL options including Flag Tenant
+//     if (!hasMovedOut) {
+//       toast.warning(
+//         "Please move out the tenant first before using this option"
+//       );
+//       return;
+//     }
+
+//     if (reason === FLAG_REASON) {
+//       if (!selectedReasons.includes(FLAG_REASON)) {
+//         setModalView("flag");
+//       } else {
+//         setSelectedReasons((prev) => prev.filter((r) => r !== FLAG_REASON));
+//       }
+//     } else {
+//       // Prevent multiple simultaneous updates
+//       if (updatingSwitch) {
+//         return;
+//       }
+
+//       const isCurrentlySelected = selectedReasons.includes(reason);
+//       const newState = !isCurrentlySelected;
+
+//       // Make API call
+//       const success = await handleSwitchAPICall(reason, newState);
+
+//       if (success) {
+//         setSelectedReasons((prev) =>
+//           newState ? [...prev, reason] : prev.filter((r) => r !== reason)
+//         );
+//       }
+//     }
+//   };
+
+//   const handleFlagProceed = async () => {
+//     if (!flagSelectValue) {
+//       toast.warning("Please select a reason before flagging");
+//       return;
+//     }
+//     const payload = {
+//       is_flagged: 1,
+//       reason: flagSelectValue,
+//     };
+//     try {
+//       setFlagLoading(true);
+//       const res = await flagTenant(tenant_id, objectToFormData(payload));
+//       if (res) {
+//         toast.success("Flagged Successfully");
+//         if (!selectedReasons.includes(FLAG_REASON)) {
+//           setSelectedReasons((prev) => [...prev, FLAG_REASON]);
+//         }
+//         // Close modal after flagging
+//         setIsOpen(false);
+//       }
+//     } catch (err) {
+//       console.error(err);
+//       toast.error("Something went wrong, try again");
+//     } finally {
+//       setFlagLoading(false);
+//     }
+//   };
+
+//   const handleMoveOut = async () => {
+//     const payload = { unit_id, reason: selectedReasons };
+//     try {
+//       setReqLoading(true);
+//       const res = await moveOut(payload);
+//       if (res) {
+//         if (cautionDepositStatus) {
+//           setModalView("success");
+//         } else {
+//           toast.success("Tenant moved out successfully.");
+//           setIsOpen(false);
+//           window.dispatchEvent(new Event("refetchRentUnit"));
+//           window.dispatchEvent(new Event("property-updated"));
+//           window.dispatchEvent(new Event("refetchtenant"));
+//         }
+//       }
+//     } catch (error) {
+//       toast.error("Fail to Move out. Please try again later.");
+//     } finally {
+//       setReqLoading(false);
+//     }
+//   };
+
+//   if (modalView === "menu") {
+//     return (
+//       <WalletModalPreset title="Move Out">
+//         <div className="space-y-6">
+//           <p className="text-sm text-text-secondary dark:text-darkText-1">
+//             Your actions indicate that the tenants have already moved out from
+//             the current unit of the property, and the said unit is now available
+//             for listing to other potential tenants. If you proceed, you will
+//             lose unit data, and the tenants will await caution deposit approval.
+//           </p>
+//           <div className="space-y-4">
+//             {cautionDepositStatus ? (
+//               <div className="custom-flex-col gap-2">
+//                 <div className="bg-gray-200 dark:bg-darkText-primary dark:border dark:border-gray-600 p-2 rounded-md shadow-sm">
+//                   <p className="text-text-secondary dark:text-white text-sm font-medium">
+//                     <span className="text-red-500">*</span> At the time the
+//                     occupant moved into the apartment unit, there was no record
+//                     of any caution deposit being made. This means that no
+//                     financial security amount was submitted or documented to
+//                     cover potential damages or breaches of the tenancy agreement
+//                     during their stay.
+//                   </p>
+//                 </div>
+//               </div>
+//             ) : (
+//               <div className={commonClasses}>
+//                 <span className="text-text-secondary dark:text-white">
+//                   Flag Tenant
+//                 </span>
+//                 <Switch
+//                   onClick={() => toggleReason("Flag Tenant")}
+//                   checked={selectedReasons.includes("Flag Tenant")}
+//                 />
+//               </div>
+//             )}
+//           </div>
+//           <button
+//             className="w-full bg-status-error-1 text-status-error-2 py-2 rounded mt-10"
+//             onClick={() => {
+//               if (cautionDepositStatus) {
+//                 handleMoveOut();
+//               } else {
+//                 setModalView("warning");
+//               }
+//             }}
+//           >
+//             Move Out
+//           </button>
+//         </div>
+//       </WalletModalPreset>
+//     );
+//   }
+
+//   if (modalView === "warning") {
+//     return (
+//       <ActionModalPreset type="warning">
+//         <div className="flex flex-col gap-8">
+//           <p className="text-text-tertiary text-[14px]">
+//             Are you sure you want to proceed with your action of removing a
+//             tenant&apos;s records from the unit?
+//           </p>
+//           <div className="flex flex-col gap-2">
+//             <Button onClick={handleMoveOut} disabled={reqLoading}>
+//               {reqLoading ? "Please wait..." : "Proceed"}
+//             </Button>
+//             <Button
+//               variant="blank"
+//               className="text-brand-9 font-medium"
+//               onClick={() => setModalView("menu")}
+//             >
+//               Back
+//             </Button>
+//           </div>
+//         </div>
+//       </ActionModalPreset>
+//     );
+//   }
+
+//   if (modalView === "success") {
+//     return (
+//       <ActionModalPreset type="success">
+//         <div className="flex flex-col gap-8">
+//           <p className="text-text-tertiary text-[14px]">
+//             You have successfully removed the tenant&apos;s record from the unit
+//             and the property has been automatically listed on the platforms.
+//           </p>
+//           <div className="flex flex-col gap-2">
+//             <ModalTrigger asChild close>
+//               <Button>OK</Button>
+//             </ModalTrigger>
+//             <Button
+//               variant="blank"
+//               className="text-brand-9 font-medium"
+//               onClick={() => setModalView("deposit")}
+//             >
+//               Refund Deposits
+//             </Button>
+//           </div>
+//         </div>
+//       </ActionModalPreset>
+//     );
+//   }
+
+//   if (modalView === "deposit") {
+//     return (
+//       <DepositRequestModal
+//         requestId="123"
+//         propertyName="Moniya"
+//         state="Oyo"
+//         unitDetails="Akinleye"
+//         branch="Moniya"
+//         amount="₦200"
+//       />
+//     );
+//   }
+
+//   if (modalView === "flag") {
+//     return (
+//       <ActionModalPreset
+//         type="warning"
+//         back={() => setModalView("menu")}
+//         customWidth="w-[60%] md:w-[40%] max-h-[85%]"
+//         className="overflow-visible w-full"
+//       >
+//         <div className="flex items-center flex-col">
+//           <p className="my-2">Are you sure you want to flag this user?</p>
+//           <div className="flex w-full my-2 items-center relative z-[1000]">
+//             <Select
+//               label="Please select a reason from the options provided before proceeding."
+//               id="reason"
+//               options={tenantRejectOptions}
+//               value={flagSelectValue ?? ""}
+//               onChange={setFlagSelectValue}
+//               className="w-full z-[100]"
+//             />
+//           </div>
+//           <div className="flex gap-2 items-center mt-4">
+//             <Button
+//               size="base_medium"
+//               variant="light_red"
+//               className="py-2 px-8 w-full"
+//               onClick={handleFlagProceed}
+//               disabled={flagLoading}
+//             >
+//               {flagLoading ? "Please wait..." : "Flag"}
+//             </Button>
+//           </div>
+//         </div>
+//       </ActionModalPreset>
+//     );
+//   }
+//   return null;
+// };
+
+// export default MoveOutModal;

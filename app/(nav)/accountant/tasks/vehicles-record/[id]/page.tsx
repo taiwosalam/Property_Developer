@@ -26,12 +26,14 @@ import VehicleRecordModal from "@/components/tasks/vehicles-record/vehicle-recor
 import BackButton from "@/components/BackButton/back-button";
 import { useParams } from "next/navigation";
 import useVehicleRecordStore from "@/store/vehicle-record";
-import { FilterResult } from "../../service-providers/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
 import ServerError from "@/components/Error/ServerError";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
 import { PlusIcon } from "@/public/icons/icons";
 
 const VehiclesRecordPage = () => {
@@ -40,6 +42,13 @@ const VehiclesRecordPage = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<VehicleRecord | null>(
     null
+  );
+
+  const { role } = useRole();
+  // PERMISSIONS
+  const canCheckInAndManageVehicleRec = usePermission(
+    role,
+    "Can check in and manage vehicle records"
   );
 
   useEffect(() => {
@@ -274,9 +283,9 @@ const VehiclesRecordPage = () => {
   if (error) return <ServerError error={error} />;
 
   return (
-    <div className="my-7">
-      <div className="page-header-container my-4 md:m-0">
-        <div className="management-cardstat-wrapper">
+    <div className="space-y-9">
+      <div className="page-header-container">
+        <div className="hidden md:flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Record"
             newData={totalStats}
@@ -296,19 +305,18 @@ const VehiclesRecordPage = () => {
             colorScheme={3}
           />
         </div>
-        <Modal>
-          <ModalTrigger asChild>
-            <Button
-              type="button"
-              className="page-header-button md:block hidden"
-            >
-              + Create New Record
-            </Button>
-          </ModalTrigger>
-          <ModalContent>
-            <CreateRecordModal propertyId={Number(id)} data={data} />
-          </ModalContent>
-        </Modal>
+        {canCheckInAndManageVehicleRec && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button type="button" className="page-header-button">
+                + Create New Record
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <CreateRecordModal propertyId={Number(id)} data={data} />
+            </ModalContent>
+          </Modal>
+        )}
       </div>
 
       <div className="back flex gap-2">
@@ -461,24 +469,29 @@ const VehiclesRecordPage = () => {
               }}
             >
               <ModalContent>
-                <VehicleRecordModal {...(selectedRecord as VehicleRecord)} />
+                <VehicleRecordModal
+                  page="account"
+                  {...(selectedRecord as VehicleRecord)}
+                />
               </ModalContent>
             </Modal>
           </>
         )}
 
-        <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
-          <Modal>
-            <ModalTrigger asChild>
-              <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
-                <PlusIcon />
-              </button>
-            </ModalTrigger>
-            <ModalContent>
-              <CreateRecordModal propertyId={Number(id)} data={data} />
-            </ModalContent>
-          </Modal>
-        </div>
+        {canCheckInAndManageVehicleRec && (
+          <div className="bottom-5 right-5 fixed rounded-full z-[99] shadow-lg md:hidden block">
+            <Modal>
+              <ModalTrigger asChild>
+                <button className="bg-brand-9 rounded-full text-white p-4 shadow-lg">
+                  <PlusIcon />
+                </button>
+              </ModalTrigger>
+              <ModalContent>
+                <CreateRecordModal propertyId={Number(id)} data={data} />
+              </ModalContent>
+            </Modal>
+          </div>
+        )}
       </section>
     </div>
   );

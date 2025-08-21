@@ -447,7 +447,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       selectedStaffs
     );
     await handleSubmit(payload);
-    console.log("payload", payload);
+    // console.log("payload", payload);
     setRequestLoading(false);
   };
 

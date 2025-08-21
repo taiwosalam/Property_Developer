@@ -110,8 +110,8 @@ export interface checkInsOutData {
     check_out_time: string;
     created_at: string;
     deleted_at: string | "";
-    id: number;
     visitor_name: string;
+    id: number;
     in_by: string;
     inventory_in: string;
     inventory_out: string;
@@ -142,7 +142,7 @@ export const transformSingleVehicleRecordApiResponse = (
   checkInsOutData: checkInsOutData;
 } => {
   const vehicleRecord = response.data.vehicle_record;
-  // console.log("response", response);
+  console.log("response", response);
 
   // Check if vehicleRecord exists
   if (!vehicleRecord) {
@@ -197,9 +197,9 @@ export const transformSingleVehicleRecordApiResponse = (
         check_out_time: checkIn.check_out_time,
         created_at: checkIn.created_at,
         deleted_at: checkIn?.deleted_at || "",
-        visitor_name: vehicleRecord.name,
         id: checkIn.id,
         in_by: checkIn.in_by,
+        visitor_name: vehicleRecord.name,
         inventory_in: checkIn.inventory_in,
         inventory_out: checkIn.inventory_out,
         out_by: checkIn.out_by,

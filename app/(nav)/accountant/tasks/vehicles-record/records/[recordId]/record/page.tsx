@@ -45,8 +45,8 @@ import UpdateVehicleWithEmail from "@/components/Modal/update-vehicle-record";
 import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
 import { NotepadTextDashed } from "lucide-react";
 import { empty } from "@/app/config";
-import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
 
 interface TransformedData {
   userData: UserData | null;
@@ -149,11 +149,8 @@ const RecordPage = () => {
           webContactInfo: transformed.webContactInfo,
           checkInsOutData: transformed.checkInsOutData,
         }));
-      } catch (error) {
-        console.error("Transformation error:", error, apiData);
-      }
+      } catch (error) {}
     } else if (!loading) {
-      console.error("Invalid API data format:", apiData);
     }
   }, [apiData, loading]);
 
@@ -226,7 +223,6 @@ const RecordPage = () => {
         toast.error("Failed to check in vehicle");
       }
     } catch (error) {
-      console.error(error);
     } finally {
       setChecking(false);
     }
@@ -294,7 +290,6 @@ const RecordPage = () => {
                 <div className="flex gap-2 items-center">
                   <UserTag type={user_tag} />
                   {note && (
-                    // <NoteBlinkingIcon size={20} className="blink-color" />
                     <Modal>
                       <ModalTrigger>
                         <NoteBlinkingIcon size={20} className="blink-color" />
@@ -494,17 +489,17 @@ const RecordPage = () => {
         currentPage={checkInsOutData?.current_page || 1}
         onPageChange={handlePageChange}
       />
-      <FixedFooter className="flex items-center justify-end">
-        {hasPendingRecord ? (
-          <Button
-            size="base_medium"
-            className="py-2 px-8"
-            onClick={() => router.back()}
-          >
-            Ok
-          </Button>
-        ) : (
-          canCheckInAndManageVehicleRec && (
+      {canCheckInAndManageVehicleRec && (
+        <FixedFooter className="flex items-center justify-end">
+          {hasPendingRecord ? (
+            <Button
+              size="base_medium"
+              className="py-2 px-8"
+              onClick={() => router.back()}
+            >
+              Ok
+            </Button>
+          ) : (
             <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>
               <Button
                 onClick={handleCreateNewRecordClick}
@@ -527,9 +522,9 @@ const RecordPage = () => {
                 />
               </ModalContent>
             </Modal>
-          )
-        )}
-      </FixedFooter>
+          )}
+        </FixedFooter>
+      )}
     </div>
   );
 };

@@ -1,6 +1,7 @@
 export type DepositRequestModalProps = {
   requestId: string;
   propertyName: string;
+  tenant_id?: string;
   state: string;
   unitDetails: string;
   branch: string;

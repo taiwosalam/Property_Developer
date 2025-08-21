@@ -142,6 +142,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
   expiry_date,
   rent,
   caution_deposit,
+  cautionDepositStatus,
   service_charge,
   status,
   tenant_id,
@@ -340,7 +341,7 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
               invoice_id={invoice_id}
               key={i}
               tenantId={Number(occupant?.tenant_id) || 0}
-              cautionDeposit={Number(caution_deposit)}
+              cautionDepositStatus={cautionDepositStatus}
               tenantAgent={occupant?.agent || "web"}
               propertyType={propertyType}
               {...action}

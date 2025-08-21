@@ -26,21 +26,11 @@ import {
   vehicleRecordFIltersOptionsWithDropdown,
 } from "./data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import ServerError from "@/components/Error/ServerError";
-import SearchError from "@/components/SearchNotFound/SearchNotFound";
 
 const VehilceRecords = () => {
   const storedView = useView();
-  const [pageData, setPageData] = useState<initialPageState>(() => {
-    const savedPage = sessionStorage.getItem("vehicles_record_page");
-    return {
-      ...initialData,
-      stats: {
-        ...initialData.stats,
-        current_page: savedPage ? parseInt(savedPage, 10) : 1,
-      },
-    };
-  });
+  const [pageData, setPageData] = useState<initialPageState>(initialData);
+
   const {
     properties_this_month,
     total_properties,
@@ -48,7 +38,6 @@ const VehilceRecords = () => {
     vehicle_records_this_month,
     current_page,
     last_page,
-    property_type_stats,
   } = pageData.stats;
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -57,11 +46,6 @@ const VehilceRecords = () => {
     startDate: null,
     endDate: null,
   });
-
-  // Save page number to sessionStorage whenever it changes
-  useEffect(() => {
-    sessionStorage.setItem("vehicles_record_page", current_page.toString());
-  }, [current_page]);
 
   const isFilterApplied = () => {
     const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -75,7 +59,7 @@ const VehilceRecords = () => {
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
-      page: current_page,
+      page: 1,
       search: "",
       sort: "asc",
     } as VehicleRecordParams,
@@ -83,44 +67,21 @@ const VehilceRecords = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort: order, page: 1 },
+      params: { ...config.params, sort: order },
     });
-    setPageData((prevData) => ({
-      ...prevData,
-      stats: {
-        ...prevData.stats,
-        current_page: 1,
-      },
-    }));
-    sessionStorage.setItem("vehicles_record_page", "1");
   };
 
   const handlePageChange = (page: number) => {
     setConfig({
       params: { ...config.params, page },
     });
-    setPageData((prevData) => ({
-      ...prevData,
-      stats: {
-        ...prevData.stats,
-        current_page: page,
-      },
-    }));
-    sessionStorage.setItem("vehicles_record_page", page.toString());
   };
 
   const handleSearch = async (query: string) => {
+    // console.log("searching...")
     setConfig({
-      params: { ...config.params, search: query, page: 1 },
+      params: { ...config.params, search: query },
     });
-    setPageData((prevData) => ({
-      ...prevData,
-      stats: {
-        ...prevData.stats,
-        current_page: 1,
-      },
-    }));
-    sessionStorage.setItem("vehicles_record_page", "1");
   };
 
   const handleFilterApply = (filters: FilterResult) => {
@@ -135,14 +96,17 @@ const VehilceRecords = () => {
     };
     options.forEach((option) => {
       if (option === "all") {
-        queryParams.all = "all";
-      } else if (option === "rental") {
-        queryParams.property_type = "rental";
-      } else if (option === "facility") {
-        queryParams.property_type = "facility";
+        queryParams.all = "true";
+      } else if (option === "trending") {
+        queryParams.trending = true;
+      } else if (option === "new") {
+        queryParams.recent = true;
       }
     });
 
+    if (statesArray.length > 0) {
+      queryParams.state = statesArray.join(",");
+    }
     if (startDate) {
       queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD HH:mm:ss");
     }
@@ -152,14 +116,6 @@ const VehilceRecords = () => {
     setConfig({
       params: queryParams,
     });
-    setPageData((prevData) => ({
-      ...prevData,
-      stats: {
-        ...prevData.stats,
-        current_page: 1,
-      },
-    }));
-    sessionStorage.setItem("vehicles_record_page", "1");
   };
 
   const {
@@ -182,7 +138,7 @@ const VehilceRecords = () => {
     }
   }, [apiData]);
 
-  // console.log("Page data", pageData)
+  console.log("Page data", pageData);
 
   if (loading)
     return (
@@ -194,7 +150,9 @@ const VehilceRecords = () => {
     );
 
   if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+
+  if (error)
+    return <p className="text-base text-red-500 font-medium">{error}</p>;
 
   return (
     <div className="my-8">
@@ -208,14 +166,14 @@ const VehilceRecords = () => {
           />
           <ManagementStatistcsCard
             title="Rental Vehicle Records"
-            newData={property_type_stats.rental.this_month}
-            total={property_type_stats.rental.total}
+            newData={vehicle_records_this_month}
+            total={total_vehicle_records}
             colorScheme={2}
           />
           <ManagementStatistcsCard
             title="Facility Vehicle Records"
-            newData={property_type_stats.facility.this_month}
-            total={property_type_stats.facility.total}
+            newData={vehicle_records_this_month}
+            total={total_vehicle_records}
             colorScheme={3}
           />
         </div>
@@ -248,7 +206,9 @@ const VehilceRecords = () => {
       <section className="capitalize">
         {pageData.data.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
-            <SearchError />
+            <div className="col-span-full text-center py-8 text-gray-500">
+              No Search/Filter Found
+            </div>
           ) : (
             <EmptyList
               noButton
@@ -294,22 +254,6 @@ const VehilceRecords = () => {
                   security standards within the estate or facility.
                   <br />
                   <br />
-                  <strong> How This Works </strong>
-                  <br />
-                  <span>
-                    Once a vehicle record is added to this page, the
-                    introductory guide will automatically disappear, as the page
-                    transitions into active management mode. However, if you
-                    ever need assistance or wish to revisit this guide, Simply
-                    click your profile picture at the top right of the dashboard
-                    and select Assistance & Support.
-                  </span>
-                  <br />
-                  <span>
-                    By enabling vehicle records, you enhance the efficiency of
-                    property management while ensuring a secure and organized
-                    environment for all occupants and visitors.
-                  </span>
                 </p>
               }
             />
@@ -321,7 +265,7 @@ const VehilceRecords = () => {
                 <CardsLoading />
               ) : (
                 pageData.data.map((p, index) => (
-                  <VehicleCard key={index} data={p} />
+                  <VehicleCard key={index} data={p} page="account" />
                 ))
               )}
             </AutoResizingGrid>
