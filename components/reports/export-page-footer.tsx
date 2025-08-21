@@ -82,7 +82,7 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
 
   return (
     <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
-      <div className="flex">
+      <div className="sm:flex hidden ">
         {noBack && (
           <Button
             type="button"
@@ -97,7 +97,7 @@ const ExportPageFooter: React.FC<ExportPageFooterProps> = ({
         )}
       </div>
 
-      <div className="flex gap-6">
+      <div className="flex justify-between w-full sm:w-auto sm:justify-normal gap-6">
         <Button
           type="button"
           onClick={() => handleExport("download")}

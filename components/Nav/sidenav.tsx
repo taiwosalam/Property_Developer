@@ -61,15 +61,24 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
     []
   );
 
+  // const isHighlighted = (item: NavItem): boolean => {
+  //   if (item.content) {
+  //     return item.content.some((i) =>
+  //       role === "director"
+  //         ? pathname.includes(`${item.label}${i.href || ""}`)
+  //         : pathname.includes(`${i.href || ""}`)
+  //     );
+  //   }
+  //   return item.href ? pathname.includes(item.href) : false;
+  // };
+
   const isHighlighted = (item: NavItem): boolean => {
-    if (item.content) {
+    if (item.content && item.href) {
       return item.content.some((i) =>
-        role === "director"
-          ? pathname.includes(`${item.label}${i.href || ""}`)
-          : pathname.includes(`${i.href || ""}`)
+        i.href ? pathname === `${item.href}${i.href}` : false
       );
     }
-    return item.href ? pathname.includes(item.href) : false;
+    return item.href ? pathname === item.href : false;
   };
 
   return (
@@ -85,6 +94,7 @@ const SideNav: React.FC<SideNavProps> = ({ closeSideNav, isCollapsed }) => {
             onContentClick={closeSideNav}
             isOpen={activeDropdown === item.label}
             onToggle={() => handleDropdownToggle(item.label)}
+            href={item.href}
             isCollapsed={isCollapsed}
             className={className}
           >

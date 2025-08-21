@@ -1,7 +1,6 @@
 import { KeyValueListProps } from "./types";
 import clsx from "clsx";
 
-
 const KeyValueList = <T extends object>({
   styles,
   data = {},
@@ -41,7 +40,7 @@ const KeyValueList = <T extends object>({
       {chunkedKeys.map((chunk, chunkIndex) => (
         <div
           key={chunkIndex}
-          className={clsx("flex-1 text-base font-medium capitalize", {
+          className={clsx("flex-1  text-base font-medium capitalize", {
             "flex gap-10 max-sm:gap-4": direction === "row",
             "custom-flex-col gap-6": direction === "column",
           })}
@@ -64,10 +63,7 @@ const KeyValueList = <T extends object>({
                       className="text-black dark:text-darkText-2 line-clamp-1"
                       style={styles?.[key]?.value}
                       dangerouslySetInnerHTML={{
-                        __html: truncateText(
-                          String(data[key]),
-                          truncateLength
-                        ),
+                        __html: truncateText(String(data[key]), truncateLength),
                       }}
                     />
                   ) : (
@@ -102,10 +98,7 @@ const KeyValueList = <T extends object>({
                       className="text-black dark:text-darkText-2"
                       style={styles?.[key]?.value}
                       dangerouslySetInnerHTML={{
-                        __html: truncateText(
-                          String(data[key]),
-                          truncateLength
-                        ),
+                        __html: truncateText(String(data[key]), truncateLength),
                       }}
                     />
                   ) : (
@@ -126,6 +119,5 @@ const KeyValueList = <T extends object>({
     </>
   );
 };
-
 
 export default KeyValueList;

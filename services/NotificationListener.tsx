@@ -1,6 +1,5 @@
 // components/NotificationListener.tsx
 "use client";
-
 import React, { useEffect } from "react";
 import { useNotificationStore } from "@/store/notification-store";
 import { v4 as uuid } from "uuid";
@@ -11,8 +10,34 @@ import {
 } from "@/app/(nav)/(messages-reviews)/messages/data";
 import { useParams, usePathname } from "next/navigation";
 import { ConversationsUpdatedReturn } from "@/app/(nav)/(messages-reviews)/messages/types";
+import useFetch from "@/hooks/useFetch";
+import { ProfileResponse } from "@/lib/profile";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+
+type Conversation = {
+  unread_count: number;
+  [key: string]: any;
+};
+
+type ConversationPayload = {
+  conversation_count: number;
+  conversation_data: Conversation[];
+};
+
+function getUnreadSummary(payload: ConversationPayload) {
+  // Count how many conversations have unread > 0
+  const totalUnreadSources = payload.conversation_data.reduce(
+    (sum, convo) => sum + ((convo.unread_count || 0) > 0 ? 1 : 0),
+    0
+  );
+
+  return totalUnreadSources;
+}
 
 export default function NotificationListener() {
+  const setPersonalInfo = usePersonalInfoStore(
+    (state) => state.setPersonalInfo
+  );
   const { echo, isConnected } = useEcho();
   const addNotification = useNotificationStore((s) => s.addNotification);
 
@@ -26,7 +51,7 @@ export default function NotificationListener() {
     if (!token) return;
 
     const channel = echo.private(`user.${token}`);
-
+    const notification = echo.private(`notifications.${token}`);
     channel.listen(".message.received", (data: any) => {
       console.log("data received", { data });
       const cleanedMessage = transformMessageFromAPI(data, false);
@@ -54,6 +79,17 @@ export default function NotificationListener() {
         createdAt: data.created_at,
       });
     });
+
+    notification.listen(".new.notification", (data: any) => {
+      console.log("notifications", { data });
+    });
+
+    channel.listen(".conversation.updated", (data: any) => {
+      const unread_count = getUnreadSummary(data);
+      setPersonalInfo("unread_messages_count", unread_count);
+      console.log("updated", { data });
+    });
+
     channel.listen(
       ".conversation.created",
       (data: ConversationsUpdatedReturn) => {

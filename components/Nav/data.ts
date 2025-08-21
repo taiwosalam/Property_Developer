@@ -16,22 +16,23 @@ export const nav_items: NavItemsProps = [
   {
     type: "people",
     label: "management",
+    href: "/management",
     content: [
-      { label: "staff & branches", href: "/staff-branch" },
+      { label: "staff & branches", href: "/man/staff-branch" },
       { label: "landlord & landlady", href: "/landlord" },
       { label: "tenants & occupants", href: "/tenants" },
-
       { label: "inventory", href: "/inventory" },
       { label: "properties", href: "/properties" },
       { label: "rent & mgmt", href: "/rent-unit" },
-
-      { label: "vehicles record", href: "/vehicles-record" },
+      // { label: "vehicles record", href: "/vehicles-record" },
+      { label: "Property Draft/Request", href: "/property-draft" },
       { label: "service providers", href: "/service-providers" },
     ],
   },
   {
     type: "briefcase_timer",
     label: "tasks",
+    href:"/tasks",
     content: [
       { label: "Applications", href: "/applications" },
       { label: "complaints", href: "/complaints" },
@@ -42,6 +43,7 @@ export const nav_items: NavItemsProps = [
       { label: "announcements", href: "/announcements" },
       { label: "call request", href: "/inquires" },
       { label: "visitors request", href: "/visitors" },
+      { label: "vehicles record", href: "/vehicles-record" },
       { label: "property request", href: "/property-request" },
       { label: "deposits request", href: "/deposits" },
       { label: "undo / trash", href: "/undo" },
@@ -49,16 +51,18 @@ export const nav_items: NavItemsProps = [
   },
   {
     type: "chart",
-    label: "listing",
+    label: "unit mgmt",
+    href: "/listing",
     content: [
-      { label: "units", href: "/units" },
+      { label: "listing", href: "/units" },
       { label: "statistics", href: "/statistics" },
-      { label: "Property Draft/Request", href: "/property" },
+      // { label: "Property Draft/Request", href: "/property" },
     ],
   },
   {
     type: "menu_board",
     label: "accounting",
+    href: "/accounting",
     content: [
       { label: "invoice", href: "/invoice" },
       // { label: "receipts", href: "/receipts" },
@@ -71,7 +75,7 @@ export const nav_items: NavItemsProps = [
   {
     type: "task",
     label: "community",
-    href: "/applications",
+    href: "/community",
     content: [
       { label: "team chat", href: "/team-chat" },
       { label: "agent forum", href: "/agent-forum" },
@@ -81,6 +85,7 @@ export const nav_items: NavItemsProps = [
   {
     type: "status_up",
     label: "reports",
+    href: "/reports",
     content: [
       { label: "tenants / occupants", href: "/tenants" },
       { label: "landlord / landlady", href: "/landlord" },
@@ -100,7 +105,6 @@ export const nav_items: NavItemsProps = [
       { label: "add-on sms", href: "/adds-on-sms" },
       { label: "add-on campaign", href: "/adds-on-campaign" },
       { label: "add-on feature", href: "/adds-on-feature" },
-      //{ label: "add-on domain", href: "/adds-on-domain" },
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },
@@ -129,7 +133,7 @@ export const manager_nav_items: NavItemsProps = [
       { label: "inventory", href: "/manager/management/inventory" },
       { label: "properties", href: "/manager/management/properties" },
       { label: "rent & mgmt", href: "/manager/management/rent-unit" },
-      { label: "vehicles record", href: "/manager/management/vehicles-record" },
+      // { label: "vehicles record", href: "/manager/management/vehicles-record" },
       {
         label: "service providers",
         href: "/management/service-providers",
@@ -149,13 +153,14 @@ export const manager_nav_items: NavItemsProps = [
       { label: "announcements", href: "/manager/tasks/announcements" },
       { label: "call request", href: "/manager/tasks/inquires" },
       { label: "visitors request", href: "/manager/tasks/visitors" },
+      { label: "vehicles record", href: "/manager/tasks/vehicles-record" },
       { label: "property request", href: "/manager/tasks/property-request" },
       { label: "deposits request", href: "/manager/tasks/deposits" },
     ],
   },
   {
     type: "chart",
-    label: "listing",
+    label: "unit mgmt",
     content: [
       { label: "units", href: "/manager/listing/units" },
       { label: "statistics", href: "/manager/listing/statistics" },
@@ -233,10 +238,10 @@ export const account_nav_items: NavItemsProps = [
       { label: "inventory", href: "/accountant/management/inventory" },
       { label: "properties", href: "/accountant/management/properties" },
       { label: "rent & mgmt", href: "/accountant/management/rent-unit" },
-      {
-        label: "vehicles record",
-        href: "/accountant/management/vehicles-record",
-      },
+      // {
+      //   label: "vehicles record",
+      //   href: "/accountant/management/vehicles-record",
+      // },
       {
         label: "service providers",
         href: "/management/service-providers",
@@ -246,23 +251,25 @@ export const account_nav_items: NavItemsProps = [
   {
     type: "briefcase_timer",
     label: "tasks",
+    href: "/accountant/tasks",
     content: [
-      { label: "applications", href: "/accountant/tasks/applications" },
-      { label: "complaints", href: "/accountant/tasks/complaints" },
-      { label: "inspections", href: "/accountant/tasks/inspections" },
-      { label: "examine", href: "/accountant/tasks/examine" },
-      { label: "maintenance", href: "/accountant/tasks/maintenance" },
-      { label: "calendars", href: "/accountant/tasks/calendars" },
-      { label: "announcements", href: "/accountant/tasks/announcements" },
-      { label: "call request", href: "/accountant/tasks/inquires" },
-      { label: "visitors request", href: "/accountant/tasks/visitors" },
-      { label: "property request", href: "/accountant/tasks/property-request" },
-      { label: "deposits request", href: "/accountant/tasks/deposits" },
+      { label: "applications", href: "/applications" },
+      { label: "complaints", href: "/complaints" },
+      { label: "inspections", href: "/inspections" },
+      { label: "examine", href: "/examine" },
+      { label: "maintenance", href: "/maintenance" },
+      { label: "calendars", href: "/calendars" },
+      { label: "announcements", href: "/announcements" },
+      { label: "call request", href: "/inquires" },
+      { label: "visitors request", href: "/visitors" },
+      { label: "vehicles record", href: "/vehicles-record" },
+      { label: "property request", href: "/property-request" },
+      { label: "deposits request", href: "/deposits" },
     ],
   },
   {
     type: "chart",
-    label: "listing",
+    label: "unit mgmt",
     content: [
       { label: "units", href: "/accountant/listing/units" },
       { label: "statistics", href: "/accountant/listing/statistics" },
@@ -309,10 +316,10 @@ export const staff_nav_items: NavItemsProps = [
       { label: "Other Staff", href: "/staff/management/branch-staff" },
       { label: "inventory", href: "/staff/management/inventory" },
       { label: "properties", href: "/staff/management/properties" },
-      {
-        label: "vehicles record",
-        href: "/staff/management/vehicles-record",
-      },
+      // {
+      //   label: "vehicles record",
+      //   href: "/staff/management/vehicles-record",
+      // },
       {
         label: "service providers",
         href: "/management/service-providers",
@@ -322,26 +329,29 @@ export const staff_nav_items: NavItemsProps = [
   {
     type: "briefcase_timer",
     label: "tasks",
+    href: "/staff/tasks",
     content: [
-      { label: "complaints", href: "/staff/tasks/complaints" },
-      { label: "inspections", href: "/staff/tasks/inspections" },
-      { label: "examine", href: "/staff/tasks/examine" },
-      { label: "maintenance", href: "/staff/tasks/maintenance" },
-      { label: "calendars", href: "/staff/tasks/calendars" },
-      { label: "announcements", href: "/staff/tasks/announcements" },
-      { label: "call request", href: "/staff/tasks/inquires" },
-      { label: "visitors request", href: "/staff/tasks/visitors" },
-      { label: "property request", href: "/staff/tasks/property-request" },
-      { label: "deposits request", href: "/staff/tasks/deposits" },
+      { label: "complaints", href: "/complaints" },
+      { label: "inspections", href: "/inspections" },
+      { label: "examine", href: "/examine" },
+      { label: "maintenance", href: "/maintenance" },
+      { label: "calendars", href: "/calendars" },
+      { label: "announcements", href: "/announcements" },
+      { label: "call request", href: "/inquires" },
+      { label: "visitors request", href: "/visitors" },
+      { label: "vehicles record", href: "/vehicles-record" },
+      { label: "property request", href: "/property-request" },
+      { label: "deposits request", href: "/deposits" },
     ],
   },
   {
     type: "chart",
-    label: "listing",
+    label: "unit mgmt",
+    href: "/staff/listing",
     content: [
-      { label: "units", href: "/staff/listing/units" },
-      { label: "statistics", href: "/staff/listing/statistics" },
-      { label: "Property Draft/Request", href: "/staff/listing/property" },
+      { label: "units", href: "/units" },
+      { label: "statistics", href: "/statistics" },
+      // { label: "Property Draft/Request", href: "/property" },
     ],
   },
   {
@@ -349,9 +359,9 @@ export const staff_nav_items: NavItemsProps = [
     label: "community",
     href: "/community",
     content: [
-      { label: "team chat", href: "/community/team-chat" },
-      { label: "agent forum", href: "/community/agent-forum" },
-      { label: "agent request", href: "/community/agent-request" },
+      { label: "team chat", href: "/team-chat" },
+      { label: "agent forum", href: "/agent-forum" },
+      { label: "agent request", href: "/agent-request" },
     ],
   },
 

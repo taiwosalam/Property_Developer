@@ -51,7 +51,7 @@ const PreviewExpenses = () => {
 
   const BANK_DETAILS = pageData.branchBankDetails;
 
-  console.log("BANK_DETAILS", BANK_DETAILS)
+  console.log("BANK_DETAILS", BANK_DETAILS);
   const CURRENCY = pageData.currency || "naira"; //TODO: change to real currency from endpount
   const IS_PAID = pageData.status.toLowerCase() === "paid";
   const UNIT_ID = pageData.unit_id;
@@ -110,7 +110,7 @@ const PreviewExpenses = () => {
         <div ref={printRef}>
           <ExportPageHeader />
           <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 list-style">
             <KeyValueList
               data={KEY_VALUE_DATA}
               chunkSize={2}
@@ -125,27 +125,33 @@ const PreviewExpenses = () => {
                   {pageData.details} Payment for {pageData.unit_name}
                 </p>
                 <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
-                  <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                  <div className="list-style">
                     <KeyValueList
                       data={{
                         "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
-                        "agency fee": formatFee(
-                          pageData.agency_fee,
-                          CURRENCY
-                        ),
+                        "agency fee": formatFee(pageData.agency_fee, CURRENCY),
                         "service charge": formatFee(
                           pageData.service_charge,
                           CURRENCY
                         ),
-                        "inspection fee": formatFee(pageData.inspection_fee, CURRENCY),
+                        "inspection fee": formatFee(
+                          pageData.inspection_fee,
+                          CURRENCY
+                        ),
                         "caution fee": formatFee(
                           pageData.caution_fee,
                           CURRENCY
                         ),
-                        "management fee": formatFee(pageData.management_fee, CURRENCY),
-                        "other charge": formatFee(pageData.other_charge, CURRENCY),
+                        "management fee": formatFee(
+                          pageData.management_fee,
+                          CURRENCY
+                        ),
+                        "other charge": formatFee(
+                          pageData.other_charge,
+                          CURRENCY
+                        ),
                         "legal fee": formatFee(pageData.legal_fee, CURRENCY),
-                        "vat": formatFee(pageData.vat_amount, CURRENCY),
+                        vat: formatFee(pageData.vat_amount, CURRENCY),
                         "Tenant Owe": formatFee(pageData.tenant_owed, CURRENCY),
                         "Company Owe": formatFee(
                           pageData.company_owed,
@@ -161,7 +167,7 @@ const PreviewExpenses = () => {
                         "inspection fee": "",
                         "legal fee": "",
                         "caution fee": "",
-                        "vat": "",
+                        vat: "",
                         "other charge": "",
                         "management fee": "",
                         "Tenant Owe": "",
@@ -174,7 +180,7 @@ const PreviewExpenses = () => {
             ) : (
               <Breakdown data={pageData} />
             )}
-            
+
             {pageData.payment_status_desc && (
               <>
                 <SwitchUnitPaymentStatus
@@ -192,31 +198,33 @@ const PreviewExpenses = () => {
               </p>
             </div>
           </AccountingTitleSection>
-       {(BANK_DETAILS?.account_name || companyBankDetails.account_name) && (
-        <AccountingTitleSection title="Account Details">
-          <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
-            <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
-              <KeyValueList
-                data={{
-                  "account name":
-                    BANK_DETAILS?.account_name || companyBankDetails.account_name,
-                  "account number":
-                    BANK_DETAILS?.account_number || companyBankDetails.account_number,
-                  "bank name":
-                    BANK_DETAILS?.bank_name || companyBankDetails.bank_name,
-                }}
-                chunkSize={1}
-                direction="column"
-                referenceObject={{
-                  "account number": "",
-                  "account name": "",
-                  "bank name": "",
-                }}
-              />
-            </div>
-          </div>
-        </AccountingTitleSection>
-      )}
+          {(BANK_DETAILS?.account_name || companyBankDetails.account_name) && (
+            <AccountingTitleSection title="Account Details">
+              <div className="p-6 rounded-lg bg-white dark:bg-darkText-primary">
+                <div className="list-style">
+                  <KeyValueList
+                    data={{
+                      "account name":
+                        BANK_DETAILS?.account_name ||
+                        companyBankDetails.account_name,
+                      "account number":
+                        BANK_DETAILS?.account_number ||
+                        companyBankDetails.account_number,
+                      "bank name":
+                        BANK_DETAILS?.bank_name || companyBankDetails.bank_name,
+                    }}
+                    chunkSize={1}
+                    direction="column"
+                    referenceObject={{
+                      "account number": "",
+                      "account name": "",
+                      "bank name": "",
+                    }}
+                  />
+                </div>
+              </div>
+            </AccountingTitleSection>
+          )}
           <Signature />
         </div>
         <ExportPageFooter printRef={printRef} />

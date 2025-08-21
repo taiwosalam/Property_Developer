@@ -75,7 +75,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
       imageUrl: pfp,
       last_seen,
     });
-
+    const event = new CustomEvent("refetch-users-msg", {
+      detail: { timestamp: Date.now() },
+    });
+    window.dispatchEvent(event);
     setGlobalStore("isGroupChat", isGroupChat);
     if (onClick) {
       onClick();

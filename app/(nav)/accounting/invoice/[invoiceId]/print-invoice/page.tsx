@@ -117,7 +117,7 @@ const PreviewExpenses = () => {
         <div ref={printRef}>
           <ExportPageHeader />
           <h1 className="text-center my-7 font-medium text-2xl">Invoice</h1>
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 grid grid-cols-2 xs:flex gap-6 xs:gap-0  xs:flex-row">
             <KeyValueList
               data={KEY_VALUE_DATA}
               chunkSize={2}
@@ -132,7 +132,7 @@ const PreviewExpenses = () => {
                   {pageData.details} Payment for {pageData.unit_name}
                 </p>
                 <div className="p-6 rounded-lg space-y-5 bg-white dark:bg-darkText-primary">
-                  <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                  <div className="grid grid-cols-2 xs:flex gap-6 xs:gap-0  xs:flex-row">
                     <KeyValueList
                       data={{
                         "Annual fee": formatFee(pageData.annual_fee, CURRENCY),
@@ -216,7 +216,7 @@ const PreviewExpenses = () => {
                 <div className="flex gap-6 lg:gap-0 flex-col lg:flex-row">
                   <div className="flex flex-col gap-4 w-full">
                     {/* Primary Account */}
-                    <div className="flex w-full">
+                    <div className="grid grid-cols-2 xs:flex gap-6 xs:gap-0  xs:flex-row">
                       {(BANK_DETAILS?.account_name ||
                         companyBankDetails.account_name) && (
                         <KeyValueList
@@ -243,7 +243,7 @@ const PreviewExpenses = () => {
                     </div>
 
                     {/* Wallet Account */}
-                    <div className="flex w-full">
+                    <div className="grid grid-cols-2 xs:flex gap-6 xs:gap-0  xs:flex-row">
                       {walletData?.account.account_name && (
                         <KeyValueList
                           data={{

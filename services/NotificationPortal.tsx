@@ -130,9 +130,6 @@ export default function NotificationPortal() {
       tier: latestNotification?.senderTier as number,
       // onClick: () => console.log("hello"),
     });
-
-  console.log({ latestNotification });
-
   if (!latestNotification) return null;
 
   return (
@@ -169,7 +166,7 @@ export default function NotificationPortal() {
                     getComputedStyle(document.documentElement).getPropertyValue(
                       "--brand-9"
                     ),
-                    0.7
+                    1
                   ),
                 }}
                 className="w-80 max-w-[400px] py-4 p-3 rounded-xl bg-brand-9/70 shadow-lg flex gap-3"
@@ -185,7 +182,7 @@ export default function NotificationPortal() {
                     alt={latestNotification.senderName}
                     className="w-[45px] h-[40px] rounded-md bg-brand-3 object-cover"
                   />
-                  <div className="flex-1 text-brand-9">
+                  <div className="flex-1 text-white">
                     <div className="name flex">
                       <p className="font-semibold text-sm">
                         {capitalizeName(latestNotification.senderName)}
@@ -198,7 +195,7 @@ export default function NotificationPortal() {
 
                     <div>
                       {latestNotification.content_type === "text" ? (
-                        <p className="text-sm line-clamp-2">
+                        <p className="text-sm w-48  break-words line-clamp-2">
                           {latestNotification.message}
                         </p>
                       ) : (

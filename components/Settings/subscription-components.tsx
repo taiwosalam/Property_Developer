@@ -382,29 +382,28 @@ export const FeatureCompany = () => {
                 }
                 readOnly
                 style={{ outline: "none" }}
-                inputClassName="pr-28"
-                endAdornment={
-                  <Modal>
-                    <ModalTrigger>
-                      <Button
-                        variant="change"
-                        size="xs_normal"
-                        className="py-2 px-3 bg-brand-9 text-white"
-                        disabled={isFormInComplete}
-                      >
-                        Activate
-                      </Button>
-                    </ModalTrigger>
-                    <ModalContent>
-                      <SponsorModal
-                        count={parseInt(selectedPeriod)}
-                        cost={totalAmount / parseInt(selectedPeriod)}
-                        onSubmit={handleRequestFeature}
-                      />
-                    </ModalContent>
-                  </Modal>
-                }
               />
+              <div className="absolute  top-[2px] sm:top-2 bottom-0 right-2">
+                <Modal>
+                  <ModalTrigger>
+                    <Button
+                      variant="change"
+                      size="xs_normal"
+                      className="py-2 px-3 mt-8 bg-brand-9 text-white"
+                      disabled={isFormInComplete}
+                    >
+                      Activate
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <SponsorModal
+                      count={parseInt(selectedPeriod)}
+                      cost={totalAmount / parseInt(selectedPeriod)}
+                      onSubmit={handleRequestFeature}
+                    />
+                  </ModalContent>
+                </Modal>
+              </div>
             </div>
           </AutoResizingGrid>
         </div>
