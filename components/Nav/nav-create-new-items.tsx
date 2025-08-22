@@ -34,8 +34,6 @@ export const create_new_items: CreateNewItemsProps = [
       { label: "landlord / landlady", modal: <AddLandlordModal /> },
       { label: "tenants / occupants", modal: <AddTenantModal /> },
       { label: "branch", modal: <CreateBranchModal /> },
-      //   { label: "staff", modal: <CreateStaffModal /> }, // NOTE: This modal require a branch id, thats why its commented out
-      // { label: "inventory", link: "/management/inventory/create-inventory" },
       { label: "property", modal: <AddPropertyModal /> },
       { label: "service provider", modal: <AddServiceProviderModal /> },
     ],
@@ -44,10 +42,8 @@ export const create_new_items: CreateNewItemsProps = [
     type: "briefcase_timer",
     label: "tasks",
     content: [
-      { label: "examine", modal: <DynamicExamineModal />},
+      { label: "examine", modal: <DynamicExamineModal /> },
       { label: "maintenance", link: "/tasks/maintenance/create-new" },
-      // { label: "event", modal: <CreateReminderMOdal /> },
-      // { label: "task", modal: <CreateReminderMOdal /> },
       { label: "reminder", modal: <CreateReminderMOdal isShowDate={false} /> },
       {
         label: "announcement",
@@ -188,6 +184,234 @@ export const accountant_create_new_items: CreateNewItemsProps = [
 ];
 
 export const staff_create_new_items: CreateNewItemsProps = [
+  {
+    type: "people",
+    label: "management",
+    content: [{ label: "property", modal: <AddPropertyModal /> }],
+  },
+  {
+    type: "briefcase_timer",
+    label: "tasks",
+    content: [
+      { label: "examine", modal: <CreateExamineModal /> },
+      {
+        label: "announcement",
+        link: "/accountant/tasks/announcements/create-announcement",
+      },
+    ],
+  },
+  {
+    type: "folder",
+    label: "documents",
+    content: [
+      {
+        label: "Tenancy Form",
+        modal: (
+          <CreateTenancyAggrementModal defaultOption="tenancy_application_form" />
+        ),
+      },
+      {
+        label: "Management Form",
+        modal: (
+          <CreateTenancyAggrementModal defaultOption="management_application_form" />
+        ),
+      },
+    ],
+  },
+];
+// ======================= PROPERTY DEVELOPER CREATE-NEW-ITEMS ===========================
+
+export const property_developer_create_new_items: CreateNewItemsProps = [
+  {
+    type: "people",
+    label: "management",
+    content: [
+      { label: "properties", modal: <></> },
+      { label: "clients", modal: <></> },
+      { label: "investors", modal: <></> },
+      { label: "owners", modal: <></> },
+      { label: "branch", modal: <></> },
+      { label: "staff", modal: <></> },
+      { label: "referral", modal: <></> },
+    ],
+  },
+  {
+    type: "briefcase_timer",
+    label: "HRM",
+    content: [
+      { label: "shift", modal: <></> },
+      { label: "work schedule", link: "#" },
+      { label: "attendance", modal: <></> },
+      {
+        label: "payroll",
+        link: "#",
+      },
+      {
+        label: "logbook",
+        link: "#",
+      },
+      {
+        label: "team chat",
+        link: "#",
+      },
+    ],
+  },
+  {
+    type: "briefcase_timer",
+    label: "products",
+    content: [
+      { label: "products", modal: <></> },
+      { label: "order", link: "#" },
+      { label: "inventory", link: "#" },
+      { label: "supplier", link: "#" },
+    ],
+  },
+  {
+    type: "briefcase_timer",
+    label: "task",
+    content: [
+      { label: "inspection", modal: <></> },
+      { label: "to do", link: "#" },
+      { label: "house keeping", link: "#" },
+      { label: "vehicle records", link: "#" },
+      { label: "announcement", link: "#" },
+    ],
+  },
+  {
+    type: "menu_board",
+    label: "accounting",
+    content: [
+      { label: "invoice", link: "/accounting/invoice/create-invoice" },
+      { label: "expenses", link: "/accounting/expenses/create-expenses" },
+      { label: "disbursement", modal: <NewDisbursementModal /> },
+    ],
+  },
+  {
+    type: "folder",
+    label: "documents",
+    content: [
+      {
+        label: "terms & conditions",
+        modal: <></>,
+      },
+    ],
+  },
+];
+
+export const property_developer_manager_create_new_items: CreateNewItemsProps =
+  [
+    {
+      type: "people",
+      label: "management",
+      content: [
+        { label: "landlord / landlady", modal: <AddLandlordModal /> },
+        { label: "tenants / occupants", modal: <AddTenantModal /> },
+        { label: "property", modal: <AddPropertyModal /> },
+        { label: "service provider", modal: <AddServiceProviderModal /> },
+      ],
+    },
+    {
+      type: "briefcase_timer",
+      label: "tasks",
+      content: [
+        { label: "examine", modal: <CreateExamineModal /> },
+        { label: "maintenance", link: "/manager/tasks/maintenance/create-new" },
+        {
+          label: "reminder",
+          modal: <CreateReminderMOdal isShowDate={false} />,
+        },
+        {
+          label: "announcement",
+          link: "/manager/tasks/announcements/create-announcement",
+        },
+      ],
+    },
+    {
+      type: "menu_board",
+      label: "accounting",
+      content: [
+        {
+          label: "invoice",
+          link: "/manager/accounting/invoice/create-invoice",
+        },
+        {
+          label: "expenses",
+          link: "/manager/accounting/expenses/create-expenses",
+        },
+        { label: "disbursement", modal: <NewDisbursementModal /> },
+      ],
+    },
+    {
+      type: "folder",
+      label: "documents",
+      content: [
+        {
+          label: "tenancy agreement",
+          modal: (
+            <CreateTenancyAggrementModal defaultOption="tenancy_agreement" />
+          ),
+        },
+        {
+          label: "other documents",
+          modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
+        },
+      ],
+    },
+  ];
+
+export const property_developer_accountant_create_new_items: CreateNewItemsProps =
+  [
+    {
+      type: "people",
+      label: "management",
+      content: [{ label: "property", modal: <AddPropertyModal /> }],
+    },
+    {
+      type: "briefcase_timer",
+      label: "tasks",
+      content: [
+        { label: "examine", modal: <CreateExamineModal /> },
+        {
+          label: "announcement",
+          link: "/accountant/tasks/announcements/create-announcement",
+        },
+      ],
+    },
+    {
+      type: "menu_board",
+      label: "accounting",
+      content: [
+        {
+          label: "invoice",
+          link: "/accountant/accounting/invoice/create-invoice",
+        },
+        {
+          label: "expenses",
+          link: "/accountant/accounting/expenses/create-expenses",
+        },
+      ],
+    },
+    {
+      type: "folder",
+      label: "documents",
+      content: [
+        {
+          label: "Tenancy Form",
+          modal: (
+            <CreateTenancyAggrementModal defaultOption="tenancy_application_form" />
+          ),
+        },
+        {
+          label: "Management Form",
+          modal: (
+            <CreateTenancyAggrementModal defaultOption="management_application_form" />
+          ),
+        },
+      ],
+    },
+  ];
+
+export const property_developer_staff_create_new_items: CreateNewItemsProps = [
   {
     type: "people",
     label: "management",

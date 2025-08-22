@@ -21,6 +21,10 @@ import {
   create_new_items,
   manager_create_new_items,
   permissionMapping,
+  property_developer_accountant_create_new_items,
+  property_developer_create_new_items,
+  property_developer_manager_create_new_items,
+  property_developer_staff_create_new_items,
   staff_create_new_items,
 } from "@/components/Nav/nav-create-new-items";
 import { NavItem } from "@/components/Nav/sidenav-permission";
@@ -44,14 +48,13 @@ interface CreateNewItemsProps {
 
 interface SearchTab {
   label: string;
-//   value: string;
+  //   value: string;
 }
 
 export type IModuleName =
   | "Property Manager"
   | "Property Developer"
   | "Hospitality Manager";
-
 
 export type ModuleNameID =
   | "property_manager"
@@ -82,8 +85,10 @@ interface ModuleContextType {
 // Role-based navigation for Property Manager
 const getDirectorNav = (module: ModuleNameID): NavItemsProps => {
   if (module === "property_manager") return nav_items;
-  if (module === "property_developer") return property_developer_director_nav_items;
-  if (module === "hospitality_manager") return hospitality_manager_director_nav_items;
+  if (module === "property_developer")
+    return property_developer_director_nav_items;
+  if (module === "hospitality_manager")
+    return hospitality_manager_director_nav_items;
   return [];
 };
 
@@ -112,19 +117,52 @@ const getSearchTabs = (
   module: ModuleNameID,
   role: string | null
 ): SearchTab[] => {
-  if (module !== "property_manager") return [];
-  switch (role) {
-    case "director":
-    case "manager":
-    case "landlord":
-      return tabs;
-    case "staff":
-      return staff_search_tabs;
-    case "account":
-      return accountant_search_tabs;
-    default:
-      return [];
+  if (module === "property_manager") {
+    switch (role) {
+      case "director":
+      case "landlord":
+        return create_new_items;
+      case "manager":
+        return manager_create_new_items;
+      case "account":
+        return accountant_create_new_items;
+      case "staff":
+        return staff_create_new_items;
+      default:
+        return [];
+    }
   }
+  if (module === "property_developer") {
+    switch (role) {
+      case "director":
+      case "landlord":
+        return create_new_items;
+      case "manager":
+        return manager_create_new_items;
+      case "account":
+        return accountant_create_new_items;
+      case "staff":
+        return staff_create_new_items;
+      default:
+        return [];
+    }
+  }
+  if (module === "hospitality_manager") {
+    switch (role) {
+      case "director":
+      case "landlord":
+        return create_new_items;
+      case "manager":
+        return manager_create_new_items;
+      case "account":
+        return accountant_create_new_items;
+      case "staff":
+        return staff_create_new_items;
+      default:
+        return [];
+    }
+  }
+  return [];
 };
 
 // Role-based create items for Property Manager
@@ -132,24 +170,42 @@ const getCreateItems = (
   module: ModuleNameID,
   role: string | null
 ): CreateNewItemsProps[] => {
-  if (module !== "property_manager") return [];
-  switch (role) {
-    case "director":
-    case "landlord":
-      return create_new_items;
-    case "manager":
-      return manager_create_new_items;
-    case "account":
-      return accountant_create_new_items;
-    case "staff":
-      return staff_create_new_items;
-    default:
-      return [];
+  if (module === "property_manager") {
+    switch (role) {
+      case "director":
+        return create_new_items;
+      case "manager":
+        return manager_create_new_items;
+      case "account":
+        return accountant_create_new_items;
+      case "staff":
+        return staff_create_new_items;
+      default:
+        return [];
+    }
   }
+  if (module === "property_developer") {
+    switch (role) {
+      case "director":
+        return property_developer_create_new_items;
+      case "manager":
+        return property_developer_manager_create_new_items;
+      case "account":
+        return property_developer_accountant_create_new_items;
+      case "staff":
+        return property_developer_staff_create_new_items;
+      default:
+        return [];
+    }
+  }
+  return [];
 };
 
 // Module-specific nav items getter
-const getNavItems = (module: ModuleNameID, role: string | null): NavItemsProps => {
+const getNavItems = (
+  module: ModuleNameID,
+  role: string | null
+): NavItemsProps => {
   switch (role) {
     case "director":
       return getDirectorNav(module);
@@ -186,7 +242,7 @@ export const ModuleProvider: React.FC<{ children: React.ReactNode }> = ({
         getSearchTabs: (role) => getSearchTabs("property_manager", role),
         getCreateItems: (role) => getCreateItems("property_manager", role),
       },
-        {
+      {
         id: "property_developer",
         name: "Property Developer",
         basePath: "",

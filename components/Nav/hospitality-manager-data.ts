@@ -377,3 +377,4 @@ export const user_nav_items: NavItemsProps = [
   },
   { type: "settings", label: "settings", href: "/user/settings" },
 ];
+
