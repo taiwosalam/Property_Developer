@@ -22,18 +22,27 @@ import { useMessages } from "@/contexts/messageContext";
 import { MessageInput } from "./messageInput";
 import { EmojiComponent } from "./message-attachments-components";
 import useWindowWidth from "@/hooks/useWindowWidth";
+import { useMessageStore } from "@/store/messagesStore";
 
 const MessageInputArea = () => {
   const { id } = useParams();
-  const {
-    message,
-    setMessage,
-    reqLoading,
-    audioUrl,
-    setAudioUrl,
-    handleSendMsg,
-    handleSendAudio,
-  } = useMessages();
+  // const {
+  //   message,
+  //   setMessage,
+  //   reqLoading,
+  //   audioUrl,
+  //   setAudioUrl,
+  //   handleSendMsg,
+  //   handleSendAudio,
+  // } = useMessages();
+
+  const message = useMessageStore((state) => state.message);
+  const setMessage = useMessageStore((state) => state.setMessage);
+  const reqLoading = useMessageStore((state) => state.reqLoading);
+  const audioUrl = useMessageStore((state) => state.audioUrl);
+  const setAudioUrl = useMessageStore((state) => state.setAudioUrl);
+  const handleSendMsg = useMessageStore((state) => state.handleSendMsg);
+  const handleSendAudio = useMessageStore((state) => state.handleSendAudio);
 
   const { isMobile } = useWindowWidth();
 
@@ -100,7 +109,7 @@ const MessageInputArea = () => {
 
   // Emoji handler
   const handleEmojiSelect = (emoji: string) => {
-    setMessage((prev: string) => (prev || "") + emoji);
+    setMessage(emoji);
   };
 
   return (
@@ -143,8 +152,8 @@ const MessageInputArea = () => {
                 <MessageEmojiIcon />
               </button>
               {/* Drop-up emoji popover */}
-              {showEmoji && (
-                isMobile ? (
+              {showEmoji &&
+                (isMobile ? (
                   <div
                     ref={emojiPopoverRef}
                     className="fixed inset-0 z-50 bottom-[8%] flex items-end bg-black/30"
@@ -168,8 +177,7 @@ const MessageInputArea = () => {
                       <EmojiComponent onEmojiSelect={handleEmojiSelect} />
                     </div>
                   </div>
-                )
-              )}
+                ))}
               {/* {showEmoji && (
                 <div
                   ref={emojiPopoverRef}

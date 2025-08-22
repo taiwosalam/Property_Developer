@@ -89,13 +89,11 @@ const AnnouncementPage = () => {
       const status = menuOptions["Status"] || [];
       const property = menuOptions["Property"] || [];
       const branches = menuOptions["Branch"] || [];
-
       const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
       if (accountOfficer.length > 0)
         queryParams.account_officer_id = accountOfficer.join(",");
       if (status.length > 0) queryParams.status = status.join(",");
       if (branches.length > 0) queryParams.branch_id = status.join(",");
-
       if (property.length > 0) queryParams.property_ids = property.join(",");
       if (startDate)
         queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");

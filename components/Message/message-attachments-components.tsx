@@ -10,6 +10,7 @@ import { SendMessage } from "@/app/(nav)/(messages-reviews)/messages/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { useMessages } from "@/contexts/messageContext";
+import { useMessageStore } from "@/store/messagesStore";
 
 export const MessageModalPreset = ({
   back,
@@ -52,7 +53,9 @@ export const MessageModalPreset = ({
 };
 
 export const MessageAudioComponent: React.FC<AudioProps> = ({ id }) => {
-  const { handleSendAudio, reqLoading } = useMessages();
+  // const { handleSendAudio, reqLoading } = useMessages();
+  const handleSendAudio = useMessageStore((state) => state.handleSendAudio);
+  const reqLoading = useMessageStore((state) => state.reqLoading);
   const { setIsOpen } = useModal();
 
   const handleUpload = async (file: File) => {
@@ -134,4 +137,3 @@ export const MessageDocumentComponent = ({ id }: { id: string }) => {
     </div>
   );
 };
-

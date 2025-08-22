@@ -31,19 +31,7 @@ export function useMessageUser({
     const router = useRouter();
     const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
-    console.log({ content_type })
 
-    console.log({
-        id,
-        fullname,
-        pfp,
-        last_seen,
-        content_type,
-        type,
-        role,
-        tier,
-        onClick,
-    })
 
     const IconComponent = getIconByContentType(content_type ?? "");
     console.log({ IconComponent })

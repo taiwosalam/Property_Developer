@@ -59,7 +59,7 @@ export type TNotificationData = {
   };
 };
 
-function extractNotificationType(notificationType: string): string {
+export function extractNotificationType(notificationType: string): string {
   const match = notificationType.match(/([^\\]+)Notification$/);
   if (!match) return notificationType;
 
@@ -121,7 +121,6 @@ export const clearAllNotification = async (ids: string[]) => {
   const payload = {
     notification_ids: ids,
   };
-
   try {
     const res = await api.post('/notifications/mark-read', payload, {
       headers: {

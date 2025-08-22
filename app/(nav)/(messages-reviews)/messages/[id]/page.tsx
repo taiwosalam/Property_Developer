@@ -42,6 +42,7 @@ import { useEcho } from "@/lib/echo";
 import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useMessages } from "@/contexts/messageContext";
 import { useChatMessages, useEchoMessages } from "../hooks";
+import { useMessageStore } from "@/store/messagesStore";
 
 const useUserProfile = (id: string | number) => {
   const { data, loading } = useFetch<UserDetailsResponse>(
@@ -140,7 +141,8 @@ const Chat = () => {
   const { data: apiData, loading, error, refetch } = useFetch<any>(endpoint);
   useEchoMessages(id, handleNewMessage, handleMessagesRead, isGroupChat);
 
-  const { setPageUsersMsg } = useMessages();
+  // const { setPageUsersMsg } = useMessages();
+  const setPageUsersMsg = useMessageStore((state) => state.setPageUsersMsg);
 
   useEffect(() => {
     if (!apiData) {
