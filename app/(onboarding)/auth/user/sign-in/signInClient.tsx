@@ -101,9 +101,9 @@ const SignIn = () => {
         {domain && (
           <AuthAction
             href={domain.startsWith("http") ? domain : `https://${domain}`}
-            linkText="View company details – Homepage"
+            linkText="Click here"
           >
-            {""}
+            View company page ?
           </AuthAction>
         )}
 
