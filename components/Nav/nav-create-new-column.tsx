@@ -26,7 +26,6 @@ const NavCreateNewColumn: React.FC<NavCreateNewColumnProps> = ({
   const { permissionsCache, permissionMapping } = useNavCreatePermissions(role);
 
   // Fetch create items from activeModule
-  // const data = activeModule.getCreateItems(role);
   const data = activeModule.getCreateItems(role) as unknown as NavCreateSection[];
 
 

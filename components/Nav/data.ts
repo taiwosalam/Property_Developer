@@ -1,7 +1,5 @@
 // Types
 import type { NavItemsProps } from "./types";
-// import api from "@/services/api";
-// import { useAuthStore } from "@/store/auth-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { SVGType } from "../SVG/types";

@@ -5,9 +5,7 @@ import Card from "@/components/dashboard/card";
 import {
   complaintsData,
   dashboardListingsChartConfig,
-  dashboardListingsChartData,
   dashboardPerformanceChartConfig,
-  invoiceTableFields,
   getDashboardCardData,
   initialDashboardStats,
   getRecentMessages,
@@ -56,6 +54,7 @@ import {
   transformComplaintDashboard,
   transformComplaintsData,
 } from "@/app/(nav)/tasks/complaints/data";
+import { invoiceTableFields } from "@/app/(nav)/dashboard/data";
 
 const PropertyManagerDashboardVariantA = () => {
   const walletId = useWalletStore((state) => state.walletId);

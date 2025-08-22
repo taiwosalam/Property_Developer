@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { useModule } from "@/contexts/moduleContext";
 import { useRole } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { AnimatePresence, motion } from "framer-motion";
 
 const PropertyManagerDashboardVariantA = dynamic(
   () =>
@@ -111,7 +112,17 @@ const DashboardPage = () => {
 
   return (
     <Suspense fallback={<PageCircleLoader />}>
-      <DashboardComponent />
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${activeModule.id}-${designVariant}`}
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -50 }}
+          transition={{ duration: 0.3 }}
+        >
+          <DashboardComponent />
+        </motion.div>
+      </AnimatePresence>
     </Suspense>
   );
 };
