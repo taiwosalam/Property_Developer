@@ -43,7 +43,7 @@ const Marquee = ({
   return (
     <>
       {showMarquee && (
-        <div className={`relative overflow-hidden ${className}`}>
+        <div className={`relative overflow-hidden z-50 ${className}`}>
           <div
             ref={marqueeRef}
             className="w-full h-4 flex items-center"
