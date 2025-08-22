@@ -29,10 +29,7 @@ import { usePermissionsStore } from "@/store/permissions";
 import { getRoleTitle } from "@/hooks/getPermission";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import ExpiredSubscriptionModal from "@/components/Modal/expired-subscription-flow";
-<<<<<<< HEAD
-=======
 import { SmartMarquee } from "@/components/Marquee/smart-marque";
->>>>>>> upstream/main
 
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
@@ -68,21 +65,12 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const loggedInUserDetails = getLocalStorage("additional_details");
   let appearance:
     | {
-<<<<<<< HEAD
-        colorMode: string;
-        view: string;
-        navbar: string;
-        fonts: string;
-        dashboardColor: string;
-      }
-=======
       colorMode: string;
       view: string;
       navbar: string;
       fonts: string;
       dashboardColor: string;
     }
->>>>>>> upstream/main
     | undefined;
   if (loggedInUserDetails) {
     ({ appearance } = loggedInUserDetails);
@@ -237,12 +225,6 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             className="h-[1px]"
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
-<<<<<<< HEAD
-          <div
-            className={`h-[50px] px-3 flex items-center ${
-              navbar !== "row" ? "justify-between" : "justify-end"
-            } gap-2 bg-white dark:bg-[#020617] max-w-full`}
-=======
           {/* <div className="pt-2 bg-white dark:bg-[#020617]">
           <SmartMarquee />
           </div> */}
@@ -252,7 +234,6 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <div
             className={`h-[50px] px-3 flex items-center ${navbar !== "row" ? "justify-between" : "justify-end"
               } gap-2 bg-white dark:bg-[#020617] max-w-full`}
->>>>>>> upstream/main
           >
             {navbar !== "row" && (
               <button
