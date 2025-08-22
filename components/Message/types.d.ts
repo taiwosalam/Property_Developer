@@ -17,10 +17,7 @@ export interface MessageCardProps {
   badgeColor?: BadgeIconColors;
   tier?: number;
   title?: string;
-<<<<<<< HEAD
-=======
   dataId?,
->>>>>>> upstream/main
   role?: string;
   type?: string;
 }
@@ -41,11 +38,7 @@ export interface MessageProps {
   type: "to user" | "from user";
   noScroll?: boolean;
   chat_type?: "group" | "private";
-<<<<<<< HEAD
-  showSenderInfo?: boolean 
-=======
   showSenderInfo?: boolean
->>>>>>> upstream/main
   sender?: {
     fullname?: string;
     picture?: string;
