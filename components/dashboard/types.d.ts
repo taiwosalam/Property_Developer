@@ -19,11 +19,7 @@ export interface walletBalanceCardProps
 
 export interface notificationCardProps {
   seeAllLink?: string;
-<<<<<<< HEAD
   sectionHeader: "Staffs" | "Recent Messages" | "Recent Complaints" | "Complaints" | "Recent Applications";
-=======
-  sectionHeader: "Staffs" | "Recent Messages" | "Recent Complaints" | "Complaints";
->>>>>>> upstream/main
   className?: string;
   branchId?: string;
   notifications: {
