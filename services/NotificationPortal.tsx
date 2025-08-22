@@ -19,226 +19,246 @@ import { getRoleBasedRoute } from "@/components/Notification/notification";
 import { useRouter } from "next/navigation";
 import { clearAllNotification } from "@/app/(nav)/notifications/data";
 
-// Updated sound hook that respects browser autoplay policies
-function usePersistentSoundEffect() {
-  const { notifications } = useNotificationStore();
-  const { selectedSound } = useSoundPreference();
-  const { audioEnabled } = useAudioPermission(); // Add this line
-  const processedNotificationsRef = useRef<Set<string>>(new Set());
-  const soundQueueRef = useRef<Array<{ url: string; id: string }>>([]);
-  const isPlayingRef = useRef(false);
-  const currentAudioRef = useRef<HTMLAudioElement | null>(null);
+// // Updated sound hook that respects browser autoplay policies
+// function usePersistentSoundEffect() {
+//   const { notifications } = useNotificationStore();
+//   const { selectedSound } = useSoundPreference();
+//   const { audioEnabled } = useAudioPermission(); // Add this line
+//   const processedNotificationsRef = useRef<Set<string>>(new Set());
+//   const soundQueueRef = useRef<Array<{ url: string; id: string }>>([]);
+//   const isPlayingRef = useRef(false);
+//   const currentAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Safe localStorage access
-  const getSavedSound = useCallback(() => {
-    if (typeof window !== "undefined") {
-      return localStorage.getItem("preferredSound") || selectedSound;
-    }
-    return selectedSound;
-  }, [selectedSound]);
+//   // Safe localStorage access
+//   const getSavedSound = useCallback(() => {
+//     if (typeof window !== "undefined") {
+//       return localStorage.getItem("preferredSound") || selectedSound;
+//     }
+//     return selectedSound;
+//   }, [selectedSound]);
 
-  const playNextSound = useCallback(() => {
-    // Don't play if audio is not enabled
-    if (!audioEnabled) {
-      console.log("🔇 Audio not enabled, skipping sound queue");
-      soundQueueRef.current = []; // Clear queue
-      isPlayingRef.current = false;
-      return;
-    }
+//   const playNextSound = useCallback(() => {
+//     // Don't play if audio is not enabled
+//     if (!audioEnabled) {
+//       console.log("🔇 Audio not enabled, skipping sound queue");
+//       soundQueueRef.current = []; // Clear queue
+//       isPlayingRef.current = false;
+//       return;
+//     }
 
-    if (soundQueueRef.current.length === 0) {
-      isPlayingRef.current = false;
-      return;
-    }
+//     if (soundQueueRef.current.length === 0) {
+//       isPlayingRef.current = false;
+//       return;
+//     }
 
-    const soundItem = soundQueueRef.current.shift();
-    if (!soundItem) return;
+//     const soundItem = soundQueueRef.current.shift();
+//     if (!soundItem) return;
 
-    // Clean up previous audio
-    if (currentAudioRef.current) {
-      currentAudioRef.current.removeEventListener("ended", playNextSound);
-      currentAudioRef.current.removeEventListener("error", playNextSound);
-      currentAudioRef.current = null;
-    }
+//     // Clean up previous audio
+//     if (currentAudioRef.current) {
+//       currentAudioRef.current.removeEventListener("ended", playNextSound);
+//       currentAudioRef.current.removeEventListener("error", playNextSound);
+//       currentAudioRef.current = null;
+//     }
 
-    const audio = new Audio(soundItem.url || getSavedSound());
-    currentAudioRef.current = audio;
+//     const audio = new Audio(soundItem.url || getSavedSound());
+//     currentAudioRef.current = audio;
 
-    // Set audio properties
-    audio.preload = "auto";
+//     // Set audio properties
+//     audio.preload = "auto";
+//     audio.volume = 0.7;
+
+//     const handleEnded = () => {
+//       setTimeout(() => {
+//         playNextSound();
+//       }, 200);
+//     };
+
+//     const handleError = (error: Event) => {
+//       console.warn(
+//         "Error playing sound for notification:",
+//         soundItem.id,
+//         error
+//       );
+//       setTimeout(() => {
+//         playNextSound();
+//       }, 100);
+//     };
+
+//     audio.addEventListener("ended", handleEnded, { once: true });
+//     audio.addEventListener("error", handleError, { once: true });
+
+//     const playPromise = audio.play();
+
+//     if (playPromise !== undefined) {
+//       playPromise
+//         .then(() => {
+//           console.log(
+//             "🔊 Sound played successfully for notification:",
+//             soundItem.id
+//           );
+//         })
+//         .catch((error) => {
+//           console.warn("Failed to play notification sound:", error);
+//           if (error.name === "NotAllowedError") {
+//             console.log(
+//               "🔇 Autoplay still blocked - user needs to enable sounds"
+//             );
+//           }
+//           setTimeout(() => {
+//             playNextSound();
+//           }, 100);
+//         });
+//     }
+//   }, [getSavedSound, audioEnabled]); // Add audioEnabled dependency
+
+//   const queueSound = useCallback(
+//     (soundUrl: string, notificationId: string) => {
+//       // Only queue sounds if audio is enabled
+//       if (!audioEnabled) {
+//         console.log(
+//           "🔇 Audio not enabled, not queueing sound for:",
+//           notificationId
+//         );
+//         return;
+//       }
+
+//       const finalSoundUrl = soundUrl || getSavedSound();
+//       if (!finalSoundUrl) return;
+
+//       soundQueueRef.current.push({
+//         url: finalSoundUrl,
+//         id: notificationId,
+//       });
+
+//       if (!isPlayingRef.current) {
+//         isPlayingRef.current = true;
+//         setTimeout(playNextSound, 50);
+//       }
+//     },
+//     [playNextSound, getSavedSound, audioEnabled]
+//   ); // Add audioEnabled dependency
+
+//   useEffect(() => {
+//     notifications.forEach((notification) => {
+//       if (!processedNotificationsRef.current.has(notification.id)) {
+//         processedNotificationsRef.current.add(notification.id);
+//         queueSound(selectedSound, notification.id);
+//       }
+//     });
+
+//     // Cleanup processed notifications that no longer exist
+//     const currentIds = new Set(notifications.map((n) => n.id));
+//     const processedIds = Array.from(processedNotificationsRef.current);
+
+//     processedIds.forEach((id) => {
+//       if (!currentIds.has(id)) {
+//         processedNotificationsRef.current.delete(id);
+//       }
+//     });
+//   }, [notifications, selectedSound, queueSound]);
+
+//   // Clear sound queue when audio becomes disabled
+//   useEffect(() => {
+//     if (!audioEnabled) {
+//       soundQueueRef.current = [];
+//       isPlayingRef.current = false;
+//       if (currentAudioRef.current) {
+//         currentAudioRef.current.pause();
+//       }
+//     }
+//   }, [audioEnabled]);
+
+//   // Cleanup on unmount
+//   useEffect(() => {
+//     return () => {
+//       if (currentAudioRef.current) {
+//         currentAudioRef.current.pause();
+//         currentAudioRef.current.removeEventListener("ended", playNextSound);
+//         currentAudioRef.current.removeEventListener("error", playNextSound);
+//       }
+//       soundQueueRef.current = [];
+//       isPlayingRef.current = false;
+//     };
+//   }, []);
+// }
+
+// // Add this to your app to handle browser autoplay restrictions
+// function useAudioPermission() {
+//   const [audioEnabled, setAudioEnabled] = useState(true);
+
+//   const enableAudio = useCallback(async () => {
+//     try {
+//       // Create a silent audio to test and enable audio context
+//       const audio = new Audio();
+//       audio.volume = 0;
+//       audio.src =
+//         "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Lttm0gBjiN1e7RfS4GM3DA6tyHLgIcbJ3rg";
+
+//       const playPromise = audio.play();
+//       if (playPromise !== undefined) {
+//         await playPromise;
+//         audio.pause();
+//         setAudioEnabled(true);
+//         console.log("Audio enabled successfully");
+//       }
+//     } catch (error) {
+//       console.warn("Audio permission not granted:", error);
+//       setAudioEnabled(true);
+//     }
+//   }, []);
+
+//   // Try to enable audio on any user interaction
+//   useEffect(() => {
+//     const handleUserInteraction = () => {
+//       if (!audioEnabled) {
+//         enableAudio();
+//       }
+//     };
+
+//     document.addEventListener("click", handleUserInteraction, { once: true });
+//     document.addEventListener("touchstart", handleUserInteraction, {
+//       once: true,
+//     });
+//     document.addEventListener("keydown", handleUserInteraction, { once: true });
+
+//     return () => {
+//       document.removeEventListener("click", handleUserInteraction);
+//       document.removeEventListener("touchstart", handleUserInteraction);
+//       document.removeEventListener("keydown", handleUserInteraction);
+//     };
+//   }, [audioEnabled, enableAudio]);
+
+//   return { audioEnabled, enableAudio };
+// }
+
+export function playSound(url: string) {
+  try {
+    const audio = new Audio(url);
     audio.volume = 0.7;
-
-    const handleEnded = () => {
-      setTimeout(() => {
-        playNextSound();
-      }, 200);
-    };
-
-    const handleError = (error: Event) => {
-      console.warn(
-        "Error playing sound for notification:",
-        soundItem.id,
-        error
-      );
-      setTimeout(() => {
-        playNextSound();
-      }, 100);
-    };
-
-    audio.addEventListener("ended", handleEnded, { once: true });
-    audio.addEventListener("error", handleError, { once: true });
-
-    const playPromise = audio.play();
-
-    if (playPromise !== undefined) {
-      playPromise
-        .then(() => {
-          console.log(
-            "🔊 Sound played successfully for notification:",
-            soundItem.id
-          );
-        })
-        .catch((error) => {
-          console.warn("Failed to play notification sound:", error);
-          if (error.name === "NotAllowedError") {
-            console.log(
-              "🔇 Autoplay still blocked - user needs to enable sounds"
-            );
-          }
-          setTimeout(() => {
-            playNextSound();
-          }, 100);
-        });
-    }
-  }, [getSavedSound, audioEnabled]); // Add audioEnabled dependency
-
-  const queueSound = useCallback(
-    (soundUrl: string, notificationId: string) => {
-      // Only queue sounds if audio is enabled
-      if (!audioEnabled) {
-        console.log(
-          "🔇 Audio not enabled, not queueing sound for:",
-          notificationId
-        );
-        return;
-      }
-
-      const finalSoundUrl = soundUrl || getSavedSound();
-      if (!finalSoundUrl) return;
-
-      soundQueueRef.current.push({
-        url: finalSoundUrl,
-        id: notificationId,
-      });
-
-      if (!isPlayingRef.current) {
-        isPlayingRef.current = true;
-        setTimeout(playNextSound, 50);
-      }
-    },
-    [playNextSound, getSavedSound, audioEnabled]
-  ); // Add audioEnabled dependency
-
-  useEffect(() => {
-    notifications.forEach((notification) => {
-      if (!processedNotificationsRef.current.has(notification.id)) {
-        processedNotificationsRef.current.add(notification.id);
-        queueSound(selectedSound, notification.id);
-      }
+    audio.play().catch((err) => {
+      console.warn("⚠️ Could not play sound:", err);
     });
-
-    // Cleanup processed notifications that no longer exist
-    const currentIds = new Set(notifications.map((n) => n.id));
-    const processedIds = Array.from(processedNotificationsRef.current);
-
-    processedIds.forEach((id) => {
-      if (!currentIds.has(id)) {
-        processedNotificationsRef.current.delete(id);
-      }
-    });
-  }, [notifications, selectedSound, queueSound]);
-
-  // Clear sound queue when audio becomes disabled
-  useEffect(() => {
-    if (!audioEnabled) {
-      soundQueueRef.current = [];
-      isPlayingRef.current = false;
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-      }
-    }
-  }, [audioEnabled]);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      if (currentAudioRef.current) {
-        currentAudioRef.current.pause();
-        currentAudioRef.current.removeEventListener("ended", playNextSound);
-        currentAudioRef.current.removeEventListener("error", playNextSound);
-      }
-      soundQueueRef.current = [];
-      isPlayingRef.current = false;
-    };
-  }, []);
-}
-
-// Add this to your app to handle browser autoplay restrictions
-function useAudioPermission() {
-  const [audioEnabled, setAudioEnabled] = useState(false);
-
-  const enableAudio = useCallback(async () => {
-    try {
-      // Create a silent audio to test and enable audio context
-      const audio = new Audio();
-      audio.volume = 0;
-      audio.src =
-        "data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+Lttm0gBjiN1e7RfS4GM3DA6tyHLgIcbJ3rg";
-
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        await playPromise;
-        audio.pause();
-        setAudioEnabled(true);
-        console.log("Audio enabled successfully");
-      }
-    } catch (error) {
-      console.warn("Audio permission not granted:", error);
-      setAudioEnabled(false);
-    }
-  }, []);
-
-  // Try to enable audio on any user interaction
-  useEffect(() => {
-    const handleUserInteraction = () => {
-      if (!audioEnabled) {
-        enableAudio();
-      }
-    };
-
-    document.addEventListener("click", handleUserInteraction, { once: true });
-    document.addEventListener("touchstart", handleUserInteraction, {
-      once: true,
-    });
-    document.addEventListener("keydown", handleUserInteraction, { once: true });
-
-    return () => {
-      document.removeEventListener("click", handleUserInteraction);
-      document.removeEventListener("touchstart", handleUserInteraction);
-      document.removeEventListener("keydown", handleUserInteraction);
-    };
-  }, [audioEnabled, enableAudio]);
-
-  return { audioEnabled, enableAudio };
+  } catch (err) {
+    console.error("Failed to initialize audio:", err);
+  }
 }
 
 export default function NotificationPortal() {
   const { notifications, removeNotification } = useNotificationStore();
+  const { selectedSound } = useSoundPreference();
+
   const timersRef = useRef<Map<string, NodeJS.Timeout>>(new Map());
-  const { audioEnabled } = useAudioPermission(); // Add this
+  // const { audioEnabled } = useAudioPermission(); // Add this
 
   // Always run sound effect regardless of component mount state
-  usePersistentSoundEffect();
+  // usePersistentSoundEffect();
+
+  useEffect(() => {
+    if (notifications.length === 0) return;
+    const latest = notifications[notifications.length - 1];
+    playSound(selectedSound || "/sounds/default.mp3");
+  }, [notifications, selectedSound]);
 
   // Fixed timer logic
   useEffect(() => {

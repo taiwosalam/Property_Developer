@@ -293,7 +293,7 @@ const Profile = () => {
                   }
                   defaultValue={companyData.membership_number || ""}
                 />
-                <div className="flex flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
+                <div className="flex  flex-col sm:flex-row items-start sm:items-end gap-3 w-full">
                   <FileInput
                     required
                     noUpload={

@@ -457,6 +457,8 @@ export const transformMessageFromAPI = (
   const msg = apiData.message;
   const empty = ""; // Assumed constant from original
 
+  console.log("api data passed", { apiData })
+
   // Determine timestamp
   const timestamp =
     isGroupChat && msg.created_at
@@ -690,4 +692,78 @@ export function mapConversationsArray(
     type: conv.type,
   }));
 }
+
+
+
+
+// New incoming chat message type
+export type ChatMessage = {
+  id: number;
+  content: string;
+  content_type: string;
+  created_at: string;
+  group_chat_id: number;
+  reactions: any[];
+  read_receipts: any[];
+  reply_to: number | null;
+  sender: {
+    id: number;
+    name: string;
+    role: string;
+    avatar: string;
+  };
+};
+
+
+
+// Transformer function
+export const transformNewMessageVariant = (
+  msg: ChatMessage,
+  isGroupChat: boolean
+): NormalizedMessage => {
+  const empty = "";
+
+  // Format timestamp
+  const timestamp = msg.created_at
+    ? moment(msg.created_at).format("YYYY-MM-DD HH:mm:ss")
+    : "";
+
+
+  let content_type = "text";
+  if (
+    msg.content_type &&
+    msg.content_type !== "text" &&
+    typeof msg.content === "string"
+  ) {
+    content_type = getContentTypeFromExtension(msg.content);
+  } else if (msg.content_type && msg.content_type !== "text") {
+    content_type = msg.content_type;
+  }
+
+  // Sender info for group chat
+  const sender =
+    isGroupChat && msg.sender?.name
+      ? {
+        fullname: msg.sender.name ?? "",
+        picture: msg.sender.avatar ?? empty,
+        title: "", // No title info in this data
+      }
+      : undefined;
+
+  // Determine read status
+  const is_read = msg.read_receipts.length > 0;
+
+  return {
+    id: msg.id,
+    text: msg.content ?? null,
+    is_read,
+    senderId: isGroupChat ? Number(msg.sender.id) : 0,
+    timestamp,
+    content_type,
+    sender,
+  };
+};
+
+
+
 
