@@ -5,12 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown } from "lucide-react";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import useDarkMode from "@/hooks/useCheckDarkMode";
-<<<<<<< HEAD
 import { useModule } from "@/contexts/moduleContext";
-=======
-import { toast } from "sonner";
-import { useRole } from "@/hooks/roleContext";
->>>>>>> upstream/main
 
 const DROPDOWN_ANIMATION = {
   initial: { opacity: 0, y: -10, scale: 0.98 },
@@ -21,14 +16,8 @@ const DROPDOWN_ANIMATION = {
 
 const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
   const isDarkMode = useDarkMode();
-<<<<<<< HEAD
   const { activeModule, switchModule, modules } = useModule();
   const [isOpen, setIsOpen] = useState(false);
-=======
-  const { role } = useRole();
-  const [isOpen, setIsOpen] = useState(false);
-
->>>>>>> upstream/main
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useOutsideClick(containerRef, () => {
@@ -36,23 +25,9 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
   });
 
   const handleSwitch = () => setIsOpen((prev) => !prev);
-<<<<<<< HEAD
 
   const handleModuleSwitch = (moduleId: string) => {
     switchModule(moduleId);
-=======
-  const isDirector = role === "director";
-  const handleModuleSwitch = (val: string) => {
-    const capitalizedVal = val.charAt(0).toUpperCase() + val.slice(1);
-    if (val !== "property manager") {
-      toast.warning(
-        isDirector
-          ? `${capitalizedVal} coming soon`
-          : "You don't have permission to modify this module."
-      );
-      return;
-    }
->>>>>>> upstream/main
     setIsOpen(false);
   };
 
@@ -64,19 +39,11 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
         <button
           type="button"
           onClick={handleSwitch}
-<<<<<<< HEAD
           aria-label="switch module"
           className="w-full h-full px-4 py-[12px] flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
         >
           <span className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
             {activeModule.name}
-=======
-          aria-label="switch user"
-          className="w-full h-full px-4 py-[12px] flex items-center justify-between gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]"
-        >
-          <span className="text-[#0a132ea6] dark:text-white text-base font-semibold capitalize custom-truncated">
-            Property Manager
->>>>>>> upstream/main
           </span>
           <ChevronDown size={20} color={isDarkMode ? "#fff" : "#0a132ea6"} />
         </button>
@@ -92,7 +59,6 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
             transition={DROPDOWN_ANIMATION.transition}
             variants={DROPDOWN_ANIMATION}
             style={{ boxShadow: "0px 2px 4px 0px rgba(0, 0, 0, 0.1)" }}
-<<<<<<< HEAD
             className="absolute top-full left-0 w-[220px] min-w-[120px] max-w-max md:min-w-[180px] md:w-full py-2 bg-white dark:bg-[#3C3D37] rounded-bl-lg rounded-br-lg z-50"
           >
             <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold dark:text-white">
@@ -106,32 +72,6 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
                   {module.name}
                 </button>
               ))}
-=======
-            className="absolute top-full left-0 w-[220px min-w-[120px] max-w-max md:min-w-[180px] md:w-full py-2 bg-white dark:bg-[#3C3D37] rounded-bl-lg rounded-br-lg z-50"
-          >
-            <div className="custom-flex-col text-[#0a132ea6] text-base font-semibold dark:text-white">
-              <button
-                type="button"
-                onClick={() => handleModuleSwitch("property manager")}
-                className="p-4 capitalize text-start hover:bg-neutral-2 dark:hover:bg-[#292d32]"
-              >
-                Property Manager
-              </button>
-              <button
-                type="button"
-                onClick={() => handleModuleSwitch("hospilatity manager")}
-                className="p-4 capitalize text-start hover:bg-neutral-2 dark:hover:bg-[#292d32]"
-              >
-                Hospitality Manager
-              </button>
-              <button
-                type="button"
-                onClick={() => handleModuleSwitch("property developer")}
-                className="p-4 capitalize text-start hover:bg-neutral-2 dark:hover:bg-[#292d32]"
-              >
-                Property Developer
-              </button>
->>>>>>> upstream/main
             </div>
           </motion.div>
         )}
@@ -140,8 +80,4 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
   );
 };
 
-<<<<<<< HEAD
 export default NavSwitchUserSwitch;
-=======
-export default NavSwitchUserSwitch;
->>>>>>> upstream/main

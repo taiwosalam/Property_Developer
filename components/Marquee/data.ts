@@ -55,14 +55,8 @@ export const useMarqueeData = (config: DynamicMarqueeConfig = {}) => {
     ) {
       marquees.push({
         id: "subscription-expiry",
-<<<<<<< HEAD
-        text: `⚠️ Your subscription will expire in ${expiryDays} day${
-          expiryDays !== 1 ? "s" : ""
-        }, you can renew to get early discount.`,
-=======
         text: `⚠️ Your subscription will expire in ${expiryDays} day${expiryDays !== 1 ? "s" : ""
           }, you can renew to get early discount.`,
->>>>>>> upstream/main
         url: "/settings/subscription",
         urlText: "Renew Now",
         speed: 500,
@@ -88,14 +82,8 @@ export const useMarqueeData = (config: DynamicMarqueeConfig = {}) => {
     if (propertyCount <= 3 && propertyCount > 0) {
       marquees.push({
         id: "low-property-count",
-<<<<<<< HEAD
-        text: `📍 You have ${propertyCount} propert${
-          propertyCount !== 1 ? "ies" : "y"
-        } remaining. Consider upgrading your plan for more properties.`,
-=======
         text: `📍 You have ${propertyCount} propert${propertyCount !== 1 ? "ies" : "y"
           } remaining. Consider upgrading your plan for more properties.`,
->>>>>>> upstream/main
         url: "/settings/subscription",
         urlText: "Upgrade Now",
         speed: 120,
@@ -107,14 +95,8 @@ export const useMarqueeData = (config: DynamicMarqueeConfig = {}) => {
     if (unitCount <= 3 && unitCount > 0) {
       marquees.push({
         id: "low-unit-count",
-<<<<<<< HEAD
-        text: `🏢 You have ${unitCount} unit${
-          unitCount !== 1 ? "s" : ""
-        } remaining. Consider upgrading your plan for more units.`,
-=======
         text: `🏢 You have ${unitCount} unit${unitCount !== 1 ? "s" : ""
           } remaining. Consider upgrading your plan for more units.`,
->>>>>>> upstream/main
         url: "/settings/subscription",
         urlText: "Upgrade Now",
         speed: 120,
@@ -126,14 +108,8 @@ export const useMarqueeData = (config: DynamicMarqueeConfig = {}) => {
     if (tenantCount <= 3 && tenantCount > 0) {
       marquees.push({
         id: "low-tenant-count",
-<<<<<<< HEAD
-        text: `👥 You have ${tenantCount} tenant slot${
-          tenantCount !== 1 ? "s" : ""
-        } remaining. Consider upgrading your plan for more tenants.`,
-=======
         text: `👥 You have ${tenantCount} tenant slot${tenantCount !== 1 ? "s" : ""
           } remaining. Consider upgrading your plan for more tenants.`,
->>>>>>> upstream/main
         url: "/settings/subscription",
         urlText: "Upgrade Now",
         speed: 120,
@@ -245,10 +221,7 @@ export const useMarqueeData = (config: DynamicMarqueeConfig = {}) => {
 
     return () => clearInterval(interval);
   }, [allMarquees.length, allMarquees[0]?.id]);
-<<<<<<< HEAD
-=======
 // }, [allMarquees.length]); 
->>>>>>> upstream/main
 
   return {
     currentMarquee,
