@@ -43,7 +43,12 @@ const Marquee = ({
   return (
     <>
       {showMarquee && (
+<<<<<<< HEAD
         <div className={`relative overflow-hidden ${className}`}>
+=======
+        // <div className={`relative overflow-hidden z-50 max-w-full ${className}`}>
+        <div className={`relative overflow-hidden z-50 max-w-full ${className}`}>
+>>>>>>> upstream/main
           <div
             ref={marqueeRef}
             className="w-full h-4 flex items-center"
@@ -83,6 +88,10 @@ const Marquee = ({
                 transform: translateX(100%);
               }
               100% {
+<<<<<<< HEAD
+=======
+                // transform: translateX(-100%);
+>>>>>>> upstream/main
                 transform: translateX(-50%);
               }
             }

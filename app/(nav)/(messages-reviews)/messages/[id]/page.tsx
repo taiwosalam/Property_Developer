@@ -1,30 +1,14 @@
+// components/Chat.tsx - Fixed version
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import React, {
-  useEffect,
-  useState,
-  useRef,
-  useMemo,
-  useCallback,
-} from "react";
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useChatStore } from "@/store/message";
-import {
-  ChatAPIResponse,
-  DirectChatAPIResponse,
-  GroupChatAPIResponse,
-  groupMessagesByDay,
-  isDirectChatResponse,
-  isGroupChatResponse,
-  mapConversationsArray,
-  NormalizedMessage,
-  transformMessageFromAPI,
-  transformMessagesFromAPI,
-} from "../data";
+import { groupMessagesByDay, NormalizedMessage } from "../data";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { empty } from "@/app/config";
-import { ConversationsUpdatedReturn, ReadEvent, UsersProps } from "../types";
+import { ReadEvent, UsersProps } from "../types";
 import ChatSkeleton from "@/components/Skeleton/chatSkeleton";
 import { useAuthStore } from "@/store/authStore";
 import { useGlobalStore } from "@/store/general-store";
@@ -36,12 +20,8 @@ import { UserDetailsResponse } from "@/components/Message/types";
 import { getCleanRoleName } from "@/components/Message/data";
 import useFetch from "@/hooks/useFetch";
 import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { ChevronLeftIcon } from "lucide-react";
-import { useEcho } from "@/lib/echo";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { useMessages } from "@/contexts/messageContext";
-import { useChatMessages, useEchoMessages } from "../hooks";
+import { useEchoMessages, useChatMessagesQuery } from "../hooks";
 import { useMessageStore } from "@/store/messagesStore";
 
 const useUserProfile = (id: string | number) => {
@@ -68,27 +48,72 @@ const useShowContactInfo = (user: any) => {
 const Chat = () => {
   const router = useRouter();
   const { id } = useParams<{ id: string }>();
-  const { data, setChatData } = useChatStore();
+  const { data } = useChatStore();
   const isGroupChat = useGlobalStore((s) => s.isGroupChat);
   const user_id = useAuthStore((state) => state.user_id);
   const users = data?.users?.users || [];
   const messageUserData = useGlobalStore((s) => s.messageUserData);
-  // Local conversations state, always reset on id change.
-  // Track which chat id last loaded
-  const lastLoadedId = useRef<string | null>(null);
-  // User lookup and info - UserId is the participant ID (user u're chatting...)
+  const setPageUsersMsg = useMessageStore((state) => state.setPageUsersMsg);
+
   const userId = useMemo(() => {
     const parsed = Number(id);
     return isNaN(parsed) ? null : parsed;
   }, [id]);
 
-  const { messages, setMessages, groupedMessages, isLoading, setIsLoading } =
-    useChatMessages(id, isGroupChat);
+  // React Query hook for messages
+  const {
+    messages: queryMessages,
+    isPending,
+    isLoading: loading,
+    error,
+    refetch,
+  } = useChatMessagesQuery(id, isGroupChat);
+
+  useEffect(() => {
+    refetch();
+  }, [id, refetch]);
+
+  // Local state for real-time updates
+  const [localMessages, setLocalMessages] = useState<NormalizedMessage[]>([]);
+
+  useEffect(() => {
+    if (!queryMessages) return;
+    try {
+      const normalized: NormalizedMessage[] = Array.isArray(queryMessages)
+        ? queryMessages
+        : [];
+      setLocalMessages(normalized);
+    } catch (err) {
+      console.error("Error syncing messages:", err);
+    }
+  }, [queryMessages]);
+
+  // Echo handlers
+  const handleNewMessage = useCallback((message: NormalizedMessage) => {
+    setLocalMessages((prev) => [...prev, message]);
+  }, []);
+
+  const handleMessagesRead = useCallback((messageIds: number[]) => {
+    setLocalMessages((prev) =>
+      prev.map((msg) =>
+        messageIds.includes(msg.id)
+          ? { ...msg, seen: true, is_read: true }
+          : msg
+      )
+    );
+  }, []);
+
+  // Set up Echo listeners
+  useEchoMessages(id, handleNewMessage, handleMessagesRead, isGroupChat);
+
+  // User profile
+  const { profile: userProfileData, loading: loadingUser } = useUserProfile(id);
+
+  // User data logic
   const user: UsersProps | undefined =
     messageUserData || users.find((u: UsersProps) => Number(u.id) === userId);
-  // Remote profile fetch
-  const { profile: userProfileData, loading: loadingUser } = useUserProfile(id);
-  // Compose role/badge logic
+
+  // Role and badge logic
   const role = getCleanRoleName(userProfileData);
   const specialRoles = [
     "director",
@@ -107,80 +132,27 @@ const Chat = () => {
       : undefined;
   })();
 
-  // Contact status cycling
   const showContactInfo = useShowContactInfo(user);
-  // const token = localStorage.getItem("user_id");
 
-  const endpoint = useMemo(
-    () =>
-      isGroupChat ? `/group-chats/${id}` : `/messages/conversations/${id}`,
-    [isGroupChat, id]
+  // Group messages
+  const groupedMessages = useMemo(
+    () => groupMessagesByDay(localMessages),
+    [localMessages]
   );
 
-  const handleNewMessage = useCallback(
-    (message: NormalizedMessage) => {
-      setMessages((prev) => [...prev, message]);
-    },
-    [setMessages]
-  );
-
-  // Handle read status updates
-  const handleMessagesRead = useCallback(
-    (messageIds: number[]) => {
-      setMessages((prev) =>
-        prev.map((msg) =>
-          messageIds.includes(msg.id)
-            ? { ...msg, seen: true, is_read: true }
-            : msg
-        )
-      );
-    },
-    [setMessages]
-  );
-
-  const { data: apiData, loading, error, refetch } = useFetch<any>(endpoint);
-  useEchoMessages(id, handleNewMessage, handleMessagesRead, isGroupChat);
-
-  // const { setPageUsersMsg } = useMessages();
-  const setPageUsersMsg = useMessageStore((state) => state.setPageUsersMsg);
-
-  useEffect(() => {
-    if (!apiData) {
-      console.log("there is no api data", { apiData });
-      // refetch({ silent: true });
-      return;
-    }
-
-    try {
-      let normalizedMessages: NormalizedMessage[] = [];
-      if (isGroupChat && isGroupChatResponse(apiData.data)) {
-        // Ensure this is for the current chat
-        if (String(apiData.data.group_chat?.id) === String(id)) {
-          normalizedMessages = transformMessagesFromAPI(apiData.data, true);
-        }
-      } else if (!isGroupChat && isDirectChatResponse(apiData)) {
-        normalizedMessages = transformMessagesFromAPI(apiData, false);
-      }
-
-      setMessages(normalizedMessages);
-      setIsLoading(false);
-    } catch (err) {
-      console.error("Error processing API data:", err);
-      setIsLoading(false);
-    }
-  }, [apiData, isGroupChat, id, setMessages, setIsLoading, endpoint]);
-
-  // Early returns with proper guards
+  // Route protection
   if (userId === null) {
     router.replace("/messages");
     return null;
   }
 
-  if (loading || isLoading) {
+  // if (loading || loadingUser) {
+  //   return <ChatSkeleton />;
+  // }
+  if (groupedMessages.length < 1) {
     return <ChatSkeleton />;
   }
 
-  // Render
   return (
     <>
       {/* Header */}
@@ -238,11 +210,21 @@ const Chat = () => {
 
       {/* Messages */}
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-        {error && <div className="text-red-500 text-center p-2">{error}</div>}
+        {error && (
+          <div className="text-red-500 text-center p-2">
+            Error loading messages
+            <button
+              onClick={() => refetch()}
+              className="ml-2 text-blue-500 hover:underline"
+            >
+              Retry
+            </button>
+          </div>
+        )}
         {groupedMessages.length > 0
           ? groupedMessages.map((group, index) => (
               <Messages
-                key={index}
+                key={`${group.day}-${index}`}
                 day={group.day}
                 messages={group.messages}
                 userId={user_id as string}
@@ -250,7 +232,7 @@ const Chat = () => {
               />
             ))
           : !loading &&
-            !isLoading && (
+            !loadingUser && (
               <div className="text-center text-gray-400 py-10">
                 No messages yet.
               </div>

@@ -4,6 +4,7 @@ import { useSoundPreference } from "@/hooks/useGetSound";
 import { getAllSounds } from "@/lib/action"; // async function
 import { SettingsUpdateButtonProps } from "@/components/Settings/types";
 import { toast } from "sonner";
+import clsx from "clsx";
 
 export default function SoundSelector({
   button,
@@ -46,18 +47,26 @@ export default function SoundSelector({
 
   return (
     <div>
-      <div className="flex flex-wrap">
+      <div className="flex gap-4 flex-wrap">
         {sounds.map((sound) => (
           <button
             key={sound.path}
             onClick={() => handlePreview(sound.path)}
-            className={`m-1 p-2 rounded ${
-              selectedSound === sound.path
-                ? "bg-brand-1 dark:bg-darkBrand-1"
-                : "bg-[rgba(245,245,245,0.5)]  text-[rgba(0,0,0,0.5)] dark:text-darkText-1 hover:text-black dark:hover:text-white duration-150 "
-            }`}
+            className={clsx("py-4 px-10 rounded-[4px] group", {
+              "bg-brand-1 dark:bg-darkBrand-1": selectedSound === sound.path,
+              "bg-[rgba(245,245,245,0.5)] dark:text-darkText-1":
+                selectedSound !== sound.path,
+            })}
           >
-            {sound.name}
+            <span
+              className={clsx("text-sm font-normal", {
+                "text-brand-9": selectedSound === sound.path,
+                "text-[rgba(0,0,0,0.5)] dark:text-darkText-1 group-hover:text-black dark:group-hover:text-white duration-150":
+                  selectedSound !== sound.path,
+              })}
+            >
+              {sound.name}
+            </span>
           </button>
         ))}
       </div>

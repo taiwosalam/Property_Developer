@@ -887,8 +887,16 @@ const Others = () => {
       // Build new settings, defaulting missing/undefined to true
       const newSettings: Record<string, boolean> = {};
       const notificationRecord = notification as Record<string, any>;
+<<<<<<< HEAD
       allKeys.forEach(key => {
         newSettings[key] = typeof notificationRecord[key] === 'undefined' ? true : notificationRecord[key];
+=======
+      allKeys.forEach((key) => {
+        newSettings[key] =
+          typeof notificationRecord[key] === "undefined"
+            ? true
+            : notificationRecord[key];
+>>>>>>> upstream/main
       });
       setNotificationSettings(newSettings);
 
@@ -1256,12 +1264,21 @@ const Others = () => {
 
   return (
     <>
+<<<<<<< HEAD
       <SettingsSection title="Director and Access Control">
         {/* COMPANY DIRECTORS */}
 
         <div className="custom-flex-col gap-6 mt-4">
           <SettingsSectionTitle
             title="Director And Access Control"
+=======
+      <SettingsSection title="Company Director">
+        {/* COMPANY DIRECTORS */}
+
+        <div className="custom-flex-col gap-6">
+          <SettingsSectionTitle
+            title=""
+>>>>>>> upstream/main
             desc="Please provide the details of the additional user you wish to grant the same Director-level access as your account within the company."
           />
           <div className="">
@@ -1556,9 +1573,15 @@ Once restricted, they will no longer have access to participate in the property'
         </SettingsSection>
       )}
 
+<<<<<<< HEAD
       {/* NOTIFICATIONS */}
       {(canManageNotificationPreference || IS_COMPANY_OWNER) && (
         <SettingsSection title="Email/Notifications">
+=======
+      {/* NOTIFICATIONS 
+      {(canManageNotificationPreference || IS_COMPANY_OWNER) && (
+        <SettingsSection title="Email/Notifications" >
+>>>>>>> upstream/main
           <div className="custom-flex-col gap-6 mt-4">
             <div className="mt-2 flex flex-col gap-4">
               <h4> Notify me when: </h4>
@@ -1603,6 +1626,7 @@ Once restricted, they will no longer have access to participate in the property'
             />
           </div>
         </SettingsSection>
+<<<<<<< HEAD
       )}
 
       {/* NOTIFICATION SETTINGS*/}
@@ -1611,6 +1635,12 @@ Once restricted, they will no longer have access to participate in the property'
       </SettingsSection>
       {
         <SettingsSection title="Notification Settings">
+=======
+      )} */}
+
+      {
+        <SettingsSection title="Email and Notification Preferences">
+>>>>>>> upstream/main
           <div className="custom-flex-col gap-8 mt-4">
             {/* Notification Categories */}
             {notificationCategories.map((category, categoryIndex) => (
@@ -1692,6 +1722,14 @@ Once restricted, they will no longer have access to participate in the property'
         </SettingsSection>
       }
 
+<<<<<<< HEAD
+=======
+      {/* NOTIFICATION SETTINGS*/}
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
+      </SettingsSection>
+
+>>>>>>> upstream/main
       {/* RESET SETTINGS */}
       {(canResetSystem || IS_COMPANY_OWNER) && (
         <SettingsSection title="Reset Settings">

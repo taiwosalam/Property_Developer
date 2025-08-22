@@ -360,7 +360,7 @@ const ManagerProfile = () => {
                         <Button
                           size="sm_medium"
                           disabled={pageData?.is_bvn_verified}
-                          className="text-white flex items-center justify-center text-center absolute sm:top-10 right-2 py-4 h-9 top-8"
+                          className="text-white flex items-center justify-center text-center absolute sm:top-10 right-2 p-4 text-sm h-9 top-8"
                         >
                           {pageData?.is_bvn_verified ? "Verified" : "Verify"}
                         </Button>

@@ -351,7 +351,7 @@ const ServiceProviders = () => {
                 type="button"
                 className="page-header-button md:block hidden"
               >
-                + Create New Service Provider
+                + New Service Provider
               </Button>
             </ModalTrigger>
             <ModalContent>

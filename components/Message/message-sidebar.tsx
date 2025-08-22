@@ -11,6 +11,8 @@ import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
 import { memo, useCallback, useMemo } from "react";
 import { useMessageStore } from "@/store/messagesStore";
+import { useChatPrefetch } from "@/app/(nav)/(messages-reviews)/messages/hooks";
+import { AnimatePresence, Transition, motion } from "framer-motion";
 
 const MessagesSidebar = ({
   anchorEl,
@@ -26,17 +28,6 @@ const MessagesSidebar = ({
   const canViewAndreplyMessages =
     usePermission(role, "Can view and reply branch messages") ||
     role === "director";
-
-  // const {
-  //   searchQuery,
-  //   setSearchQuery,
-  //   filteredMessages,
-  //   usersMsgLoading,
-  //   usersData,
-  //   selectedFilters,
-  //   pageUsersMsg,
-  //   setSelectedFilters,
-  // } = useMessages();
 
   const searchQuery = useMessageStore((state) => state.searchQuery);
   const setSearchQuery = useMessageStore((state) => state.setSearchQuery);
@@ -70,6 +61,13 @@ const MessagesSidebar = ({
     () => pageUsersMsg.filter((msg: any) => msg.unread_count > 0).length,
     [pageUsersMsg]
   );
+
+  const spring: Transition = {
+    type: "spring",
+    damping: 20,
+    stiffness: 300,
+  };
+
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative max-w-full">
       {/* // <div className="custom-flex-col pr-2 w-full min-h-0 overflow-y-auto custom-round-scrollbar relative max-w-full"> */}
@@ -113,22 +111,34 @@ const MessagesSidebar = ({
           ))}
         </div>
       ) : (
-        <div className="custom-flex-col  overflow-x-hidden relative z-[1] pb-4">
-          {filteredMessages.map((message, idx) =>
-            message.type === "group" && canViewAndreplyMessages ? (
-              <MessageCard
-                key={idx}
-                {...message}
-                highlight={message.id === id}
-              />
-            ) : (
-              <MessageCard
-                key={idx}
-                {...message}
-                highlight={message.id === id}
-              />
-            )
-          )}
+        <div className="custom-flex-col overflow-x-hidden relative z-[1] pb-4">
+          <AnimatePresence>
+            {filteredMessages.map((message) =>
+              message.type === "group" && canViewAndreplyMessages ? (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={spring}
+                  key={message.id}
+                >
+                  <MessageCard {...message} highlight={message.id === id} />
+                </motion.div>
+              ) : (
+                <motion.div
+                  layout
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={spring}
+                  key={message.id}
+                >
+                  <MessageCard {...message} highlight={message.id === id} />
+                </motion.div>
+              )
+            )}
+          </AnimatePresence>
         </div>
       )}
       {/* Floating action button */}

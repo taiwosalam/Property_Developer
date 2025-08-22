@@ -2,6 +2,7 @@ import { usePermission } from "@/hooks/getPermission";
 import { useMemo } from "react";
 import { SVGType } from "../SVG/types";
 
+<<<<<<< HEAD
 export interface NavCreateItem {
   label: string;
   link?: string;
@@ -24,6 +25,9 @@ interface FilterNavCreateItemsParams {
   >;
 }
 
+=======
+// Permission mapping for nav create items
+>>>>>>> upstream/main
 export const permissionMapping: Record<
   string,
   { permission: string; ownerRoles: string[] }
@@ -36,10 +40,17 @@ export const permissionMapping: Record<
     permission: "Can add and manage tenants/occupants",
     ownerRoles: ["manager", "account"],
   },
+<<<<<<< HEAD
   branch: {
     permission: "Can add/delete branch properties",
     ownerRoles: ["manager", "account"],
   },
+=======
+  // branch: {
+  //   permission: "Can add/delete branch properties",
+  //   ownerRoles: ["manager", "account"],
+  // },
+>>>>>>> upstream/main
   property: {
     permission: "Can add/delete branch properties",
     ownerRoles: ["manager", "account", "staff"],
@@ -94,7 +105,13 @@ export const permissionMapping: Record<
   },
 };
 
+<<<<<<< HEAD
 export const useNavCreatePermissions = (role: string) => {
+=======
+// Custom hook for nav create permissions
+export const useNavCreatePermissions = (role: string) => {
+  // Call all permissions at the top level - React-compliant way
+>>>>>>> upstream/main
   const landlordPerm = usePermission(
     role,
     "Can add and manage landlords/landlady"
@@ -119,6 +136,10 @@ export const useNavCreatePermissions = (role: string) => {
     "Can create and manage announcement"
   );
 
+<<<<<<< HEAD
+=======
+  // Create permissions cache using the hook results
+>>>>>>> upstream/main
   const permissionsCache = useMemo(
     () => ({
       "landlord / landlady": landlordPerm,
@@ -130,6 +151,7 @@ export const useNavCreatePermissions = (role: string) => {
       maintenance: inspectionsPerm,
       reminder: calendarPerm,
       announcement: announcementPerm,
+<<<<<<< HEAD
       invoice: tenantsPerm,
       expenses: tenantsPerm,
       disbursement: tenantsPerm,
@@ -137,6 +159,15 @@ export const useNavCreatePermissions = (role: string) => {
       "other documents": tenantsPerm,
       "tenancy form": tenantsPerm,
       "management form": tenantsPerm,
+=======
+      invoice: tenantsPerm, // Reusing tenants permission
+      expenses: tenantsPerm, // Reusing tenants permission
+      disbursement: tenantsPerm, // Reusing tenants permission
+      "tenancy agreement": tenantsPerm, // Reusing tenants permission
+      "other documents": tenantsPerm, // Reusing tenants permission
+      "tenancy form": tenantsPerm, // Reusing tenants permission
+      "management form": tenantsPerm, // Reusing tenants permission
+>>>>>>> upstream/main
     }),
     [
       landlordPerm,
@@ -153,12 +184,40 @@ export const useNavCreatePermissions = (role: string) => {
   return { permissionsCache, permissionMapping };
 };
 
+<<<<<<< HEAD
+=======
+// Define interfaces for better type safety
+export interface NavCreateItem {
+  label: string;
+  link?: string;
+  modal?: string;
+}
+
+export interface NavCreateSection {
+  type: SVGType;
+  label: string;
+  content?: NavCreateItem[];
+}
+
+interface FilterNavCreateItemsParams {
+  data: NavCreateSection[];
+  role: string;
+  permissionsCache: Record<string, boolean>;
+  permissionMapping: Record<
+    string,
+    { permission: string; ownerRoles: string[] }
+  >;
+}
+
+// Filter function for nav create items
+>>>>>>> upstream/main
 export const filterNavCreateItems = ({
   data,
   role,
   permissionsCache,
   permissionMapping,
 }: FilterNavCreateItemsParams): NavCreateSection[] => {
+<<<<<<< HEAD
   // Allow all sections for modules with empty permissionMapping
   const isPermissionless = Object.keys(permissionMapping).length === 0;
 
@@ -173,10 +232,17 @@ export const filterNavCreateItems = ({
       // For permissionless modules (e.g., property_developer, hospitality_manager), allow all sections
       return true;
     })
+=======
+  const options = ["management", "tasks", "accounting", "documents"];
+
+  return data
+    .filter((item) => options.includes(item.label.toLowerCase()))
+>>>>>>> upstream/main
     .map((item) => ({
       ...item,
       content: item.content?.filter(({ label }) => {
         const mapping = permissionMapping[label.toLowerCase()];
+<<<<<<< HEAD
         // Allow items for modules without permissions or if role is not in ownerRoles
         if (!mapping) {
           return true;
@@ -186,6 +252,16 @@ export const filterNavCreateItems = ({
           !mapping.ownerRoles.includes(role) ||
           permissionsCache[label.toLowerCase()]
         );
+=======
+
+        // Render item if no permission is defined or if the role is not an owner
+        if (!mapping || !mapping.ownerRoles.includes(role)) {
+          return true;
+        }
+
+        // Only filter out if the role owns the permission and it's false
+        return permissionsCache[label.toLowerCase()];
+>>>>>>> upstream/main
       }),
     }))
     .filter((item) => item.content && item.content.length > 0);

@@ -103,8 +103,13 @@ const Header = () => {
     theme === "light"
       ? getLocalStorage("light_logo")
       : getLocalStorage("dark_logo")
+<<<<<<< HEAD
       ? getLocalStorage("dark_logo")
       : getLocalStorage("light_logo")
+=======
+        ? getLocalStorage("dark_logo")
+        : getLocalStorage("light_logo")
+>>>>>>> upstream/main
   );
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
@@ -134,7 +139,11 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
+<<<<<<< HEAD
       const unreadCount = apiData?.data?.filter(
+=======
+      const unreadCount = apiData?.data.filter(
+>>>>>>> upstream/main
         (notification) => !notification.read_at
       ).length;
       setPersonalInfo("unread_notifications_count", unreadCount);
@@ -669,12 +678,16 @@ const Header = () => {
         </div>
       </header>
 
+<<<<<<< HEAD
       <div className="">
         <SmartMarquee
           {...marqueeConfig}
           className="flex items-center leading-loose"
         />
       </div>
+=======
+
+>>>>>>> upstream/main
     </>
   );
 };

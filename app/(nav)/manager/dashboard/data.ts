@@ -434,7 +434,11 @@ export const dashboardCardData = [
     title: "Landlords",
     bg: getBackgroundColor("landlords"),
     icon: LandlordIcon,
+<<<<<<< HEAD
       value: "0",
+=======
+    value: "0",
+>>>>>>> upstream/main
     subValue: "0",
     link: "/management/landlord",
   },

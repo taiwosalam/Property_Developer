@@ -32,6 +32,10 @@ import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+<<<<<<< HEAD
+=======
+import ServerError from "@/components/Error/ServerError";
+>>>>>>> upstream/main
 
 const BranchStaffPage = () => {
   const { branch } = usePersonalInfoStore();
@@ -225,7 +229,11 @@ const BranchStaffPage = () => {
     ),
     ref:
       index === state.staffs.length - 1 &&
+<<<<<<< HEAD
       state.current_page < state.total_pages
+=======
+        state.current_page < state.total_pages
+>>>>>>> upstream/main
         ? lastRowRef
         : undefined,
   }));
@@ -237,7 +245,11 @@ const BranchStaffPage = () => {
   if (isNetworkError) return <NetworkError />;
 
   if (error)
+<<<<<<< HEAD
     return <p className="text-base text-red-500 font-medium">{error}</p>;
+=======
+    return <ServerError error={error} />
+>>>>>>> upstream/main
 
   return (
     <div className="custom-flex-col my-8">

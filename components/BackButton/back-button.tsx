@@ -30,7 +30,11 @@ const BackButton: React.FC<BackButtonProps> = ({
   return (
     <div
       className={cn(
+<<<<<<< HEAD
         "text-black dark:text-white flex items-center gap-1",
+=======
+        "text-black dark:text-white flex items-center gap-1 pt-8 pb-4 sm:pt-2",
+>>>>>>> upstream/main
         className
       )}
     >

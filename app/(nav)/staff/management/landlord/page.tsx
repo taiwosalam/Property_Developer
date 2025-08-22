@@ -374,7 +374,11 @@ const Landlord = () => {
                 type="button"
                 className="page-header-button md:block hidden"
               >
+<<<<<<< HEAD
                 + create new landlord
+=======
+                + New landlord
+>>>>>>> upstream/main
               </Button>
             </ModalTrigger>
             <ModalContent>

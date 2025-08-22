@@ -13,7 +13,11 @@ import dynamic from "next/dynamic";
 import RequestWarningModal from "@/components/Modal/request-warning-modal";
 import NotificationListener from "@/services/NotificationListener";
 import NotificationPortal from "@/services/NotificationPortal";
+<<<<<<< HEAD
 import { ModuleProvider } from "@/contexts/moduleContext";
+=======
+import ReactQueryProvider from "@/contexts/ReactQueryContext";
+>>>>>>> upstream/main
 // import TourManager from "@/tour/components/tour-manager";
 
 const CustomTour = dynamic(() => import("@/tour/components/tour-manager"), {
@@ -44,7 +48,11 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <RoleProvider>
+<<<<<<< HEAD
           <ModuleProvider>
+=======
+          <ReactQueryProvider>
+>>>>>>> upstream/main
             <Theme
               attribute="class"
               defaultTheme="light"
@@ -74,7 +82,11 @@ export default async function RootLayout({
                 <RequestWarningModal />
               </div>
             </Theme>
+<<<<<<< HEAD
           </ModuleProvider>
+=======
+          </ReactQueryProvider>
+>>>>>>> upstream/main
         </RoleProvider>
       </body>
     </html>

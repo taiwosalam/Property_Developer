@@ -88,17 +88,21 @@ export default function NotificationListener() {
 
   useEffect(() => {
     if (!echo || !isConnected) return;
-
     const token = window.localStorage.getItem("user_id");
-    if (!token) return;
-
+    if (!token) {
+      console.log({ token });
+      return;
+    }
+    console.log({ token });
     const channel = echo.private(`user.${token}`);
+    console.log("connected to the internet", { channel });
     const notification = echo.private(`notifications.${token}`);
     // const event = new CustomEvent("refetch-users-msg", {
     //   detail: "",
     // });
 
     // window.dispatchEvent(event);
+    console.log("connected to the internet", { notification });
     channel.listen(".message.received", (data: any) => {
       const event = new CustomEvent("refetch-users-msg", {
         detail: data,
@@ -203,7 +207,15 @@ export default function NotificationListener() {
       channel.stopListening(".message.received");
       channel.stopListening(".conversation.created");
     };
-  }, [echo, isConnected, addNotification, params, pathname]);
+  }, [
+    echo,
+    isConnected,
+    addNotification,
+    params,
+    pathname,
+    role,
+    setPersonalInfo,
+  ]);
 
   return null;
 }
