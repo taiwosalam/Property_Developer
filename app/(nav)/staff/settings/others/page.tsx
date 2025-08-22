@@ -251,11 +251,7 @@ const Others = () => {
           <SettingsUpdateButton
             loading={loadingNotification}
             action={saveSettings}
-<<<<<<< HEAD
-          //action={userPlan === "professional" ? saveSettings : undefined}
-=======
             //action={userPlan === "professional" ? saveSettings : undefined}
->>>>>>> upstream/main
           />
         </div>
       </SettingsSection>
@@ -265,30 +261,13 @@ const Others = () => {
       </SettingsSection>
 
       {/* NOTIFICATION SETTINGS */}
-<<<<<<< HEAD
-      <SettingsSection title="Notification Settings">
-=======
       <SettingsSection title="Email and Notification Preferences">
->>>>>>> upstream/main
         <div className="custom-flex-col gap-8 mt-4">
           {notificationCategories.map((category, categoryIndex) => (
             <div key={category.title} className="space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-<<<<<<< HEAD
-                    <h4 className="text-lg text-text-primary">{category.title}</h4>
-                  </div>
-                  <p className="text-sm text-text-disabled ml-0 mt-1 mb-3">{category.desc}</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Switch
-                    checked={category.options.some(option => (notificationSettings[option.name] ?? true))}
-                    onClick={() => {
-                      const anyChecked = category.options.some(option => (notificationSettings[option.name] ?? true));
-                      const newValue = !anyChecked;
-                      category.options.forEach(option => {
-=======
                     <h4 className="text-lg text-text-primary">
                       {category.title}
                     </h4>
@@ -308,7 +287,6 @@ const Others = () => {
                       );
                       const newValue = !anyChecked;
                       category.options.forEach((option) => {
->>>>>>> upstream/main
                         handleSetIsChecked(option.name, newValue);
                       });
                     }}
@@ -322,14 +300,9 @@ const Others = () => {
                     name={option.name}
                     darkText
                     state={{
-<<<<<<< HEAD
-                      isChecked: (notificationSettings[option.name] ?? true),
-                      setIsChecked: (value) => handleSetIsChecked(option.name, value),
-=======
                       isChecked: notificationSettings[option.name] ?? true,
                       setIsChecked: (value) =>
                         handleSetIsChecked(option.name, value),
->>>>>>> upstream/main
                     }}
                     onChange={handleCheckboxChange}
                   >
@@ -346,14 +319,10 @@ const Others = () => {
           ))}
         </div>
         <div className="flex justify-end mt-8">
-<<<<<<< HEAD
-          <SettingsUpdateButton loading={loadingNotification} action={saveSettings} />
-=======
           <SettingsUpdateButton
             loading={loadingNotification}
             action={saveSettings}
           />
->>>>>>> upstream/main
         </div>
       </SettingsSection>
     </>
