@@ -78,29 +78,6 @@ export const create_new_items: CreateNewItemsProps = [
         label: "other documents",
         modal: <CreateTenancyAggrementModal defaultOption="other_document" />,
       },
-      // {
-      //   label: "quit notice",
-      //   modal: <LegalProcedureModal type="quit_notice" title="Quit Notice" />,
-      // },
-      // {
-      //   label: "warning / reminder",
-      //   modal: (
-      //     <LegalProcedureModal
-      //       type="warning_reminder"
-      //       title="Warning / Reminder"
-      //     />
-      //   ),
-      // },
-      // {
-      //   label: "court processs",
-      //   modal: (
-      //     <LegalProcedureModal type="court_process" title="Court Process" />
-      //   ),
-      // },
-      // {
-      //   label: "possession",
-      //   modal: <LegalProcedureModal type="possession" title="Possession" />,
-      // },
     ],
   },
 ];

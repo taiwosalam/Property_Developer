@@ -1,0 +1,77 @@
+```tsx
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import { useModule } from "@/context/ModuleContext";
+import { useRole } from "@/hooks/roleContext";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+
+const PropertyManagerDirectorDashboardVariantA = dynamic(() => import("@/components/Dashboards/PropertyManager/Director/VariantA"), { ssr: false });
+const PropertyManagerDirectorDashboardVariantB = dynamic(() => import("@/components/Dashboards/PropertyManager/Director/VariantB"), { ssr: false });
+const PropertyManagerDirectorDashboardVariantC = dynamic(() => import("@/components/Dashboards/PropertyManager/Director/VariantC"), { ssr: false });
+const PropertyManagerManagerDashboardVariantA = dynamic(() => import("@/components/Dashboards/PropertyManager/Manager/VariantA"), { ssr: false });
+const PropertyManagerManagerDashboardVariantB = dynamic(() => import("@/components/Dashboards/PropertyManager/Manager/VariantB"), { ssr: false });
+const PropertyManagerManagerDashboardVariantC = dynamic(() => import("@/components/Dashboards/PropertyManager/Manager/VariantC"), { ssr: false });
+const PropertyManagerAccountDashboardVariantA = dynamic(() => import("@/components/Dashboards/PropertyManager/Account/VariantA"), { ssr: false });
+const PropertyManagerAccountDashboardVariantB = dynamic(() => import("@/components/Dashboards/PropertyManager/Account/VariantB"), { ssr: false });
+const PropertyManagerAccountDashboardVariantC = dynamic(() => import("@/components/Dashboards/PropertyManager/Account/VariantC"), { ssr: false });
+const PropertyManagerStaffDashboardVariantA = dynamic(() => import("@/components/Dashboards/PropertyManager/Staff/VariantA"), { ssr: false });
+const PropertyManagerStaffDashboardVariantB = dynamic(() => import("@/components/Dashboards/PropertyManager/Staff/VariantB"), { ssr: false });
+const PropertyManagerStaffDashboardVariantC = dynamic(() => import("@/components/Dashboards/PropertyManager/Staff/VariantC"), { ssr: false });
+const PropertyManagerUserDashboardVariantA = dynamic(() => import("@/components/Dashboards/PropertyManager/User/VariantA"), { ssr: false });
+const PropertyManagerUserDashboardVariantB = dynamic(() => import("@/components/Dashboards/PropertyManager/User/VariantB"), { ssr: false });
+const PropertyManagerUserDashboardVariantC = dynamic(() => import("@/components/Dashboards/PropertyManager/User/VariantC"), { ssr: false });
+
+const DashboardPage = () => {
+  const { activeModule, designVariant } = useModule();
+  const { role } = useRole();
+
+  const DashboardComponent = {
+    property_manager: {
+      director: {
+        variant_a: PropertyManagerDirectorDashboardVariantA,
+        variant_b: PropertyManagerDirectorDashboardVariantB,
+        variant_c: PropertyManagerDirectorDashboardVariantC,
+      },
+      manager: {
+        variant_a: PropertyManagerManagerDashboardVariantA,
+        variant_b: PropertyManagerManagerDashboardVariantB,
+        variant_c: PropertyManagerManagerDashboardVariantC,
+      },
+      account: {
+        variant_a: PropertyManagerAccountDashboardVariantA,
+        variant_b: PropertyManagerAccountDashboardVariantB,
+        variant_c: PropertyManagerAccountDashboardVariantC,
+      },
+      staff: {
+        variant_a: PropertyManagerStaffDashboardVariantA,
+        variant_b: PropertyManagerStaffDashboardVariantB,
+        variant_c: PropertyManagerStaffDashboardVariantC,
+      },
+      tenant: {
+        variant_a: PropertyManagerUserDashboardVariantA,
+        variant_b: PropertyManagerUserDashboardVariantB,
+        variant_c: PropertyManagerUserDashboardVariantC,
+      },
+      landlord: {
+        variant_a: PropertyManagerUserDashboardVariantA,
+        variant_b: PropertyManagerUserDashboardVariantB,
+        variant_c: PropertyManagerUserDashboardVariantC,
+      },
+    },
+    hospitality_manager: {
+      // Define components for hospitality module
+    },
+    property_developer: {
+      // Define components for developer module
+    },
+  }[activeModule.id]?.[role]?.[designVariant] || PropertyManagerDirectorDashboardVariantA;
+
+  return (
+    <Suspense fallback={<PageCircleLoader />}>
+      <DashboardComponent />
+    </Suspense>
+  );
+};
+
+export default DashboardPage;
+```

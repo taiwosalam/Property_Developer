@@ -1,7 +1,7 @@
-import { usePermission } from "@/hooks/getPermission";
 import { useMemo } from "react";
+import { usePermission } from "@/hooks/getPermission";
+import { NavItemsProps } from "./types";
 
-// Define the valid icon types based on your component requirements
 export type ValidIconType =
   | "buildings"
   | "people"
@@ -18,17 +18,20 @@ export type ValidIconType =
   | "sidebar"
   | "list"
   | "grid"
+  | "right_arrow"
+  | "user_tag"
   | "eye";
 
 export interface NavItem {
   label: string;
-  href: string;
+  href?: string;
   type: ValidIconType;
-  content: NavItem[];
+  content?: NavItem[];
 }
 
 interface FilterNavItemsParams {
-  items: NavItem[] | null;
+  // items: NavItem[] | null;
+  items: NavItemsProps | null;
   role: string;
   permissionsCache: Record<string, boolean>;
   permissionMapping: Record<
@@ -59,38 +62,10 @@ export const permissionMapping: Record<
     permission: "Full Wallet Access",
     ownerRoles: ["director"],
   },
-  // "landlord & landlady": {
-  //   permission: "Can add and manage landlords/landlady",
-  //   ownerRoles: ["manager", "account"],
-  // },
-  // "tenants & occupants": {
-  //   permission: "Can add and manage tenants/occupants",
-  //   ownerRoles: ["manager", "account"],
-  // },
-  // properties: {
-  //   permission: "Can add/delete branch properties",
-  //   ownerRoles: ["manager", "account", "staff"],
-  // },
   "service providers": {
     permission: "Can view service provider",
     ownerRoles: ["account", "staff"],
   },
-  // examine: {
-  //   permission: "Can create examine",
-  //   ownerRoles: ["manager", "account", "staff"],
-  // },
-  // inspections: {
-  //   permission: "Can manage inspections",
-  //   ownerRoles: ["manager", "account", "staff"],
-  // },
-  // calendars: {
-  //   permission: "Can manage calendar",
-  //   ownerRoles: ["manager", "account", "staff"],
-  // },
-  // announcements: {
-  //   permission: "Can create and manage announcement",
-  //   ownerRoles: ["manager", "account", "staff"],
-  // },
   "visitors request": {
     permission: "Can check in visitors",
     ownerRoles: ["manager", "account", "staff"],
@@ -99,61 +74,95 @@ export const permissionMapping: Record<
     permission: "Can view and reply branch messages",
     ownerRoles: ["manager", "account", "staff"],
   },
-  // "vehicles record": {
-  //   permission: "Can check in and manage vehicle records",
-  //   ownerRoles: ["manager", "account"],
-  // },
-  // invoice: {
-  //   permission: "Can manage tenants/occupants",
-  //   ownerRoles: ["manager", "account"],
-  // },
-  // expenses: {
-  //   permission: "Can manage tenants/occupants",
-  //   ownerRoles: ["manager", "account"],
-  // },
-  // disbursement: {
-  //   permission: "Can manage tenants/occupants",
-  //   ownerRoles: ["manager", "account"],
-  // },
 };
 
-export const useNavPermissions = (role: string) => {
-  // Call all permissions at the top level 
-  const callRequestPerm = usePermission(role, "Can view call request");
-  const propertyRequestPerm = usePermission(role, "Can view property request");
-  const complaintsPerm = usePermission(role, "Can view complaints");
-  const walletPerm = usePermission(role, "Full Wallet Access");
-  const teamChatPerm = usePermission(role, "Can view and reply branch messages") || role === 'director';
+export const useNavPermissions = (
+  role: string,
+  customPermissionMapping: Record<
+    string,
+    { permission: string; ownerRoles: string[] }
+  > = permissionMapping
+) => {
+  // Compute permissions at the top level
+  const callRequestPerm = usePermission(
+    role,
+    customPermissionMapping["call request"]?.permission ||
+      "Can view call request"
+  );
+  const propertyRequestPerm = usePermission(
+    role,
+    customPermissionMapping["property request"]?.permission ||
+      "Can view property request"
+  );
+  const complaintsPerm = usePermission(
+    role,
+    customPermissionMapping["complaints"]?.permission || "Can view complaints"
+  );
+  const walletPerm = usePermission(
+    role,
+    customPermissionMapping["wallet"]?.permission || "Full Wallet Access"
+  );
+  const teamChatPerm =
+    usePermission(
+      role,
+      customPermissionMapping["team chat"]?.permission ||
+        "Can view and reply branch messages"
+    ) || role === "director";
   const landlordPerm = usePermission(
     role,
-    "Can add and manage landlords/landlady"
+    customPermissionMapping["landlord & landlady"]?.permission ||
+      "Can add and manage landlords/landlady"
   );
   const tenantsPerm = usePermission(
     role,
-    "Can add and manage tenants/occupants"
+    customPermissionMapping["tenants & occupants"]?.permission ||
+      "Can add and manage tenants/occupants"
   );
   const propertiesPerm = usePermission(
     role,
-    "Can add/delete branch properties"
+    customPermissionMapping["properties"]?.permission ||
+      "Can add/delete branch properties"
   );
-  const serviceProvidersPerm = usePermission(role, "Can view service provider");
-  const examinePerm = usePermission(role, "Can create examine");
-  const inspectionsPerm = usePermission(role, "Can manage inspections");
-  const calendarsPerm = usePermission(role, "Can manage calendar");
+  const serviceProvidersPerm = usePermission(
+    role,
+    customPermissionMapping["service providers"]?.permission ||
+      "Can view service provider"
+  );
+  const examinePerm = usePermission(
+    role,
+    customPermissionMapping["examine"]?.permission || "Can create examine"
+  );
+  const inspectionsPerm = usePermission(
+    role,
+    customPermissionMapping["inspections"]?.permission ||
+      "Can manage inspections"
+  );
+  const calendarsPerm = usePermission(
+    role,
+    customPermissionMapping["calendars"]?.permission || "Can manage calendar"
+  );
   const announcementsPerm = usePermission(
     role,
-    "Can create and manage announcement"
+    customPermissionMapping["announcements"]?.permission ||
+      "Can create and manage announcement"
   );
-  const visitorsRequestPerm = usePermission(role, "Can check in visitors");
-  const inventoryPerm = usePermission(role, "Can create inventory");
+  const visitorsRequestPerm = usePermission(
+    role,
+    customPermissionMapping["visitors request"]?.permission ||
+      "Can check in visitors"
+  );
+  const inventoryPerm = usePermission(
+    role,
+    customPermissionMapping["inventory"]?.permission || "Can create inventory"
+  );
   const vehiclesRecordPerm = usePermission(
     role,
-    "Can check in and manage vehicle records"
+    customPermissionMapping["vehicles record"]?.permission ||
+      "Can check in and manage vehicle records"
   );
 
-  // Create permissions cache using the hook results
-  const permissionsCache = useMemo(
-    () => ({
+  const permissionsCache = useMemo(() => {
+    const basePermissions = {
       "call request": callRequestPerm,
       "property request": propertyRequestPerm,
       complaints: complaintsPerm,
@@ -173,28 +182,40 @@ export const useNavPermissions = (role: string) => {
       invoice: tenantsPerm,
       expenses: tenantsPerm,
       disbursement: tenantsPerm,
-    }),
-    [
-      callRequestPerm,
-      propertyRequestPerm,
-      complaintsPerm,
-      walletPerm,
-      landlordPerm,
-      tenantsPerm,
-      propertiesPerm,
-      serviceProvidersPerm,
-      examinePerm,
-      inspectionsPerm,
-      calendarsPerm,
-      announcementsPerm,
-      visitorsRequestPerm,
-      inventoryPerm,
-      vehiclesRecordPerm,
-      teamChatPerm,
-    ]
-  );
+    };
 
-  return { permissionsCache, permissionMapping };
+    // Add permissions from customPermissionMapping
+    const additionalPermissions = Object.keys(customPermissionMapping).reduce(
+      (acc, key) => ({
+        ...acc,
+        [key]: customPermissionMapping[key].ownerRoles.includes(role),
+      }),
+      {} as Record<string, boolean>
+    );
+
+    return { ...basePermissions, ...additionalPermissions };
+  }, [
+    callRequestPerm,
+    propertyRequestPerm,
+    complaintsPerm,
+    walletPerm,
+    landlordPerm,
+    tenantsPerm,
+    propertiesPerm,
+    serviceProvidersPerm,
+    examinePerm,
+    inspectionsPerm,
+    calendarsPerm,
+    announcementsPerm,
+    visitorsRequestPerm,
+    inventoryPerm,
+    vehiclesRecordPerm,
+    teamChatPerm,
+    customPermissionMapping,
+    role,
+  ]);
+
+  return { permissionsCache, permissionMapping: customPermissionMapping };
 };
 
 export const sanitizeClassName = (label: string): string =>
@@ -205,7 +226,6 @@ export const sanitizeClassName = (label: string): string =>
         .replace(/[^a-z0-9-]/g, "")
     : "";
 
-// Helper function to ensure type safety
 const ensureValidType = (type: string | undefined): ValidIconType => {
   const validTypes: ValidIconType[] = [
     "buildings",
@@ -222,8 +242,9 @@ const ensureValidType = (type: string | undefined): ValidIconType => {
     "arrow_down",
     "sidebar",
     "list",
+    "grid",
+    "eye",
   ];
-
   return validTypes.includes(type as ValidIconType)
     ? (type as ValidIconType)
     : "folder";
@@ -237,7 +258,6 @@ export const filterNavItems = ({
   managerWalletIsActive,
   isCompanyOwner,
 }: FilterNavItemsParams): NavItem[] => {
-  // Handle null or undefined items
   if (!items || !Array.isArray(items)) {
     return [];
   }
@@ -248,13 +268,13 @@ export const filterNavItems = ({
         return false;
       }
       const mapping = permissionMapping[item.label.toLowerCase()];
-
-      // Render item if no permission is defined or role is not an owner
-      if (!mapping || !mapping.ownerRoles.includes(role)) {
+      // Allow navigation if no permission mapping exists (for modules like hospitality_manager)
+      if (!mapping) {
         return true;
       }
-
-      // Special case for "wallet"
+      if (!mapping.ownerRoles.includes(role)) {
+        return false;
+      }
       if (item.label.toLowerCase() === "wallet") {
         return (
           permissionsCache["wallet"] ||
@@ -262,32 +282,30 @@ export const filterNavItems = ({
           isCompanyOwner
         );
       }
-
       return permissionsCache[item.label.toLowerCase()];
     })
     .map((item) => {
-      // Ensure type safety by providing a valid type
-      const safeItem: NavItem = {
+      const safeItem: any = {
         ...item,
         type: ensureValidType(item.type),
       };
-
       if (safeItem.content && Array.isArray(safeItem.content)) {
         return {
           ...safeItem,
           content: safeItem.content
-            .filter((subItem) => {
+            .filter((subItem:any) => {
               if (!subItem || typeof subItem.label !== "string") {
                 return false;
               }
               const mapping = permissionMapping[subItem.label.toLowerCase()];
+              // Allow sub-navigation if no permission mapping exists
               return (
                 !mapping ||
                 !mapping.ownerRoles.includes(role) ||
                 permissionsCache[subItem.label.toLowerCase()]
               );
             })
-            .map((subItem) => ({
+            .map((subItem: any) => ({
               ...subItem,
               type: ensureValidType(subItem.type),
             })),

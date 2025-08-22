@@ -23,7 +23,8 @@ export interface NavButtonProps {
 
 export interface NavDropdownProps extends NavButtonProps {
   onContentClick?: () => void;
-  content: { label: string; href: string }[];
+  // content: { label: string; href: string }[];
+   content: { label: string; href?: string }[];
   onToggle?: () => void;
   className?: string; 
   href?: string;

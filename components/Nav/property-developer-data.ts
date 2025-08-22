@@ -1,13 +1,11 @@
 // Types
 import type { NavItemsProps } from "./types";
-// import api from "@/services/api";
-// import { useAuthStore } from "@/store/auth-store";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import useFetch from "@/hooks/useFetch";
 import { SVGType } from "../SVG/types";
 
-// The nav_items is used for the director role 
-export const nav_items: NavItemsProps = [
+// The nav_items is used for the director role
+export const property_developer_director_nav_items: NavItemsProps = [
   {
     type: "buildings",
     label: "dashboard",
@@ -16,60 +14,72 @@ export const nav_items: NavItemsProps = [
   {
     type: "people",
     label: "management",
-    href: "/management",
+    href: "#",
     content: [
-      { label: "staff & branches", href: "/staff-branch" },
-      { label: "landlord & landlady", href: "/landlord" },
-      { label: "tenants & occupants", href: "/tenants" },
-      { label: "inventory", href: "/inventory" },
-      { label: "properties", href: "/properties" },
-      { label: "rent & mgmt", href: "/rent-unit" },
-      // { label: "vehicles record", href: "/vehicles-record" },
-      { label: "Property Draft/Request", href: "/property-draft" },
-      { label: "service providers", href: "/service-providers" },
+      { label: "clients", href: "#" },
+      { label: "owners", href: "#" },
+      { label: "investors", href: "#" },
+      { label: "properties", href: "#" },
+      { label: "sales & unit", href: "#" },
+      { label: "staff & branch", href: "#" },
+      { label: "referrals", href: "#" },
+    ],
+  },
+  {
+    type: "briefcase_timer",
+    label: "HRM",
+    href: "#",
+    content: [
+      { label: "staff schedule", href: "#" },
+      { label: "staff attendance", href: "#" },
+      { label: "payroll", href: "#" },
+      { label: "logbook", href: "#" },
+    ],
+  },
+  {
+    type: "chart",
+    label: "inventories",
+    href: "#",
+    content: [
+      { label: "category", href: "#" },
+      { label: "items request", href: "#" },
+      { label: "inventory", href: "#" },
+      { label: "suppliers", href: "#" },
     ],
   },
   {
     type: "briefcase_timer",
     label: "tasks",
-    href: "/tasks",
+    href: "#",
     content: [
-      { label: "Applications", href: "/applications" },
-      { label: "complaints", href: "/complaints" },
-      { label: "inspections", href: "/inspections" },
-      { label: "examine", href: "/examine" },
-      { label: "maintenance", href: "/maintenance" },
-      { label: "calendars", href: "/calendars" },
-      { label: "announcements", href: "/announcements" },
-      { label: "call request", href: "/inquires" },
-      { label: "visitors request", href: "/visitors" },
-      { label: "vehicles record", href: "/vehicles-record" },
-      { label: "property request", href: "/property-request" },
-      { label: "deposits request", href: "/deposits" },
-      { label: "undo / trash", href: "/undo" },
+      { label: "calendar", href: "#" },
+      { label: "inspections", href: "#" },
+      { label: "announcement", href: "#" },
+      { label: "to do", href: "#" },
+      { label: "request", href: "#" },
+      { label: "inquires", href: "#" },
+      { label: "complain", href: "#" },
     ],
   },
   {
     type: "chart",
-    label: "unit mgmt",
-    href: "/listing",
+    label: "Sales & Units",
+    href: "#",
     content: [
-      { label: "listing", href: "/units" },
-      { label: "statistics", href: "/statistics" },
-      // { label: "Property Draft/Request", href: "/property" },
+      { label: "listing", href: "#" },
+      { label: "performance", href: "#" },
+      { label: "Properties", href: "#" },
     ],
   },
   {
     type: "menu_board",
     label: "accounting",
-    href: "/accounting",
+    href: "#",
     content: [
-      { label: "invoice", href: "/invoice" },
-      // { label: "receipts", href: "/receipts" },
-      { label: "expenses", href: "/expenses" },
-      { label: "disbursement", href: "/disbursement" },
-      { label: "VAT", href: "/vat" },
-      // { label: "statement", href: "/statement" },
+      { label: "invoice", href: "#" },
+      { label: "expenses", href: "#" },
+      { label: "disbursement", href: "#" },
+      { label: "VAT", href: "#" },
     ],
   },
   {
@@ -85,35 +95,31 @@ export const nav_items: NavItemsProps = [
   {
     type: "status_up",
     label: "reports",
-    href: "/reports",
+    href: "#",
     content: [
-      { label: "tenants / occupants", href: "/tenants" },
-      { label: "landlord / landlady", href: "/landlord" },
-      { label: "properties", href: "/properties" },
-      { label: "units / mgmt", href: "/units" },
-      { label: "rent roll", href: "/rent" },
-      // { label: "listings", href: "/listings" },
-      { label: "email", href: "/email" },
-      { label: "SMS", href: "/sms" },
-      { label: "tracking", href: "/tracking" },
-      { label: "call request", href: "/call" },
-      { label: "visitors request", href: "/visitors" },
-      { label: "vehicles record", href: "/vehicles-record" },
-      { label: "calendar", href: "/calendar-event" },
-      { label: "subscription history", href: "/subscription-history" },
-      { label: "add-on sponsor", href: "/adds-on-sponsor" },
-      { label: "add-on sms", href: "/adds-on-sms" },
-      { label: "add-on campaign", href: "/adds-on-campaign" },
-      { label: "add-on feature", href: "/adds-on-feature" },
+      { label: "client", href: "#" },
+      { label: "owner", href: "#" },
+      { label: "investors", href: "#" },
+      { label: "properties", href: "#" },
+      { label: "units", href: "#" },
+      { label: "sales", href: "#" },
+      { label: "referral", href: "#" },
+      { label: "tracking", href: "#" },
+      { label: "email", href: "#" },
+      { label: "sms", href: "#" },
+      { label: "request", href: "#" },
+      { label: "item request", href: "#" },
+      { label: "undo", href: "#" },
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },
+  { type: "task", label: "task", href: "#" },
   {
     type: "folder",
     label: "documents",
-    href: "/documents",
+    href: "#",
   },
-  { type: "settings", label: "settings", href: "/settings" },
+  { type: "settings", label: "settings", href: "#" },
 ];
 
 export const manager_nav_items: NavItemsProps = [
@@ -459,192 +465,3 @@ export const user_nav_items: NavItemsProps = [
   },
   { type: "settings", label: "settings", href: "/user/settings" },
 ];
-
-export const tabs: {
-  icon: SVGType;
-  label: string;
-}[] = [
-    {
-      icon: "people",
-      label: "management",
-    },
-    {
-      icon: "briefcase_timer",
-      label: "task",
-    },
-    {
-      icon: "chart",
-      label: "listing",
-    },
-    {
-      icon: "menu_board",
-      label: "accounting",
-    },
-    {
-      icon: "status_up",
-      label: "reports",
-    },
-    {
-      icon: "empty_wallet",
-      label: "wallet",
-    },
-    {
-      icon: "task",
-      label: "community",
-    },
-    {
-      icon: "folder",
-      label: "documents",
-    },
-    {
-      icon: "menu_board",
-      label: "tasks",
-    },
-    {
-      icon: "briefcase_timer",
-      label: "settings",
-    },
-  ];
-
-export const accountant_search_tabs: {
-  icon: SVGType;
-  label: string;
-}[] = [
-    {
-      icon: "people",
-      label: "managememt",
-    },
-    {
-      icon: "briefcase_timer",
-      label: "task",
-    },
-    {
-      icon: "menu_board",
-      label: "accounting",
-    },
-    {
-      icon: "task",
-      label: "applications",
-    },
-  ];
-
-export const staff_search_tabs: {
-  icon: SVGType;
-  label: string;
-}[] = [
-    {
-      icon: "people",
-      label: "managememt",
-    },
-    {
-      icon: "briefcase_timer",
-      label: "task",
-    },
-  ];
-
-export const getGreeting = () => {
-  const currentHour = new Date().getHours();
-
-  if (currentHour < 12) {
-    return "Good Morning";
-  } else if (currentHour < 18) {
-    return "Good Afternoon";
-  } else {
-    return "Good Evening";
-  }
-};
-
-export interface ProfileResponse {
-  data: {
-    user: {
-      id: number;
-      userid: string;
-      name: string | null;
-      user_online_status: "online" | "offline" | null;
-      email: string | null;
-      unread_messages_count: number;
-      unread_notifications_count: number;
-      is_owner: boolean;
-    };
-    company?: {
-      company_id: string;
-      company_name: string;
-      company_logo: string;
-      domain: string;
-      company_status: string;
-      reject_reason: string;
-      state: string;
-      local_government: string;
-      head_office_address: string;
-      city: string;
-      phone_numbers: string[];
-      date_of_registration: string;
-      membership_number: string;
-      is_verified: boolean;
-      industry: string;
-      cac_registration_number: string;
-    };
-    director?: {
-      personal_title: string | null;
-      id: number;
-      picture: string;
-    };
-    company_wallet: any;
-    profile: {
-      picture: string | null;
-      title: string;
-    };
-    branch: {
-      branch_id: number | null;
-      branch_name: string | null;
-      picture: string | null;
-      branch_desc: string | null;
-      branch_address: string | null;
-      state: string | null;
-      local_government: string | null;
-      city: string | null;
-    };
-    staff: {
-      id: number | null;
-      user_id: number | null;
-      company_id: number | null;
-      branch_id: number | null;
-      is_active: boolean | null;
-      title: string | null;
-      professional_title: string | null;
-      years_experience: number | null;
-      staff_role: string | null;
-    };
-    requestDemos: any[];
-    isSubscriptionExpired: boolean;
-    currentPlan: string;
-    currentExpiryDate: string;
-  };
-}
-
-export const truncateName = (
-  name: string | undefined | null,
-  maxLength: number = 10
-): string => {
-  if (!name) return "User"; // Fallback for undefined, null, or empty
-  return name.length > maxLength ? `${name.slice(0, maxLength)}...` : name;
-};
-
-export const getSafeLinkHref = (
-  label: string,
-  originalHref: string,
-  domain: string
-) => {
-  if (typeof window === "undefined") return originalHref;
-
-  const isHomepage = label.toLowerCase() === "homepage";
-
-  if (!isHomepage) return originalHref;
-
-  // Ensure domain starts with https
-  if (!domain.startsWith("https://")) {
-    domain = "https://" + domain.replace(/^https?:\/\//, "");
-  }
-
-  return domain;
-};

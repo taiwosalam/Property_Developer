@@ -134,7 +134,7 @@ const Header = () => {
         ? apiData?.data?.map((item) => item.id)
         : [];
       setNotificationIds(ids);
-      const unreadCount = apiData?.data.filter(
+      const unreadCount = apiData?.data?.filter(
         (notification) => !notification.read_at
       ).length;
       setPersonalInfo("unread_notifications_count", unreadCount);
