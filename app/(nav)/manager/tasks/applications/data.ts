@@ -145,7 +145,7 @@ export const transformApplicationData = (
       user_id: item?.user?.encodedId,
 
       photo: item?.user?.profile,
-      flagged: item?.flags.some((flag) => flag.is_flagged)
+      flagged: item?.flags?.some((flag) => flag?.is_flagged)
         ? "flagged"
         : "unflagged",
       user_type: item?.user?.user_type || "mobile",
@@ -163,7 +163,7 @@ export const transformApplicationData = (
         : "--- ---", //item?.unit?.fee_amount,
       period_type: item?.unit?.period, //item?.unit?.fee_period,
       currency: currencies[item?.unit?.currency],
-      flag_details: item?.flags.map((flag) => ({
+      flag_details: item?.flags?.map((flag) => ({
         flagger_id: flag?.flagger?.user_id,
         flagger_name: flag.flagger.name?.toLowerCase(),
         email: flag.flagger.email,

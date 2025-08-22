@@ -42,8 +42,8 @@ type DepositRequest = {
   accountOfficer: string;
   tier_id: number;
   unit_name: string;
-  is_inventory: false;
-  is_examine: false;
+  is_inventory: boolean;
+  is_examine: boolean;
   is_maintain: false;
   inventory_at: null;
   examined_at: null;

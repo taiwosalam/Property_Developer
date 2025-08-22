@@ -21,7 +21,7 @@ export interface UnitItemProps {
   unitId: string;
   property_name?: string;
   noActionBtn?: boolean;
-  unitImages: string[]; 
+  unitImages: string[];
   unitDetails: string;
   unitStatus: keyof typeof UnitStatusColors;
   unitName: string;
@@ -44,33 +44,37 @@ export interface UnitItemProps {
   page?: "manager" | "account";
   documents?: AttachedDocument[];
   tenant_profile?: boolean;
+  cautionDepositStatus?: boolean;
 }
 
-const UnitItem: React.FC<UnitItemProps> = ({
-  propertyType,
-  unitId,
-  unitName,
-  unitImages,
-  unitStatus,
-  unitDetails,
-  tenantId,
-  tenantAgent,
-  rent,
-  serviceCharge,
-  tenantName,
-  tenantBadgeColor,
-  dueDate,
-  cautionDeposit,
-  totalPackage,
-  unitType,
-  invoice_status,
-  invoice_id,
-  partial_pending,
-  noActionBtn,
-  page,
-  property_name,
-  tenant_profile,
-}) => {
+const UnitItem: React.FC<UnitItemProps> = (props) => {
+  const {
+    propertyType,
+    unitId,
+    unitName,
+    unitImages,
+    unitStatus,
+    unitDetails,
+    tenantId,
+    tenantAgent,
+    rent,
+    serviceCharge,
+    tenantName,
+    tenantBadgeColor,
+    dueDate,
+    cautionDeposit,
+    totalPackage,
+    unitType,
+    invoice_status,
+    invoice_id,
+    partial_pending,
+    noActionBtn,
+    page,
+    property_name,
+    tenant_profile,
+    cautionDepositStatus,
+  } = props;
+
   const { role } = useRole();
   const [screenModal, setScreenModal] = useState(false);
   const isRental = propertyType.toLowerCase() === "rental";
@@ -152,7 +156,7 @@ const UnitItem: React.FC<UnitItemProps> = ({
               </p>
             </div>
           )}
-          {tenantName && !tenant_profile&& (
+          {tenantName && !tenant_profile && (
             <div>
               <p className="text-[#747474] dark:text-white">
                 Tenant&apos;s Name
@@ -278,6 +282,8 @@ const UnitItem: React.FC<UnitItemProps> = ({
                   invoice_id={Number(invoice_id) ?? 0}
                   key={i}
                   propertyType={propertyType as "rental" | "facility"}
+                  unitData={props}
+                  cautionDepositStatus={cautionDepositStatus || false}
                   {...action}
                   startText={startRentBtnText}
                   route={

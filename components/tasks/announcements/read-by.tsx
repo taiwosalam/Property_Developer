@@ -18,7 +18,7 @@ const Person = ({ image, name, dateTime, tier }: IPersonProps) => {
             src={image || empty}
             alt="user-real-info-from-props"
             fill
-            className="object-cover bg-white"
+            className="object-cover bg-brand-9"
           />
         </div>
         <p className="flex items-center gap-1">

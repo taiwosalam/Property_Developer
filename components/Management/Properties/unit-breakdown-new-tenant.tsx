@@ -205,13 +205,13 @@ const UnitBreakdownNewTenant = () => {
         <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
           Unit Fee Breakdown - New Tenant
         </h4>
-        <button
+        {/* <button
           onClick={handleTourSection}
           type="button"
           className="text-orange-normal"
         >
           <ExclamationMark />
-        </button>
+        </button> */}
       </div>
 
       <hr className="my-4" />

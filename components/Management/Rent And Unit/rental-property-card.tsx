@@ -131,29 +131,31 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   );
 };
 
-const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
-  propertyType,
-  images,
-  unitId,
-  unit_title,
-  unit_name,
-  unit_type,
-  tenant_name,
-  expiry_date,
-  rent,
-  caution_deposit,
-  service_charge,
-  status,
-  tenant_id,
-  badge_color,
-  currency,
-  fee_period,
-  invoice_status,
-  invoice_id,
-  partial_pending,
-  occupant,
-  page
-}) => {
+const RentalPropertyCard: React.FC<RentalPropertyCardProps> = (props) => {
+  const {
+    propertyType,
+    images,
+    unitId,
+    unit_title,
+    unit_name,
+    unit_type,
+    tenant_name,
+    expiry_date,
+    rent,
+    caution_deposit,
+    cautionDepositStatus,
+    service_charge,
+    status,
+    badge_color,
+    tenant_id,
+    currency,
+    occupant,
+    invoice_id,
+    invoice_status,
+    partial_pending,
+    page,
+  } = props;
+
   const [isHovered, setIsHovered] = useState(false);
   const [isImgHovered, setImgIsHovered] = useState(false);
   const router = useRouter();
@@ -335,14 +337,15 @@ const RentalPropertyCard: React.FC<RentalPropertyCardProps> = ({
           // Finally render the buttons
           .map((action, i) => (
             <ActionButton
-            currency={currency}
+              currency={currency}
               unit_id={unitId}
               invoice_id={invoice_id}
               key={i}
               tenantId={Number(occupant?.tenant_id) || 0}
-              cautionDeposit={Number(caution_deposit)}
+              cautionDepositStatus={cautionDepositStatus || false}
               tenantAgent={occupant?.agent || "web"}
               propertyType={propertyType}
+              unitData={props} 
               {...action}
               route={
                 typeof action.route === "function"

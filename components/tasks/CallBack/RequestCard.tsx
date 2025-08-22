@@ -489,6 +489,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               resolved_by={props?.resolved_by}
               resolved_date={props?.resolved_date}
               onDataUpdate={props?.onDataUpdate}
+              inventory={props?.inventory_media || []}
+              has_inventory={props?.has_inventory}
             />
           ) : null}
         </ModalContent>

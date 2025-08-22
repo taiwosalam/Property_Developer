@@ -161,13 +161,13 @@ const UnitPictures = React.forwardRef<HTMLDivElement, {}>((_, ref) => {
             )}
             Unit Pictures
           </h4>
-          <button
+          {/* <button
             onClick={handleTourSection}
             type="button"
             className="text-orange-normal"
           >
             <ExclamationMark />
-          </button>
+          </button> */}
         </div>
 
         {shouldShowButtons && (

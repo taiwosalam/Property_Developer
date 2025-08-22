@@ -10,7 +10,7 @@ import { calculateRentPenalty } from "@/app/(nav)/management/rent-unit/data";
 
 interface UnitData {
   fee_period?: string;
-  renewalTenantTotalPrice?: number | string;
+  renew_fee_amount?: number | string;
   propertyId?: string;
 }
 
@@ -29,7 +29,7 @@ interface FeeDetailsParams {
   owingAmount: number;
   overduePeriods: number;
   unitData: {
-    renewalTenantTotalPrice?: number | string;
+    renew_fee_amount?: number | string;
     fee_period?: string;
     propertyId?: string;
   };
@@ -43,14 +43,13 @@ interface FeeDetailsParams {
   owingAmount: number;
   overduePeriods: number;
   unitData: {
-    renewalTenantTotalPrice?: number | string;
+    renew_fee_amount?: number | string;
     fee_period?: string;
     propertyId?: string;
   };
   penaltyAmount: number;
 }
 
-// Unchanged getDueFeeDetails
 export const getDueFeeDetails = ({
   isRental,
   currency,
@@ -65,8 +64,8 @@ export const getDueFeeDetails = ({
   const details: FeeDetail[] = [
     {
       name: isRental ? "Renewal Total Package" : "Renewal Total Fee",
-      amount: unitData.renewalTenantTotalPrice
-        ? formatCurrency(parseFloat(unitData.renewalTenantTotalPrice.toString()))
+      amount: unitData.renew_fee_amount
+        ? formatCurrency(parseFloat(unitData.renew_fee_amount.toString()))
         : "",
     },
   ];
@@ -98,12 +97,12 @@ export const calculateRentFeeAmountAndPeriods = ({
   start_date,
   due_date,
   feePeriod,
-  renewalTenantTotalPrice,
+  renew_fee_amount,
 }: {
   start_date: string;
   due_date: string;
   feePeriod: RentPeriod;
-  renewalTenantTotalPrice: number;
+  renew_fee_amount: number;
 }): { overduePeriods: number; owingAmount: number } => {
   const parsedStartDate = dayjs(start_date, "DD/MM/YYYY");
   const parsedDueDate = dayjs(due_date, "DD/MM/YYYY");
@@ -113,13 +112,13 @@ export const calculateRentFeeAmountAndPeriods = ({
     !parsedStartDate.isValid() ||
     !parsedDueDate.isValid() ||
     !feePeriod ||
-    !renewalTenantTotalPrice
+    !renew_fee_amount
   ) {
     console.error("Invalid or missing inputs:", {
       start_date,
       due_date,
       feePeriod,
-      renewalTenantTotalPrice,
+      renew_fee_amount,
     });
     return { overduePeriods: 0, owingAmount: 0 };
   }
@@ -232,7 +231,7 @@ export const calculateRentFeeAmountAndPeriods = ({
     } else {
       periods = calculateOverduePeriods(due_date, feePeriod);
     }
-    owingAmount = periods * renewalTenantTotalPrice;
+    owingAmount = periods * renew_fee_amount;
   }
 
   console.log("calculateRentFeeAmountAndPeriods result:", {
@@ -242,8 +241,6 @@ export const calculateRentFeeAmountAndPeriods = ({
 
   return { overduePeriods: periods, owingAmount };
 };
-
-
 
 
 export const calculateOverduePeriods = (
@@ -304,447 +301,6 @@ export const calculateOverduePeriods = (
   }
 };
 
-// Unchanged getOwingFeeDetails
-// export const getOwingFeeDetails = ({
-//   isRental,
-//   currency,
-//   owingAmount,
-//   overduePeriods,
-//   unitData,
-//   penaltyAmount,
-// }: FeeDetailsParams): FeeDetail[] => {
-//   const formatCurrency = (amount: number): string =>
-//     `${currencySymbols[currency] || "₦"}${formatNumber(amount)}`;
-
-//   const details: FeeDetail[] = [
-//     {
-//       name: isRental ? "Renewal Total Package" : "Renewal Total Fee",
-//       amount: unitData.renewalTenantTotalPrice
-//         ? formatCurrency(
-//             parseFloat(unitData.renewalTenantTotalPrice.toString())
-//           )
-//         : "",
-//     },
-//   ];
-
-//   if (overduePeriods > 0) {
-//     details.push({
-//       name: "Owing Period",
-//       amount: formatOwingPeriod(
-//         overduePeriods,
-//         (unitData.fee_period as RentPeriod) || ""
-//       ),
-//     });
-//     details.push({
-//       name: "Owing Amount",
-//       amount: owingAmount ? formatCurrency(owingAmount) : "",
-//     });
-//   }
-
-//   if (penaltyAmount > 0) {
-//     details.push({
-//       name: "Rent Penalty",
-//       amount: formatCurrency(penaltyAmount),
-//     });
-//   }
-
-//   console.log("getOwingFeeDetails output:", details);
-//   return details;
-// };
-
-// // Updated calculateOwingAmountAndPeriods
-// export const calculateOwingAmountAndPeriods = ({
-//   start_date,
-//   due_date,
-//   feePeriod,
-//   renewalTenantTotalPrice,
-// }: {
-//   start_date: string;
-//   due_date: string;
-//   feePeriod: RentPeriod;
-//   renewalTenantTotalPrice: number;
-// }): { overduePeriods: number; owingAmount: number } => {
-//   const parsedStartDate = dayjs(start_date, "DD/MM/YYYY");
-//   const parsedDueDate = dayjs(due_date, "DD/MM/YYYY");
-//   const now = dayjs();
-
-//   if (
-//     !parsedStartDate.isValid() ||
-//     !parsedDueDate.isValid() ||
-//     !feePeriod ||
-//     !renewalTenantTotalPrice
-//   ) {
-//     console.error("Invalid or missing inputs:", {
-//       start_date,
-//       due_date,
-//       feePeriod,
-//       renewalTenantTotalPrice,
-//     });
-//     return { overduePeriods: 0, owingAmount: 0 };
-//   }
-
-//   let expectedPeriodDuration: number;
-//   switch (feePeriod) {
-//     case "daily":
-//       expectedPeriodDuration = 1; // 1 day per period
-//       break;
-//     case "weekly":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "week") || 1;
-//       break;
-//     case "monthly":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "month") || 1;
-//       break;
-//     case "quarterly":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "month") / 3 || 1;
-//       break;
-//     case "yearly":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") || 1;
-//       break;
-//     case "biennially":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 2 || 1;
-//       break;
-//     case "triennially":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 3 || 1;
-//       break;
-//     case "quadrennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 4 || 1;
-//       break;
-//     case "quinquennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 5 || 1;
-//       break;
-//     case "sexennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 6 || 1;
-//       break;
-//     case "septennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 7 || 1;
-//       break;
-//     case "octennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 8 || 1;
-//       break;
-//     case "nonennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 9 || 1;
-//       break;
-//     case "decennial":
-//       expectedPeriodDuration =
-//         parsedDueDate.diff(parsedStartDate, "year") / 10 || 1;
-//       break;
-//     default:
-//       expectedPeriodDuration = 1;
-//   }
-
-//   console.log("expectedPeriodDuration", expectedPeriodDuration);
-
-//   let overdueDuration: number;
-//   switch (feePeriod) {
-//     case "daily":
-//       overdueDuration = now.diff(parsedDueDate, "day");
-//       break;
-//     case "weekly":
-//       overdueDuration = now.diff(parsedDueDate, "week");
-//       break;
-//     case "monthly":
-//       overdueDuration = now.diff(parsedDueDate, "month");
-//       break;
-//     case "quarterly":
-//       overdueDuration = now.diff(parsedDueDate, "month") / 3;
-//       break;
-//     case "yearly":
-//       overdueDuration = now.diff(parsedDueDate, "year");
-//       break;
-//     case "biennially":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 2;
-//       break;
-//     case "triennially":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 3;
-//       break;
-//     case "quadrennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 4;
-//       break;
-//     case "quinquennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 5;
-//       break;
-//     case "sexennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 6;
-//       break;
-//     case "septennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 7;
-//       break;
-//     case "octennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 8;
-//       break;
-//     case "nonennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 9;
-//       break;
-//     case "decennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 10;
-//       break;
-//     default:
-//       overdueDuration = 0;
-//   }
-
-//   console.log("overdueDuration", overdueDuration);
-
-//   let periods = 0;
-//   let owingAmount = 0;
-//   if (overdueDuration >= expectedPeriodDuration && expectedPeriodDuration > 0) {
-//     if (feePeriod === "daily") {
-//       periods = Math.floor(overdueDuration); // Full days overdue
-//     } else {
-//       periods = calculateOverduePeriods(due_date, feePeriod);
-//     }
-//     owingAmount = periods * renewalTenantTotalPrice;
-//   }
-
-//   console.log("calculateOwingAmountAndPeriods result:", {
-//     overduePeriods: periods,
-//     owingAmount,
-//   });
-
-//   return { overduePeriods: periods, owingAmount };
-// };
-
-
-
-// export const getOwingFeeDetails = ({
-//   isRental,
-//   currency,
-//   owingAmount,
-//   overduePeriods,
-//   unitData,
-//   penaltyAmount,
-// }: FeeDetailsParams): FeeDetail[] => {
-//   const formatCurrency = (amount: number): string =>
-//     `${currencySymbols[currency] || "₦"}${formatNumber(amount)}`;
-
-//   return [
-//     {
-//       name: isRental ? "Renewal Total Package" : "Renewal Total Fee",
-//       amount: unitData.renewalTenantTotalPrice
-//         ? formatCurrency(
-//             parseFloat(unitData.renewalTenantTotalPrice.toString())
-//           )
-//         : "",
-//     },
-//     {
-//       name: "Owing Period",
-//       amount: formatOwingPeriod(
-//         overduePeriods,
-//         (unitData.fee_period as RentPeriod) || ""
-//       ),
-//     },
-//     {
-//       name: "Owing Amount",
-//       amount: owingAmount ? formatCurrency(owingAmount) : "",
-//     },
-//     { name: "Rent Penalty", amount: formatCurrency(penaltyAmount) || "" }, // TODO: Fix the amount later
-//   ];
-// };
-
-// Updated getOwingFeeDetails to exclude owingAmount and overduePeriods when overduePeriods = 0
-
-// export const getOwingFeeDetails = ({
-//   isRental,
-//   currency,
-//   owingAmount,
-//   overduePeriods,
-//   unitData,
-//   penaltyAmount,
-// }: FeeDetailsParams): FeeDetail[] => {
-//   const formatCurrency = (amount: number): string =>
-//     `${currencySymbols[currency] || "₦"}${formatNumber(amount)}`;
-
-//   const details: FeeDetail[] = [
-//     {
-//       name: isRental ? "Renewal Total Package" : "Renewal Total Fee",
-//       amount: unitData.renewalTenantTotalPrice
-//         ? formatCurrency(
-//             parseFloat(unitData.renewalTenantTotalPrice.toString())
-//           )
-//         : "",
-//     },
-//   ];
-
-//   if (overduePeriods > 0) {
-//     details.push({
-//       name: "Owing Period",
-//       amount: formatOwingPeriod(
-//         overduePeriods,
-//         (unitData.fee_period as RentPeriod) || ""
-//       ),
-//     });
-//     details.push({
-//       name: "Owing Amount",
-//       amount: owingAmount ? formatCurrency(owingAmount) : "",
-//     });
-//   }
-
-//   if (penaltyAmount > 0) {
-//     details.push({
-//       name: "Rent Penalty",
-//       amount: formatCurrency(penaltyAmount),
-//     });
-//   }
-
-//   console.log("getOwingFeeDetails output:", details);
-//   return details;
-// };
-
-// // Handler function to calculate owing amount and periods
-// export const calculateOwingAmountAndPeriods = ({
-//   start_date,
-//   due_date,
-//   feePeriod,
-//   renewalTenantTotalPrice,
-// }: OwingCalculationInputs): OwingCalculationResult => {
-//   const parsedStartDate = dayjs(start_date, "DD/MM/YYYY");
-//   const parsedDueDate = dayjs(due_date, "DD/MM/YYYY");
-//   const now = dayjs();
-
-//   // Validate inputs
-//   if (
-//     !parsedStartDate.isValid() ||
-//     !parsedDueDate.isValid() ||
-//     !feePeriod ||
-//     !renewalTenantTotalPrice
-//   ) {
-//     console.error("Invalid or missing inputs:", {
-//       start_date,
-//       due_date,
-//       feePeriod,
-//       renewalTenantTotalPrice,
-//     });
-//     return { overduePeriods: 0, owingAmount: 0 };
-//   }
-
-//   // Calculate expected period duration
-//   let expectedPeriodDuration: number;
-//   switch (feePeriod) {
-//     case "daily":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "day");
-//       break;
-//     case "weekly":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "week");
-//       break;
-//     case "monthly":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "month");
-//       break;
-//     case "quarterly":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "month") / 3;
-//       break;
-//     case "yearly":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year");
-//       break;
-//     case "biennially":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 2;
-//       break;
-//     case "triennially":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 3;
-//       break;
-//     case "quadrennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 4;
-//       break;
-//     case "quinquennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 5;
-//       break;
-//     case "sexennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 6;
-//       break;
-//     case "septennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 7;
-//       break;
-//     case "octennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 8;
-//       break;
-//     case "nonennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 9;
-//       break;
-//     case "decennial":
-//       expectedPeriodDuration = parsedDueDate.diff(parsedStartDate, "year") / 10;
-//       break;
-//     default:
-//       expectedPeriodDuration = 0;
-//   }
-
-//   console.log("expectedPeriodDuration", expectedPeriodDuration);
-
-//   // Calculate overdue duration
-//   let overdueDuration: number;
-//   switch (feePeriod) {
-//     case "daily":
-//       overdueDuration = now.diff(parsedDueDate, "day");
-//       break;
-//     case "weekly":
-//       overdueDuration = now.diff(parsedDueDate, "week");
-//       break;
-//     case "monthly":
-//       overdueDuration = now.diff(parsedDueDate, "month");
-//       break;
-//     case "quarterly":
-//       overdueDuration = now.diff(parsedDueDate, "month") / 3;
-//       break;
-//     case "yearly":
-//       overdueDuration = now.diff(parsedDueDate, "year");
-//       break;
-//     case "biennially":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 2;
-//       break;
-//     case "triennially":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 3;
-//       break;
-//     case "quadrennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 4;
-//       break;
-//     case "quinquennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 5;
-//       break;
-//     case "sexennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 6;
-//       break;
-//     case "septennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 7;
-//       break;
-//     case "octennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 8;
-//       break;
-//     case "nonennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 9;
-//       break;
-//     case "decennial":
-//       overdueDuration = now.diff(parsedDueDate, "year") / 10;
-//       break;
-//     default:
-//       overdueDuration = 0;
-//   }
-
-//   console.log("overdueDuration", overdueDuration);
-
-//   // Calculate overdue periods and owing amount
-//   let periods = 0;
-//   let owingAmount = 0;
-//   if (overdueDuration >= expectedPeriodDuration && expectedPeriodDuration > 0) {
-//     periods = calculateOverduePeriods(due_date, feePeriod);
-//     owingAmount = periods * renewalTenantTotalPrice;
-//   }
-
-//   console.log("calculateOwingAmountAndPeriods result:", {
-//     overduePeriods: periods,
-//     owingAmount,
-//   });
-
-//   return { overduePeriods: periods, owingAmount };
-// };
-
-// Interface for calculation inputs
 interface OwingCalculationInputs {
   start_date: string;
   due_date: string;

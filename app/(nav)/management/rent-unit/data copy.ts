@@ -1205,9 +1205,6 @@ interface RentPenaltySettings {
   decennial?: number;
 }
 
-
-
-
 export const calculateRentPenalty = (
   chargePenalty: boolean,
   rentPenaltySettings: Record<string, number>,
@@ -1243,12 +1240,9 @@ export const calculateRentPenalty = (
     console.log("No penalty percentage for period:", feePeriod);
     return 0;
   }
-
   console.log("rentAmount", rentAmount);
   console.log("penaltyPercentage", penaltyPercentage);
   console.log("penaltyPeriods", penaltyPeriods);
-  
-  // Calculate penalty: (rent amount × penalty percentage ÷ 100) × number of penalty periods
   const penaltyPerPeriod = rentAmount * (penaltyPercentage / 100);
   const totalPenalty = penaltyPerPeriod * penaltyPeriods;
 
@@ -1272,128 +1266,35 @@ export const calculatePenaltyPeriods = (
     return 0;
   }
 
-  // First calculate the base overdue periods (days)
-  const overdueDays = now.diff(due, "day");
-  
-  console.log("calculatePenaltyPeriods BASE:", {
-    dueDate,
-    period,
-    overdueDays,
-    now: now.format("DD/MM/YYYY"),
-    due: due.format("DD/MM/YYYY")
-  });
-
-  if (overdueDays <= 0) {
-    return 0;
-  }
-
-  // Calculate penalty periods based on your EXACT specifications using overdue days:
   switch (period) {
     case "daily":
-      // "Select the percentage to be charged per hour on late rent"
-      // Overdue days × 24 hours per day = total penalty hours
-      const penaltyHours = overdueDays * 24;
-      console.log("Daily penalty calculation:", {
-        overdueDays,
-        hoursPerDay: 24,
-        penaltyHours
-      });
-      return Math.max(1, penaltyHours);
-    
+      return now.diff(due, "hour") > 0 ? 1 : 0;
     case "weekly":
-      // "Select the percentage to be charged per daily on late rent"
-      // Use the overdue days directly
-      console.log("Weekly penalty calculation:", {
-        overdueDays,
-        penaltyPeriods: overdueDays
-      });
-      return Math.max(1, overdueDays);
-    
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "monthly":
-      // "Select the percentage to be charged per weekly on late rent"
-      // Overdue days ÷ 7 days per week = penalty weeks
-      const penaltyWeeks = Math.ceil(overdueDays / 7);
-      console.log("Monthly penalty calculation:", {
-        overdueDays,
-        daysPerWeek: 7,
-        penaltyWeeks
-      });
-      return Math.max(1, penaltyWeeks);
-    
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "quarterly":
-      // "Select the percentage to be charged per monthly on late rent"
-      // Use dayjs month difference for accuracy
-      const penaltyMonths = now.diff(due, "month");
-      console.log("Quarterly penalty calculation:", {
-        penaltyMonths
-      });
-      return Math.max(1, penaltyMonths);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
     case "yearly":
-      // "Select the percentage to be charged per quarterly on late rent"
-      // Use dayjs month difference ÷ 3 months per quarter
-      const totalMonths = now.diff(due, "month");
-      const penaltyQuarters = Math.ceil(totalMonths / 3);
-      console.log("Yearly penalty calculation:", {
-        totalMonths,
-        monthsPerQuarter: 3,
-        penaltyQuarters
-      });
-      return Math.max(1, penaltyQuarters);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "month") / 3));
     case "biennially":
-      // "Select the percentage to be charged per yearly on late rent"
-      const penaltyYears = now.diff(due, "year");
-      return Math.max(1, penaltyYears);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 2));
     case "triennially":
-      // "Select the percentage to be charged per biennially on late rent"
-      const totalYears = now.diff(due, "year");
-      const penaltyBienniums = Math.ceil(totalYears / 2);
-      return Math.max(1, penaltyBienniums);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 3));
     case "quadrennial":
-      // "Select the percentage to be charged per triennially on late rent"
-      const yearsForTriennium = now.diff(due, "year");
-      const penaltyTrienniums = Math.ceil(yearsForTriennium / 3);
-      return Math.max(1, penaltyTrienniums);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 4));
     case "quinquennial":
-      // "Select the percentage to be charged per quadrennial on late rent"
-      const yearsForQuadrennial = now.diff(due, "year");
-      const penaltyQuadrennials = Math.ceil(yearsForQuadrennial / 4);
-      return Math.max(1, penaltyQuadrennials);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 5));
     case "sexennial":
-      // "Select the percentage to be charged per quinquennial on late rent"
-      const yearsForQuinquennial = now.diff(due, "year");
-      const penaltyQuinquennials = Math.ceil(yearsForQuinquennial / 5);
-      return Math.max(1, penaltyQuinquennials);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 6));
     case "septennial":
-      // "Select the percentage to be charged per sexennial on late rent"
-      const yearsForSexennial = now.diff(due, "year");
-      const penaltySexennials = Math.ceil(yearsForSexennial / 6);
-      return Math.max(1, penaltySexennials);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 7));
     case "octennial":
-      // "Select the percentage to be charged per septennial on late rent"
-      const yearsForSeptennial = now.diff(due, "year");
-      const penaltySeptennials = Math.ceil(yearsForSeptennial / 7);
-      return Math.max(1, penaltySeptennials);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 8));
     case "nonennial":
-      // "Select the percentage to be charged per octennial on late rent"
-      const yearsForOctennial = now.diff(due, "year");
-      const penaltyOctennials = Math.ceil(yearsForOctennial / 8);
-      return Math.max(1, penaltyOctennials);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 9));
     case "decennial":
-      // "Select the percentage to be charged per nonennial on late rent"
-      const yearsForNonennial = now.diff(due, "year");
-      const penaltyNonennials = Math.ceil(yearsForNonennial / 9);
-      return Math.max(1, penaltyNonennials);
-    
+      return Math.max(1, Math.ceil(now.diff(due, "year") / 10));
     default:
       return 0;
   }
@@ -1422,54 +1323,37 @@ export const calculateOverduePeriods = (
     return 0;
   }
 
-  // Calculate how many full rent periods are overdue
   switch (period) {
     case "daily":
       return now.diff(due, "day");
-    
     case "weekly":
-      return Math.floor(now.diff(due, "week"));
-    
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "monthly":
-      return Math.floor(now.diff(due, "month"));
-    
+      return now.diff(due, "day") > 0 ? 1 : 0;
     case "quarterly":
       return Math.floor(now.diff(due, "month") / 3);
-    
     case "yearly":
-      return Math.floor(now.diff(due, "year"));
-    
+      return Math.floor(now.diff(due, "month") / 3);
     case "biennially":
       return Math.floor(now.diff(due, "year") / 2);
-    
     case "triennially":
       return Math.floor(now.diff(due, "year") / 3);
-    
-    case "quadrennial":
-      return Math.floor(now.diff(due, "year") / 4);
-    
+    // case "quadrennially":
+    //   return Math.floor(now.diff(due, "year") / 4);
     case "quinquennial":
       return Math.floor(now.diff(due, "year") / 5);
-    
     case "sexennial":
       return Math.floor(now.diff(due, "year") / 6);
-    
     case "septennial":
       return Math.floor(now.diff(due, "year") / 7);
-    
     case "octennial":
       return Math.floor(now.diff(due, "year") / 8);
-    
     case "nonennial":
       return Math.floor(now.diff(due, "year") / 9);
-    
     case "decennial":
       return Math.floor(now.diff(due, "year") / 10);
-    
     default:
       console.log("Unknown period:", period);
       return 0;
   }
 };
-
-

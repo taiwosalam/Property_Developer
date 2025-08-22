@@ -447,7 +447,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
       selectedStaffs
     );
     await handleSubmit(payload);
-    console.log("payload", payload);
+    // console.log("payload", payload);
     setRequestLoading(false);
   };
 
@@ -641,7 +641,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? "Facility Details"
                   : "Estate/Facility Details"}
               </p>
-              <button
+              {/* <button
                 onClick={() => {
                   if (formType === "rental" && !editMode) {
                     handleGoToTourStep(4);
@@ -657,7 +657,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 className="text-orange-normal"
               >
                 <ExclamationMark />
-              </button>
+              </button> */}
             </div>
             <hr className="my-4" />
             <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">
@@ -935,13 +935,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? "Facility Settings"
                   : "Estate/Facility Settings"}
               </p>
-              <button
+              {/* <button
                 onClick={handleSectionTour}
                 type="button"
                 className="text-orange-normal"
               >
                 <ExclamationMark />
-              </button>
+              </button> */}
             </div>
 
             <hr className="my-4" />

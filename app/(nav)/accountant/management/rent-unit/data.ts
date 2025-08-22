@@ -14,6 +14,7 @@ import {
 import { getAllStates } from "@/utils/states";
 import dayjs from "dayjs";
 import { number } from "zod";
+import { transformUnitDetails } from "../../listing/data";
 //
 export interface RentAndUnitState {
   gridView?: boolean;
@@ -159,7 +160,18 @@ export const transformRentUnitApiResponse = (
           : undefined,
         tenant_id: u?.occupant?.tenant_id || 0,
         partial_pending: u?.partial_pending ? true : false,
+        cautionDepositStatus: u?.occupant?.caution_status,
         occupant: u?.occupant,
+        caution_unit_occupant: {
+          requestId: u?.occupant?.request_id?.toString() || null,
+          propertyName: u?.property?.title || null,
+          state: u?.property?.state || null,
+          unitDetails: transformUnitDetails(u),
+          agent: u?.occupant?.agent || null,
+          request_status: u?.occupant?.request_status || null,
+          branch: u?.property?.branch?.branch_name || null,
+          amount: u?.occupant?.request_amount?.toString() || null,
+        },
       };
     }
   );
@@ -191,6 +203,7 @@ export const transformRentUnitApiResponse = (
     };
   }
 };
+
 
 export const cancelRent = async (id: number, data: any) => {
   try {

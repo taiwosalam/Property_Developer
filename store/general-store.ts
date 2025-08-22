@@ -41,7 +41,10 @@ import {
   ICallbackRequestPageData,
 } from "@/app/(nav)/reports/call/data";
 import { DataItem } from "@/components/Table/types";
-import { CalendarTable, ICalendarEventsTable } from "@/app/(nav)/tasks/calendars/data";
+import {
+  CalendarTable,
+  ICalendarEventsTable,
+} from "@/app/(nav)/tasks/calendars/data";
 
 interface GlobalStoreState {
   sponsorValue: number;
@@ -138,6 +141,18 @@ interface GlobalStoreState {
   selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
   selectedLandlordId: string | null;
   selectedTenantId: string | null;
+
+  caution_unit_occupant: {
+    requestId: string | null;
+    propertyName: string | null;
+    state: string | null;
+    unitDetails: string | null;
+    agent: string | null;
+    request_status: string | null;
+    branch: string | null;
+    amount: string | null;
+  };
+
   warningModal: {
     isOpen: boolean;
     message: string;
@@ -234,6 +249,16 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   closeUnitForm: false,
 
   canSubmitRent: false,
+  caution_unit_occupant: {
+    requestId: null,
+    propertyName: null,
+    state: null,
+    unitDetails: null,
+    agent: null,
+    request_status: null,
+    branch: null,
+    amount: null,
+  },
 
   // type‑safe setter:
   setGlobalInfoStore: (key, value) => {

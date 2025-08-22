@@ -138,7 +138,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ events }) => {
     >
       <div className="flex flex-col lg:flex-row gap-x-10 gap-y-8">
         <div
-          className="lg:flex-1 custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-darkText-primary"
+          className="lg:flex-1 custom-flex-col gap-4 overflow-hidden rounded-lg bg-white dark:bg-darkText-primary max-h-[4300px]"
           style={{
             border: "1px solid rgba(193, 194, 195, 0.40)",
             boxShadow:

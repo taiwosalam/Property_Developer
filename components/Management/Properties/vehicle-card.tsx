@@ -67,13 +67,13 @@ const VehicleCard: React.FC<any> = ({ data, page }) => {
   const getPreviewRoute = () => {
     switch (role) {
       case "director":
-        return `/management/vehicles-record/${id}`;
+        return `/tasks/vehicles-record/${id}`;
       case "manager":
-        return `/manager/management/vehicles-record/${id}`;
+        return `/manager/tasks/vehicles-record/${id}`;
       case "account":
-        return `/accountant/management/vehicles-record/${id}`;
+        return `/accountant/tasks/vehicles-record/${id}`;
       case "staff":
-        return `/staff/management/vehicles-record/${id}`;
+        return `/staff/tasks/vehicles-record/${id}`;
       default:
         return `/unauthorized`;
     }

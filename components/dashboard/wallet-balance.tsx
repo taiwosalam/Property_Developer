@@ -105,7 +105,7 @@ const WalletBalanceCard: React.FC<walletBalanceCardProps> = ({
       if (data.transactions.length > 0) {
         const recentTransactions = data.transactions.map((t) => {
           // Validate date and time
-          const dateTimeString = `${t.date}T${t.time}`; // e.g., "2025-08-19T19:46:43"
+          const dateTimeString = `${t.date}T${t.time}`; 
           if (!dayjs(dateTimeString).isValid()) {
             console.error("Invalid date or time:", {
               date: t.date,
