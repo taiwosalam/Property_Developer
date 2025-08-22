@@ -84,7 +84,7 @@ export const transformCompanyUsersData = (
 export const transformUsersMessages = (
   data: ConversationsAPIResponse | null | undefined
 ): PageMessages[] => {
-  console.log("data got", data);
+  // console.log("data got", data);
   if (!data || !data.conversations) return []; // Ensure data exists
 
   return data.conversations.map((c) => {
@@ -314,6 +314,7 @@ interface GroupedMessage {
   };
 }
 interface SocketMessage {
+  sender: any;
   id: number;
   sender_id: number;
   sender_name: string;
@@ -478,10 +479,10 @@ export const transformMessageFromAPI = (
 
   // Sender info for group chat
   const sender =
-    isGroupChat && msg.sender_name
+    isGroupChat && msg.sender.name
       ? {
-        fullname: msg.sender_name ?? "",
-        picture: msg.sender_profile_picture ?? empty,
+        fullname: msg.sender.name ?? "",
+        picture: msg.sender.avatar ?? empty,
         title: "", // No profile.title in input
       }
       : undefined;
@@ -490,7 +491,7 @@ export const transformMessageFromAPI = (
     id: msg.id,
     text: msg.content ?? null,
     is_read: msg.is_read,
-    senderId: Number(msg.sender_id),
+    senderId: isGroupChat ? Number(msg.sender.id) : Number(msg.sender_id),
     timestamp,
     content_type,
     sender,
@@ -508,7 +509,6 @@ export function isDirectChatResponse(obj: any): obj is DirectChatAPIResponse {
 
 export function isGroupChatResponse(obj: any): obj is GroupChatAPIResponse {
 
-  console.log("haaaaaahahhahahhhhhhhhahahhaha", { obj })
   console.log("returning", !!obj &&
     typeof obj === "object" &&
     "group_chat" in obj &&

@@ -37,7 +37,7 @@ const FileUploader: React.FC<FileUploadProps> = ({ id, label, onFileChange, file
       />
       <button
         type="button"
-        className="border rounded px-3 py-2 bg-white flex items-center gap-2"
+        className="border rounded px-3 py-2 bg-white flex items-center gap-2 h-[44px]"
         onClick={() => inputRef.current?.click()}
       >
         {file ? (

@@ -124,7 +124,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
         <div className="flex flex-col gap-2 justify-center items-center font-normal">
           <p className="text-text-disabled text-xs whitespace-nowrap">{time}</p>
           {!!messages && (
-            <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-highlight">
+            <div className="size-5 rounded-full flex items-center justify-center bg-highlight">
               <p className="text-white dark:text-black text-[10px] leading-[10px]">
                 {messages}
               </p>

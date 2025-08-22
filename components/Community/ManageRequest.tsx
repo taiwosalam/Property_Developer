@@ -82,7 +82,7 @@ export const PropertyRequestFirstSection = ({
           id="title"
           name="title"
           maxLength={!noMaxTitle ? MAX_LENGTH : undefined}
-          className="bg-white border border-solid border-[#C1C2C366] rounded-md dark:bg-darkText-primary dark:text-darkText-1 py-2 px-3 w-full text-text-secondary"
+          className="bg-white border border-solid border-[#C1C2C366] rounded-md dark:bg-darkText-primary dark:text-darkText-1 h-[44px] py-2 px-3 w-full text-text-secondary"
           value={inputValue}
           onChange={onChange}
         />

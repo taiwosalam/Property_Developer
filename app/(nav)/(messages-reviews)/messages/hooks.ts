@@ -24,7 +24,7 @@ export const useEchoMessages = (
     isGroupChat: boolean
 ) => {
 
-    console.log({ isGroupChat })
+    // console.log({ isGroupChat })
     const { echo, isConnected } = useEcho();
     const token = localStorage.getItem("user_id");
 
@@ -32,9 +32,10 @@ export const useEchoMessages = (
         if (!echo || !isConnected || !id || !token) return;
         let channel: any;
         try {
-            const channel = isGroupChat
-                ? echo.private(`group-chat.${id}`)
-                : echo.private(`user.${token}`);
+            // const channel = isGroupChat
+            //     ? echo.private(`group-chat.${id}`)
+            //     : echo.private(`user.${token}`);
+            const channel = echo.private(`user.${token}`);
             console.log(`Connected to ${isGroupChat ? 'group' : 'user'}`);
             const handleMessageReceived = (data: any) => {
                 if (data.sender_id === Number(id)) {
@@ -42,18 +43,20 @@ export const useEchoMessages = (
                     onNewMessage(cleanedMessage);
                 }
             };
-
             const handleMessagesRead = (data: ReadEvent) => {
                 console.log("passing data here", { data })
                 onMessagesRead(data.message_ids);
             };
-
             const handleMessageSent = (data: any) => {
-                const cleanedMessage = transformMessageFromAPI(data, false);
+                if (isGroupChat && data.group_chat_id !== Number(id)) return
+                console.log("data from the group chat", { data })
+                const cleanedMessage = transformMessageFromAPI(data, isGroupChat ? true : false);
                 onNewMessage(cleanedMessage);
             };
-
             channel.listen('.message.received', handleMessageReceived);
+            channel.listen('.chat.sent', handleMessageSent);
+            // channel.listen('.chat.sent', (data: any) => console.log("whats happening", { data }));
+            channel.listen('.chat.received', (data: any) => console.log("whats happening", { data }));
             channel.listen('.messages.read', handleMessagesRead);
             channel.listen('.message.sent', handleMessageSent);
 

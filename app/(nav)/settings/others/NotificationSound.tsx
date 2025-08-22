@@ -53,8 +53,8 @@ export default function SoundSelector({
             onClick={() => handlePreview(sound.path)}
             className={`m-1 p-2 rounded ${
               selectedSound === sound.path
-                ? "bg-brand-9 text-white"
-                : "bg-white text-black"
+                ? "bg-brand-1 dark:bg-darkBrand-1"
+                : "bg-[rgba(245,245,245,0.5)]  text-[rgba(0,0,0,0.5)] dark:text-darkText-1 hover:text-black dark:hover:text-white duration-150 "
             }`}
           >
             {sound.name}

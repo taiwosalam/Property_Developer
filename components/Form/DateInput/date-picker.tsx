@@ -13,6 +13,7 @@ const CustomStyledDatePicker = styled(DatePicker)(({ theme }) => ({
     borderRadius: "8px",
     font: "inherit",
     color: "inherit",
+    minHeight: "45px",
   },
   "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
     border: "1px solid #C1C2C366",

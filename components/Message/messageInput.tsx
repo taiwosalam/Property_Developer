@@ -51,7 +51,7 @@ export const MessageInput = ({
       // onKeyDown={handleKeyDown} // Uncomment if you want Ctrl+Enter submit
       onChange={handleChange}
       className={cn(
-        "w-full px-2 py-1 border-none max-h-[100px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
+        "w-full px-2 py-1 text-[16px] border-none max-h-[100px] rounded-[4px] overflow-y-auto custom-round-scrollbar",
         className
       )}
       disabled={disabled}

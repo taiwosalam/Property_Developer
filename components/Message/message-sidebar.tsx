@@ -9,6 +9,8 @@ import { Modal, ModalContent, ModalTrigger } from "../Modal/modal";
 import { useMessages } from "@/contexts/messageContext";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { memo, useCallback, useMemo } from "react";
+import { useMessageStore } from "@/store/messagesStore";
 
 const MessagesSidebar = ({
   anchorEl,
@@ -18,70 +20,90 @@ const MessagesSidebar = ({
 }: any) => {
   const { role } = useRole();
 
+  console.log("re rendering");
+
   // PERMISSIONS
   const canViewAndreplyMessages =
     usePermission(role, "Can view and reply branch messages") ||
     role === "director";
 
-  const {
-    searchQuery,
-    setSearchQuery,
-    filteredMessages,
-    usersMsgLoading,
-    usersData,
-    selectedFilters,
-    pageUsersMsg,
-    setSelectedFilters,
-  } = useMessages();
+  // const {
+  //   searchQuery,
+  //   setSearchQuery,
+  //   filteredMessages,
+  //   usersMsgLoading,
+  //   usersData,
+  //   selectedFilters,
+  //   pageUsersMsg,
+  //   setSelectedFilters,
+  // } = useMessages();
 
-  const handleFilterApply = (filters: string[]) => {
-    setSelectedFilters(filters);
-  };
+  const searchQuery = useMessageStore((state) => state.searchQuery);
+  const setSearchQuery = useMessageStore((state) => state.setSearchQuery);
+  const filteredMessages = useMessageStore((state) => state.filteredMessages);
+  const usersMsgLoading = useMessageStore((state) => state.usersMsgLoading);
+  const usersData = useMessageStore((state) => state.usersData);
+  const selectedFilters = useMessageStore((state) => state.selectedFilters);
+  const pageUsersMsg = useMessageStore((state) => state.pageUsersMsg);
+  const setSelectedFilters = useMessageStore(
+    (state) => state.setSelectedFilters
+  );
 
-  const inboxCount = pageUsersMsg.filter(
-    (msg: any) => msg.type !== "group"
-  ).length;
-  const groupsCount = pageUsersMsg.filter(
-    (msg: any) => msg.type === "group"
-  ).length;
-  const unreadCount = pageUsersMsg.filter(
-    (msg: any) => msg.unread_count > 0
-  ).length;
+  const handleFilterApply = useCallback(
+    (filters: string[]) => {
+      setSelectedFilters(filters);
+    },
+    [setSelectedFilters]
+  );
 
+  const inboxCount = useMemo(
+    () => pageUsersMsg.filter((msg: any) => msg.type !== "group").length,
+    [pageUsersMsg]
+  );
+
+  const groupsCount = useMemo(
+    () => pageUsersMsg.filter((msg: any) => msg.type === "group").length,
+    [pageUsersMsg]
+  );
+
+  const unreadCount = useMemo(
+    () => pageUsersMsg.filter((msg: any) => msg.unread_count > 0).length,
+    [pageUsersMsg]
+  );
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative max-w-full">
-    {/* // <div className="custom-flex-col pr-2 w-full min-h-0 overflow-y-auto custom-round-scrollbar relative max-w-full"> */}
+      {/* // <div className="custom-flex-col pr-2 w-full min-h-0 overflow-y-auto custom-round-scrollbar relative max-w-full"> */}
       <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2 ">
-      <div className="flex-1 relative min-w-0">
-        <Input
-          id="search"
-          className="w-full min-w-0"
-          placeholder="Search for messages..."
-          leftIcon={"/icons/search-icon.svg"}
-          inputClassName="pr-[52px] border-transparent"
-          value={searchQuery}
-          onChange={setSearchQuery}
-        />
-        <div className="absolute top-1/2 right-0 -translate-y-1/2">
-          <FilterButton
-            noTitle
-            className="bg-transparent py-[10px] px-4"
-            onClick={(e) => setAnchorEl(e.currentTarget)}
+        <div className="flex-1 relative min-w-0">
+          <Input
+            id="search"
+            className="w-full min-w-0"
+            placeholder="Search for messages..."
+            leftIcon={"/icons/search-icon.svg"}
+            inputClassName="pr-[52px] border-transparent"
+            value={searchQuery}
+            onChange={setSearchQuery}
           />
-          <MessagesFilterMenu
-            anchorEl={anchorEl}
-            open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
-            onFilterApply={handleFilterApply}
-            filterOptions={[
-              { label: "Inbox", value: inboxCount || 0 },
-              { label: "Groups", value: groupsCount || 0 },
-              { label: "Unread", value: unreadCount || 0 },
-            ]}
-          />
+          <div className="absolute top-1/2 right-0 -translate-y-1/2">
+            <FilterButton
+              noTitle
+              className="bg-transparent py-[10px] px-4"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            />
+            <MessagesFilterMenu
+              anchorEl={anchorEl}
+              open={Boolean(anchorEl)}
+              onClose={handleMenuClose}
+              onFilterApply={handleFilterApply}
+              filterOptions={[
+                { label: "Inbox", value: inboxCount || 0 },
+                { label: "Groups", value: groupsCount || 0 },
+                { label: "Unread", value: unreadCount || 0 },
+              ]}
+            />
+          </div>
         </div>
       </div>
-    </div>
       {filteredMessages.length === 0 ? (
         <></>
       ) : usersMsgLoading ? (
@@ -129,4 +151,4 @@ const MessagesSidebar = ({
   );
 };
 
-export default MessagesSidebar;
+export default memo(MessagesSidebar);
