@@ -177,12 +177,8 @@ const DepositRequest = () => {
 
   return (
     <div className="space-y-9">
-<<<<<<< HEAD
-      <div className="hidden md:flex gap-5 flex-wrap">
-=======
       {/* <div className="hidden md:flex gap-5 flex-wrap"> */}
       <div className="account-card-container">
->>>>>>> upstream/main
         <ManagementStatistcsCard
           title="Total Requests"
           newData={pageData?.total_request || 0}
