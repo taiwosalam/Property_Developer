@@ -136,7 +136,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
                   <button
                     type="button"
                     onClick={() => handleDeleteImage(mode)}
-                    className="absolute top-[-15px] scale-75 sm:scale-0 right-[5px] sm:right-[-25px] z-10"
+                    className="absolute top-[-15px] scale-75 sm:scale-100 right-[5px] sm:right-[-25px] z-10"
                     aria-label={`Delete ${mode} logo`}
                   >
                     <DeleteIconOrange />

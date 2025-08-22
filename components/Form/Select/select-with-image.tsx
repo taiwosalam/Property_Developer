@@ -256,7 +256,7 @@ const SelectWithImage: React.FC<SelectProps> = ({
       <div className={clsx("relative", dropdownRefClassName)} ref={dropdownRef}>
         <div
           className={clsx(
-            "flex items-center dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out cursor-pointer",
+            "flex items-center h-[44px] dark:bg-darkText-primary border border-solid border-[#C1C2C366] hover:border-[#00000099] dark:hover:border-darkText-2 py-[11px] pr-3 rounded-lg custom-primary-outline transition-colors duration-300 ease-in-out cursor-pointer",
             selectedValue
               ? "bg-neutral-2 dark:bg-darkText-primary"
               : "",

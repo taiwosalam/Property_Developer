@@ -258,7 +258,7 @@ const ManageCalendar = () => {
             <Dropdown
               state={{ isOpen: dropdownIsOpen, setIsOpen: setDropdownIsOpen }}
             >
-              <DropdownTrigger className="w-[104px] rounded-[4px] capitalize custom-border-button py-[10px] px-4 flex items-center justify-between">
+              <DropdownTrigger className="w-[104px] h-[44px] rounded-[4px] capitalize custom-border-button py-[10px] px-4 flex items-center justify-between">
                 <p className="text-sm font-medium">{activeLayout}</p>
                 <ChevronDown
                   size={16}

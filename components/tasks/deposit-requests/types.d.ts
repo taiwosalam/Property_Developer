@@ -25,4 +25,5 @@ export type DepositRequestModalProps = {
   onDataUpdate?: () => void;
   has_inventory?: boolean;
   inventory?: { src: string; isVideo: boolean}[];
+  isRent?: boolean;
 };

@@ -273,6 +273,7 @@ const Management = () => {
           </SettingsSection>
         ))}
       </>
+      
       <SettingsSection title="tenant / occupant screening configuration">
         <div className="custom-flex-col gap-8">
           <AuthForm onFormSubmit={handleUpdateScreeningLevel}>

@@ -1,4 +1,5 @@
 // Imports
+"use client";
 import { AuthForm } from "@/components/Auth/auth-components";
 import NavModalLayout from "./nav-modal-layout";
 import Button from "@/components/Form/Button/button";
@@ -43,8 +44,10 @@ const NavRequestCallback = () => {
       return;
     }
 
-    if(reason.length < 10){
-      toast.warning("Please provide atleast 10 character reason for the call back.");
+    if (reason.length < 10) {
+      toast.warning(
+        "Please provide atleast 10 character reason for the call back."
+      );
       return;
     }
 

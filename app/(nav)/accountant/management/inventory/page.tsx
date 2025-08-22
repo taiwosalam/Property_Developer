@@ -245,9 +245,10 @@ const Inventory = () => {
   if (error) return <ServerError error={error} />;
 
   return (
+    <div className="custom-flex-col gap-6">
     <div className="page-header-container my-4 md:m-0" ref={contentTopRef}>
       <div className="management-cardstat-wrapper">
-        <div className="hidden md:flex gap-5 flex-wrap">
+        <div className="flex gap-5 flex-wrap">
           <ManagementStatistcsCard
             title="Total Records"
             newData={new_inventory_this_month}
@@ -255,6 +256,7 @@ const Inventory = () => {
             colorScheme={1}
           />
         </div>
+      </div>
       </div>
       <FilterBar
         azFilter

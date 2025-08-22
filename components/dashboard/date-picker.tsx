@@ -87,7 +87,7 @@ export function DatePickerWithRange({
           <button
             id="date"
             className={cn(
-              "inline-flex items-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-10 px-3 py-2 w-full justify-start text-left font-normal",
+              "inline-flex items-center whitespace-nowrap rounded-md text-sm transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-800 dark:hover:text-slate-50 h-[44px] px-3 py-2 w-full justify-start text-left font-normal",
               !date && "text-muted-foreground"
             )}
           >

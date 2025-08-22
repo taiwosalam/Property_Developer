@@ -13,10 +13,51 @@ import { ConversationsUpdatedReturn } from "@/app/(nav)/(messages-reviews)/messa
 import useFetch from "@/hooks/useFetch";
 import { ProfileResponse } from "@/lib/profile";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
+import { useRole } from "@/hooks/roleContext";
+import {
+  clearAllNotification,
+  extractNotificationType,
+  fetchNotifications,
+} from "@/app/(nav)/notifications/data";
+import { hasNotificationPermission } from "@/components/Notification/notification-permission";
 
 type Conversation = {
   unread_count: number;
   [key: string]: any;
+};
+
+type Notification = {
+  id: number;
+  message: string;
+  sender_name: string;
+  sender_picture: string;
+  source: string;
+  title: string;
+  type: string;
+};
+
+type MessageEventGroup = {
+  sender_id: number;
+  group_chat_id: number;
+  message: {
+    id: number;
+    group_chat_id: number;
+    sender: {
+      id: number;
+      name: string;
+      avatar: string;
+      role: string;
+    };
+    content: string;
+    content_type: string;
+    reply_to: number | null;
+    reactions: any[]; // You can make this more specific if you know the reaction structure
+    read_receipts: any[]; // Same here
+    created_at: string;
+    updated_at: string;
+  };
+  event_type: string;
+  timestamp: string;
 };
 
 type ConversationPayload = {
@@ -30,11 +71,12 @@ function getUnreadSummary(payload: ConversationPayload) {
     (sum, convo) => sum + ((convo.unread_count || 0) > 0 ? 1 : 0),
     0
   );
-
   return totalUnreadSources;
 }
 
 export default function NotificationListener() {
+  const { role } = useRole();
+
   const setPersonalInfo = usePersonalInfoStore(
     (state) => state.setPersonalInfo
   );
@@ -46,13 +88,26 @@ export default function NotificationListener() {
 
   useEffect(() => {
     if (!echo || !isConnected) return;
-
     const token = window.localStorage.getItem("user_id");
-    if (!token) return;
-
+    if (!token) {
+      console.log({ token });
+      return;
+    }
+    console.log({ token });
     const channel = echo.private(`user.${token}`);
+    console.log("connected to the internet", { channel });
     const notification = echo.private(`notifications.${token}`);
+    // const event = new CustomEvent("refetch-users-msg", {
+    //   detail: "",
+    // });
+
+    // window.dispatchEvent(event);
+    console.log("connected to the internet", { notification });
     channel.listen(".message.received", (data: any) => {
+      const event = new CustomEvent("refetch-users-msg", {
+        detail: data,
+      });
+      window.dispatchEvent(event);
       console.log("data received", { data });
       const cleanedMessage = transformMessageFromAPI(data, false);
       const currentChatId = params?.id ? Number(params.id) : null;
@@ -64,7 +119,6 @@ export default function NotificationListener() {
         latest_message_type: data.message.type,
         latest_message: data.message.content,
       });
-
       addNotification({
         id: uuid(),
         type: "message",
@@ -79,32 +133,89 @@ export default function NotificationListener() {
         createdAt: data.created_at,
       });
     });
+    channel.listen(".message.sent", (data: any) => {
+      const event = new CustomEvent("refetch-users-msg", {
+        detail: data,
+      });
+      window.dispatchEvent(event);
+    });
+    channel.listen("chat.sent", (data: any) => {
+      const event = new CustomEvent("refetch-users-msg", {
+        detail: data,
+      });
+      window.dispatchEvent(event);
+    });
+    notification.listen(".new.notification", (data: Notification) => {
+      const send = hasNotificationPermission(role as "manager", data.type);
+      if (send)
+        addNotification({
+          id: String(data.id),
+          type: extractNotificationType(data.type) as "message",
+          content_type: "text",
+          role: "",
+          chatId: 4,
+          message: data.message,
+          senderId: data.id,
+          senderName: data.message,
+          senderTier: 0, // adjust if nested
+          senderImage: data.sender_picture,
+          createdAt: "5656677",
+        });
+      window.dispatchEvent(new CustomEvent("refetchNotifications"));
+    });
 
-    notification.listen(".new.notification", (data: any) => {
-      console.log("notifications", { data });
+    notification.listen(".chat.sent", (data: MessageEventGroup) => {
+      const finalContent = getFinalContentType({
+        latest_message_type: data.message.content_type,
+        latest_message: data.message.content,
+      });
+      // if (send)
+      addNotification({
+        id: uuid(),
+        type: "message",
+        content_type: finalContent,
+        role: data.message.sender.name,
+        chatId: 4,
+        message: data.message.content,
+        senderId: data.message.sender.id,
+        senderName: data.message.sender.name,
+        senderTier: 0, // adjust if nested
+        senderImage: data.message.sender.avatar,
+        createdAt: "5656677",
+      });
+      window.dispatchEvent(new CustomEvent("refetchNotifications"));
     });
 
     channel.listen(".conversation.updated", (data: any) => {
       const unread_count = getUnreadSummary(data);
+
       setPersonalInfo("unread_messages_count", unread_count);
       console.log("updated", { data });
     });
 
-    channel.listen(
-      ".conversation.created",
-      (data: ConversationsUpdatedReturn) => {
-        const event = new CustomEvent("refetch-users-msg", {
-          detail: data,
-        });
-        window.dispatchEvent(event);
-      }
-    );
+    // channel.listen(
+    //   ".conversation.created",
+    //   (data: ConversationsUpdatedReturn) => {
+    //     const event = new CustomEvent("refetch-users-msg", {
+    //       detail: data,
+    //     });
+    //     window.dispatchEvent(event);
+    //   }
+    // );
 
     return () => {
       channel.stopListening(".message.received");
       channel.stopListening(".conversation.created");
     };
-  }, [echo, isConnected, addNotification, params, pathname]);
+  }, [
+    echo,
+    isConnected,
+    addNotification,
+    params,
+    pathname,
+    role,
+    setPersonalInfo,
+  ]);
 
   return null;
 }

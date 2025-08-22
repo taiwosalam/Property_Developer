@@ -6,7 +6,6 @@ export async function middleware(req: NextRequest) {
   const role = req.cookies.get("role")?.value;
   const company_status = req.cookies.get("company_status")?.value;
   const subscription_status = req.cookies.get("subscription_status")?.value;
-
   console.log("role", role);
   console.log("subscription_status", subscription_status);
   console.log("currentPath", currentPath);
@@ -81,7 +80,7 @@ export async function middleware(req: NextRequest) {
   if (currentPath === "/") {
     return NextResponse.next();
   }
-  
+
   const allowedRoutes =
     roleBasedRoutes[role as keyof typeof roleBasedRoutes] || [];
   const isAllowed = allowedRoutes.some((route) =>

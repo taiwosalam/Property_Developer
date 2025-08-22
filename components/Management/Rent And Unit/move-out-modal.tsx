@@ -1,6 +1,5 @@
 "use client";
 
-import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
 import ActionModalPreset from "@/components/Modal/modal-preset";
 import { ModalTrigger, useModal } from "@/components/Modal/modal";
 import Button from "@/components/Form/Button/button";
@@ -13,14 +12,18 @@ import { moveOut } from "./Edit-Rent/data";
 import { toast } from "sonner";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { Currency } from "@/utils/number-formatter";
-import { useState } from "react";
+import api from "@/services/api";
+import { useEffect, useState } from "react";
+import WalletModalPreset from "@/components/Wallet/wallet-modal-preset";
+import { useGlobalStore } from "@/store/general-store";
 
 type MoveOutModalProps = {
   unit_id: string;
   tenant_id: number;
-  cautionDepositStatus?: boolean;
+  cautionDepositStatus: boolean;
   tenantAgent?: "web" | "mobile";
   currency?: Currency;
+  unitData: any;
 };
 
 const MoveOutModal = ({
@@ -29,6 +32,7 @@ const MoveOutModal = ({
   cautionDepositStatus,
   tenantAgent,
   currency,
+  unitData,
 }: MoveOutModalProps) => {
   const isNaira = currency === "naira";
   const isWeb = tenantAgent?.toLowerCase() === "web";
@@ -40,18 +44,20 @@ const MoveOutModal = ({
   const [flagReason, setFlagReason] = useState<string | null>(null);
   const [isFlagged, setIsFlagged] = useState(false);
 
-  const dispatchEvents = () => {
-    window.dispatchEvent(new Event("refetchRentUnit"));
-    window.dispatchEvent(new Event("property-updated"));
-    window.dispatchEvent(new Event("refetchtenant"));
-  };
-
-  const closeModal = () => {
-    setIsOpen(false);
-    setFlagReason(null);
-    setIsFlagged(false);
-    setModalView(isWeb ? "warning" : "menu");
-  };
+  // Get the store functions
+  const { setGlobalInfoStore, caution_unit_occupant } = useGlobalStore();
+  useEffect(() => {
+    if (unitData?.caution_unit_occupant) {
+      setGlobalInfoStore(
+        "caution_unit_occupant",
+        unitData.caution_unit_occupant
+      );
+    }
+  }, [unitData, setGlobalInfoStore]);
+  // Get caution unit occupant data from global store
+  const cautionUnitOccupant = useGlobalStore(
+    (state) => state.caution_unit_occupant
+  );
 
   const handleMoveOut = async () => {
     try {
@@ -63,8 +69,10 @@ const MoveOutModal = ({
           setModalView("success");
         } else {
           toast.success("Tenant moved out successfully.");
-          dispatchEvents();
-          closeModal();
+          setIsOpen(false);
+          window.dispatchEvent(new Event("refetchRentUnit"));
+          window.dispatchEvent(new Event("property-updated"));
+          window.dispatchEvent(new Event("refetchtenant"));
         }
       }
     } catch (error) {
@@ -86,8 +94,7 @@ const MoveOutModal = ({
       if (res) {
         toast.success("Tenant flagged successfully");
         setIsFlagged(true);
-        closeModal();
-        dispatchEvents();
+        setModalView("menu");
       }
     } catch (error) {
       toast.error("Failed to flag tenant. Please try again.");
@@ -95,6 +102,18 @@ const MoveOutModal = ({
       setIsLoading(false);
     }
   };
+
+  const allowedStatuses = [
+    "progress",
+    "pending",
+    "completed",
+    "approved",
+  ] as const;
+  const status = allowedStatuses.includes(
+    caution_unit_occupant.request_status as any
+  )
+    ? (caution_unit_occupant.request_status as (typeof allowedStatuses)[number])
+    : undefined;
 
   const renderMenu = () => (
     <WalletModalPreset title="Move Out">
@@ -106,7 +125,28 @@ const MoveOutModal = ({
           caution deposit approval.
         </p>
         <div className="space-y-4">
-          {isNaira && cautionDepositStatus ? (
+          {isNaira && !cautionDepositStatus && (
+            <>
+              <div className="bg-gray-200 dark:bg-darkText-primary dark:border dark:border-gray-600 p-2 rounded-md shadow-sm">
+                <p className="text-text-secondary dark:text-white text-sm font-medium">
+                  <span className="text-red-500">*</span> No caution deposit was
+                  recorded when the occupant moved in, meaning no financial
+                  security was submitted to cover potential damages or breaches
+                  of the tenancy agreement.
+                </p>
+              </div>
+              <div className="py-2 rounded-[4px] flex justify-between items-center w-full">
+                <span className="text-text-secondary dark:text-white">
+                  Flag Tenant
+                </span>
+                <Switch
+                  onClick={() => setModalView("flag")}
+                  checked={isFlagged}
+                />
+              </div>
+            </>
+          )}
+          {/* {isNaira && !cautionDepositStatus ? (
             <div className="bg-gray-200 dark:bg-darkText-primary dark:border dark:border-gray-600 p-2 rounded-md shadow-sm">
               <p className="text-text-secondary dark:text-white text-sm font-medium">
                 <span className="text-red-500">*</span> No caution deposit was
@@ -125,7 +165,7 @@ const MoveOutModal = ({
                 checked={isFlagged}
               />
             </div>
-          )}
+          )} */}
         </div>
         <button
           className="w-full bg-status-error-1 text-status-error-2 py-2 rounded mt-10"
@@ -176,7 +216,7 @@ const MoveOutModal = ({
         </p>
         <div className="flex flex-col gap-2">
           <ModalTrigger asChild close>
-            <Button onClick={closeModal}>OK</Button>
+            <Button>OK</Button>
           </ModalTrigger>
           <Button
             variant="blank"
@@ -192,12 +232,14 @@ const MoveOutModal = ({
 
   const renderDeposit = () => (
     <DepositRequestModal
-      requestId="123"
-      propertyName="Moniya"
-      state="Oyo"
-      unitDetails="Akinleye"
-      branch="Moniya"
-      amount="₦200"
+      requestId={caution_unit_occupant.requestId || ""}
+      propertyName={caution_unit_occupant.propertyName || ""}
+      state={caution_unit_occupant.state || ""}
+      unitDetails={caution_unit_occupant.unitDetails || ""}
+      branch={caution_unit_occupant.branch || ""}
+      amount={caution_unit_occupant.amount || ""}
+      status={status}
+      isRent
     />
   );
 

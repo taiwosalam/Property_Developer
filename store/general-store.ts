@@ -141,13 +141,18 @@ interface GlobalStoreState {
   selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
   selectedLandlordId: string | null;
   selectedTenantId: string | null;
-  depositRequestInfo: {
+
+  caution_unit_occupant: {
     requestId: string | null;
     propertyName: string | null;
     state: string | null;
     unitDetails: string | null;
+    agent: string | null;
+    request_status: string | null;
+    branch: string | null;
     amount: string | null;
   };
+
   warningModal: {
     isOpen: boolean;
     message: string;
@@ -244,12 +249,13 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   closeUnitForm: false,
 
   canSubmitRent: false,
-
-  depositRequestInfo: {
+  caution_unit_occupant: {
     requestId: null,
     propertyName: null,
     state: null,
     unitDetails: null,
+    agent: null,
+    request_status: null,
     branch: null,
     amount: null,
   },

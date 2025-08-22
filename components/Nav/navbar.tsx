@@ -137,8 +137,8 @@ const Header = () => {
       const unreadCount = apiData?.data.filter(
         (notification) => !notification.read_at
       ).length;
+      setPersonalInfo("unread_notifications_count", unreadCount);
       setNotificationCount(unreadCount);
-
       saveLocalStorage("notificationCount", unreadCount);
     }
   }, [apiData]);
@@ -153,6 +153,7 @@ const Header = () => {
 
         if (pathname === "/notifications") {
           saveLocalStorage("notificationCount", 0);
+          setPersonalInfo("unread_notifications_count", 0);
         }
         refetchNotifications();
       }
@@ -387,7 +388,7 @@ const Header = () => {
                 />
                 <NavIcon
                   icon={<BellIcon size={21} />}
-                  count={notificationCounts}
+                  count={notificationCount}
                   alt="notifications"
                   href="/notifications"
                 />
@@ -462,7 +463,7 @@ const Header = () => {
                     />
                     <NavIcon
                       icon={<BellIcon size={21} />}
-                      count={notificationCounts}
+                      count={notificationCount}
                       alt="notifications"
                       href="/notifications"
                     />
@@ -495,7 +496,7 @@ const Header = () => {
                 <NavSwitchUserSwitch />
               </div>
               <Modal>
-                <ModalTrigger className="nav-global-search px-4 py-[12px] flex-1 max-w-[240px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
+                <ModalTrigger className="nav-global-search px-4 py-[12px] flex-1 max-w-[240px] h-[45px] flex items-center gap-2 rounded-lg bg-[#F1F1F1] dark:bg-[#3C3D37]">
                   <SearchIcon size={24} />
                   <span className="text-[#0a132ea6] dark:text-white text-base font-semibold">
                     Search
@@ -509,7 +510,7 @@ const Header = () => {
                 <ModalTrigger asChild>
                   <Button
                     size="base_medium"
-                    className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit"
+                    className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit h-[45px]"
                   >
                     <span className="line-clamp-1 text-ellipsis">
                       + Create New
@@ -552,7 +553,7 @@ const Header = () => {
                 >
                   <BellIcon />
                   <NotificationBadge
-                    count={roundUptoNine(notificationCounts)}
+                    count={roundUptoNine(notificationCount)}
                     color="green"
                   />
                 </Link>
