@@ -229,7 +229,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <SmartMarquee />
           </div> */}
           <div className="pt-2 bg-white dark:bg-[#020617]">
-          <SmartMarquee />
+            <SmartMarquee />
           </div>
           <div
             className={`h-[50px] px-3 flex items-center ${navbar !== "row" ? "justify-between" : "justify-end"
@@ -284,7 +284,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 mt-[48px] min-h-[calc(100vh-152px)]",
+            // "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 mt-[48px] min-h-[calc(100vh-152px)]",
+            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]",
             {
               "w-full md:ml-0 lg:ml-0": navbar === "row",
               "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
@@ -293,7 +294,9 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             },
             {
               "md:opacity-100 md:pointer-events-auto": navbar !== "row",
-            }
+            },
+            // Conditional margin-top based on user role
+            role === "account" || role === "user" ? "mt-14" : "mt-[58px]"
           )}
         >
           {children}

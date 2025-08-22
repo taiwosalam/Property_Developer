@@ -344,7 +344,7 @@ const Dashboard = () => {
 
   const bookmarkChartData = useMemo(() => {
     return (
-      branchData?.chart_data.map((item: any) => ({
+      branchData?.chart_data.map((item: any) => ({    
         date: item?.date,
         views: item?.total_views,
         bookmarks: item?.total_bookmarks,
