@@ -42,7 +42,7 @@ const NavSwitchUserSwitch = ({ trigger }: { trigger?: React.ReactNode }) => {
   };
 
   return (
-    <div ref={containerRef} className="relative flex-1 max-w-max md:max-w-[240px] shrink-0">
+    <div ref={containerRef} className="relative flex-1 max-w-max md:max-w-[240px] shrink-0 h-[45px]">
       {trigger ? (
         <div onClick={handleSwitch}>{trigger}</div>
       ) : (

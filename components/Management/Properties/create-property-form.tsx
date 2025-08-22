@@ -751,7 +751,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                 <>
                   <div className="coordinate-wrapper flex flex-col gap-2">
                     <label> Coordinates </label>
-                    <div className="flex items-center px-2 h-[44px] text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
+                    <div className="flex items-center px-2 h-[44px] text-xs md:text-sm font-normal rounded-[4px] w-full custom-primary-outline bg-white border border-solid border-[#C1C2C366] dark:bg-darkText-primary hover:border-[#00000099] dark:hover:border-darkText-2">
                       <Modal>
                         <ModalTrigger asChild>
                           <button className="capitalize bg-brand-9 text-xs rounded-md px-2 text-white h-3/4">
