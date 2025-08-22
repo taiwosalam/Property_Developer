@@ -1,0 +1,211 @@
+"use client";
+
+import ImageSlider from "@/components/ImageSlider/image-slider";
+import BackButton from "@/components/BackButton/back-button";
+import { LocationIcon } from "@/public/icons/icons";
+// import { unitDetails } from "@/components/Management/Rent And Unit/data";
+import TenancyRecord from "@/components/Management/Rent And Unit/tenancy-record";
+import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
+import { useParams, useRouter } from "next/navigation";
+import useFetch from "@/hooks/useFetch";
+import { useEffect, useState } from "react";
+import {
+  initData,
+  initDataProps,
+  singleUnitApiResponse,
+  transformSingleUnitData,
+  transformUnitData,
+} from "../data";
+import NetworkError from "@/components/Error/NetworkError";
+import {
+  Currency,
+  currencySymbols,
+  formatNumber,
+} from "@/utils/number-formatter";
+import ServerError from "@/components/Error/ServerError";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import Button from "@/components/Form/Button/button";
+
+const PriceSection: React.FC<{
+  period: string;
+  title: string;
+  total_package: number;
+  price: number;
+  currency: Currency;
+}> = ({ title, price, total_package, period, currency }) => {
+  const CURRENCY =
+    currencySymbols[currency as keyof typeof currencySymbols] ||
+    currencySymbols["naira"];
+  return (
+    <div className="space-y-4">
+      <h3 className="font-medium text-base text-brand-10">{title}</h3>
+      <div>
+        <p className="text-lg lg:text-xl font-bold text-brand-9">{price}</p>
+        <p className="text-xs font-normal text-text-label dark:text-darkText-1">
+          Total Package
+        </p>
+        <p className="text-sm font-medium text-text-disabled dark:text-darkText-1">
+          <span className="text-highlight">
+            {CURRENCY}
+            {formatNumber(total_package).toLocaleString()}
+          </span>{" "}
+          / {period}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const DetailItem: React.FC<{ label: string; value: string | number }> = ({
+  label,
+  value,
+}) => (
+  <div className="flex gap-2 text-base font-normal">
+    <p className="w-[140px] font-normal text-[#747474] dark:text-white">
+      {label}
+    </p>
+    <p className="text-black dark:text-darkText-1 capitalize">{value}</p>
+  </div>
+);
+
+const UnitPreviewPage = () => {
+  const router = useRouter();
+  const { id } = useParams();
+  const [unit_data, setUnit_data] = useState<initDataProps>(initData);
+  const endpoint = `/unit/${id}/view`;
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<singleUnitApiResponse>(endpoint);
+
+  useEffect(() => {
+    if (apiData) {
+      setUnit_data((x: any) => ({
+        ...x,
+        ...transformUnitData(apiData),
+      }));
+      // console.log("Data", unit_data.previous_tenants)
+    }
+  }, [apiData]);
+
+  if (loading) return <PageCircleLoader />;
+
+  if (isNetworkError) return <NetworkError />;
+
+  if (error) return <ServerError error={error} />;
+
+  return (
+    <section className="space-y-5">
+      <BackButton as="p"> {unit_data.title} </BackButton>
+
+      {/* Heading */}
+      <div className="flex items-center justify-between">
+        <div className="text-black dark:text-white">
+          <p className="text-base font-medium dark:text-darkText-1">
+            ID: {unit_data.unit_id}
+          </p>
+          <h1 className="text-lg md:text-xl lg:text-2xl font-bold capitalize">
+            {unit_data.unit_name}
+          </h1>
+          <p className="text-sm text-text-label font-normal flex itmems-center gap-1 capitalize">
+            <LocationIcon />
+            {unit_data.address}
+          </p>
+        </div>
+        <Button href={`/manager/management/properties/${unit_data.propertyId}/edit-property`}>
+          Manage
+        </Button>
+      </div>
+
+      <div className="flex flex-col lg:flex-row gap-x-[30px] gap-y-5">
+        <div className="lg:w-[60%]">
+          <ImageSlider
+            images={unit_data.images}
+            className="aspect-[1.4] rounded-lg"
+          />
+        </div>
+        <section className="bg-white dark:bg-darkText-primary rounded-b-3xl lg:flex-1 p-6 lg:p-8 space-y-8">
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h3 className="text-brand-10 font-medium text-base">
+                Unit Details
+              </h3>
+              <DetailItem label="Categories" value={unit_data.categories} />
+              <DetailItem
+                label="Unit Number/Name"
+                value={unit_data.unit_name}
+              />
+              <DetailItem
+                label="Unit Preference"
+                value={unit_data.unitPreference}
+              />
+              <DetailItem label="Unit Type" value={unit_data.unitType} />
+              <DetailItem label="Unit Sub Type" value={unit_data.unitSubType} />
+              <DetailItem label="State" value={unit_data.state} />
+              <DetailItem
+                label="Local Government"
+                value={unit_data.localGovernment}
+              />
+              <DetailItem
+                label="Account Officer"
+                value={unit_data.accountOfficer}
+              />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-brand-10 font-medium text-base">
+                Unit Features
+              </h3>
+              <DetailItem label="Bedroom" value={unit_data.bedrooms} />
+              <DetailItem label="Bathroom" value={unit_data.bathrooms} />
+              <DetailItem label="Toilet" value={unit_data.toilets} />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <h3 className="text-brand-10 font-medium text-base">Unit Fee</h3>
+            <div className="flex gap-2 flex-wrap justify-between">
+              <PriceSection
+                title="New Tenant"
+                period={unit_data.fee_period}
+                price={(unit_data.newTenantPrice as any) || 0}
+                total_package={(unit_data.newTenantTotalPrice as any) || 0}
+                currency={unit_data?.currency || "naira"}
+              />
+              <PriceSection
+                title="Renewal Tenant"
+                period={unit_data.renew_fee_period}
+                price={(unit_data.renewalTenantPrice as any) || 0}
+                currency={unit_data?.currency || "naira"}
+                total_package={(unit_data.renewalTenantTotalPrice as any) || 0}
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <div className="space-y-6">
+        <RentSectionTitle>Previously Assigned Tenants Records</RentSectionTitle>
+        <div className="space-y-4">
+          {unit_data?.previous_tenants?.length === 0 ? (
+            <p className="text-center">No Previous Tenant Record</p>
+          ) : (
+            unit_data?.previous_tenants?.map((t: any, index: number) => (
+              <TenancyRecord
+                key={index}
+                index={unit_data.previous_tenants.length - index}
+                unit_id={id}
+                {...t}
+                currency={unit_data.currency}
+              />
+            ))
+          )}
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default UnitPreviewPage;

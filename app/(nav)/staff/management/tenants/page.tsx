@@ -1,0 +1,437 @@
+"use client";
+
+// Imports
+import { useCallback, useEffect, useRef, useState } from "react";
+import Button from "@/components/Form/Button/button";
+import TenantCard from "@/components/Management/landlord-and-tenant-card";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+import CustomTable from "@/components/Table/table";
+import Pagination from "@/components/Pagination/pagination";
+import UserTag from "@/components/Tags/user-tag";
+import AddTenantModal from "@/components/Management/Tenants/add-tenant-modal";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import { getAllStates } from "@/utils/states";
+import {
+  defaultTenantPageData,
+  tenantTableFields,
+  type TenantApiResponse,
+  type TenantPageData,
+  type TenantRequestParams,
+  transformTenantApiResponse,
+} from "./data";
+import Link from "next/link";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import FilterBar from "@/components/FIlterBar/FilterBar";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import useView from "@/hooks/useView";
+import useFetch from "@/hooks/useFetch";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import NetworkError from "@/components/Error/NetworkError";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import { ExclamationMark } from "@/public/icons/icons";
+import TableLoading from "@/components/Loader/TableLoading";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import { AxiosRequestConfig } from "axios";
+import type { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
+import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import { NoteBlinkingIcon } from "@/public/icons/dashboard-cards/icons";
+import ServerError from "@/components/Error/ServerError";
+import { useRole } from "@/hooks/roleContext";
+import { usePermission } from "@/hooks/getPermission";
+
+const states = getAllStates();
+
+const Tenants = () => {
+  const storedView = useView();
+  const contentTopRef = useRef<HTMLDivElement>(null);
+  const [view, setView] = useState<string | null>(storedView);
+  const [pageData, setPageData] = useState<TenantPageData>(() => {
+    const savedPage = sessionStorage.getItem("tenant_page");
+    return {
+      ...defaultTenantPageData,
+      current_page: savedPage ? parseInt(savedPage, 10) : 1,
+    };
+  });
+
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canCreateAndManageTenant = usePermission(
+    role,
+    "Can add and manage tenants/occupants"
+  );
+
+  const {
+    total_pages,
+    current_page,
+    total_tenants,
+    new_tenants_this_month,
+    mobile_tenants,
+    new_mobile_tenants_this_month,
+    web_tenants,
+    new_web_tenants_this_month,
+    tenants,
+  } = pageData;
+
+  const [config, setConfig] = useState<AxiosRequestConfig>(() => {
+    const savedPage = sessionStorage.getItem("tenant_page");
+    return {
+      params: {
+        page: savedPage ? parseInt(savedPage, 10) : 1,
+        search: "",
+      } as TenantRequestParams,
+    };
+  });
+
+  // Save page number to sessionStorage whenever it changes
+  useEffect(() => {
+    sessionStorage.setItem("tenant_page", current_page.toString());
+  }, [current_page]);
+
+  useEffect(() => {
+    setView(storedView);
+  }, [storedView]);
+
+  const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
+    options: [],
+    menuOptions: {},
+    startDate: null,
+    endDate: null,
+  });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
+
+  const handleFilterApply = (filters: FilterResult) => {
+    setAppliedFilters(filters);
+    const { menuOptions, startDate, endDate } = filters;
+    const statesArray = menuOptions["State"] || [];
+    const agent = menuOptions["Tenant Type"]?.[0];
+
+    const queryParams: TenantRequestParams = {
+      page: 1,
+      search: "",
+    };
+    if (statesArray.length > 0) {
+      queryParams.states = statesArray.join(",");
+    }
+    if (agent && agent !== "all") {
+      queryParams.agent = agent;
+    }
+    if (startDate) {
+      queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD");
+    }
+    if (endDate) {
+      queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD");
+    }
+    setConfig({
+      params: queryParams,
+    });
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("tenant_page", "1");
+  };
+
+  const handlePageChange = (page: number) => {
+    setConfig({
+      params: { ...config.params, page },
+    });
+    // Clear tenants in grid view to ensure fresh data on pagination
+    if (view === "grid") {
+      setPageData((prevData) => ({
+        ...prevData,
+        tenants: [],
+      }));
+      // Scroll to the top where TenantCards start
+      if (contentTopRef.current) {
+        contentTopRef.current.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
+
+  const handleSearch = async (query: string) => {
+    setConfig({
+      params: { ...config.params, search: query, page: 1 },
+    });
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    sessionStorage.setItem("tenant_page", "1");
+  };
+
+  const handleSort = (order: "asc" | "desc") => {
+    setConfig({
+      params: { ...config.params, sort_order: order },
+    });
+  };
+
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<TenantApiResponse>("tenants", config);
+
+  // Handle view change with reset and silent refetch
+  useEffect(() => {
+    setConfig((prevConfig) => ({
+      ...prevConfig,
+      params: { ...prevConfig.params, page: 1 },
+    }));
+    setPageData((prevData) => ({
+      ...prevData,
+      tenants: [],
+      current_page: 1,
+    }));
+    refetch({ silent: true });
+  }, [view]);
+
+  useEffect(() => {
+    if (apiData) {
+      const transformedData = transformTenantApiResponse(apiData);
+      setPageData((prevData) => {
+        const updatedTenants =
+          view === "grid" || transformedData.current_page === 1
+            ? transformedData.tenants
+            : [...prevData.tenants, ...transformedData.tenants];
+        return { ...transformedData, tenants: updatedTenants };
+      });
+    }
+  }, [apiData, view]);
+
+  // Listen for the refetch event
+  useRefetchOnEvent("refetchTenants", () => refetch({ silent: true }));
+
+  // --- Infinite Scroll Logic ---
+  const observer = useRef<IntersectionObserver | null>(null);
+
+  const lastRowRef = useCallback(
+    (node: HTMLElement | null) => {
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          current_page < total_pages &&
+          !silentLoading &&
+          view !== "grid" // Only trigger in list view
+        ) {
+          handlePageChange(current_page + 1);
+        }
+      });
+      if (node) observer.current.observe(node);
+    },
+    [current_page, total_pages, silentLoading, view]
+  );
+
+  const transformedTenants = tenants.map((t, index) => ({
+    ...t,
+    full_name: (
+      <p className="flex items-center whitespace-nowrap">
+        <span>{t.name}</span>
+        <div className="flex gap-2 items-center">
+          {t.badge_color && <BadgeIcon color={t.badge_color} />}
+          {t.note && <NoteBlinkingIcon size={20} className="blink-color" />}
+        </div>
+      </p>
+    ),
+    user_tag: (
+      <>
+        <div className="flex gap-2 mb-2 items-center">
+          <UserTag type={t.user_tag} />
+        </div>
+      </>
+    ),
+    "manage/chat": (
+      <div className="flex gap-x-[4%] items-center justify-end w-full">
+        {t.user_tag === "mobile" && (
+          <Button
+            variant="sky_blue"
+            size="sm_medium"
+            className="px-8 py-2 border-[1px] border-brand-9 bg-brand-tertiary bg-opacity-50 text-white"
+          >
+            Chat
+          </Button>
+        )}
+        {canCreateAndManageTenant && (
+          <Button
+            href={`/staff/management/tenants/${t.id}/manage`}
+            size="sm_medium"
+            className="px-8 py-2"
+          >
+            Manage
+          </Button>
+        )}
+      </div>
+    ),
+    ref:
+      index === tenants.length - 1 &&
+      current_page < total_pages &&
+      view !== "grid"
+        ? lastRowRef
+        : undefined,
+  }));
+
+  if (loading)
+    return (
+      <CustomLoader
+        layout="page"
+        pageTitle="Tenants/Occupants (Users)"
+        statsCardCount={3}
+      />
+    );
+
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+
+  return (
+    <div className="my-8">
+      <div className="page-header-container my-4 md:m-0" ref={contentTopRef}>
+        <div className="management-cardstat-wrapper">
+          <ManagementStatistcsCard
+            title="Total Users"
+            newData={new_tenants_this_month}
+            total={total_tenants}
+            colorScheme={1}
+          />
+          <ManagementStatistcsCard
+            title="Web Tenants"
+            newData={new_web_tenants_this_month}
+            total={web_tenants}
+            colorScheme={2}
+          />
+          <ManagementStatistcsCard
+            title="Mobile Tenants"
+            newData={new_mobile_tenants_this_month}
+            total={mobile_tenants}
+            colorScheme={3}
+          />
+        </div>
+      </div>
+
+      <FilterBar
+        azFilter
+        gridView={view === "grid"}
+        setGridView={() => setView("grid")}
+        setListView={() => setView("list")}
+        pageTitle="Tenants/Occupants (Users)"
+        aboutPageModalData={{
+          title: "Tenants/Occupants (Users)",
+          description: "This page contains a list of all tenants and occupants",
+        }}
+        searchInputPlaceholder="Search for Tenants & Occupants"
+        dateLabel="Registration Date"
+        handleFilterApply={handleFilterApply}
+        isDateTrue
+        handleSearch={handleSearch}
+        onSort={handleSort}
+        appliedFilters={appliedFilters}
+        filterOptionsMenu={[
+          {
+            label: "State",
+            value: states.map((state) => ({
+              label: state,
+              value: state.toLowerCase(),
+            })),
+          },
+          {
+            radio: true,
+            label: "Tenant/Occupants Type",
+            value: [
+              { label: "Mobile Tenant", value: "mobile" },
+              { label: "Web Tenant", value: "web" },
+              { label: "All Tenants", value: "all" },
+            ],
+          },
+        ]}
+      />
+      <section>
+        {tenants.length === 0 && !silentLoading ? (
+          config.params.search || isFilterApplied() ? (
+            <SearchError />
+          ) : (
+            <EmptyList
+              noButton
+              modalContent={<AddTenantModal />}
+              title="The tenants and occupants profile files are empty."
+              body={
+                <p>
+                  You don&apos;t have any profiles for tenants and occupants
+                  yet.
+                </p>
+              }
+            />
+          )
+        ) : (
+          <>
+            {view === "grid" ? (
+              <AutoResizingGrid minWidth={284} gap={16}>
+                {silentLoading ? (
+                  <CardsLoading />
+                ) : (
+                  tenants.map((t) => (
+                    <Link
+                      href={`/staff/management/tenants/${t.id}/manage`}
+                      key={t.id}
+                    >
+                      <TenantCard
+                        key={t.id}
+                        picture_url={t.picture_url}
+                        name={t.name}
+                        title={t.title}
+                        user_tag={t.user_tag}
+                        badge_color={t.badge_color}
+                        email={t.email}
+                        phone_number={t.phone_number}
+                        note={t.note}
+                        is_flagged={t.flagged}
+                      />
+                    </Link>
+                  ))
+                )}
+              </AutoResizingGrid>
+            ) : (
+              <>
+                <CustomTable
+                  displayTableHead={false}
+                  fields={tenantTableFields}
+                  data={transformedTenants}
+                  tableBodyCellSx={{ color: "#3F4247" }}
+                />
+                {silentLoading && current_page > 1 && (
+                  <div className="flex items-center justify-center py-4">
+                    <div className="loader" />
+                  </div>
+                )}
+              </>
+            )}
+            {view === "grid" && (
+              <Pagination
+                totalPages={total_pages}
+                currentPage={current_page}
+                onPageChange={handlePageChange}
+              />
+            )}
+          </>
+        )}
+      </section>
+    </div>
+  );
+};
+
+export default Tenants;

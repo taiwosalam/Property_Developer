@@ -1,0 +1,184 @@
+import React, { useState, useEffect, useMemo } from "react";
+import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
+import Input from "../Form/Input/input";
+import FilterButton from "../FilterButton/filter-button";
+import MessagesFilterMenu from "./messages-filter-menu";
+import MessageUserCard from "./user-card";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useModal } from "../Modal/modal";
+import { positionMap } from "@/app/(nav)/(messages-reviews)/messages/data";
+import MessageUserCardSkeleton from "../Skeleton/message-user-card-skeleton";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import { getLocalStorage } from "@/utils/local-storage";
+import { useGlobalStore } from "@/store/general-store";
+import clsx from "clsx";
+import { useChatStore } from "@/store/message";
+
+const SelectChatUsersModal = ({ loading }: { loading?: boolean }) => {
+  const router = useRouter();
+  const { setIsOpen } = useModal();
+  const { users, filters } = useChatStore((state) => state.data);
+  const loggedInUserId = getLocalStorage("user_id");
+  const { isMobile } = useWindowWidth();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [searchTerm, setSearchTerm] = useState<string>("");
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const { setGlobalInfoStore, getGlobalInfoStore } = useGlobalStore();
+
+  const FILTERS = users?.filters;
+
+  // Filter and search users from store
+  const filteredUsers = useMemo(() => {
+    let base = Array.isArray(users?.users) ? users.users : [];
+    // Exclude self
+    base = base.filter((u: any) => u.id !== loggedInUserId);
+
+    // Filter by role if any
+    if (activeFilters.length > 0) {
+      const normalizedFilters = activeFilters
+        .map((f) => positionMap[f])
+        .filter(Boolean);
+      base = base.filter((u: any) => normalizedFilters.includes(u.position));
+    }
+
+    // Search
+    if (searchTerm.trim() !== "") {
+      const lower = searchTerm.toLowerCase();
+      base = base.filter(
+        (u: any) =>
+          u.name?.toLowerCase().includes(lower) ||
+          u.position?.toLowerCase().includes(lower)
+      );
+    }
+
+    return base;
+  }, [users, loggedInUserId, searchTerm, activeFilters]);
+
+  const handleMenuClose = () => setAnchorEl(null);
+
+  const handleSearchChange = (
+    data: string,
+    event?: React.ChangeEvent<HTMLInputElement>
+  ) => setSearchTerm(data);
+
+  const handleFilterApply = (selected: string[]) => setActiveFilters(selected);
+
+  const handleUserClicked = (user: any) => {
+    try {
+      const currentMessageUserData = getGlobalInfoStore("messageUserData");
+      const newMessageUserData = {
+        branch_id: Number(user.branch_id) || 0,
+        id: Number(user.id),
+        imageUrl: user.imageUrl || "",
+        name: user.name,
+        position: user.position || "",
+      };
+      if (
+        JSON.stringify(currentMessageUserData) !==
+        JSON.stringify(newMessageUserData)
+      ) {
+        setGlobalInfoStore("messageUserData", newMessageUserData);
+      }
+      router.push(`/messages/${user.id}`);
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Failed to navigate to messages");
+    }
+  };
+
+  return (
+    <LandlordTenantModalPreset
+      heading="Contact List"
+      noPaddingTop
+      style={{
+        width: isMobile ? "80%" : "40%",
+        maxWidth: "80%",
+        maxHeight: "70%",
+        minHeight: "60%",
+      }}
+    >
+      <div className="flex-1 flex sticky z-[3] top-0 pt-[12px] md:pt-[20px] items-center">
+        <div className="flex-1 relative">
+          <Input
+            id="search"
+            className="w-full"
+            placeholder="Search for users"
+            leftIcon={"/icons/search-icon.svg"}
+            inputClassName="pr-[52px] border-transparent"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+          <div className="absolute top-1/2 flex items-center right-0 -translate-y-1/2">
+            <FilterButton
+              noTitle
+              className="bg-transparent py-[10px] px-4"
+              onClick={(e) => setAnchorEl(e.currentTarget)}
+            />
+            {!loading && (
+              <MessagesFilterMenu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={handleMenuClose}
+                onFilterApply={handleFilterApply}
+                setSelectedLabel={() => {}} // not needed, but keep to satisfy api
+                filterOptions={[
+                  {
+                    label: "Director",
+                    value: FILTERS?.roles?.director - 1 || 0,
+                  },
+                  {
+                    label: "Branch Manager",
+                    value: FILTERS?.roles?.manager ?? 0,
+                  },
+                  {
+                    label: "Account Manager",
+                    value: FILTERS?.roles?.account ?? 0,
+                  },
+                  { label: "Other Staff", value: FILTERS?.roles?.staff ?? 0 },
+                ]}
+              />
+            )}
+          </div>
+        </div>
+      </div>
+      {loading ? (
+        [...Array(5)].map((_, index) => <MessageUserCardSkeleton key={index} />)
+      ) : filteredUsers.length > 0 ? (
+        filteredUsers.map((user: any) => (
+          <div
+            role="button"
+            tabIndex={0}
+            onClick={() => handleUserClicked(user)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                handleUserClicked(user);
+              }
+            }}
+            className={clsx(
+              "cursor-pointer transition-colors duration-200 hover:bg-neutral-1 dark:hover:bg-[#2A2B27]"
+            )}
+            key={user.id}
+          >
+            <MessageUserCard
+              id={Number(user.id)}
+              imageUrl={user.imageUrl}
+              name={user.name}
+              position={user.position}
+              status={user.online_status ?? "offline"}
+              tier={user.tier ?? 0}
+              title={user.title ?? ""}
+            />
+          </div>
+        ))
+      ) : (
+        <p className="text-center text-muted mt-4 text-[20px] font-semibold">
+          No user found.
+        </p>
+      )}
+    </LandlordTenantModalPreset>
+  );
+};
+
+export default SelectChatUsersModal;

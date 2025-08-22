@@ -1,0 +1,93 @@
+import Image from "next/image";
+import { useState } from "react";
+import { VideoIcon, CameraIcon } from "@/public/icons/icons";
+import Sample from "@/public/empty/SampleProperty.jpeg";
+import Sample2 from "@/public/empty/SampleProperty2.jpeg";
+import Sample3 from "@/public/empty/SampleProperty3.jpeg";
+import Sample4 from "@/public/empty/SampleProperty4.png";
+import Sample5 from "@/public/empty/SampleProperty5.jpg";
+import PopupImageModal from "@/components/PopupSlider/PopupSlider";
+
+const BranchPropertyListItem = () => {
+  const [screenModal, setScreenModal] = useState(false);
+  const sampleImages = [Sample, Sample2, Sample3, Sample4, Sample5];
+  return (
+    <div
+      className="px-6 py-4 rounded-2xl bg-white dark:bg-darkText-primary flex items-center gap-8 overflow-auto custom-round-scrollbar"
+      style={{ boxShadow: "2px 2px 4px 0px rgba(0, 0, 0, 0.05)" }}
+    >
+      {/* Image Modal */}
+      <PopupImageModal
+        isOpen={screenModal}
+        onClose={() => setScreenModal(false)}
+        images={sampleImages.map((image) => ({
+          src: image.src,
+        }))}
+      />
+
+      {/* Image */}
+      <div className="flex-shrink-0 w-[125px] h-[125px] rounded-lg relative overflow-hidden group cursor-pointer">
+        <div
+          role="button"
+          className="absolute z-[10] inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.3) dark:bg-darkText-primary",
+          }}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setScreenModal(true);
+          }}
+        >
+          {/* Group of icons down */}
+          <div className="flex items-stretch gap-[10px] absolute z-[1] left-[50%] translate-x-[-50%] bottom-4">
+            <div className="bg-brand-1 rounded py-1 px-1.5 flex items-center gap-1.5">
+              <CameraIcon />
+              <p className="text-black font-medium text-[10px]">+23</p>
+            </div>
+            <div className="bg-brand-1 rounded py-1 px-1.5 grid place-items-center">
+              <VideoIcon />
+            </div>
+          </div>
+        </div>
+        <Image
+          src={Sample}
+          alt={""}
+          fill
+          objectFit="cover"
+          objectPosition="center"
+          className="object-cover"
+        />
+      </div>
+
+      <div className="flex-shrink-0 flex-1 text-sm md:text-base grid grid-cols-2 gap-y-4 gap-x-6 lg:[&>div]:grid lg:[&>div]:gap-x-2 lg:[&>div]:grid-cols-[35%,1fr]">
+        <div>
+          <p className="text-[#747474]">Unit Details Units</p>
+          <p className="text-black">Moniya Apartment</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Property ID</p>
+          <p className="text-black">12345667890</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Number of Units</p>
+          <p className="text-black">14 Units</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Annual Returns</p>
+          <p className="text-brand-primary font-bold">₦1,950,000</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Address</p>
+          <p className="text-black">Newly Built 5 Bedroom Detached Duplex</p>
+        </div>
+        <div>
+          <p className="text-[#747474]">Annual Income</p>
+          <p className="text-highlight font-bold">₦700,000</p>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default BranchPropertyListItem;

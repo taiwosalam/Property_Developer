@@ -1,0 +1,230 @@
+"use client";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { Modal, ModalContent, useModal } from "@/components/Modal/modal";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
+import Button from "@/components/Form/Button/button";
+import { ExpiredSubIcon } from "@/public/icons/icons";
+import LandlordTenantModalPreset from "../Management/landlord-tenant-modal-preset";
+import RenewSubConfirmModal from "../Settings/Modals/renew-confirm-step";
+import useFetch from "@/hooks/useFetch";
+import { ActiveSubscriptionResponse } from "@/app/(nav)/types";
+import {
+  PropertyManagerSubsApiResponseTypes,
+  PropertyManagerSubsTransformedPlan,
+} from "@/app/(nav)/settings/subscription/types";
+import { RenewSubPlanModal } from "./renew-plan-modal";
+import { cleanPricingValue } from "@/utils/cleanPrice";
+import {
+  activatePlan,
+  extendPropertyManagerPlan,
+  renewPropertyManagerPlan,
+  upgradePropertyManagerPlan,
+} from "@/app/(nav)/settings/subscription/data";
+import { parseFormattedNumber } from "@/app/(nav)/accounting/invoice/create-invoice/data";
+import { FormSteps } from "@/app/(onboarding)/auth/types";
+import { toast } from "sonner";
+import { useGlobalStore } from "@/store/general-store";
+import Cookies from "js-cookie";
+import { useRole } from "@/hooks/roleContext";
+
+const ExpiredSubscriptionModal: React.FC = () => {
+  const [step, setStep] = useState<FormSteps | number>(1);
+  const { role } = useRole();
+  const [reqLoading, setReqLoading] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const { setIsOpen } = useModal();
+  const router = useRouter();
+  const [isUpgrade, setIsUpgrade] = useState(false);
+  const [isExtend, setIsExtend] = useState(false);
+  const [selectedPlan, setSelectedPlan] =
+    useState<PropertyManagerSubsTransformedPlan | null>(null);
+  const { selectedSubPlan } = useGlobalStore((state) => ({
+    selectedSubPlan: state.selectedSubPlan,
+  }));
+
+  const currentPlan = usePersonalInfoStore((state) => state.currentPlan);
+  const currentPlanKeyword = currentPlan?.split(" ")[0]?.toLowerCase();
+
+  const handleSelectPlan = useCallback(async () => {
+    if (!selectedPlan?.id) return toast.warning("Plan ID is missing!");
+
+    const thisPlanKeyword = selectedPlan.planTitle
+      ?.split(" ")[0]
+      ?.toLowerCase();
+
+    // Determine if it's an upgrade or extension
+    const isExtend = currentPlanKeyword === thisPlanKeyword;
+
+    // Determine if it's an upgrade or extension
+    const isUpgrade =
+      (currentPlanKeyword === "free" &&
+        (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+      (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
+    const payload = {
+      plan_id: selectedPlan.id,
+      payment_method: "wallet",
+      quantity: selectedPlan.isLifeTimePlan ? 1 : selectedPlan.quantity,
+      duration: selectedPlan.isLifeTimePlan
+        ? "lifetime"
+        : selectedPlan.billingType,
+      amount: selectedPlan.isLifeTimePlan
+        ? selectedPlan.lifetimePrice
+        : cleanPricingValue(selectedPlan.price),
+    };
+
+    let actionFn;
+
+    if (isExtend) {
+      // actionFn = extendPropertyManagerPlan;
+      actionFn = renewPropertyManagerPlan;
+    } else if (isUpgrade) {
+      actionFn = upgradePropertyManagerPlan;
+    } else {
+      actionFn = activatePlan;
+    }
+
+    try {
+      setReqLoading(true);
+      const res = await actionFn(payload);
+      if (res) {
+        toast.success("Subscription updated successfully");
+        window.dispatchEvent(new Event("fetch-profile"));
+        window.dispatchEvent(new Event("refetchSubscriptionPlan"));
+        window.dispatchEvent(new Event("refetchEnrollments"));
+        Cookies.set("subscription_status", "active", {
+          expires: 7,
+          secure: true,
+          sameSite: "Strict",
+          path: "/",
+        });
+        setTimeout(() => {
+          router.push(`/settings/subscription`);
+        }, 200); // 200ms delay to ensure cookie is set
+        setIsOpen(false);
+      }
+    } catch (error) {
+      toast.error("Something went wrong while updating the subscription.");
+    } finally {
+      setReqLoading(false);
+    }
+  }, [selectedPlan, currentPlanKeyword, setIsOpen, router]);
+
+  useEffect(() => {
+    if (!selectedPlan) return;
+
+    const thisPlanKeyword = selectedPlan.planTitle
+      ?.split(" ")[0]
+      ?.toLowerCase();
+
+    setIsExtend(currentPlanKeyword === thisPlanKeyword);
+
+    const upgrade =
+      (currentPlanKeyword === "free" &&
+        (thisPlanKeyword === "basic" || thisPlanKeyword === "premium")) ||
+      (currentPlanKeyword === "basic" && thisPlanKeyword === "premium");
+
+    setIsUpgrade(upgrade);
+  }, [selectedPlan, currentPlanKeyword]);
+
+  const confirmMessage = () => {
+    if (isExtend) {
+      return "By confirming, you authorize this charge and acknowledge that the amount will be deducted from your wallet balance.";
+    } else if (isUpgrade) {
+      return "Selecting this plan will activate access to its features for your company. Please note that once selected, you cannot downgrade your account. <br /> <br /> Subscriptions are billed similarly to rent. If your plan expires before payment is  made, all users in your company will lose access to all features. However, your data will be securely stored and maintained until you renew your subscription. <br /> <br />";
+    } else {
+      return "Selecting this plan will activate access to its features for your company. Please note that once selected, you cannot downgrade your account. <br /> <br /> Subscriptions are billed similarly to rent. If your plan expires before payment is  made, all users in your company will lose access to all features. However, your data will be securely stored and maintained until you renew your subscription. <br /> <br />";
+    }
+  };
+
+  const isDirector = role === "director";
+
+  const renderContent = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="md:max-w-[50%] w-[80%] p-8 custom-flex-col gap-4 rounded-[40px] bg-white dark:bg-darkText-primary overflow-hidden text-center">
+            <div className="flex justify-center">
+              <div className="w-28 h-28 flex bg-[#E9212E] items-center justify-center rounded-full">
+                <ExpiredSubIcon size={50} />
+              </div>
+            </div>
+            <div className="p-6 text-center">
+              <h2 className="text-xl font-bold text-text-primary dark:text-white mb-4">
+                {isDirector
+                  ? "Subscription Expired"
+                  : "⚠️ Oops! Your Account is Temporarily Down for Maintenance"}
+              </h2>
+              <p className="text-text-secondary dark:text-darkText-1 mb-6">
+                {isDirector
+                  ? "Access to all features and services currently disabled. To continue using your account without interruption, please renew your subscription immediately."
+                  : "We’re currently performing scheduled maintenance on your account to improve system performance, enhance security, and deliver a better overall experience. During this short period, your dashboard and services may be unavailable. Don’t worry, all your data is safe and secure, and no information will be lost."}
+              </p>
+              <p className="text-xl font-bold text-text-primary dark:text-white mb-4">
+                {isDirector ? "Important Notes:" : "✅ What You Can Do:"}
+              </p>
+              <ul className="custom-flex-col gap-2 text-text-secondary dark:text-darkText-1">
+                <li>
+                  {isDirector
+                    ? "Your company data is securely stored but restricted until renewal"
+                    : "Please check back shortly. If you have any urgent concerns, kindly contact your company director or owner.They can reach out to the support team or help restore the system’s connection to the server"}
+                </li>
+                {isDirector && (
+                  <li>
+                    All users under your company account will lose access until
+                    subscription is reactivated.
+                  </li>
+                )}
+              </ul>
+
+              {isDirector && (
+                <p className="my-4 ">Click the button to regain access</p>
+              )}
+              {role === "director" && (
+                <div className="flex justify-center gap-4">
+                  <Button
+                    size="base_bold"
+                    className="py-[10px] px-8 bg-brand-9 text-white rounded-md hover:bg-brand-10"
+                    onClick={() => setStep(2)}
+                  >
+                    Activate Subscription
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        );
+      case 2:
+        return (
+          <LandlordTenantModalPreset
+            heading="Property Manager Subscription"
+            back={{ handleBack: () => setStep(1) }}
+            style={{ maxHeight: "80vh", minWidth: "80vw" }}
+          >
+            <RenewSubPlanModal
+              onPrevious={() => setStep(1)}
+              onClose={() => setStep(3)}
+              changeStep={setStep}
+              setSelectedPlan={setSelectedPlan}
+            />
+          </LandlordTenantModalPreset>
+        );
+      case 3:
+        return (
+          <RenewSubConfirmModal
+            cost={parseFormattedNumber(selectedPlan?.price) ?? 0}
+            setParentStep={setStep}
+            onSubmit={handleSelectPlan}
+            loading={reqLoading}
+            message={confirmMessage()}
+          />
+        );
+      default:
+        return null;
+    }
+  };
+
+  return <>{renderContent()}</>;
+};
+
+export default ExpiredSubscriptionModal;

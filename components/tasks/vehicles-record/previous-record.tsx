@@ -1,0 +1,143 @@
+import clsx from "clsx";
+import { LandlordTenantInfoBox as InfoBox } from "@/components/Management/landlord-tenant-info-components";
+import { SectionSeparator } from "@/components/Section/section-components";
+import Button from "@/components/Form/Button/button";
+import { Modal, ModalTrigger, ModalContent } from "@/components/Modal/modal";
+import VehicleRecordModal from "./vehicle-record-modal";
+import { useEffect, useState } from "react";
+// import { formatDate } from "@/app/(nav)/management/agent-community/property-request/data";
+import { format_date_time } from "@/app/(nav)/tasks/vehicles-record/data";
+import { CheckInOut } from "./types";
+import dayjs from "dayjs";
+import { empty } from "@/app/config";
+import { useRole } from "@/hooks/roleContext";
+
+interface checkInOutData {
+  id: number;
+  visitor_name: string;
+  check_in_time: string;
+  in_by: string;
+  passengers_in: string;
+  check_out_time: string;
+  out_by: string;
+  passengers_out: string;
+  status: string;
+  inventory_in: string;
+  inventory_out: string;
+  inventory_id: number;
+  category?: string;
+  plate_number?: string;
+  last_update?: string;
+  vehicle_record_id: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string;
+  latest_check_in?: Object;
+}
+
+const Detail: React.FC<{
+  label: string;
+  value: string;
+}> = ({ label, value }) => {
+  return (
+    <div className="flex flex-col sm:flex-row gap-x-4 gap-y-1">
+      <p className="text-[#747474] dark:text-darkText-1 w-[120px]">{label}</p>
+      <p className="text-black dark:text-white font-bold capitalize">{value}</p>
+    </div>
+  );
+};
+
+const PreviousRecord: React.FC<
+  checkInOutData & {
+    pictureSrc: string;
+    category?: string;
+    userId?: number;
+    registrationDate?: string;
+  }
+> = (props) => {
+  const { pictureSrc, category, userId, registrationDate, ...record } = props;
+  const [status, setStatus] = useState<string>(record.status);
+  const [recordData, setRecordData] = useState<checkInOutData>(record);
+
+  const { role } = useRole();
+
+  const checkIn = {
+    date: dayjs(recordData.check_in_time).format("MMM DD YYYY hh:mma"),
+    name: recordData.in_by?.toLowerCase(),
+    visitor_name: recordData?.visitor_name?.toLowerCase(),
+    passenger: recordData.passengers_in,
+    inventory: recordData.inventory_in,
+  };
+
+  const checkOut = {
+    date: recordData.check_out_time
+      ? dayjs(recordData.check_out_time).format("MMM DD YYYY hh:mma")
+      : "__,__,__",
+    name: recordData.out_by?.toLowerCase(),
+    passenger: recordData.passengers_out?.toLowerCase(),
+    inventory: recordData.inventory_out,
+    visitor_name: recordData?.visitor_name?.toLowerCase(),
+  };
+
+  //
+
+  return (
+    <InfoBox>
+      <div className="flex gap-2 items-center justify-between">
+        <p className="text-brand-5 font-bold text-base">
+          ID: {record?.id?.toString() || ""}
+        </p>
+        <p
+          className={clsx(
+            "p-2 font-normal text-xs border capitalize",
+            status === "completed"
+              ? "bg-status-success-1 border-status-success-1 text-status-success-2"
+              : "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
+          )}
+        >
+          {status}
+        </p>
+      </div>
+      <SectionSeparator className="mt-5 mb-4" />
+      <div className="flex gap-4 lg:gap-16 flex-wrap text-sm lg:text-base font-normal capitalize">
+        <div className="grid gap-y-4 gap-x-8 grid-cols-2 lg:grid-cols-3">
+          <Detail label="Check In" value={checkIn.date} />
+          <Detail label="Check In by" value={checkIn.name} />
+          <Detail label="Passengers In" value={checkIn.passenger.toString()} />
+          <Detail label="Check Out" value={checkOut?.date || "---"} />
+          <Detail label="Check Out by" value={checkOut?.name || "---"} />
+          <Detail label="Passengers Out" value={checkOut?.passenger || "---"} />
+        </div>
+        {role !== "staff" && (
+          <Modal>
+            <ModalTrigger asChild>
+              <Button size="base_medium" className="py-2 px-8 ml-auto self-end">
+                Preview
+              </Button>
+            </ModalTrigger>
+            <ModalContent>
+              <VehicleRecordModal
+                status={status as "check-in" | "check-out"}
+                pictureSrc={pictureSrc || empty}
+                name={checkIn.visitor_name}
+                note={""}
+                id={recordData?.id || userId?.toString() || ""}
+                category={category as "guest" | "visitor"}
+                registrationDate={
+                  dayjs(registrationDate).format("DD MM YYYY hh:mma") ||
+                  "__,__,__"
+                }
+                latest_check_in={recordData as CheckInOut}
+                showOpenRecordsButton={false}
+                plate_number={recordData?.plate_number || ""}
+                last_update={recordData?.last_update || ""}
+              />
+            </ModalContent>
+          </Modal>
+        )}
+      </div>
+    </InfoBox>
+  );
+};
+
+export default PreviousRecord;

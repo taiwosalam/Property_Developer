@@ -1,0 +1,186 @@
+"use client";
+import {
+  StaffEditProfileInfoSection,
+  StaffEditAboutSection,
+  StaffLockAccountSection,
+  StaffEditChangePositionSection,
+  StaffEditMoveToAnotherBranchSection,
+  StaffEditAvatarInfoSection,
+} from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/edit-staff-info-sections";
+import { StaffProfileProps } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/types";
+import BackButton from "@/components/BackButton/back-button";
+import FixedFooter from "@/components/FixedFooter/fixed-footer";
+import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import DeleteAccountModal from "@/components/Management/delete-account-modal";
+import Button from "@/components/Form/Button/button";
+import { StaffEditContext } from "@/components/Management/Staff-And-Branches/Branch/StaffProfile/staff-edit-context";
+import { useParams, usePathname } from "next/navigation";
+import useBranchStore from "@/store/branch-store";
+import { useEffect, useState } from "react";
+import useFetch from "@/hooks/useFetch";
+import { StaffAPIResponse } from "../type";
+import {
+  staffData,
+  transformStaffAPIResponse,
+  yesNoToActiveInactive,
+} from "../data";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import CustomLoader from "@/components/Loader/CustomLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import { deleteStaff } from "./data";
+import { useRouter } from "next/navigation";
+import ServerError from "@/components/Error/ServerError";
+import SettingsBank from "@/components/Settings/settings-bank";
+import { useTourStore } from "@/store/tour-store";
+import { ExclamationMark } from "@/public/icons/icons";
+import { cleanPathname } from "@/tour/steps/page-steps";
+import { usePermission } from "@/hooks/getPermission";
+import { useRole } from "@/hooks/roleContext";
+
+const EditStaffProfile = () => {
+  const { branchId, staffId } = useParams();
+  const { branch } = useBranchStore();
+  const router = useRouter();
+  const { role } = useRole();
+
+  // PERMISSIONS
+  const canAddOrDeleteStaff = usePermission(
+    role,
+    "Can add/delete branch staff"
+  );
+  const canChangeStaffPosition =
+    usePermission(role, "Can upgrade or downgrade branch staff account") ||
+    role === "director";
+
+  const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
+  const {
+    data: apiData,
+    loading,
+    silentLoading,
+    isNetworkError,
+    error,
+    refetch,
+  } = useFetch<StaffAPIResponse>(`/staff/${staffId}`);
+  useRefetchOnEvent("staff-updated", () => refetch({ silent: true }));
+
+  useEffect(() => {
+    if (apiData) {
+      setPageData({
+        id: apiData.data.id,
+        branch_id: branchId as string,
+        personal_title: apiData.data.title,
+        real_estate_title: apiData.data.professional_title,
+        full_name: apiData.data.name,
+        email: apiData.data.email,
+        phone_number: apiData.data.phone,
+        gender: apiData.data.gender,
+        position: apiData.data.position,
+        picture: apiData.data.picture,
+        about: apiData.data.about_staff,
+        experience: apiData.data.years_experience,
+        status: yesNoToActiveInactive(apiData.data.status),
+        isVerified: apiData.data.tier_id >= 2,
+      });
+    }
+  }, [apiData, branchId]);
+
+  const handleDeleteStaffAccount = () => {
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const pathname = usePathname();
+  const {
+    setShouldRenderTour,
+    setPersist,
+    isTourCompleted,
+    goToStep,
+    restartTour,
+  } = useTourStore();
+
+  useEffect(() => {
+    setPersist(false);
+    if (!isTourCompleted("EditStaffTour")) {
+      setShouldRenderTour(true);
+    } else {
+      setShouldRenderTour(false);
+    }
+
+    return () => setShouldRenderTour(false);
+  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+
+  console.log(cleanPathname(pathname));
+
+  if (loading)
+    return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <ServerError error={error} />;
+  if (!apiData) return null;
+
+  return (
+    <StaffEditContext.Provider value={{ data: pageData }}>
+      <div className="custom-flex-col gap-6 lg:gap-10 pb-[100px]">
+        <div className="flex gap-2 items-center">
+          <BackButton>Edit Staff</BackButton>
+          <button
+            onClick={() => restartTour(pathname)}
+            type="button"
+            className="text-orange-normal"
+          >
+            <ExclamationMark />
+          </button>
+        </div>
+        <div className="flex flex-col lg:flex-row gap-8 lg:items-start">
+          <div className="custom-flex-col gap-5 flex-1 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
+            <StaffEditProfileInfoSection />
+            <StaffEditAboutSection />
+            {/* <StaffEditMoveToAnotherBranchSection /> */}
+            {/* <StaffEditChangePositionSection /> */}
+            {canChangeStaffPosition && <StaffEditChangePositionSection />}
+
+            <StaffLockAccountSection />
+          </div>
+          <div className="w-full lg:w-[334px] custom-flex-col gap-5 lg:max-h-screen lg:overflow-auto custom-round-scrollbar">
+            <StaffEditAvatarInfoSection />
+          </div>
+        </div>
+        <FixedFooter className="flex justify-between items-center flex-wrap">
+          {canAddOrDeleteStaff && (
+            <Modal>
+              <ModalTrigger asChild>
+                <Button
+                  size="base_medium"
+                  className="delete-account-button
+                py-2 px-6"
+                  variant="light_red"
+                >
+                  delete account
+                </Button>
+              </ModalTrigger>
+              <ModalContent>
+                <DeleteAccountModal
+                  action={async () => await deleteStaff(pageData.id)}
+                  afterAction={() =>
+                    router.push("/manager/management/staff-branch")
+                  }
+                />
+              </ModalContent>
+            </Modal>
+          )}
+
+          <Button
+            size="base_medium"
+            className="save-button py-2 px-6 ml-auto"
+            onClick={() => router.back()}
+          >
+            save
+          </Button>
+        </FixedFooter>
+      </div>
+    </StaffEditContext.Provider>
+  );
+};
+
+export default EditStaffProfile;

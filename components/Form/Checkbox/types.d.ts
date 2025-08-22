@@ -1,0 +1,14 @@
+export interface CheckboxProps {
+  children?: React.ReactNode;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  sm?: boolean;
+  className?: string;
+  hoverContent?: React.ReactNode;
+  radio?: boolean;
+  disabled?: boolean;
+  defaultChecked?: boolean;
+  id?: string;
+  name?: string;
+  value?: string;
+}

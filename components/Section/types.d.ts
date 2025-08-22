@@ -1,0 +1,29 @@
+import { CSSProperties } from "react";
+
+export interface SectionTitleProps {
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+export interface SectionDescProps {
+  children: React.ReactNode;
+}
+
+export interface SectionHeadingProps {
+  title?: string;
+  required?: boolean;
+  children: React.ReactNode;
+}
+
+export interface SectionProps {
+  separatorStyles?: string;
+  children: React.ReactNode;
+}
+
+export interface SectionContainerProps {
+  href?: string;
+  heading: string;
+  children: React.ReactNode;
+  style?: CSSProperties;
+  className?: string;
+}

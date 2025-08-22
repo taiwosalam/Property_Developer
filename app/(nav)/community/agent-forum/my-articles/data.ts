@@ -1,0 +1,473 @@
+// Imports
+import { CommentData } from "@/components/tasks/announcements/comment";
+import api, { handleAxiosError } from "@/services/api";
+import axios, { AxiosError } from "axios";
+import { toast } from "sonner";
+
+export const transformFormUpdateArticleData = (formData: FormData) => {
+  const data: Record<string, any> = {
+    title: formData.get("title"),
+    content: formData.get("content"),
+    target_audience: [formData.get("target_audience")],
+    pictures: formData.getAll("pictures[]"),
+    retain_media: formData.getAll("retain_media[]"),
+    video_link: formData.get("video_link"),
+    _method: "patch",
+  };
+  return data;
+};
+
+export const transformFormArticleData = (formData: FormData) => {
+  const data: Record<string, any> = {
+    title: formData.get("title"),
+    content: formData.get("content"),
+    target_audience: [formData.get("target_audience")],
+    pictures: formData.getAll("pictures"),
+    video_link: formData.get("video_link"),
+  };
+  return data;
+};
+
+export const createArticle = async (formData: FormData) => {
+  try {
+    const response = await api.post("/agent_community", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    // console.error("Error creating article:", error);
+    handleAxiosError(error);
+    return false;
+  }
+};
+export const updateMyArticle = async (formData: FormData, slug: string) => {
+  try {
+    const response = await api.post(`/agent_community/${slug}`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const toggleLike = async (slug: string, type: number) => {
+  try {
+    const response = await api.post(`/agent_community/${slug}/toggle-like`, {
+      type,
+    });
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const getMyArticlesDetails = async (slug: string) => {
+  try {
+    const response = await api.get(`/agent_community/${slug}`);
+    return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+    throw error;
+  }
+};
+
+export const deleteMyArticle = async (slug: string) => {
+  try {
+    const response = await api.delete(`/agent_community/${slug}`);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
+export const updateMyArticlesNot = async (id: number, formData: any) => {
+  try {
+    let formDataObject: any = {};
+
+    // Check if formData is a FormData object
+    if (formData instanceof FormData) {
+      formData.forEach((value: FormDataEntryValue, key: string) => {
+        if (key === "target_audience") {
+          formDataObject[key] = value
+            .toString()
+            .split(",")
+            .map((item) => item.trim());
+        } else {
+          formDataObject[key] = value;
+        }
+      });
+    } else {
+      // If formData is already an object, process it directly
+      formDataObject = { ...formData };
+      if (
+        formDataObject.target_audience &&
+        typeof formDataObject.target_audience === "string"
+      ) {
+        formDataObject.target_audience = formDataObject.target_audience
+          .split(",")
+          .map((item: string) => item.trim());
+      }
+    }
+
+    const response = await api.put(`/agent_community/${id}`, formDataObject);
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response) {
+      const messages = error.response.data?.errors?.messages;
+      const messagesArray = messages
+        ? (Object.values(messages) as string[][])
+        : [];
+      const firstErrorMessage = messagesArray[0]?.[0];
+      const errorMessage =
+        firstErrorMessage || "Failed to update article. Please try again.";
+      toast.error(errorMessage);
+    } else {
+      toast.error("An unexpected error occurred. Please try again.");
+    }
+  }
+};
+
+export const sendMyArticleComment = async (slug: string, content: string) => {
+  try {
+    const response = await api.post(`/agent_community/${slug}/comment`, {
+      content,
+    });
+    // return response.data;
+    return true;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    handleAxiosError(error);
+    return false;
+    // throw error;
+  }
+};
+
+export const sendMyPropertyRequestComment = async (
+  slug: string,
+  content: string
+) => {
+  try {
+    const response = await api.post(`/agent_requests/${slug}/comment`, {
+      content,
+    });
+    if (response.status === 200 || response.status === 201) {
+      //window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    handleAxiosError(error);
+    return false;
+    // throw error;
+  }
+};
+export const sendMyPropertyRequestCommentReply = async (
+  slug: string,
+  content: string,
+  parentId: number | string
+) => {
+  try {
+    const response = await api.post(
+      `/agent_requests/${slug}/comment/${parentId}/reply`,
+      { content }
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+    // throw error;
+  }
+};
+
+export const togglePropertyRequestLike = async (
+  slug: string,
+  modeType: string
+) => {
+  const payload = {
+    type: modeType,
+  };
+  try {
+    const response = await api.post(
+      `/agent_requests/${slug}/toggle-like`,
+      payload
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+    // throw error;
+  }
+};
+
+export const togglePropertyRequestLikeComments = async (
+  commentId: string,
+  type: string
+) => {
+  const payload = {
+    type: type,
+  };
+  try {
+    const response = await api.post(
+      `/agent_requests/comment/${commentId}/toggle-like`,
+      payload
+    );
+    if (response.status === 200 || response.status === 201) {
+      window.dispatchEvent(new Event("refetchComments"));
+      return true;
+    }
+    // return response.data;
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      toast.error(error.response?.data.message);
+    } else {
+      toast.error("Error sending comment:");
+    }
+    return false;
+    // throw error;
+  }
+};
+
+export const toggleCommentLike = async (commentId: string, type: number) => {
+  try {
+    const response = await api.post(
+      `/agent_community/agent_comment/${commentId}/toggle-like`,
+      { type }
+    );
+    if (response.status === 200 || response.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    console.error("Error toggling comment like:", error);
+    return false;
+  }
+};
+
+export const togglePropertyRequestCommentLike = async (
+  id: string,
+  commentId: string,
+  type: 1 | -1
+) => {
+  try {
+    const response = await api.post(
+      `/agent-community/property-requests/${id}/comment/${commentId}/toggle-like`,
+      { type }
+    );
+    return response.status === 200 || response.status === 201;
+  } catch (error) {
+    console.error("Error toggling comment like:", error);
+    return false;
+  }
+};
+
+export const sendMyArticleReply = async (
+  slug: string,
+  commentId: string,
+  content: string
+) => {
+  try {
+    const response = await api.post(
+      `/agent_community/${slug}/comment/${commentId}/reply`,
+      { content }
+    );
+    return true;
+    // return response.data;
+  } catch (error) {
+    return false;
+    // console.error("Error sending reply:", error);
+    // throw error;
+  }
+};
+
+export const sendMyPropertyRequestReply = async (
+  id: string,
+  commentId: string,
+  content: string
+) => {
+  try {
+    const response = await api.post(
+      `/agent-community/property-requests/${id}/comment/${commentId}/reply`,
+      { content }
+    );
+    return true;
+    // return response.data;
+  } catch (error) {
+    return false;
+    // console.error("Error sending reply:", error);
+    // throw error;
+  }
+};
+
+export const getArticleComments = async (slug: string) => {
+  try {
+    const response = await api.get(`/agent_community/${slug}/comments`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching article comments:", error);
+    throw error;
+  }
+};
+
+export const RESTRICTED_ARTICLES_WORDS = [
+  "kill",
+  "murder",
+  "assassinate",
+  "attack",
+  "assault",
+  "rape",
+  "harm",
+  "injure",
+  "terrorize",
+  "torture",
+  "slaughter",
+  "massacre",
+  "violence",
+  "bloodshed",
+  "war",
+  "gore",
+  "wound",
+  "execute",
+  "bomb",
+  "threat",
+  "fighting",
+  "gun",
+  "knife",
+  "weapon",
+  "explode",
+  "homicide",
+  "choke",
+  "pummel",
+  "beat",
+  "strangle",
+  "vandalize",
+  "kidnap",
+  "stab",
+  "poison",
+  "harass",
+  "intimidate",
+  "dismember",
+  "riot",
+  "revenge",
+  "axe",
+  "brutality",
+  "cruelty",
+  "decapitate",
+  "demolish",
+  "detonate",
+  "disfigure",
+  "firearm",
+  "gang",
+  "hate crime",
+  "hostage",
+  "incite",
+  "inflict",
+  "invasion",
+  "knockout",
+  "malicious",
+  "maim",
+  "molest",
+  "outbreak",
+  "overthrow",
+  "panic",
+  "perpetrate",
+  "poacher",
+  "provocation",
+  "rampage",
+  "retaliate",
+  "savage",
+  "scuffle",
+  "shoot",
+  "siege",
+  "slay",
+  "smash",
+  "standoff",
+  "strife",
+  "suffer",
+  "terror",
+  "thug",
+  "victimize",
+  "sex",
+  "nude",
+  "porn",
+  "naked",
+  "erotic",
+  "obscene",
+  "explicit",
+  "fetish",
+  "voyeurism",
+  "masturbation",
+  "condom",
+  "orgasm",
+  "foreplay",
+  "intercourse",
+  "fornication",
+  "prostitution",
+  "strip",
+  "lust",
+  "seduce",
+  "adultery",
+  "incest",
+  "bestiality",
+  "swinging",
+  "kink",
+  "arousal",
+  "sexual",
+  "pleasure",
+  "x-rated",
+  "lap dance",
+  "bondage",
+  "bully",
+  "harassment",
+  "discrimination",
+  "slur",
+  "insult",
+  "troll",
+  "gossip",
+  "misinformation",
+  "slander",
+  "defamation",
+  "cyberbully",
+  "imposter",
+  "manipulate",
+  "coerce",
+  "exclude",
+  "denigrate",
+  "marginalize",
+  "hate speech",
+  "aggression",
+  "stigmatize",
+  "hostility",
+  "debate",
+  "provocative",
+  "dispute",
+  "controversy",
+  "backstab",
+  "sabotage",
+  "retaliation",
+];
