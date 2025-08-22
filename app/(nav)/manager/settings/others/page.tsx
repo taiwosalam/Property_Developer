@@ -288,7 +288,7 @@ const Others = () => {
       </SettingsSection>
 
       {/* NOTIFICATION SETTINGS */}
-      <SettingsSection title="Notification Settings">
+      <SettingsSection title="Email and Notification Preferences">
         <div className="custom-flex-col gap-8 mt-4">
           {notificationCategories.map((category, categoryIndex) => (
             <div key={category.title} className="space-y-4">

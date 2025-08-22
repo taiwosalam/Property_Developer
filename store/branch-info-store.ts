@@ -285,18 +285,25 @@ export interface BranchInfoStoreState {
   setBranchInfo: <
     K extends keyof Omit<
       BranchInfoStoreState,
-      "setBranchInfo" | "clearBranchInfo"
+      "setBranchInfo" | "clearBranchInfo" | "setBranchInfoBulk"
     >
   >(
     key: K,
     value: BranchInfoStoreState[K]
+  ) => void;
+  // NEW: Add bulk update method
+  setBranchInfoBulk: (
+    data: Partial<Omit<
+      BranchInfoStoreState,
+      "setBranchInfo" | "clearBranchInfo" | "setBranchInfoBulk"
+    >>
   ) => void;
   clearBranchInfo: () => void; 
 }
 
 const initialState: Omit<
   BranchInfoStoreState,
-  "setBranchInfo" | "clearBranchInfo"
+  "setBranchInfo" | "clearBranchInfo" | "setBranchInfoBulk"
 > = {
   branch_id: null,
   company_id: null,
@@ -444,5 +451,7 @@ const initialState: Omit<
 export const useBranchInfoStore = create<BranchInfoStoreState>((set) => ({
   ...initialState,
   setBranchInfo: (key, value) => set({ [key]: value }),
+  // NEW: Bulk update method - updates multiple fields in a single state change
+  setBranchInfoBulk: (data) => set((state) => ({ ...state, ...data })),
   clearBranchInfo: () => set(initialState),
 }));
