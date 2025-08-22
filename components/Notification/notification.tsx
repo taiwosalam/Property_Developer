@@ -12,7 +12,6 @@ import Picture from "../Picture/picture";
 import {
   normalizeNotificationType,
   notification_icons,
-  
   notification_links,
 } from "./data";
 import { SectionSeparator } from "../Section/section-components";
@@ -21,7 +20,10 @@ import Link from "next/link";
 import { OtherIcon } from "./notification-icons";
 import { useRole } from "@/hooks/roleContext";
 import { toast } from "sonner";
-import { clearAllNotification, deleteAllNotification } from "@/app/(nav)/notifications/data";
+import {
+  clearAllNotification,
+  deleteAllNotification,
+} from "@/app/(nav)/notifications/data";
 import Image from "next/image";
 
 interface NotificationProps {
@@ -46,6 +48,20 @@ interface NotificationProps {
     action_text: string;
   };
 }
+
+export const getRoleBasedRoute = (baseRoute: string, role: string) => {
+  switch (role) {
+    case "manager":
+      return `/manager${baseRoute}`;
+    case "accountant":
+      return `/accountant${baseRoute}`;
+    case "staff":
+      return `/staff${baseRoute}`;
+    default:
+      return baseRoute;
+  }
+};
+
 const Notification: React.FC<NotificationProps> = ({ notification }) => {
   const resolvedType = notification.type.includes("\\")
     ? normalizeNotificationType(notification.type)
@@ -62,20 +78,7 @@ const Notification: React.FC<NotificationProps> = ({ notification }) => {
 
   const { role } = useRole();
 
-  const getRoleBasedRoute = (baseRoute: string) => {
-    switch (role) {
-      case "manager":
-        return `/manager${baseRoute}`;
-      case "accountant":
-        return `/accountant${baseRoute}`;
-      case "staff":
-        return `/staff${baseRoute}`;
-      default:
-        return baseRoute;
-    }
-  };
-
-  const roleRoute = getRoleBasedRoute(route);
+  const roleRoute = getRoleBasedRoute(route, role);
 
   const handleDeleteNotifications = async () => {
     setNotificationIds([notification?.id]);

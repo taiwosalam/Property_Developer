@@ -13,6 +13,7 @@ import dynamic from "next/dynamic";
 import RequestWarningModal from "@/components/Modal/request-warning-modal";
 import NotificationListener from "@/services/NotificationListener";
 import NotificationPortal from "@/services/NotificationPortal";
+import ReactQueryProvider from "@/contexts/ReactQueryContext";
 // import TourManager from "@/tour/components/tour-manager";
 
 const CustomTour = dynamic(() => import("@/tour/components/tour-manager"), {
@@ -43,35 +44,37 @@ export default async function RootLayout({
         suppressHydrationWarning
       >
         <RoleProvider>
-          <Theme
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <ThemeProvider />
-            <Suspense
-              fallback={
-                <div>
-                  <PageCircleLoader />
-                </div>
-              }
+          <ReactQueryProvider>
+            <Theme
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
             >
-              <div className="w-full relative z-[1]">{children}</div>
-            </Suspense>
-            <div id="portal" className="z-[2]">
-              <NotificationListener />
-              <NotificationPortal />
-              <Toaster
-                richColors
-                className={`${primaryFont.className} antialiased z-[1000]`}
-                position="top-right"
-                duration={5000}
-              />
-              <CustomTour />
-              <RequestWarningModal />
-            </div>
-          </Theme>
+              <ThemeProvider />
+              <Suspense
+                fallback={
+                  <div>
+                    <PageCircleLoader />
+                  </div>
+                }
+              >
+                <div className="w-full relative z-[1]">{children}</div>
+              </Suspense>
+              <div id="portal" className="z-[2]">
+                <NotificationListener />
+                <NotificationPortal />
+                <Toaster
+                  richColors
+                  className={`${primaryFont.className} antialiased z-[1000]`}
+                  position="top-right"
+                  duration={5000}
+                />
+                <CustomTour />
+                <RequestWarningModal />
+              </div>
+            </Theme>
+          </ReactQueryProvider>
         </RoleProvider>
       </body>
     </html>

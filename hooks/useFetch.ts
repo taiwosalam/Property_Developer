@@ -9,7 +9,6 @@ interface CacheOptions {
   key?: string;
   ttl?: number;
 }
-
 interface UseFetchOptions extends AxiosRequestConfig {
   cache?: CacheOptions;
 }
@@ -72,10 +71,10 @@ function useFetch<T>(
 
       const configForKey = fetchConfig
         ? {
-            params: fetchConfig.params,
-            headers: fetchConfig.headers,
-            method: fetchConfig.method || "GET",
-          }
+          params: fetchConfig.params,
+          headers: fetchConfig.headers,
+          method: fetchConfig.method || "GET",
+        }
         : {};
 
       return `${fetchUrl}:${JSON.stringify(configForKey)}`;
@@ -180,8 +179,8 @@ function useFetch<T>(
               (typeof errorData?.error === "string"
                 ? errorData.error
                 : typeof errorData?.error?.message === "string"
-                ? errorData.error.message
-                : "Something went wrong");
+                  ? errorData.error.message
+                  : "Something went wrong");
             setError(errorMessage);
           }
         } else {

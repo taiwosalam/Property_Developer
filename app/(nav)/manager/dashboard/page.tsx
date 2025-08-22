@@ -19,7 +19,7 @@ import Link from "next/link";
 import { useWalletStore } from "@/store/wallet-store";
 import useWindowWidth from "@/hooks/useWindowWidth";
 import useFetch from "@/hooks/useFetch";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import {
   SingleBranchResponseType,
@@ -130,15 +130,18 @@ const Dashboard = () => {
 
   // Handle invoiceData nullability
   const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
-  const transformedRecentInvoiceTableData = invoiceList.map((i) => ({
-    ...i,
-    client_name: (
-      <p className="flex items-center whitespace-nowrap">
-        <span>{i.client_name}</span>
-        {i.badge_color && <BadgeIcon color={i.badge_color} />}
-      </p>
-    ),
-  }));
+  const transformedRecentInvoiceTableData = useMemo(() => {
+    const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
+    return invoiceList.map((i) => ({
+      ...i,
+      client_name: (
+        <p className="flex items-center whitespace-nowrap">
+          <span>{i.client_name}</span>
+          {i.badge_color && <BadgeIcon color={i.badge_color} />}
+        </p>
+      ),
+    }));
+  }, [invoiceData?.invoices]);
 
   // =========== BRANCH DATA ===========
   const branchData = data ? transformSingleBranchAPIResponse(data) : null;
@@ -155,71 +158,142 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (branchData?.branch_wallet) {
-      setWalletStore("sub_wallet", {
+      const walletData = {
         status: branch_wallet !== null ? "active" : "inactive",
         wallet_id: Number(branchData.branch_wallet.wallet_id),
         is_active: yesNoToActiveInactive(
           branchData.branch_wallet.is_active as string
         ),
-      });
+      };
+
+      // Only update if the data has actually changed
+      const currentSubWallet = useWalletStore.getState().sub_wallet;
+      if (JSON.stringify(currentSubWallet) !== JSON.stringify(walletData)) {
+        setWalletStore("sub_wallet", walletData);
+      }
     }
-  }, [branchData, setWalletStore]);
+  }, [branchData?.branch_wallet]);
 
-  const updatedDashboardCardData = dashboardCardData.map((card) => {
-    let stats: Stats | undefined;
-    let link = "";
-    switch (card.title) {
-      case "Properties":
-        stats = branchData?.properties;
-        link = `/manager/management/properties`;
-        break;
-      case "Landlords":
-        stats = branchData?.landlords;
-        link = `/manager/management/landlord`;
-        break;
-      case "Tenants & Occupants":
-        stats = branchData?.tenants;
-        link = `/manager/management/tenants`;
-        break;
-      case "Vacant Unit":
-        stats = branchData?.vacant_units;
-        link = `/manager/management/rent-unit?is_active=vacant`;
-        break;
-      case "Expired":
-        stats = branchData?.expired;
-        link = `/manager/management/rent-unit?is_active=expired`;
-        break;
-      case "Invoices":
-        stats = branchData?.invoices;
-        link = `/manager/accounting/invoice?status=pending`;
-        break;
-      case "Inquiries":
-        stats = branchData?.inquiries;
-        link = `/manager/tasks/inquires`;
-        break;
-      case "Complaints":
-        stats = branchData?.complaints;
-        link = `/manager/tasks/complaints`;
-        break;
-      case "Listings":
-        stats = branchData?.listings;
-        link = `/manager/listing/units`;
-        break;
-      default:
-        break;
-    }
+  // useEffect(() => {
+  //   if (branchData?.branch_wallet) {
+  //     setWalletStore("sub_wallet", {
+  //       status: branch_wallet !== null ? "active" : "inactive",
+  //       wallet_id: Number(branchData.branch_wallet.wallet_id),
+  //       is_active: yesNoToActiveInactive(
+  //         branchData.branch_wallet.is_active as string
+  //       ),
+  //     });
+  //   }
+  // }, [branchData, setWalletStore]);
 
-    return {
-      ...card,
-      link,
-      value: stats ? stats.total : card.value,
-      subValue: stats ? stats.new_this_month : card.subValue,
-    };
-  });
+  const updatedDashboardCardData = useMemo(() => {
+    return dashboardCardData.map((card) => {
+      let stats: Stats | undefined;
+      let link = "";
+      switch (card.title) {
+        case "Properties":
+          stats = branchData?.properties;
+          link = `/manager/management/properties`;
+          break;
+        case "Landlords":
+          stats = branchData?.landlords;
+          link = `/manager/management/landlord`;
+          break;
+        case "Tenants & Occupants":
+          stats = branchData?.tenants;
+          link = `/manager/management/tenants`;
+          break;
+        case "Vacant Unit":
+          stats = branchData?.vacant_units;
+          link = `/manager/management/rent-unit?is_active=vacant`;
+          break;
+        case "Expired":
+          stats = branchData?.expired;
+          link = `/manager/management/rent-unit?is_active=expired`;
+          break;
+        case "Invoices":
+          stats = branchData?.invoices;
+          link = `/manager/accounting/invoice?status=pending`;
+          break;
+        case "Inquiries":
+          stats = branchData?.inquiries;
+          link = `/manager/tasks/inquires`;
+          break;
+        case "Complaints":
+          stats = branchData?.complaints;
+          link = `/manager/tasks/complaints`;
+          break;
+        case "Listings":
+          stats = branchData?.listings;
+          link = `/manager/listing/units`;
+          break;
+        default:
+          break;
+      }
 
-  const walletChartData =
-    recent_transactions &&
-    recent_transactions.map((t: any) => ({
+      return {
+        ...card,
+        link,
+        value: stats ? stats.total : card.value,
+        subValue: stats ? stats.new_this_month : card.subValue,
+      };
+    });
+  }, [branchData]);
+
+  // const updatedDashboardCardDatas = dashboardCardData.map((card) => {
+  //   let stats: Stats | undefined;
+  //   let link = "";
+  //   switch (card.title) {
+  //     case "Properties":
+  //       stats = branchData?.properties;
+  //       link = `/manager/management/properties`;
+  //       break;
+  //     case "Landlords":
+  //       stats = branchData?.landlords;
+  //       link = `/manager/management/landlord`;
+  //       break;
+  //     case "Tenants & Occupants":
+  //       stats = branchData?.tenants;
+  //       link = `/manager/management/tenants`;
+  //       break;
+  //     case "Vacant Unit":
+  //       stats = branchData?.vacant_units;
+  //       link = `/manager/management/rent-unit?is_active=vacant`;
+  //       break;
+  //     case "Expired":
+  //       stats = branchData?.expired;
+  //       link = `/manager/management/rent-unit?is_active=expired`;
+  //       break;
+  //     case "Invoices":
+  //       stats = branchData?.invoices;
+  //       link = `/manager/accounting/invoice?status=pending`;
+  //       break;
+  //     case "Inquiries":
+  //       stats = branchData?.inquiries;
+  //       link = `/manager/tasks/inquires`;
+  //       break;
+  //     case "Complaints":
+  //       stats = branchData?.complaints;
+  //       link = `/manager/tasks/complaints`;
+  //       break;
+  //     case "Listings":
+  //       stats = branchData?.listings;
+  //       link = `/manager/listing/units`;
+  //       break;
+  //     default:
+  //       break;
+  //   }
+
+  //   return {
+  //     ...card,
+  //     link,
+  //     value: stats ? stats.total : card.value,
+  //     subValue: stats ? stats.new_this_month : card.subValue,
+  //   };
+  // });
+
+  const walletChartData = useMemo(() => {
+    return recent_transactions?.map((t: any) => ({
       date: t.date,
       totalfunds: t.amount - 1000,
       credit:
@@ -231,6 +305,7 @@ const Dashboard = () => {
           ? t.amount - 1000
           : 0,
     }));
+  }, [recent_transactions]);
 
   // SAVE BRANCH WALLET TRANSACTIONS TO STORE
   useEffect(() => {
@@ -243,7 +318,7 @@ const Dashboard = () => {
         setGlobalInfoStore("branchWalletTransactions", transactions);
       }
     }
-  }, [transactions, setGlobalInfoStore]);
+  }, [transactions]); // setGlobalInfoStore (remove global store)
 
   // Recent messages
   const {
@@ -266,12 +341,16 @@ const Dashboard = () => {
   }, [usersMessages, setChatData]);
 
   // ======== LISTING PERFORMANCE CHART DATA ===========
-  const bookmarkChartData =
-    branchData?.chart_data.map((item: any) => ({
-      date: item?.date,
-      views: item?.total_views,
-      bookmarks: item?.total_bookmarks,
-    })) || [];
+
+  const bookmarkChartData = useMemo(() => {
+    return (
+      branchData?.chart_data.map((item: any) => ({
+        date: item?.date,
+        views: item?.total_views,
+        bookmarks: item?.total_bookmarks,
+      })) || []
+    );
+  }, [branchData?.chart_data]);
 
   // ====== Handle Complaints KanbanBoard ======
   const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);

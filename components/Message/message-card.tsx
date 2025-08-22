@@ -19,6 +19,7 @@ import useFetch from "@/hooks/useFetch";
 import { getCleanRoleName } from "./data";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { truncateText } from "../tasks/vehicles-record/data";
+import { useChatPrefetch } from "@/app/(nav)/(messages-reviews)/messages/hooks";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -33,6 +34,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
   content_type,
   online,
   last_seen,
+  dataId,
   tier,
   title,
   role,
@@ -75,17 +77,34 @@ const MessageCard: React.FC<MessageCardProps> = ({
       imageUrl: pfp,
       last_seen,
     });
+
+    console.log("refetching now");
     const event = new CustomEvent("refetch-users-msg", {
       detail: { timestamp: Date.now() },
     });
     window.dispatchEvent(event);
+    console.log("refetching done");
+    console.log("routing to", `/messages/${id}`);
     setGlobalStore("isGroupChat", isGroupChat);
     if (onClick) {
       onClick();
     } else {
+      console.log("routing to", `/messages/${id}`);
       router.push(`/messages/${id}`);
     }
   };
+
+  const { prefetchChatMessages, prefetchUserProfile } = useChatPrefetch();
+
+  // Prefetch on hover for instant loading
+  const handleMouseEnter = () => {
+    prefetchChatMessages(id, isGroupChat);
+    if (!isGroupChat) {
+      prefetchUserProfile(id);
+    }
+  };
+
+  // Prefetch on click too (just in case hover didn't trigger)
 
   const Children = () => (
     <>
@@ -124,7 +143,7 @@ const MessageCard: React.FC<MessageCardProps> = ({
         <div className="flex flex-col gap-2 justify-center items-center font-normal">
           <p className="text-text-disabled text-xs whitespace-nowrap">{time}</p>
           {!!messages && (
-            <div className="w-4 h-4 pt-[1px] rounded-full flex items-center justify-center bg-highlight">
+            <div className="size-5 rounded-full flex items-center justify-center bg-highlight">
               <p className="text-white dark:text-black text-[10px] leading-[10px]">
                 {messages}
               </p>
@@ -139,8 +158,10 @@ const MessageCard: React.FC<MessageCardProps> = ({
   return (
     <div
       role="button"
+      data-id={dataId}
       tabIndex={0}
       onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();

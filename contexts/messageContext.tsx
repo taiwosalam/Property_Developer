@@ -25,6 +25,7 @@ import {
   PageMessages,
 } from "@/app/(nav)/(messages-reviews)/messages/types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import { useMessageStore } from "@/store/messagesStore";
 
 type MessagesContextType = {
   usersData: any;
@@ -226,8 +227,8 @@ export const MessagesProvider = ({
         setAudioUrl("");
         if (stopRecording) stopRecording(); // safe call
         setMessage("");
-        window.dispatchEvent(new Event("refetch-users-msg"));
-        window.dispatchEvent(new Event("refetchMessages"));
+        // window.dispatchEvent(new Event("refetch-users-msg"));
+        // window.dispatchEvent(new Event("refetchMessages"));
       }
     } catch (err) {
       toast.error("Failed to send audio message");
@@ -276,8 +277,8 @@ export const MessagesProvider = ({
       const sendFn = isGroupChat ? SendGroupMessage : SendMessage;
       const res = await sendFn(objectToFormData(payload), `${id}`);
       if (res) {
-        window.dispatchEvent(new Event("refetch-users-msg"));
-        window.dispatchEvent(new Event("refetchMessages"));
+        // window.dispatchEvent(new Event("refetch-users-msg"));
+        // window.dispatchEvent(new Event("refetchMessages"));
       }
     } catch (err) {
       toast.error("Failed to send document");
@@ -319,3 +320,39 @@ export const MessagesProvider = ({
     </MessagesContext.Provider>
   );
 };
+
+// This component handles ALL the data fetching
+export function MessagesDataProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  // 🔥 These hooks do the actual API calls
+  const { data: usersData } =
+    useFetch<CompanyUsersAPIResponse>("/company/users");
+  const {
+    data: usersMessages,
+    loading: usersMsgLoading,
+    refetch,
+  } = useFetch<ConversationsAPIResponse>("/messages");
+
+  // Gets the store's initialize method
+  const { initializeData, setUsersMsgLoading } = useMessageStore();
+
+  // 📡 Handles refetch events
+  useRefetchOnEvent("refetch-users-msg", () => {
+    refetch({ silent: true });
+  });
+
+  // 🔄 When data arrives, put it in the store
+  useEffect(() => {
+    initializeData(usersData, usersMessages);
+  }, [usersData, usersMessages, initializeData]);
+
+  // 🔄 Sync loading state
+  // useEffect(() => {
+  //   setUsersMsgLoading(usersMsgLoading);
+  // }, [usersMsgLoading, setUsersMsgLoading]);
+
+  return <>{children}</>;
+}
