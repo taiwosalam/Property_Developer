@@ -168,7 +168,7 @@ const CompanyLogo: React.FC<CompanyLogoProps> = ({
                 </button>
               )}
               {(mode === "light" ? lightPreview : darkPreview) && (
-                <div className="hidden sm:flex items-end">
+                <div className="flex sm:flex items-end">
                   <Button
                     className={`${
                       mode === "light"

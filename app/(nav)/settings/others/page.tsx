@@ -887,8 +887,11 @@ const Others = () => {
       // Build new settings, defaulting missing/undefined to true
       const newSettings: Record<string, boolean> = {};
       const notificationRecord = notification as Record<string, any>;
-      allKeys.forEach(key => {
-        newSettings[key] = typeof notificationRecord[key] === 'undefined' ? true : notificationRecord[key];
+      allKeys.forEach((key) => {
+        newSettings[key] =
+          typeof notificationRecord[key] === "undefined"
+            ? true
+            : notificationRecord[key];
       });
       setNotificationSettings(newSettings);
 
@@ -1256,12 +1259,12 @@ const Others = () => {
 
   return (
     <>
-      <SettingsSection title="Director and Access Control">
+      <SettingsSection title="Company Director">
         {/* COMPANY DIRECTORS */}
 
-        <div className="custom-flex-col gap-6 mt-4">
+        <div className="custom-flex-col gap-6">
           <SettingsSectionTitle
-            title="Director And Access Control"
+            title=""
             desc="Please provide the details of the additional user you wish to grant the same Director-level access as your account within the company."
           />
           <div className="">
@@ -1556,9 +1559,9 @@ Once restricted, they will no longer have access to participate in the property'
         </SettingsSection>
       )}
 
-      {/* NOTIFICATIONS */}
+      {/* NOTIFICATIONS 
       {(canManageNotificationPreference || IS_COMPANY_OWNER) && (
-        <SettingsSection title="Email/Notifications">
+        <SettingsSection title="Email/Notifications" >
           <div className="custom-flex-col gap-6 mt-4">
             <div className="mt-2 flex flex-col gap-4">
               <h4> Notify me when: </h4>
@@ -1603,14 +1606,10 @@ Once restricted, they will no longer have access to participate in the property'
             />
           </div>
         </SettingsSection>
-      )}
+      )} */}
 
-      {/* NOTIFICATION SETTINGS*/}
-      <SettingsSection title="Notification Sound">
-        <SoundSelector button={SettingsUpdateButton} />
-      </SettingsSection>
       {
-        <SettingsSection title="Notification Settings">
+        <SettingsSection title="Email and Notification Preferences">
           <div className="custom-flex-col gap-8 mt-4">
             {/* Notification Categories */}
             {notificationCategories.map((category, categoryIndex) => (
@@ -1691,6 +1690,11 @@ Once restricted, they will no longer have access to participate in the property'
           </div>
         </SettingsSection>
       }
+
+      {/* NOTIFICATION SETTINGS*/}
+      <SettingsSection title="Notification Sound">
+        <SoundSelector button={SettingsUpdateButton} />
+      </SettingsSection>
 
       {/* RESET SETTINGS */}
       {(canResetSystem || IS_COMPANY_OWNER) && (

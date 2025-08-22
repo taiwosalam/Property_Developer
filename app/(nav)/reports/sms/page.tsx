@@ -47,8 +47,8 @@ const SMSReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total SMS"
-          newData={23}
-          total={200}
+          newData={0}
+          total={0}
           colorScheme={1}
         />
       </div>
@@ -80,7 +80,7 @@ const SMSReport = () => {
             title="No SMS Information Available Yet"
             body={
               <p>
-                There are currently no SMS records to export. This section will
+                There are currently no SMS records. This section will
                 automatically update with SMS messages sent to your company
                 users using your company name. These messages are typically
                 triggered by rent-related activities or other actions carried
