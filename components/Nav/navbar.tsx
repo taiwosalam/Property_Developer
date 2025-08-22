@@ -103,8 +103,8 @@ const Header = () => {
     theme === "light"
       ? getLocalStorage("light_logo")
       : getLocalStorage("dark_logo")
-      ? getLocalStorage("dark_logo")
-      : getLocalStorage("light_logo")
+        ? getLocalStorage("dark_logo")
+        : getLocalStorage("light_logo")
   );
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
@@ -668,12 +668,7 @@ const Header = () => {
         </div>
       </header>
 
-      <div className="">
-        <SmartMarquee
-          {...marqueeConfig}
-          className="flex items-center leading-loose"
-        />
-      </div>
+
     </>
   );
 };
