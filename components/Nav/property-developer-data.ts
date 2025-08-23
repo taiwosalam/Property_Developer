@@ -113,7 +113,7 @@ export const property_developer_director_nav_items: NavItemsProps = [
     ],
   },
   { type: "empty_wallet", label: "wallet", href: "/wallet" },
-  { type: "task", label: "application", href: "#" },
+  { type: "task", label: "application", href: "/application" },
   {
     type: "folder",
     label: "documents",

@@ -26,30 +26,78 @@ import PopupImageModal from "../PopupSlider/PopupSlider";
 import { getBadgeColor } from "@/lib/utils";
 import { empty } from "@/app/config";
 import { useRole } from "@/hooks/roleContext";
+import { useModule } from "@/contexts/moduleContext";
 
 const ApplicationCard: React.FC<ApplicationCardProps> = ({
   status,
   type,
   data,
+  pd = false,
 }) => {
   const [isOpened, setIsOpened] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const { role } = useRole();
+  const { activeModule } = useModule();
 
-  const getManageRoute = () => {
-    switch (role) {
-      case "manager":
-        return `/manager/tasks/applications/${data?.id}/manage`;
-      case "account":
-        return `/accountant/tasks/applications/${data?.id}/manage`;
-      case "director":
-        return `/tasks/applications/${data?.id}/manage`;
-      case "staff":
-        return `/staff/tasks/applications/${data?.id}/manage`;
-      default:
-        return `/unauthorized`;
+  // get the route with role and active module
+
+  const activeModuleWithRole = () => {
+    if (activeModule.id === "property_manager") {
+      switch (role) {
+        case "manager":
+          return `/manager/tasks/applications/${data?.id}/manage`;
+        case "account":
+          return `/accountant/tasks/applications/${data?.id}/manage`;
+        case "director":
+          return `/tasks/applications/${data?.id}/manage`;
+        case "staff":
+          return `/staff/tasks/applications/${data?.id}/manage`;
+        default:
+          return `/unauthorized`;
+      }
+    } else if (activeModule.id === "property_developer") {
+      switch (role) {
+        case "manager":
+          return `/manager/application/${data?.id}/manage`;
+        case "account":
+          return `/accountant/application/${data?.id}/manage`;
+        case "director":
+          return `/application/${data?.id}/manage`;
+        case "staff":
+          return `/staff/tasks/application/${data?.id}/manage`;
+        default:
+          return `/unauthorized`;
+      }
+    } else if (activeModule.id === "hospitality_manager") {
+      switch (role) {
+        case "manager":
+          return `/manager/tasks/application/${data?.id}/manage`;
+        case "account":
+          return `/accountant/tasks/application/${data?.id}/manage`;
+        case "director":
+          return `/tasks/application/${data?.id}/manage`;
+        case "staff":
+          return `/staff/tasks/application/${data?.id}/manage`;
+        default:
+          return `/unauthorized`;
+      }
     }
   };
+
+  // const getManageRoute = () => {
+  //   switch (role) {
+  //     case "manager":
+  //       return `/manager/tasks/applications/${data?.id}/manage`;
+  //     case "account":
+  //       return `/accountant/tasks/applications/${data?.id}/manage`;
+  //     case "director":
+  //       return `/tasks/applications/${data?.id}/manage`;
+  //     case "staff":
+  //       return `/staff/tasks/applications/${data?.id}/manage`;
+  //     default:
+  //       return `/unauthorized`;
+  //   }
+  // };
 
   const handleCardClick = () => {
     if (status === "flagged" && type !== "rejected") {
@@ -114,13 +162,16 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
               {(data?.currency ?? "") + data?.total_package}
             </p>
             <p className="text-text-label dark:text-white text-xs font-semibold">
-              Total Package
+              {pd ? "initial Price" : "Total Package"}
             </p>
             <p className="text-text-disabled text-base font-medium capitalize truncate  max-w-[150px]">
               <span className="text-highlight">
                 {(data?.currency ?? "") + data?.yearly_amount}
               </span>{" "}
-              / <span className="">{data?.renew_fee_period}</span>
+              /{" "}
+              <span className="">
+                {pd ? "Deposit" : data?.renew_fee_period}
+              </span>
             </p>
           </div>
         </div>
@@ -143,7 +194,11 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
     >
       <div
         role="button"
-        onClick={() => setIsOpened(true)}
+        onClick={() => {
+          if (!pd) {
+            setIsOpened(true);
+          }
+        }}
         className="relative w-full h-[180px]"
       >
         <Image
@@ -175,7 +230,10 @@ const ApplicationCard: React.FC<ApplicationCardProps> = ({
           <Content />
         </div>
       ) : (
-        <Link href={getManageRoute()} className="custom-flex-col gap-3 px-2">
+        <Link
+          href={activeModuleWithRole() || "/unauthorized"}
+          className="custom-flex-col gap-3 px-2"
+        >
           <Content />
         </Link>
       )}
