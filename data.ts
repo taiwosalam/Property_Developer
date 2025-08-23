@@ -49967,6 +49967,7 @@ export const accountRoutes = [
   "/accountant/accounting/receipts",
   "/accountant/accounting/expenses",
   "/accountant/accounting/disbursement",
+  "/accountant/management/inventory",
   "/accountant/accounting/statement",
   "/accountant/reports/tenants",
   "/accountant/reports/landlord",

@@ -191,7 +191,7 @@ const AnnouncementPage = () => {
         </div>
         {canCreateManageAnnouncement && (
           <Button
-            href="/tasks/announcements/create-announcement"
+            href="/accountant/tasks/announcements/create-announcement"
             className="page-header-button hidden md:block"
           >
             + Create Announcement
@@ -333,7 +333,7 @@ const AnnouncementPage = () => {
 
       {canCreateManageAnnouncement && (
         <Link
-          href="/tasks/announcements/create-announcement"
+          href="/accountant/tasks/announcements/create-announcement"
           className="mobile-button"
         >
           <PlusIcon />

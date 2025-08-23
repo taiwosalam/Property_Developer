@@ -274,7 +274,7 @@ const MyArticlePage = () => {
             onPageChange={handlePageChange}
           />
         </div>
-        <div className="top-80 right-4 fixed rounded-full">
+        <div className="bottom-4 right-4 fixed rounded-full">
           <button
             onClick={handleCreateMyArticleClick}
             className="bg-brand-9 rounded-full text-white p-4 shadow-lg"
