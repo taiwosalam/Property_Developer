@@ -229,9 +229,6 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             className="h-[1px]"
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
-          {/* <div className="pt-2 bg-white dark:bg-[#020617]">
-          <SmartMarquee />
-          </div> */}
           <>
             <SmartMarquee className=" bg-white dark:bg-[#020617]" />
           </>
