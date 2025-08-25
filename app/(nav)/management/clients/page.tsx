@@ -328,21 +328,21 @@ const Landlord = () => {
       <div className="page-header-container" ref={contentTopRef}>
         <div className="management-cardstat-wrapper">
           <ManagementStatistcsCard
-            title="Total Landlords"
+            title="Total Clients"
             newData={pageData.new_landlords_this_month}
             total={pageData.total_landlords}
             className="w-[260px]"
             colorScheme={1}
           />
           <ManagementStatistcsCard
-            title="Web Landlords"
+            title="Web Clients"
             newData={pageData.new_web_landlords_this_month}
             total={pageData.web_landlords}
             className="w-[260px]"
             colorScheme={2}
           />
           <ManagementStatistcsCard
-            title="Mobile Landlords"
+            title="Mobile Clients"
             newData={pageData.new_mobile_landlords_this_month}
             total={pageData.mobile_landlords}
             className="w-[260px]"
@@ -356,7 +356,7 @@ const Landlord = () => {
               type="button"
               className="page-header-button md:block hidden"
             >
-              + new landlord
+              + create new clients
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -370,8 +370,8 @@ const Landlord = () => {
         gridView={view === "grid"}
         setGridView={() => setView("grid")}
         setListView={() => setView("list")}
-        pageTitle="Landlords/Landladies (Owners)"
-        searchInputPlaceholder="Search for Landlords"
+        pageTitle="Clients"
+        searchInputPlaceholder="Search for Clients"
         handleFilterApply={handleFilterApply}
         isDateTrue
         dateLabel="Registration Date"

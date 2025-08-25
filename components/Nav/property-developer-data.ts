@@ -14,15 +14,15 @@ export const property_developer_director_nav_items: NavItemsProps = [
   {
     type: "people",
     label: "management",
-    href: "/management ",
+    href: "/management",
     content: [
       { label: "clients", href: "/clients" },
-      { label: "owners", href: "#" },
-      { label: "investors", href: "#" },
-      { label: "properties", href: "#" },
-      { label: "sales & unit", href: "#" },
-      { label: "staff & branch", href: "#" },
-      { label: "referrals", href: "#" },
+      { label: "owners", href: "/owners" },
+      { label: "investors", href: "/investors" },
+      { label: "properties", href: "/properties" },
+      { label: "sales & unit", href: "/sales-unit" },
+      { label: "staff & branch", href: "/staff-branch" },
+      { label: "referrals", href: "/referrals" },
     ],
   },
   {
