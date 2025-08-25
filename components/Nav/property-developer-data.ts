@@ -14,9 +14,9 @@ export const property_developer_director_nav_items: NavItemsProps = [
   {
     type: "people",
     label: "management",
-    href: "#",
+    href: "/management ",
     content: [
-      { label: "clients", href: "#" },
+      { label: "clients", href: "/clients" },
       { label: "owners", href: "#" },
       { label: "investors", href: "#" },
       { label: "properties", href: "#" },
