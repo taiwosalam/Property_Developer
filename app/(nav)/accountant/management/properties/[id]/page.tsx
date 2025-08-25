@@ -1,6 +1,6 @@
 
 "use client";
-import PropertyPreview from "@/components/Management/Properties/property-preview";
+import PropertyPreview from "@/components/Management/Properties/previews/property-preview";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import useFetch from "@/hooks/useFetch";
 import {

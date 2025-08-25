@@ -1,181 +1,114 @@
+
 "use client";
 
-// Imports
-import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
-import CreatePropertyForm from "@/components/Management/Properties/create-property-form";
-import { SectionSeparator } from "@/components/Section/section-components";
-import BackButton from "@/components/BackButton/back-button";
-import { SinglePropertyResponse } from "../data";
-import useFetch from "@/hooks/useFetch";
-import { useAddUnitStore } from "@/store/add-unit-store";
-import NetworkError from "@/components/Error/NetworkError";
+import { Suspense } from "react";
+import dynamic from "next/dynamic";
+import { useModule } from "@/contexts/moduleContext";
+import { useRole } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
-import { useEffect, useState } from "react";
-import { transformPropertyData } from "../../create-rental-property/[propertyId]/add-unit/data";
-import { updateProperty } from "./data";
-import { transformPropertyFormData } from "@/components/Management/Properties/data";
-import { usePathname, useRouter } from "next/navigation";
-import UnitForm from "@/components/Management/Properties/unit-form";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import ServerError from "@/components/Error/ServerError";
-import { useGlobalStore } from "@/store/general-store";
-import { useTourStore } from "@/store/tour-store";
-import { ExclamationMark } from "@/public/icons/icons";
+import { AnimatePresence, motion } from "framer-motion";
 
-const EditProperty = ({ params }: { params: { id: string } }) => {
-  const { id: propertyId } = params;
-  const [dataNotFound, setDataNotFound] = useState(false);
-  const [showNewUnitForm, setShowNewUnitForm] = useState(false);
-  const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
-  const propertyType = useAddUnitStore((s) => s.propertyType);
-  const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
-  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
-  const router = useRouter();
-  const pathname = usePathname();
+// Define props interface for EditProperty components
+interface EditPropertyProps {
+  propertyId: string;
+}
 
-  // Tour implementation
-  const {
-    setShouldRenderTour,
-    setPersist,
-    isTourCompleted,
-    goToStep,
-    restartTour,
-  } = useTourStore();
+// Dynamic imports for Property Developer EditProperty variants
+const PropertyDeveloperEditPropertyVariantA = dynamic(
+  () => import("@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/management/properties/editProperty"),
+  { ssr: false }
+);
 
-  useEffect(() => {
-    setPersist(false);
-    if (!isTourCompleted("EditPropertyTour")) {
-      setShouldRenderTour(true);
-    } else {
-      setShouldRenderTour(false);
-    }
+const PropertyDeveloperEditPropertyVariantB = dynamic(
+  () => import("@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/management/properties/editProperty"),
+  { ssr: false }
+);
 
-    return () => setShouldRenderTour(false);
-  }, [setShouldRenderTour, setPersist, isTourCompleted]);
+const PropertyDeveloperEditPropertyVariantC = dynamic(
+  () => import("@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/management/properties/editProperty"),
+  { ssr: false }
+);
 
-  const handleSubmit = async (
-    data: ReturnType<typeof transformPropertyFormData>
-  ) => {
-    const { newImages, retainedImages } = data.images.reduce<{
-      newImages: File[];
-      retainedImages: string[];
-    }>(
-      (acc, image) => {
-        if (image instanceof File) acc.newImages.push(image);
-        else {
-          const matchingImage = propertyDetails?.images.find(
-            (img) => img.path === image
-          );
-          if (matchingImage) {
-            acc.retainedImages.push(matchingImage.id);
-          }
-        }
-        return acc;
-      },
-      { newImages: [], retainedImages: [] }
+// Dynamic imports for Property Manager EditProperty variants
+const PropertyManagerEditPropertyVariantA = dynamic(
+  () =>
+    import("@/components/PAGES/DIRECTOR/PropertyManager/variantA/management/properties/edit-property"),
+  { ssr: false }
+);
+
+const PropertyManagerEditPropertyVariantB = dynamic(
+  () =>
+    import("@/components/PAGES/DIRECTOR/PropertyManager/VariantB/management/properties/editProperty"),
+  { ssr: false }
+);
+
+const PropertyManagerEditPropertyVariantC = dynamic(
+  () =>
+    import("@/components/PAGES/DIRECTOR/PropertyManager/VariantC/management/properties/editProperty"),
+  { ssr: false }
+);
+
+const EditPropertyPage = ({ params }: { params: { id: string } }) => {
+  const { activeModule, designVariant } = useModule();
+  const { role } = useRole();
+  const propertyId = params.id;
+
+  // Restrict access to director role
+  if (role !== "director") {
+    return (
+      <div className="p-4 text-red-500">
+        Access Denied: Director role required.
+      </div>
     );
-    const status = await updateProperty(propertyId, {
-      ...data,
-      images: newImages,
-      retain_images: retainedImages,
-    });
-    if (status) {
-      refetch({ silent: true });
-    }
+  }
+
+  // Define component mapping for supported modules
+  const componentMap: Record<
+    string,
+    Record<string, React.ComponentType<EditPropertyProps>>
+  > = {
+    property_developer: {
+      variant_a: PropertyDeveloperEditPropertyVariantA,
+      variant_b: PropertyDeveloperEditPropertyVariantB,
+      variant_c: PropertyDeveloperEditPropertyVariantC,
+    },
+    property_manager: {
+      variant_a: PropertyManagerEditPropertyVariantA,
+      variant_b: PropertyManagerEditPropertyVariantB,
+      variant_c: PropertyManagerEditPropertyVariantC,
+    },
   };
 
-  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
-  const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const newForm = useAddUnitStore((s) => s.newForm);
+  // Check if the active module is supported
+  if (!["property_developer", "property_manager"].includes(activeModule.id)) {
+    return (
+      <div className="p-4 text-red-500">
+        Edit Property page is only available for Property Developer or Property
+        Manager modules.
+      </div>
+    );
+  }
 
-  const {
-    data: propertyData,
-    loading,
-    isNetworkError,
-    error,
-    refetch,
-  } = useFetch<SinglePropertyResponse>(`property/${propertyId}/view`);
-  useRefetchOnEvent("refetchSingleProperty", () => refetch({ silent: true }));
-
-  useEffect(() => {
-    if (propertyData) {
-      const transformedData = transformPropertyData(propertyData);
-      if (!transformedData) {
-        setDataNotFound(true);
-        return;
-      }
-      setDataNotFound(false);
-      setAddUnitStore("canDelete", transformedData.canDelete);
-      setAddUnitStore("property_id", transformedData.property_id);
-      setAddUnitStore("propertyType", transformedData.propertyType);
-      setAddUnitStore("propertyDetails", transformedData.propertyDetails);
-      setAddUnitStore("propertySettings", transformedData.propertySettings);
-      setAddUnitStore("addedUnits", transformedData.addedUnits);
-      // Removed setAddUnitStore("newForm", showNewUnitForm) to avoid overwriting newForm
-    }
-  }, [propertyData, setAddUnitStore]);
-
-  useEffect(() => {
-    if (newForm || showNewUnitForm) {
-      setGlobalStore("closeUnitForm", false);
-    }
-  }, [newForm, showNewUnitForm, setGlobalStore]);
-
-  // SHOW_UNIT_FORM constant
-  const SHOW_UNIT_FORM =
-    !closeUnitForm && (newForm || showNewUnitForm || addedUnits.length === 0);
-
-  if (loading) return <PageCircleLoader />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
-  if (dataNotFound)
-    return <div className="text-red-500">Property Data not found</div>;
-  if (!propertyDetails) return null;
+  // Map activeModule and designVariant to the appropriate EditProperty component
+  const EditPropertyComponent =
+    componentMap[activeModule.id]?.[designVariant] ||
+    componentMap.property_developer.variant_a;
 
   return (
-    <div className="space-y-7 pb-[100px]">
-      <div className="flex items-center gap-2">
-        <BackButton>Edit Property</BackButton>
-        <button
-          onClick={() => restartTour(pathname)}
-          type="button"
-          className="text-orange-normal"
+    <Suspense fallback={<PageCircleLoader />}>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={`${activeModule.id}-${designVariant}`}
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          exit={{ opacity: 0, x: -50 }}
+          transition={{ duration: 0.3 }}
         >
-          <ExclamationMark />
-        </button>
-      </div>
-
-      <SectionSeparator className="!my-2.5" />
-      <CreatePropertyForm
-        editMode
-        handleSubmit={handleSubmit}
-        formType={propertyType as "rental" | "facility"}
-        propertyId={propertyId}
-        onAddUnit={() => {
-          setShowNewUnitForm(true);
-          setGlobalStore("closeUnitForm", false); // Explicitly reset closeUnitForm
-          setTimeout(() => {
-            window.scrollTo({
-              top: document.documentElement.scrollHeight,
-              behavior: "smooth",
-            });
-          }, 0);
-        }}
-      />
-
-      <div className="custom-flex-col gap-10">
-        {addedUnits.map((unit, index) => (
-          <AddUnitFormCard key={index} data={unit} index={index} />
-        ))}
-
-        {SHOW_UNIT_FORM && (
-          <div>
-            <UnitForm empty hideEmptyForm={() => setShowNewUnitForm(false)} />
-          </div>
-        )}
-      </div>
-    </div>
+          <EditPropertyComponent propertyId={propertyId} />
+        </motion.div>
+      </AnimatePresence>
+    </Suspense>
   );
 };
 
-export default EditProperty;
+export default EditPropertyPage;

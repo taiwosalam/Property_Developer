@@ -25,7 +25,7 @@ interface PropertyListItemProps {
   total_income: number;
   currency?: keyof typeof currencySymbols;
   branch?: string;
-  property_type: "rental" | "facility";
+  property_type: "rental" | "facility" | "outright" | "installment";
   total_unit_pictures: number | null;
   hasVideo: boolean;
 }

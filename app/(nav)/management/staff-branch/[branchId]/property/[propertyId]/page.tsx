@@ -1,4 +1,4 @@
-import PropertyPreview from "@/components/Management/Properties/property-preview";
+import PropertyPreview from "@/components/Management/Properties/previews/property-preview";
 
 const BranchPPropertyPreview = () => {
   return (

@@ -8,7 +8,7 @@ import { LandlordTenantInfoDocument } from "./landlord-tenant-info-components";
 import { useBranchInfoStore } from "@/store/branch-info-store";
 
 interface AddMultipleLandlordsOrTenantsProps {
-  type: "landlord" | "tenant";
+  type: "landlord" | "tenant" | "client";
   method: "import" | "invite";
   submitAction: (file: File) => Promise<void>;
 }

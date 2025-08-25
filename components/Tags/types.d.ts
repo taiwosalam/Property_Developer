@@ -4,7 +4,7 @@ export interface UserTagProps {
 }
 
 export interface PropertyTagProps {
-  propertyType: "rental" | "facility";
+  propertyType: "rental" | "facility" | "outright" | "installment";
   className?: string;
   sm?: boolean;
   list?: boolean;
