@@ -30,6 +30,7 @@ import { getRoleTitle } from "@/hooks/getPermission";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import ExpiredSubscriptionModal from "@/components/Modal/expired-subscription-flow";
 import { SmartMarquee } from "@/components/Marquee/smart-marque";
+import { useMarqueeData } from "@/components/Marquee/data";
 
 const roleMapping: Record<string, string> = {
   "admin configuration (company director)": "director",
@@ -54,6 +55,9 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const primaryColor = useThemeStoreSelectors.use.primaryColor();
   const { role, setRole } = useRole();
   const hasMounted = useRef(false);
+
+  // Get marquee data to determine if marquee is present
+  const { hasMarquees } = useMarqueeData();
 
   const isSubscriptionExpired = usePersonalInfoStore(
     (state) => state.isSubscriptionExpired
@@ -225,11 +229,8 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             className="h-[1px]"
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
-          {/* <div className="pt-2 bg-white dark:bg-[#020617]">
-          <SmartMarquee />
-          </div> */}
           <>
-            <SmartMarquee className="pt-2 bg-white dark:bg-[#020617]"/>
+            <SmartMarquee className=" bg-white dark:bg-[#020617]" />
           </>
           <div
             className={`h-[50px] px-3 flex items-center ${navbar !== "row" ? "justify-between" : "justify-end"
@@ -284,8 +285,9 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             transitionTimingFunction: "cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className={clsx(
-            // "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 mt-[48px] min-h-[calc(100vh-152px)]",
-            "px-2 sm:px-3 md:p-6 bg-neutral-2 pt-16 md:mt-20 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]",
+            "px-2 sm:px-3 md:p-6 bg-neutral-2 dark:bg-[#000000] relative z-[1] duration-300 min-h-[calc(100vh-152px)]",
+            // Conditional margin-top based on marquee presence
+            hasMarquees ? "mt-[60px]" : "mt-[48px]",
             {
               "w-full md:ml-0 lg:ml-0": navbar === "row",
               "md:ml-[110px] lg:ml-[110px]": !isSideNavOpen && navbar !== "row",
@@ -295,8 +297,6 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             {
               "md:opacity-100 md:pointer-events-auto": navbar !== "row",
             },
-            // Conditional margin-top based on user role
-            // role === "Branch Manager" || role === "Account Manager" || role === "Staff" ? "pt-24 md:mt-14" : "mt-[58px]"
           )}
         >
           {children}
