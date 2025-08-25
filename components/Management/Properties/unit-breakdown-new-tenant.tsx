@@ -20,6 +20,7 @@ const UnitBreakdownNewTenant = () => {
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
   );
+
   
   const { formResetKey, unitData } = useUnitForm();
   const CURRENCY_SYMBOL =
@@ -27,6 +28,8 @@ const UnitBreakdownNewTenant = () => {
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.other_charge || "0")
   );
+
+  console.log(" unitData here", unitData)
 
   const initialFormValues = useMemo(() => {
     return {
@@ -51,8 +54,8 @@ const UnitBreakdownNewTenant = () => {
       otherCharges: unitData?.other_charge
       ? formatNumber(parseFloat(unitData.other_charge))
       : "",
-      vat: unitData?.vat
-      ? formatNumber(parseFloat(unitData.vat as string))
+      vat: unitData?.vat_amount
+      ? formatNumber(parseFloat(unitData.vat_amount as string))
       : "0",
       totalPackage: unitData?.total_package
       ? formatNumber(parseFloat(unitData.total_package))
@@ -66,7 +69,7 @@ const UnitBreakdownNewTenant = () => {
     unitData?.caution_fee,
     unitData?.inspection_fee,
     unitData?.other_charge,
-    unitData?.vat,
+    unitData?.vat_amount,
     unitData?.total_package,
   ]);
 
