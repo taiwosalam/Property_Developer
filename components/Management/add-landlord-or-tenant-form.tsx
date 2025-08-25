@@ -2,7 +2,12 @@
 import { useState } from "react";
 import Image from "next/image";
 import Select from "../Form/Select/select";
-import { getAllCities, getAllLocalGovernments, getAllStates, getLocalGovernments } from "@/utils/states";
+import {
+  getAllCities,
+  getAllLocalGovernments,
+  getAllStates,
+  getLocalGovernments,
+} from "@/utils/states";
 import { tenantTypes, landlordTypes, genderTypes } from "@/data";
 import Input from "../Form/Input/input";
 import PhoneNumberInput from "../Form/PhoneNumberInput/phone-number-input";
@@ -20,7 +25,7 @@ import RestrictInput from "../Form/Input/InputWIthRestrict";
 import { useBranchInfoStore } from "@/store/branch-info-store";
 
 interface AddLandLordOrTenantFormProps {
-  type: "landlord" | "tenant";
+  type: "landlord" | "tenant" | "client";
   submitAction: (data: any) => Promise<void>;
   setFormStep: React.Dispatch<React.SetStateAction<number>>;
   formStep: number;
@@ -157,12 +162,23 @@ const AddLandLordOrTenantForm: React.FC<AddLandLordOrTenantFormProps> = ({
               ],
             }}
           />
-          <Select
-            options={type === "landlord" ? landlordTypes : tenantTypes}
-            id={`${type === "landlord" ? "owner" : "tenant"}_type`}
-            label={`${type === "landlord" ? "owner" : "Tenant/Occupant"} Type`}
-            inputContainerClassName="bg-neutral-2 rounded-[8px]"
-          />
+          {type !== "client" ? (
+            <Select
+              options={type === "landlord" ? landlordTypes : tenantTypes}
+              id={`${type === "landlord" ? "owner" : "tenant"}_type`}
+              label={`${
+                type === "landlord" ? "owner" : "Tenant/Occupant"
+              } Type`}
+              inputContainerClassName="bg-neutral-2 rounded-[8px]"
+            />
+          ) : (
+            <Select
+              options={tenantTypes}
+              id="client_type"
+              label="Marital Status"
+              inputContainerClassName="bg-neutral-2 rounded-[8px]"
+            />
+          )}
           <Select
             options={genderTypes}
             id="gender"

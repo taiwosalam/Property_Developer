@@ -492,45 +492,7 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   // if (requestLoading) {
   //   return <FullPageLoader text="Submitting..." />;
   // }
-
-  const handleSectionTour = () => {
-    if (formType === "rental" && editMode && pathname.startsWith("/manager")) {
-      handleGoToTourStep(12);
-    } else if (
-      formType === "rental" &&
-      !editMode &&
-      pathname.startsWith("/manager")
-    ) {
-      handleGoToTourStep(13);
-    } else if (
-      formType === "rental" &&
-      editMode &&
-      pathname.startsWith("/accountant")
-    ) {
-      handleGoToTourStep(11);
-    } else if (
-      formType === "facility" &&
-      !editMode &&
-      pathname.startsWith("/accountant")
-    ) {
-      handleGoToTourStep(9);
-    } else if (formType === "rental" && !editMode) {
-      handleGoToTourStep(14);
-    } else if (formType === "facility" && !editMode) {
-      handleGoToTourStep(11);
-    } else if (formType === "rental" && editMode) {
-      handleGoToTourStep(13);
-    } else if (
-      formType === "facility" &&
-      editMode &&
-      pathname.startsWith("/manager")
-    ) {
-      handleGoToTourStep(9);
-    } else if (formType === "facility" && editMode) {
-      handleGoToTourStep(10);
-    }
-  };
-
+  
   return (
     <>
       <ProgressCardLoader

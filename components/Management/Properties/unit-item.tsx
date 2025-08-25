@@ -8,7 +8,7 @@ import BadgeIcon, {
 } from "@/components/BadgeIcon/badge-icon";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import PropertyTag from "@/components/Tags/property-tag";
-import { UnitStatusColors } from "./property-preview";
+import { UnitStatusColors } from "./previews/property-preview";
 import { actions } from "../Rent And Unit/data";
 import { ActionButton } from "../Rent And Unit/action-button";
 import { empty } from "@/app/config";

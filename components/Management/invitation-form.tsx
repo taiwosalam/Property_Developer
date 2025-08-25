@@ -14,7 +14,7 @@ interface InvitationFormProps {
   identifier?: string | number;
   setIdentifier?: React.Dispatch<React.SetStateAction<string>>;
   setFormStep?: React.Dispatch<React.SetStateAction<number>>;
-  page?: "landlord" | "tenant";
+  page?: "landlord" | "tenant" | "client";
 }
 
 interface FormData {
