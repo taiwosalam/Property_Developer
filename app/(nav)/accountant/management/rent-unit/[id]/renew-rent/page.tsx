@@ -7,7 +7,11 @@ import dayjs, { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useOccupantStore } from "@/hooks/occupant-store";
-import { getEstateSettingsData, payDueRent, startRent } from "../start-rent/data";
+import {
+  getEstateSettingsData,
+  payDueRent,
+  startRent,
+} from "../start-rent/data";
 import { addPartPayment, editRent, getEstateData } from "../edit-rent/data";
 import {
   formatFee,
@@ -63,6 +67,7 @@ const RenewRent = () => {
   const router = useRouter();
 
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
+  const getGlobalStore = useGlobalStore((s) => s.getGlobalInfoStore);
   const propertyType = searchParams.get("type") as "rental" | "facility";
   const isRental = propertyType === "rental";
 
@@ -93,6 +98,8 @@ const RenewRent = () => {
   // Document logic
   const HAS_DOCUMENT = unitData?.property_document?.document_id;
   const AGREEMENT_CHECKED = selectedCheckboxOptions.rent_agreement;
+  const RENTID = unitData?.current_records?.data[0].id;
+  const PenaltyRenewTotalAmount = getGlobalStore("totalRenewAmount");
 
   // API fetch
   const endpoint = `/unit/${id}/view`;
@@ -218,6 +225,7 @@ const RenewRent = () => {
       : "Fee Renewed Successfully";
     const failedMsg = isRental ? "Failed to renew rent" : "Failed to renew fee";
     const shouldAttachDocument = isRental && AGREEMENT_CHECKED && doc_file;
+    const HAS_PENALTY = penaltyAmount > 0 ? 1 : 0;
 
     const payloadObj: any = {
       unit_id: unitData.unit_id,
@@ -234,7 +242,18 @@ const RenewRent = () => {
         : 1,
       // has_invoice: selectedCheckboxOptions.create_invoice ? 1 : 0,
       sms_alert: selectedCheckboxOptions.sms_alert ? 1 : 0,
-      has_penalty: penaltyAmount > 0 ? 1 : 0,
+      has_penalty: HAS_PENALTY,
+      penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
+    };
+
+    const penaltyPayload = {
+      tenant_id: unitData.occupant.id,
+      unit_id: unitData.unit_id,
+      payment_date: dayjs().format("YYYY-MM-DD"),
+      rent_id: RENTID,
+      amount: PenaltyRenewTotalAmount,
+      has_invoice: 1,
+      has_penalty: 1,
       penalty_amount: penaltyAmount > 0 ? penaltyAmount : 0,
     };
 
@@ -246,15 +265,17 @@ const RenewRent = () => {
       }
     }
 
-    const payload = objectToFormData(payloadObj);
+    const payload = objectToFormData(HAS_PENALTY ? penaltyPayload : payloadObj);
+    console.log("payload", penaltyPayload);
 
     try {
       setReqLoading(true);
       // const res = await startRent(payload);
-      const res = await payDueRent(payload);
+      const action = HAS_PENALTY ? payDueRent : startRent;
+      const res = await action(payload);
       if (res) {
         toast.success(successMsg);
-        router.push("/accountant/management/rent-unit");
+        router.push("/management/rent-unit");
       }
     } catch (err) {
       toast.error(failedMsg);

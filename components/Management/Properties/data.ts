@@ -100,7 +100,7 @@ export const transformUnitFormData = (
     return isNaN(parsed) ? null : parsed;
   };
 
-  console.log("images passed to ", images);
+  // console.log("images passed to ", images);
 
   // Determine the default image (first image in the list)
   let defaultImage: string | File | null = null;
@@ -167,6 +167,90 @@ export const transformUnitFormData = (
 
   return payload;
 };
+
+
+// export const transformUnitFormData = (
+//   formData: Record<string, any>,
+//   images: (File | string)[],
+//   property_id: string,
+//   originalImages: { id: string; path: string }[] = []
+// ) => {
+//   const parseFee = (value: string | undefined) => {
+//     if (!value) return 0;
+//     return parseFloat(value.replace(/,/g, ""));
+//   };
+
+//   const parseIntOrNull = (value: string | undefined | null) => {
+//     if (!value) return 0;
+//     const parsed = parseInt(value, 10);
+//     return isNaN(parsed) ? null : parsed;
+//   };
+
+//   console.log("images passed to ", images);
+
+//   // Check if all images are File objects
+//   const allImagesAreFiles = images.every((image) => image instanceof File);
+
+//   // Initialize payload
+//   const payload: Record<string, any> = {
+//     unit_name: formData.unit_name,
+//     unit_type: formData.unit_type,
+//     unit_sub_type: formData.unit_sub_type ?? null,
+//     unit_preference: formData.unit_preference,
+//     measurement: formData.measurement ?? null,
+//     total_area_sqm: formData.total_area_sqm ?? null,
+//     number_of: formData.number_of ?? 0,
+//     bedroom: parseIntOrNull(formData.bedroom),
+//     bathroom: parseIntOrNull(formData.bathroom),
+//     toilet: parseIntOrNull(formData.toilet),
+//     facilities: formData.facilities
+//       ? formData.facilities.split(",").map(decodeURIComponent)
+//       : [],
+//     en_suit: formData.en_suit ?? null,
+//     prepaid: formData.prepaid ?? null,
+//     wardrobe: formData.wardrobe ?? null,
+//     pet_allowed: formData.pets_allowed ?? null,
+//     fee_period: formData.fee_period ?? null,
+//     fee_amount: parseFee(formData.fee_amount),
+//     service_charge: parseFee(formData.service_charge),
+//     agency_fee: parseFee(formData.agency_fee),
+//     legal_fee: parseFee(formData.legal_fee),
+//     caution_fee: parseFee(formData.caution_fee),
+//     inspection_fee: parseFee(formData.inspection_fee),
+//     other_charge: parseFee(formData.other_charge),
+//     negotiation: formData.negotiation ?? null,
+//     security_fee: parseFee(formData.security_fee),
+//     total_package: parseFee(formData.total_package),
+//     renew_fee_period: formData.renew_fee_period ?? null,
+//     renew_fee_amount: parseFee(formData.renew_fee_amount),
+//     renew_service_charge: parseFee(formData.renew_service_charge),
+//     renew_other_charge: parseFee(formData.renew_other_charge),
+//     renew_total_package: parseFee(formData.renew_total_package),
+//     property_id,
+//     images: allImagesAreFiles ? images : images.slice(1), // Send all images if all are Files, otherwise exclude first
+//     vat_amount: parseFee(formData.vat_amount),
+//     renew_vat_amount: parseFee(formData.renew_vat_amount),
+//     renew_agency_fee: parseFee(formData.renew_agency_fee),
+//     renew_security_fee: parseFee(formData.renew_security_fee),
+//   };
+
+//   // Only set default_image if not all images are Files
+//   if (!allImagesAreFiles && images.length > 0) {
+//     const firstImage = images[0];
+//     if (typeof firstImage === "string") {
+//       payload.default_image = firstImage;
+//       const matchingImage = originalImages.find((img) => img.path === firstImage);
+//       if (matchingImage) {
+//         payload.default_image_id = matchingImage.id;
+//       }
+//     } else {
+//       payload.default_image = firstImage; // File object
+//     }
+//   }
+
+//   return payload;
+// };
+
 export const addPropertyWithId = async (
   property_id: string,
   company_id: string
