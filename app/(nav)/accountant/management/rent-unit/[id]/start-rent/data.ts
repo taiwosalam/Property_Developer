@@ -148,7 +148,19 @@ export const transformUnitsTenants = (res: TenantResponse): Tenant[] => {
 export const startRent = async (data: any) => {
   try {
     const res = await api.post("/tenant-rent", data);
-    if (res.data.status === "success") {
+    if (res.status === 200 || res.status === 201) {
+      return true;
+    }
+  } catch (err) {
+    handleAxiosError(err);
+    return false;
+  }
+};
+
+export const payDueRent = async (data: any) => {
+  try {
+    const res = await api.post("tenant-rent/pay-due", data);
+    if (res.status === 200 || res.status === 201) {
       return true;
     }
   } catch (err) {

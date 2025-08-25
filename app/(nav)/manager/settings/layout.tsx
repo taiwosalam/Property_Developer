@@ -14,7 +14,7 @@ const SettingsLayout: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const pathname = usePathname();
-   const { role, setRole } = useRole();
+  const { role, setRole } = useRole();
   const links = getSettingsLinks(role)
 
   return (
