@@ -388,11 +388,11 @@ const Landlord = () => {
           },
           {
             radio: true,
-            label: "Landlord/Landlady Type",
+            label: "Client Type",
             value: [
-              { label: "Mobile Landlord", value: "mobile" },
-              { label: "Web Landlord", value: "web" },
-              { label: "All Landlords", value: "all" },
+              { label: "Mobile Client", value: "mobile" },
+              { label: "Web Client", value: "web" },
+              { label: "All Client", value: "all" },
             ],
           },
           ...(branchOptions.length > 0
@@ -425,7 +425,7 @@ const Landlord = () => {
                 ) : (
                   pageData.landlords.map((l) => (
                     <Link
-                      href={`/management/landlord/${l.id}/manage`}
+                      href={`/management/clients/${l.id}/manage`}
                       key={l.id}
                     >
                       <LandlordCard
