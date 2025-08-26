@@ -1,6 +1,7 @@
 export interface ApplicationCardProps {
   type?: "pending" | "evaluated" | "approved" | "rejected" | "mobile";
   status: "flagged" | "unflagged";
+  pd?: boolean;
   data?: {
     id: number;
     images: string[];

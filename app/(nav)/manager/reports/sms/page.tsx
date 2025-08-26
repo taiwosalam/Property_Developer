@@ -47,8 +47,8 @@ const SMSReport = () => {
       <div className="hidden md:flex gap-5 flex-wrap">
         <ManagementStatistcsCard
           title="Total SMS"
-          newData={23}
-          total={200}
+          newData={0}
+          total={0}
           colorScheme={1}
         />
       </div>

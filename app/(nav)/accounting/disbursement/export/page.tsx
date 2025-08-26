@@ -1,98 +1,132 @@
+
+
 "use client";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useModule } from "@/contexts/moduleContext";
+import { useRole } from "@/hooks/roleContext";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { m, LazyMotion, domAnimation, AnimatePresence } from "framer-motion";
 
-// Imports
+/** PROPERTY MANAGER */
+const PropertyManagerDisbursementVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/variantA/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerDisbursementVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantB/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerDisbursementVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantC/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
 
-import Signature from "@/components/Signature/signature";
-import KeyValueList from "@/components/KeyValueList/key-value-list";
-import ExportPageHeader from "@/components/reports/export-page-header";
-import { empty } from "@/app/config";
-import BackButton from "@/components/BackButton/back-button";
-import ExportPageFooter from "@/components/reports/export-page-footer";
-import CustomTable from "@/components/Table/table";
-import {
-  DisburseApiResponse,
-  disbursementTableData,
-  disbursementTableFields,
-  transformDisburseData,
-  TransformedDisburseItem,
-} from "../data";
-import useFetch from "@/hooks/useFetch";
-import { useEffect, useRef, useState } from "react";
-import CustomLoader from "@/components/Loader/CustomLoader";
-import NetworkError from "@/components/Error/NetworkError";
-import { useGlobalStore } from "@/store/general-store";
-import ServerError from "@/components/Error/ServerError";
+/** PROPERTY DEVELOPER */
+const PropertyDeveloperDisbursementVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperDisbursementVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperDisbursementVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
 
-const ExportDisbursement = () => {
-  const exportRef = useRef<HTMLDivElement>(null);
-  const [fullContent, setFullContent] = useState(false);
-  const [tableData, setTableData] = useState<TransformedDisburseItem[]>([]);
-  // Filter out the action field for the export page
-  const exportTableFields = disbursementTableFields.filter(
-    (field) => field.accessor !== "action"
-  );
+/** HOSPITALITY MANAGEMENT */
+const HospitalityManagementDisbursementVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantA/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementDisbursementVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantB/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementDisbursementVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantC/accounting/disbursement/export/export-page"
+    ),
+  { ssr: false }
+);
 
-  const { data, loading, error, isNetworkError } =
-    useFetch<DisburseApiResponse>("/disburses");
+const ApplicationPage = () => {
+  const { activeModule, designVariant } = useModule();
+  const { role } = useRole();
 
-  const filteredAccountingDisburesments = useGlobalStore(
-    (s) => s.accounting_disbursements
-  );
+  if (role !== "director") {
+    return (
+      <div className="p-4 text-red-500">
+        Access Denied: Director role required.
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    if (data) {
-      const transformed = transformDisburseData(data);
-      setTableData(transformed);
-    }
-  }, [data]);
-
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  const InvoicePageComponent =
+    {
+      property_manager: {
+        variant_a: PropertyManagerDisbursementVariantA,
+        variant_b: PropertyManagerDisbursementVariantB,
+        variant_c: PropertyManagerDisbursementVariantC,
+      },
+      property_developer: {
+        variant_a: PropertyDeveloperDisbursementVariantA,
+        variant_b: PropertyDeveloperDisbursementVariantB,
+        variant_c: PropertyDeveloperDisbursementVariantC,
+      },
+      hospitality_manager: {
+        variant_a: HospitalityManagementDisbursementVariantA,
+        variant_b: HospitalityManagementDisbursementVariantB,
+        variant_c: HospitalityManagementDisbursementVariantC,
+      },
+    }[activeModule.id]?.[designVariant] || PropertyManagerDisbursementVariantA;
 
   return (
-    <div className="custom-flex-col gap-10 pb-[100px]">
-      <div className="custom-flex-col gap-[18px]">
-        <BackButton as="p">Back</BackButton>
-        <div ref={exportRef} className="space-y-9">
-          <ExportPageHeader />
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={{}}
-              chunkSize={1}
-              direction="column"
-              referenceObject={{
-                "summary id": "",
-                "start date": "",
-                "end date": "",
-              }}
-            />
-          </div>
-          <div className="custom-flex-col gap-6">
-            <h1 className="text-black dark:text-white text-2xl font-medium text-center">
-              Disbursement Summary
-            </h1>
-            <CustomTable
-              className={`${fullContent && "max-h-none"}`}
-              fields={exportTableFields}
-              // data={tableData}
-              data={filteredAccountingDisburesments || []}
-              tableHeadStyle={{ height: "76px" }}
-              tableHeadCellSx={{ fontSize: "1rem" }}
-              tableBodyCellSx={{
-                fontSize: "1rem",
-                paddingTop: "12px",
-                paddingBottom: "12px",
-              }}
-            />
-            <Signature />
-          </div>
-        </div>
-      </div>
-      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} />
-    </div>
+    <>
+      <Suspense fallback={<PageCircleLoader />}>
+        <LazyMotion features={domAnimation}>
+          <AnimatePresence mode="wait">
+            <m.div
+              key={`${activeModule.id}-${designVariant}`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <InvoicePageComponent />
+            </m.div>
+          </AnimatePresence>
+        </LazyMotion>
+      </Suspense>
+    </>
   );
 };
 
-export default ExportDisbursement;
+export default ApplicationPage;

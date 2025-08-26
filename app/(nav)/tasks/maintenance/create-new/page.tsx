@@ -226,6 +226,7 @@ const CreateMaintenace = () => {
     });
 
     data.append("calendar_event", "1");
+    data.append("is_announcement", "1");
 
     try {
       setIsLoading(true);

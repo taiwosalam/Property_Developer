@@ -1,143 +1,133 @@
+
+
+
 "use client";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useModule } from "@/contexts/moduleContext";
+import { useRole } from "@/hooks/roleContext";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { m, LazyMotion, domAnimation, AnimatePresence } from "framer-motion";
 
-// Imports
-import Button from "@/components/Form/Button/button";
-import KeyValueList from "@/components/KeyValueList/key-value-list";
-import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
-import ExportPageHeader from "@/components/reports/export-page-header";
-import { empty } from "@/app/config";
-import BackButton from "@/components/BackButton/back-button";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import { EstateDetailItem } from "@/components/Management/Rent And Unit/detail-item";
-import { useEffect, useRef, useState } from "react";
-import {
-  DisburseApiResponse,
-  ManageDisbursementPageData,
-  transformDisburseData,
-} from "../manage-disbursement/data";
-import { useParams } from "next/navigation";
-import { currencySymbols } from "@/utils/number-formatter";
-import useFetch from "@/hooks/useFetch";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { SectionSeparator } from "@/components/Section/section-components";
-import ExportPageFooter from "@/components/reports/export-page-footer";
-import CardsLoading from "@/components/Loader/CardsLoading";
-import NetworkError from "@/components/Error/NetworkError";
-import ServerError from "@/components/Error/ServerError";
+/** PROPERTY MANAGER */
+const PropertyManagerDisbursementVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/variantA/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerDisbursementVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantB/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerDisbursementVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantC/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
 
-const PreviewDisbursement = () => {
-  const { disbursementId } = useParams();
-  const exportRef = useRef<HTMLDivElement>(null);
-  const [pageData, setPageData] = useState<ManageDisbursementPageData | null>(
-    null
-  );
+/** PROPERTY DEVELOPER */
+const PropertyDeveloperDisbursementVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperDisbursementVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperDisbursementVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
 
-  const CURRENCY_SYMBOL = currencySymbols.naira;
-  const [payments, setPayments] = useState<{ title: string; amount: number }[]>(
-    []
-  );
+/** HOSPITALITY MANAGEMENT */
+const HospitalityManagementDisbursementVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantA/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementDisbursementVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantB/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementDisbursementVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantC/accounting/disbursement/[disbursementId]/preview-disbursement/preview-page"
+    ),
+  { ssr: false }
+);
 
-  const { data, error, loading, refetch, isNetworkError } = useFetch<DisburseApiResponse>(
-    `/disburses/${disbursementId}`
-  );
-  useRefetchOnEvent("fetch-disburses", () => refetch({ silent: true }));
+const ApplicationPage = () => {
+  const { activeModule, designVariant } = useModule();
+  const { role } = useRole();
 
-  useEffect(() => {
-    if (data) {
-      const transformed = transformDisburseData(data);
-      setPageData(transformed);
-      setPayments(
-        transformed.disbursement.map((d) => ({
-          title: d.title || '--- ---',
-          amount: d.amount,
-        }))
-      );
-    }
-  }, [data]);
-
-  
-  if (loading)
+  if (role !== "director") {
     return (
-      <div className="custom-flex-col gap-2">
-        <CardsLoading length={5} />
+      <div className="p-4 text-red-500">
+        Access Denied: Director role required.
       </div>
     );
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  }
+
+  const InvoicePageComponent =
+    {
+      property_manager: {
+        variant_a: PropertyManagerDisbursementVariantA,
+        variant_b: PropertyManagerDisbursementVariantB,
+        variant_c: PropertyManagerDisbursementVariantC,
+      },
+      property_developer: {
+        variant_a: PropertyDeveloperDisbursementVariantA,
+        variant_b: PropertyDeveloperDisbursementVariantB,
+        variant_c: PropertyDeveloperDisbursementVariantC,
+      },
+      hospitality_manager: {
+        variant_a: HospitalityManagementDisbursementVariantA,
+        variant_b: HospitalityManagementDisbursementVariantB,
+        variant_c: HospitalityManagementDisbursementVariantC,
+      },
+    }[activeModule.id]?.[designVariant] || PropertyManagerDisbursementVariantA;
 
   return (
-    <div className="custom-flex-col gap-10 pb-[100px]">
-      <div className="custom-flex-col gap-[18px]">
-        <BackButton as="p">Back</BackButton>
-        <div ref={exportRef} className="space-y-9">
-          <ExportPageHeader />
-          <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={{
-                "disbursement id": pageData?.disbursementId ?? "--- ---",
-                "landlord / landlady name": pageData?.landlord ?? "--- ---",
-                "property name": pageData?.property_name ?? "--- ---",
-                date: pageData?.date ?? "__,__,__",
-                // "unit name": pageData?.unit_names ?? "--- ---",
-                "disbursement mode": pageData?.disbursement_mode ?? "--- ---",
-              }}
-              chunkSize={2}
-              direction="column"
-              referenceObject={{
-                "disbursement id": "",
-                "landlord / landlady name": "",
-                "property name": "",
-                date: "",
-                // "unit name": "",
-                "disbursement mode": "",
-              }}
-            />
-          </div>
-          <AccountingTitleSection title="Description">
-            <p className="text-sm text-text-secondary">
-              {pageData?.description ?? "--- ---"}
-            </p>
-          </AccountingTitleSection>
-
-          {/* ADDED PAYMENT */}
-          <AccountingTitleSection title="Disbursement">
-            <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
-              <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-                {payments.map((payment, index) => (
-                  <div key={index} className="flex flex-col gap-4">
-                    <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
-                      {payment.title}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                        {new Intl.NumberFormat("en-NG", {
-                          style: "currency",
-                          currency: "NGN",
-                        }).format(payment.amount)}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <SectionSeparator />
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Total Expenses
-                </p>
-                <p className="font-bold text-xl text-brand-9">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  }).format(Number(pageData?.total_amount))}
-                </p>
-              </div>
-            </div>
-          </AccountingTitleSection>
-        </div>
-      </div>
-      <ExportPageFooter printRef={exportRef} />
-    </div>
+    <>
+      <Suspense fallback={<PageCircleLoader />}>
+        <LazyMotion features={domAnimation}>
+          <AnimatePresence mode="wait">
+            <m.div
+              key={`${activeModule.id}-${designVariant}`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <InvoicePageComponent />
+            </m.div>
+          </AnimatePresence>
+        </LazyMotion>
+      </Suspense>
+    </>
   );
 };
 
-export default PreviewDisbursement;
+export default ApplicationPage;

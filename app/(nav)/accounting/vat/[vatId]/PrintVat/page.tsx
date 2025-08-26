@@ -1,106 +1,133 @@
+
+
+
 "use client";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useModule } from "@/contexts/moduleContext";
+import { useRole } from "@/hooks/roleContext";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { m, LazyMotion, domAnimation, AnimatePresence } from "framer-motion";
 
-import ExportPageHeader from "@/components/reports/export-page-header";
-import { empty } from "@/app/config";
-import AccountingTitleSection from "@/components/Accounting/accounting-title-section";
-import Button from "@/components/Form/Button/button";
-import KeyValueList from "@/components/KeyValueList/key-value-list";
-import BackButton from "@/components/BackButton/back-button";
-import FixedFooter from "@/components/FixedFooter/fixed-footer";
-import Signature from "@/components/Signature/signature";
-import CustomTable from "@/components/Table/table";
-import {
-  PaymentStatus,
-  printVatTableData,
-  printVatTableFields,
-  TransformedVatData,
-  transformVatData,
-  VatPreviewResponse,
-} from "./data";
-import { useEffect, useRef, useState } from "react";
-import { useParams } from "next/navigation";
-import useFetch from "@/hooks/useFetch";
-import NetworkError from "@/components/Error/NetworkError";
-import ServerError from "@/components/Error/ServerError";
-import CustomLoader from "@/components/Loader/CustomLoader";
-import ExportPageFooter from "@/components/reports/export-page-footer";
+/** PROPERTY MANAGER */
+const PropertyManagerVATVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/variantA/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerVATVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantB/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerVATVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantC/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
 
-const PrintVatPage = () => {
-  const { vatId } = useParams();
-  const [fullContent, setFullContent] = useState(false);
-  const printRef = useRef<HTMLDivElement>(null);
-  const [pageData, setPageData] = useState<TransformedVatData>({
-    keyValueData: {
-      "VAT ID": "--- ---",
-      "Payer name": "--- ---",
-      "Payment status": "--- ---" as PaymentStatus,
-      "date and time": "--- ---",
-      description: "--- ---",
-    },
-    tableData: [],
-  });
-  const { data, loading, error, isNetworkError } = useFetch<VatPreviewResponse>(
-    `/vat/${vatId}`
-  );
+/** PROPERTY DEVELOPER */
+const PropertyDeveloperVATVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperVATVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperVATVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
 
-  // Transform and set pageData when data is fetched
-  useEffect(() => {
-    const transformedData = transformVatData(data);
-    setPageData(transformedData);
-  }, [data]);
+/** HOSPITALITY MANAGEMENT */
+const HospitalityManagementVATVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantA/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementVATVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantB/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementVATVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantC/accounting/vat/[vatId]/PrintVat/vat-id-page"
+    ),
+  { ssr: false }
+);
 
-  const { keyValueData, tableData } = pageData;
+const ApplicationPage = () => {
+  const { activeModule, designVariant } = useModule();
+  const { role } = useRole();
 
-  // Handle loading state
-  if (loading)
-    return <CustomLoader layout="page" view="table" pageTitle="VAT Preview" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  if (role !== "director") {
+    return (
+      <div className="p-4 text-red-500">
+        Access Denied: Director role required.
+      </div>
+    );
+  }
+
+  const InvoicePageComponent =
+    {
+      property_manager: {
+        variant_a: PropertyManagerVATVariantA,
+        variant_b: PropertyManagerVATVariantB,
+        variant_c: PropertyManagerVATVariantC,
+      },
+      property_developer: {
+        variant_a: PropertyDeveloperVATVariantA,
+        variant_b: PropertyDeveloperVATVariantB,
+        variant_c: PropertyDeveloperVATVariantC,
+      },
+      hospitality_manager: {
+        variant_a: HospitalityManagementVATVariantA,
+        variant_b: HospitalityManagementVATVariantB,
+        variant_c: HospitalityManagementVATVariantC,
+      },
+    }[activeModule.id]?.[designVariant] || PropertyManagerVATVariantA;
 
   return (
-    <div className="custom-flex-col gap-10 pb-28">
-      <div className="custom-flex-col gap-[18px]">
-        <BackButton as="p">Back</BackButton>
-        <div ref={printRef}>
-          <ExportPageHeader />
-          <h1 className="text-center my-7 font-medium text-2xl">VAT</h1>
-          <div className="rounded-lg mb-4 bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
-            <KeyValueList
-              data={keyValueData}
-              chunkSize={2}
-              direction="column"
-              referenceObject={{
-                "VAT ID": "",
-                "Payer name": "",
-                "Payment status": "",
-                "date and time": "",
-                description: "",
-              }}
-            />
-          </div>
-          <div className="mt-5">
-            <AccountingTitleSection title="Payment Details">
-              {/* <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" /> */}
-              <CustomTable
-                className={`${fullContent && "max-h-none"}`}
-                fields={printVatTableFields}
-                data={tableData}
-                tableHeadStyle={{ height: "76px" }}
-                tableHeadCellSx={{ fontSize: "1rem" }}
-                tableBodyCellSx={{
-                  fontSize: "1rem",
-                  paddingTop: "16px",
-                  paddingBottom: "16px",
-                }}
-              />
-            </AccountingTitleSection>
-          </div>
-          <Signature />
-        </div>
-      </div>
-      <ExportPageFooter printRef={printRef} setFullContent={setFullContent} />
-    </div>
+    <>
+      <Suspense fallback={<PageCircleLoader />}>
+        <LazyMotion features={domAnimation}>
+          <AnimatePresence mode="wait">
+            <m.div
+              key={`${activeModule.id}-${designVariant}`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <InvoicePageComponent />
+            </m.div>
+          </AnimatePresence>
+        </LazyMotion>
+      </Suspense>
+    </>
   );
 };
 
-export default PrintVatPage;
+export default ApplicationPage;
