@@ -74,12 +74,12 @@ export const property_developer_director_nav_items: NavItemsProps = [
   {
     type: "menu_board",
     label: "accounting",
-    href: "#",
+    href: "/accounting",
     content: [
-      { label: "invoice", href: "#" },
-      { label: "expenses", href: "#" },
-      { label: "disbursement", href: "#" },
-      { label: "VAT", href: "#" },
+      { label: "invoice", href: "/invoice" },
+      { label: "expenses", href: "/expenses" },
+      { label: "disbursement", href: "/disbursement" },
+      { label: "VAT", href: "/vat" },
     ],
   },
   {

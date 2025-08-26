@@ -1,4 +1,3 @@
-import { formatToNaira } from "../../tasks/inspections/data";
 import { CURRENCY_SIGN } from "./data";
 
 export type UnitListResponse = {

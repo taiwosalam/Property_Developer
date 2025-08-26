@@ -1,4 +1,4 @@
-import { formatToNaira } from "../../tasks/inspections/data";
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import { CURRENCY_SIGN } from "./data";
 
 export type UnitListResponse = {
