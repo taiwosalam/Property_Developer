@@ -356,3 +356,45 @@ export const CreateUnitLoadsteps: ProgressCardStep[] = [
     desc: "All steps finished successfully — your unit is now fully set up and ready for use.",
   },
 ];
+
+// ================ INSTALLMENTAL UNITS. ====================
+export interface InstallmentUnitDataObject {
+  id: string;
+  unit_name: string;
+  unit_type: string;
+  unit_sub_type: string;
+  unit_preference: string;
+  measurement: string;
+  total_area_sqm: string;
+  bedroom?: string;
+  bathroom?: string;
+  toilet?: string;
+  drainage?: 1 | 0;
+  fence?: 1 | 0;
+  interlocking?: 1 | 0;
+  gated_estate?: 1 | 0;
+  initial_price: string;
+  first_deposit: string;
+  is_discount: "yes" | "no";
+  discount_rate?: string;
+  discount_name?: string;
+  negotiation: 1 | 0;
+  deposit_plans: {
+    "6_months_plan"?: string;
+    "12_months_plan"?: string;
+    "24_months_plan"?: string;
+    "48_months_plan"?: string;
+  };
+  document_fee?: string;
+  survey_fee?: string;
+  developmental_fee?: string;
+  other_fee?: string;
+  notYetUploaded?: boolean;
+  images: {
+    id: string;
+    path: string;
+    is_default?: number;
+  }[];
+  account_officer?: string;
+  is_active: keyof typeof UnitStatusColors;
+}

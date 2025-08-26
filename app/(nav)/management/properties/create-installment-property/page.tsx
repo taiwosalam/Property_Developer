@@ -9,6 +9,7 @@ import { useTourStore } from "@/store/tour-store";
 import { useEffect, useState } from "react";
 import { ExclamationMark } from "@/public/icons/icons";
 import ProgressCardLoader from "@/components/Loader/setup-card-loader";
+import CreateInstallmentPropertyForm from "@/components/Management/Properties/create-installment-property-form";
 
 const CreateProperty = () => {
   const router = useRouter();
@@ -61,13 +62,9 @@ const CreateProperty = () => {
           className="mb-[52px]"
         />
       </div>
-      {/* <div className="pb-[100px]">
-        <CreateRentalPropertyForm
-          handleSubmit={handleSubmit}
-          formType="rental"
-          landlordId={landlordId}
-        />
-      </div> */}
+      <div className="pb-[100px]">
+        <CreateInstallmentPropertyForm />
+      </div>
     </>
   );
 };

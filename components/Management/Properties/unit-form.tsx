@@ -20,13 +20,23 @@ import {
   getUnitById,
   editUnit as editUnitApi,
 } from "@/app/(nav)/management/properties/create-rental-property/[propertyId]/add-unit/data";
-import { CreateUnitLoadsteps, type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import {
+  CreateUnitLoadsteps,
+  InstallmentUnitDataObject,
+  type UnitDataObject,
+} from "@/app/(nav)/management/properties/data";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import FullPageLoader from "@/components/Loader/start-rent-loader";
 import { useGlobalStore } from "@/store/general-store";
 import DynamicFooterActions from "./footer-action";
 import ProgressCardLoader from "@/components/Loader/setup-card-loader";
+import { useModule } from "@/contexts/moduleContext";
+import {
+  DepositPlan,
+  InstallmentOtherCharges,
+  InstallmentPrice,
+} from "./installmentPriceComponents";
 
 export interface UnitFormState {
   images: string[];
@@ -41,10 +51,21 @@ interface emptyUnitFormProps {
   formRef?: React.RefObject<HTMLFormElement>;
 }
 
+// interface editUnitFormProps {
+//   empty?: false;
+//   index: number;
+//   data: UnitDataObject & { notYetUploaded?: boolean };
+//   isEditing: boolean;
+//   setIsEditing: (a: boolean) => void;
+//   formRef?: React.RefObject<HTMLFormElement>;
+// }
+
 interface editUnitFormProps {
   empty?: false;
   index: number;
-  data: UnitDataObject & { notYetUploaded?: boolean };
+  data:
+    | (UnitDataObject & { notYetUploaded?: boolean })
+    | (InstallmentUnitDataObject & { notYetUploaded?: boolean });
   isEditing: boolean;
   setIsEditing: (a: boolean) => void;
   formRef?: React.RefObject<HTMLFormElement>;
@@ -54,6 +75,8 @@ type UnitFormProps = emptyUnitFormProps | editUnitFormProps;
 
 const UnitForm: React.FC<UnitFormProps> = (props) => {
   const router = useRouter();
+  const { activeModule, designVariant } = useModule();
+  const isPropertyDeveloperModule = activeModule.id === "property_developer";
   const searchParams = useSearchParams();
   const internalFormRef = useRef<HTMLFormElement>(null);
   const formRef = props.formRef || internalFormRef;
@@ -279,10 +302,6 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
     }
   }, [props.empty, newForm]);
 
-  // if (submitLoading) {
-  //   return <FullPageLoader text="Processing Unit Data..." />;
-  // }
-
   return (
     <>
       <ProgressCardLoader loading={submitLoading} steps={CreateUnitLoadsteps} />
@@ -326,36 +345,51 @@ const UnitForm: React.FC<UnitFormProps> = (props) => {
             onFormSubmit={handleSubmit}
             ref={formRef}
           >
-            {!props.empty && props.isEditing && (
-              <>
-                <div className="flex justify-between items-center">
-                  <p className="text-brand-9 font-semibold">Edit Unit</p>
-                  <EditUnitActions />
-                </div>
-                <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
-              </>
-            )}
-            <UnitPictures ref={unitPicturesRef} />
-            <UnitDetails />
-            <div className="unit-feature-wrapper">
-              <UnitFeatures />
-            </div>
+            <div className="mb-[60px]">
+              {!props.empty && props.isEditing && (
+                <>
+                  <div className="flex justify-between items-center">
+                    <p className="text-brand-9 font-semibold">Edit Unit</p>
+                    <EditUnitActions />
+                  </div>
+                  <hr className="!my-4 border-none bg-borders-dark h-[2px]" />
+                </>
+              )}
+              <UnitPictures ref={unitPicturesRef} />
+              <UnitDetails />
+              <div className="unit-feature-wrapper">
+                <UnitFeatures />
+              </div>
 
-            {propertyType === "rental" ? (
-              <>
-                <UnitBreakdownNewTenant />
-                <UnitBreakdownRenewalTenant />
-              </>
-            ) : (
-              <>
-                <div className="unit-fee-breakdown-wrapper">
-                  <UnitBreakdownFacility />
+              {isPropertyDeveloperModule ? (
+                <div>
+                  <InstallmentPrice />
+                  <DepositPlan heading="First Deposit Plan" />
+                  <DepositPlan heading="Monthly Deposit Plan" />
+                  <InstallmentOtherCharges />
+                  <DepositPlan heading="Deposit Breakdown" />
+                  <DepositPlan heading="Total Payment Spreading" />
                 </div>
-                <div className="unit-fee-renewal-details">
-                  <UnitBreakdownRenewalTenant />
-                </div>
-              </>
-            )}
+              ) : (
+                <>
+                  {propertyType === "rental" ? (
+                    <>
+                      <UnitBreakdownNewTenant />
+                      <UnitBreakdownRenewalTenant />
+                    </>
+                  ) : (
+                    <>
+                      <div className="unit-fee-breakdown-wrapper">
+                        <UnitBreakdownFacility />
+                      </div>
+                      <div className="unit-fee-renewal-details">
+                        <UnitBreakdownRenewalTenant />
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+            </div>
             {!props.empty ? (
               <EditUnitActions />
             ) : (
