@@ -198,6 +198,8 @@ const CreateMaintenace = () => {
     const numericCost = String(cost).replace(/,/g, "");
     data.append("cost", numericCost);
 
+    
+
     if (String(detail).trim().length < 30) {
       toast.error("Work detail must be at least 30 characters.");
       return;
@@ -226,6 +228,7 @@ const CreateMaintenace = () => {
     });
 
     data.append("calendar_event", "1");
+     data.append("is_announcement", "1");
 
     try {
       setIsLoading(true);

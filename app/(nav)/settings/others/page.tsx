@@ -51,6 +51,7 @@ import {
   SettingsBellIcon,
   SettingsServiceIcon,
   SettingsAppearanceIcon,
+  NotificationResetSettingsIcon,
 } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
 import {
@@ -183,7 +184,7 @@ const resetSettingsOptions = [
     name: "notifications",
     title: "Notification",
     desc: "Your notification settings can be reverted to default mode if you've made any modifications that you want to undo. This allows you to reset your notifications to their original settings in case you've made changes that you'd like to revert.",
-    icon: <SettingsBellIcon />,
+    icon: <NotificationResetSettingsIcon />,
   },
   {
     name: "appearance",
