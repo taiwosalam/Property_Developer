@@ -1,0 +1,48 @@
+import { InventoryCardData } from "./cards";
+
+export const mockInventoryData: InventoryCardData[] = [
+    {
+        id: "INV-001",
+        propertyName: "Sunrise Apartments",
+        branchName: "Lagos Branch",
+        managerName: "David Ajala",
+        totalUnit: 25,
+        totalAmount: "₦12,500,000",
+        lastUpdate: "2025-08-20",
+        createdBy: "Emmanuel Sogo",
+        createdDate: "2025-08-01",
+    },
+    {
+        id: "INV-002",
+        propertyName: "Oceanview Estate",
+        branchName: "Abuja Branch",
+        managerName: "Amaka Okoro",
+        totalUnit: 40,
+        totalAmount: "₦20,000,000",
+        lastUpdate: "2025-08-22",
+        createdBy: "Chinedu Eze",
+        createdDate: "2025-07-15",
+    },
+    {
+        id: "INV-003",
+        propertyName: "Greenwood Villas",
+        branchName: "Port Harcourt Branch",
+        managerName: "Tunde Adebayo",
+        totalUnit: 30,
+        totalAmount: "₦15,500,000",
+        lastUpdate: "2025-08-21",
+        createdBy: "Funke Adeyemi",
+        createdDate: "2025-07-30",
+    },
+    {
+        id: "INV-004",
+        propertyName: "Skyline Residences",
+        branchName: "Kano Branch",
+        managerName: "Mariam Yusuf",
+        totalUnit: 50,
+        totalAmount: "₦25,000,000",
+        lastUpdate: "2025-08-23",
+        createdBy: "Ibrahim Bello",
+        createdDate: "2025-08-05",
+    },
+];
