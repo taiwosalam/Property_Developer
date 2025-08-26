@@ -153,6 +153,8 @@ interface GlobalStoreState {
     amount: string | null;
   };
 
+  totalRenewAmount: number;
+
   warningModal: {
     isOpen: boolean;
     message: string;
@@ -214,6 +216,7 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   visitorsRequest: null,
   overduePeriods: null,
   staffChats: null,
+  totalRenewAmount: 0,
 
   // timeRange: "90d",
   selectedDateRange: undefined,
@@ -247,7 +250,6 @@ export const useGlobalStore = create<GlobalStore>((set, get) => ({
   hasRestrictedWords: false,
   allowEditUnit: false,
   closeUnitForm: false,
-
   canSubmitRent: false,
   caution_unit_occupant: {
     requestId: null,

@@ -97,12 +97,12 @@ export const calculateRentFeeAmountAndPeriods = ({
   start_date,
   due_date,
   feePeriod,
-  renew_fee_amount,
+  renewalTenantTotalPrice,
 }: {
   start_date: string;
   due_date: string;
   feePeriod: RentPeriod;
-  renew_fee_amount: number;
+  renewalTenantTotalPrice: number;
 }): { overduePeriods: number; owingAmount: number } => {
   const parsedStartDate = dayjs(start_date, "DD/MM/YYYY");
   const parsedDueDate = dayjs(due_date, "DD/MM/YYYY");
@@ -112,13 +112,13 @@ export const calculateRentFeeAmountAndPeriods = ({
     !parsedStartDate.isValid() ||
     !parsedDueDate.isValid() ||
     !feePeriod ||
-    !renew_fee_amount
+    !renewalTenantTotalPrice
   ) {
     console.error("Invalid or missing inputs:", {
       start_date,
       due_date,
       feePeriod,
-      renew_fee_amount,
+      renewalTenantTotalPrice,
     });
     return { overduePeriods: 0, owingAmount: 0 };
   }
@@ -231,7 +231,7 @@ export const calculateRentFeeAmountAndPeriods = ({
     } else {
       periods = calculateOverduePeriods(due_date, feePeriod);
     }
-    owingAmount = periods * renew_fee_amount;
+    owingAmount = periods * renewalTenantTotalPrice;
   }
 
   console.log("calculateRentFeeAmountAndPeriods result:", {

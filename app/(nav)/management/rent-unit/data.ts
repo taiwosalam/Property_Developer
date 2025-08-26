@@ -1021,7 +1021,6 @@ export interface initDataProps {
 // ================ transform /unit/${id}/view =================
 export const transformUnitData = (response: any) => {
   const data = response.data;
-  console.log("unit response", data);
   const occupant = response?.data?.occupant;
   const previous_records = response.data.previous_records;
   const current_records = response.data.current_records;
@@ -1127,6 +1126,7 @@ export const transformUnitData = (response: any) => {
     previous_tenants: data.previous_tenants ? data.previous_tenants : undefined,
     pending_invoice: pending_invoice || undefined,
     unpaid_invoice: unpaid_invoice || undefined,
+    current_records,
   };
 
   // Conditionally include fee fields only if valid
