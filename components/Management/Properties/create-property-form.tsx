@@ -603,23 +603,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   ? "Facility Details"
                   : "Estate/Facility Details"}
               </p>
-              {/* <button
-                onClick={() => {
-                  if (formType === "rental" && !editMode) {
-                    handleGoToTourStep(4);
-                  } else if (formType === "facility" && !editMode) {
-                    handleGoToTourStep(3);
-                  } else if (formType === "rental" && editMode) {
-                    handleGoToTourStep(3);
-                  } else if (formType === "facility" && editMode) {
-                    handleGoToTourStep(2);
-                  }
-                }}
-                type="button"
-                className="text-orange-normal"
-              >
-                <ExclamationMark />
-              </button> */}
             </div>
             <hr className="my-4" />
             <div className="mb-5 grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 dark:bg-darkText-primary dark:p-4 dark:rounded-lg">

@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useModule } from "@/contexts/moduleContext";
 
 const PropertyFormFooter: React.FC<{
   editMode?: boolean;
@@ -19,6 +20,8 @@ const PropertyFormFooter: React.FC<{
   onAddUnit?: () => void;
 }> = ({ editMode, requestLoading, handleReset, propertyId, onAddUnit }) => {
   const searchParams = useSearchParams();
+  const { activeModule, designVariant } = useModule();
+  const isPropertyDeveloperModule = activeModule.id === "property_developer";
   const { canSubmit, missingFields, handleInputChange } =
     useContext(FlowProgressContext);
   const { canDelete, addedUnits } = useAddUnitStore();
@@ -62,16 +65,24 @@ const PropertyFormFooter: React.FC<{
 
   const handleSubmitClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    handleInputChange(); // Ensure the latest input state is checked
-
-    if (!canSubmit) {
-      toast.error(
-        `The following fields are required: ${missingFields.join(", ")}`
+    handleInputChange();
+    //  TODO: Handle this later
+    if (isPropertyDeveloperModule) {
+      router.push(
+        `/management/properties/create-installment-property/${propertyId}`
       );
       return;
     }
-    const form = e.currentTarget.form;
-    form?.requestSubmit();
+
+
+    // if (!canSubmit) {
+    //   toast.error(
+    //     `The following fields are required: ${missingFields.join(", ")}`
+    //   );
+    //   return;
+    // }
+    // const form = e.currentTarget.form;
+    // form?.requestSubmit();
   };
 
   return (
@@ -83,7 +94,6 @@ const PropertyFormFooter: React.FC<{
           type="button"
           disabled={!canSubmit || requestLoading}
           onClick={handleSubmitClick}
-          // form="edit-property-form"
         >
           {requestLoading ? "Updating..." : "Update"}
         </Button>

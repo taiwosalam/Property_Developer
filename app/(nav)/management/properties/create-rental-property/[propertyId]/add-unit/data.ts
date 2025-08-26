@@ -8,7 +8,16 @@ import type { UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 type AddUnitStoreWithoutFunctions = Omit<
   AddUnitStore,
-  "addUnit" | "editUnit" | "removeUnit" | "setAddUnitStore" | "resetStore"
+  | "addUnit"
+  | "editUnit"
+  | "removeUnit"
+  | "setAddUnitStore"
+  | "resetStore"
+  | "addInstallmentUnit"
+  | "removeInstallmentUnit"
+  | "editInstallmentUnit"
+  | "installmentUnits"
+  // "addUnit" | "editUnit" | "removeUnit" | "setAddUnitStore" | "resetStore"
 >;
 
 export const transformPropertyData = (
