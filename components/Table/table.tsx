@@ -107,13 +107,11 @@ const CustomTable: React.FC<CustomTableProps> = ({
   tableHeadCellSx,
   tableBodyCellSx,
   onActionClick,
-  lastRowRef
+  lastRowRef,
 }) => {
   const isDarkMode = useDarkMode();
-
   const evenRowColor = isDarkMode ? "#3C3D37" : "#fff";
   const oddRowColor = isDarkMode ? "#020617" : "var(--brand-1)";
-
   return (
     <TableContainer
       component={Paper}

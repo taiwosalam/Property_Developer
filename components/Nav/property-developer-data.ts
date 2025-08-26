@@ -28,23 +28,23 @@ export const property_developer_director_nav_items: NavItemsProps = [
   {
     type: "briefcase_timer",
     label: "HRM",
-    href: "#",
+    href: "/hrm",
     content: [
-      { label: "staff schedule", href: "#" },
-      { label: "staff attendance", href: "#" },
-      { label: "payroll", href: "#" },
-      { label: "logbook", href: "#" },
+      { label: "staff schedule", href: "/staff-schedule" },
+      { label: "staff attendance", href: "/staff-attendance" },
+      { label: "payroll", href: "/payroll" },
+      { label: "logbook", href: "/logbook" },
     ],
   },
   {
     type: "chart",
     label: "inventories",
-    href: "#",
+    href: "/inventories",
     content: [
-      { label: "category", href: "#" },
-      { label: "items request", href: "#" },
-      { label: "inventory", href: "#" },
-      { label: "suppliers", href: "#" },
+      { label: "category", href: "/category" },
+      { label: "items request", href: "/items-request" },
+      { label: "inventory", href: "/inventory" },
+      { label: "suppliers", href: "/suppliers" },
     ],
   },
   {

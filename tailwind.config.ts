@@ -19,7 +19,18 @@ const config = {
           1: "#FBFBFB",
           2: "#EAEFFD",
         },
-
+        themeColor: {
+          DEFAULT: "var(--primary-color)",
+          10: "rgba(var(--primary-color-rgb),0.1)",
+          20: "rgba(var(--primary-color-rgb),0.2)",
+          30: "rgba(var(--primary-color-rgb),0.3)",
+          40: "rgba(var(--primary-color-rgb),0.4)",
+          50: "rgba(var(--primary-color-rgb),0.5)",
+          60: "rgba(var(--primary-color-rgb),0.6)",
+          70: "rgba(var(--primary-color-rgb),0.7)",
+          80: "rgba(var(--primary-color-rgb),0.8)",
+          90: "rgba(var(--primary-color-rgb),0.9)",
+        },
         brand: {
           1: "var(--brand-1)",
           2: "var(--brand-2)",
@@ -31,16 +42,15 @@ const config = {
           primary: "var(--brand-primary)",
           secondary: "var(--brand-secondary)",
           tertiary: "var(--brand-tertiary)",
-
           disabled: "#F7F9FE",
         },
 
         text: {
           primary: "#050901",
+
           secondary: "#3F4247",
           tertiary: "#696B70",
           quaternary: "#2F364B",
-
           label: "#5A5D61",
           black: "#232324",
           disabled: "#A4A7B0",
