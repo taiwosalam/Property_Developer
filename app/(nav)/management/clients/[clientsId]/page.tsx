@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 
-const Landlord = ({ params }: { params: { landlordId: string } }) => {
-  redirect(`/management/clients/${params.landlordId}/manage`);
+const Client = ({ params }: { params: { clientId: string } }) => {
+  redirect(`/management/clients/${params.clientId}/manage`);
 };
 
-export default Landlord;
+export default Client;

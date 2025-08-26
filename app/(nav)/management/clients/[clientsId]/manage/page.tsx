@@ -30,8 +30,9 @@ import CustomTable from "@/components/Table/table";
 import {
   statementTableFields,
   statementTableData,
-  transformIndividualLandlordAPIResponse,
-  type IndividualLandlordAPIResponse,
+  transformIndividualClientAPIResponse,
+  type IndividualClientAPIResponse,
+  generateDummyIndividualClientAPIResponse,
 } from "./data";
 import { groupDocumentsByType } from "@/utils/group-documents";
 import useFetch from "@/hooks/useFetch";
@@ -52,24 +53,27 @@ const AddPropertyModal = dynamic(
   { ssr: false }
 );
 
-const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
-  const { landlordId } = params;
+const ManageClient = ({ params }: { params: { clientId: string } }) => {
+  const { clientId } = params;
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
   const { data, error, loading, isNetworkError, refetch } =
-    useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
-  useRefetchOnEvent("refetchlandlord", () => refetch({ silent: true }));
+    useFetch<IndividualClientAPIResponse>(`client/${clientId}`);
+  useRefetchOnEvent("refetchclient", () => refetch({ silent: true }));
 
-  const landlordData = data
-    ? transformIndividualLandlordAPIResponse(data)
+  const apiClient = data;
+  const fallbackClient = !apiClient ? generateDummyIndividualClientAPIResponse(clientId) : null;
+
+  const clientData = (apiClient || fallbackClient)
+    ? transformIndividualClientAPIResponse((apiClient || fallbackClient) as IndividualClientAPIResponse)
     : null;
 
   useEffect(() => {
-    if (landlordData) {
-      setGlobalStore("selectedLandlordId", landlordData.id);
-      const newMessageUserData = landlordData?.messageUserData;
+    if (clientData) {
+      setGlobalStore("selectedClientId", clientData.id);
+      const newMessageUserData = clientData?.messageUserData;
       const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
 
       if (
@@ -79,21 +83,21 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         setGlobalStore("messageUserData", newMessageUserData);
       }
     }
-  }, [setGlobalStore, landlordData]);
+  }, [setGlobalStore, clientData]);
 
-  const userData = landlordData ? transformCardData(landlordData) : null;
+  const userData = clientData ? transformCardData(clientData) : null;
 
   if (loading) return <CustomLoader layout="profile" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <div className="text-red-500">{error}</div>;
-  if (!landlordData) return null;
-  const groupedDocuments = groupDocumentsByType(landlordData?.documents);
+  if (!clientData) return null;
+  const groupedDocuments = groupDocumentsByType(clientData?.documents);
 
   const CAN_DELETE =
-    landlordData && landlordData.properties_managed?.length === 0;
-  const IS_MOBILE = landlordData?.user_tag === "mobile";
+    clientData && clientData.properties_managed?.length === 0;
+  const IS_MOBILE = clientData?.user_tag === "mobile";
 
-  const transformedTableData = landlordData?.statement?.map((item) => ({
+  const transformedTableData = clientData?.statement?.map((item) => ({
     ...item,
     name: (
       <p className="flex items-center whitespace-nowrap">
@@ -114,19 +118,15 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   }));
 
   const goToMessage = () => {
-    if (!landlordData.user_id)
-      return toast.warning("Landlord User ID not Found!");
-    router.push(`/messages/${landlordData?.user_id}`);
+    if (!clientData.user_id)
+      return toast.warning("Client User ID not Found!");
+    router.push(`/messages/${clientData?.user_id}`);
   };
 
-  // const handleAttachProperty = () => {
-  //   setGlobalStore("selectedLandlordId", landlordId);
-  //   setIsModalOpen(true);
-  // };
 
   const handleAttachProperty = () => {
     router.push(
-      `/management/properties/create-rental-property?landlordId=${landlordId}`
+      `/management/properties/create-rental-property?clientId=${clientId}`
     );
   };
 
@@ -147,7 +147,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={landlordData?.picture || ""}
+              src={clientData?.picture || ""}
               alt="profile picture"
               size={120}
               containerClassName="w-fit custom-secondary-bg rounded-full"
@@ -158,44 +158,44 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
               <div className="custom-flex-col">
                 <div className="flex items-center">
                   <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                    {landlordData.title} {landlordData.name}
+                    {clientData.title} {clientData.name}
                   </p>
                   <div className="flex gap-2 items-center">
-                    {landlordData.badge_color && (
-                      <BadgeIcon color={landlordData.badge_color} />
+                    {clientData.badge_color && (
+                      <BadgeIcon color={clientData.badge_color} />
                     )}
                   </div>
                 </div>
                 <p
                   className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
                 >
-                  {landlordData?.email}
+                  {clientData?.email}
                 </p>
                 {!IS_MOBILE && (
                   <p
                     className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}
                   >
-                    {landlordData?.phone_number}
+                    {clientData?.phone_number}
                   </p>
                 )}
               </div>
               <div className="custom-flex-col gap-2">
                 <div className="flex gap-2 items-center">
-                  <UserTag type={landlordData.user_tag} />
-                  {landlordData?.note && (
+                  <UserTag type={clientData.user_tag} />
+                  {clientData?.note && (
                     <Modal>
                       <ModalTrigger>
                         <NoteBlinkingIcon size={20} className="blink-color" />
                       </ModalTrigger>
                       <ModalContent>
-                        <ViewNote note={landlordData.notes?.write_up || ""} />
+                        <ViewNote note={clientData.notes?.write_up || ""} />
                       </ModalContent>
                     </Modal>
                   )}
                 </div>
                 {IS_MOBILE && (
                   <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">
-                    ID: {landlordData?.id}
+                    ID: {clientData?.id}
                   </p>
                 )}
               </div>
@@ -203,7 +203,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
           </div>
 
           <div className="w-fit mx-auto flex flex-wrap gap-4">
-            {landlordData?.user_tag === "mobile" ? (
+            {clientData?.user_tag === "mobile" ? (
               <>
                 <Button
                   onClick={goToMessage}
@@ -226,7 +226,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     <EditMobileUser
                       CAN_DELETE={CAN_DELETE}
                       page="landlord"
-                      id={landlordId}
+                      id={clientId}
                     />
                   </ModalContent>
                 </Modal>
@@ -243,9 +243,9 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   </ModalTrigger>
                   <ModalContent>
                     <MobileNotesModal
-                      id={landlordId}
+                      id={clientId}
                       page="landlord"
-                      notes={landlordData.notes}
+                      notes={clientData.notes}
                     />
                   </ModalContent>
                 </Modal>
@@ -253,7 +253,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             ) : (
               <>
                 <Button
-                  href={`/management/landlord/${landlordId}/manage/edit`}
+                  href={`/management/client/${clientId}/manage/edit`}
                   size="base_medium"
                   className="py-2 px-4 page-header-button"
                 >
@@ -272,7 +272,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                     </Button>
                   </ModalTrigger>
                   <ModalContent>
-                    <AddPropertyModal id={Number(landlordId)} />
+                    <AddPropertyModal id={Number(clientId)} />
                   </ModalContent>
                 </Modal>
                 <Modal>
@@ -288,7 +288,7 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
                   <ModalContent>
                     <UpdateProfileWithIdModal
                       page="landlord"
-                      id={Number(landlordData.id)}
+                      id={Number(clientData.id)}
                       data={userData && userData}
                     />
                   </ModalContent>
@@ -302,11 +302,11 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         {IS_MOBILE && (
           <LandlordTenantInfo
             info={{
-              gender: landlordData.gender,
-              birthday: landlordData.birthday,
-              religion: landlordData.religion,
-              phone: landlordData.phone_number,
-              marital_status: landlordData.marital_status,
+              gender: clientData.gender,
+              birthday: clientData.birthday,
+              religion: clientData.religion,
+              phone: clientData.phone_number,
+              marital_status: clientData.marital_status,
             }}
           />
         )}
@@ -315,10 +315,10 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         {/* <LandlordTenantInfo
           heading="Contact Address"
           info={{
-            address: landlordData.contact_address.address,
-            city: landlordData.contact_address.city,
-            state: landlordData.contact_address.state,
-            "L.G": landlordData.contact_address.local_govt,
+            address: clientData.contact_address.address,
+            city: clientData.contact_address.city,
+            state: clientData.contact_address.state,
+            "L.G": clientData.contact_address.local_govt,
           }}
         /> */}
 
@@ -326,25 +326,25 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         <LandlordTenantInfo
           heading="bank details"
           info={{
-            bank: landlordData.bank_details.bank_name,
-            "account name": landlordData.bank_details.account_name,
-            "account number": landlordData.bank_details.account_number,
-            ...(landlordData.user_tag === "mobile" && {
-              "wallet ID": landlordData.bank_details.wallet_id,
+            bank: clientData.bank_details.bank_name,
+            "account name": clientData.bank_details.account_name,
+            "account number": clientData.bank_details.account_number,
+            ...(clientData.user_tag === "mobile" && {
+              "wallet ID": clientData.bank_details.wallet_id,
             }),
           }}
         />
 
         {/* Others */}
-        {landlordData?.user_tag === "mobile" ? (
+        {clientData?.user_tag === "mobile" ? (
           <LandlordTenantInfo
             heading="Contact Address"
             containerClassName="flex flex-col justify-center"
             info={{
-              address: landlordData.contact_address.address,
-              city: landlordData.contact_address.city,
-              state: landlordData.contact_address.state,
-              "L.G": landlordData.contact_address.local_govt,
+              address: clientData.contact_address.address,
+              city: clientData.contact_address.city,
+              state: clientData.contact_address.state,
+              "L.G": clientData.contact_address.local_govt,
             }}
           />
         ) : (
@@ -352,15 +352,15 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
             containerClassName="flex flex-col justify-center"
             heading="Others"
             info={{
-              occupation: landlordData.others.employment,
-              ...(landlordData.others.employment &&
-                landlordData.others.employment.toLowerCase() === "employed" && {
-                  employment_title: landlordData.others.employment_type,
-                }),
-              family_type: landlordData.others.family_type,
-              landlord_type: landlordData.owner_type,
+              occupation: clientData.others.employment,
+              ...(clientData.others.employment &&
+                clientData.others.employment.toLowerCase() === "employed" && {
+                employment_title: clientData.others.employment_type,
+              }),
+              family_type: clientData.others.family_type,
+              client_type: clientData.owner_type,
               ...(!IS_MOBILE && {
-                gender: landlordData.gender,
+                gender: clientData.gender,
               }),
               // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
             }}
@@ -371,29 +371,29 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         <LandlordTenantInfo
           heading="Next of Kin"
           info={{
-            name: landlordData.next_of_kin.name,
-            address: landlordData.next_of_kin.address,
-            "phone number": landlordData.next_of_kin.phone,
-            relationship: landlordData.next_of_kin.relationship,
+            name: clientData.next_of_kin.name,
+            address: clientData.next_of_kin.address,
+            "phone number": clientData.next_of_kin.phone,
+            relationship: clientData.next_of_kin.relationship,
           }}
         />
 
         {/* Notes */}
-        {landlordData?.user_tag === "web" ? (
-          <NotesInfoBox notes={landlordData.notes} />
+        {clientData?.user_tag === "web" ? (
+          <NotesInfoBox notes={clientData.notes} />
         ) : (
           <>
             <LandlordTenantInfo
               containerClassName="flex flex-col justify-center"
               heading="Others"
               info={{
-                occupation: landlordData.others.employment,
-                ...(landlordData.others.employment &&
-                  landlordData.others.employment.toLowerCase() ===
-                    "employed" && {
-                    employment_title: landlordData.others.employment_type,
-                  }),
-                family_type: landlordData.others.family_type,
+                occupation: clientData.others.employment,
+                ...(clientData.others.employment &&
+                  clientData.others.employment.toLowerCase() ===
+                  "employed" && {
+                  employment_title: clientData.others.employment_type,
+                }),
+                family_type: clientData.others.family_type,
                 // xxxxxxxxxxxxx: "xxxxxxxxxxxxxxx",
               }}
             />
@@ -402,25 +402,21 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       </div>
 
       {/* Edit attachment */}
-      {landlordData?.user_tag === "mobile" && (
-        <LandlordEditContext.Provider value={{ data: landlordData }}>
+      {clientData?.user_tag === "mobile" && (
+        <LandlordEditContext.Provider value={{ data: clientData }}>
           <LandlordEditAttachmentInfoSection noDefault />
         </LandlordEditContext.Provider>
       )}
 
       {/* Property Managed */}
-      {landlordData &&
-        landlordData?.properties_managed &&
-        landlordData?.properties_managed?.length > 0 && (
+      {clientData &&
+        clientData?.properties_managed &&
+        clientData?.properties_managed?.length > 0 && (
           <LandlordTenantInfoSection title="Property Managed">
-            {landlordData?.properties_managed?.length === 0 ? (
-              // <div className="flex justify-center items-center h-32 text-neutral-500">
-              //   The landlord does not manage any property yet
-              // </div>
-              ""
+            {clientData?.properties_managed?.length === 0 ? (""
             ) : (
               <AutoResizingGrid minWidth={315}>
-                {landlordData?.properties_managed?.map((property) => (
+                {clientData?.properties_managed?.map((property) => (
                   <PropertyCard key={property.id} {...property} />
                 ))}
               </AutoResizingGrid>
@@ -429,19 +425,19 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         )}
 
       {/* Statement */}
-      {landlordData &&
-        landlordData?.statement &&
-        landlordData.statement?.length > 0 && (
+      {clientData &&
+        clientData?.statement &&
+        clientData.statement?.length > 0 && (
           <SectionContainer
             heading="Statement"
-            {...((landlordData?.statement?.length ?? 0) > 0 && {
-              href: `/management/landlord/${landlordId}/export`,
+            {...((clientData?.statement?.length ?? 0) > 0 && {
+              href: `/management/client/${clientId}/export`,
             })}
             style={{ fontSize: "25px", fontWeight: "700" }}
           >
-            {(landlordData?.statement?.length ?? 0) === 0 ? (
+            {(clientData?.statement?.length ?? 0) === 0 ? (
               // <div className="flex justify-center items-center h-32 text-neutral-500">
-              //   The landlord does not have any statement yet
+              //   The client does not have any statement yet
               // </div>
               ""
             ) : (
@@ -458,8 +454,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       {/* Shared Documents */}
       <div>
         {[
-          ...(landlordData?.properties_managed ?? []),
-          ...(landlordData?.previous_properties ?? []),
+          ...(clientData?.properties_managed ?? []),
+          ...(clientData?.previous_properties ?? []),
         ].length === 0 ? (
           <div className="">
             {/* No documents available for any properties */}
@@ -467,8 +463,8 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
         ) : (
           <>
             {[
-              ...(landlordData?.properties_managed ?? []),
-              ...(landlordData?.previous_properties ?? []),
+              ...(clientData?.properties_managed ?? []),
+              ...(clientData?.previous_properties ?? []),
             ].map((property) => (
               <LandlordTenantInfoSection
                 title={
@@ -534,12 +530,12 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
       </div>
 
       {/* Previous Property */}
-      {landlordData &&
-        landlordData?.previous_properties &&
-        landlordData?.previous_properties?.length > 0 && (
+      {clientData &&
+        clientData?.previous_properties &&
+        clientData?.previous_properties?.length > 0 && (
           <LandlordTenantInfoSection title="previous property">
             <AutoResizingGrid minWidth={315}>
-              {landlordData?.previous_properties?.map((property) => (
+              {clientData?.previous_properties?.map((property) => (
                 <PropertyCard key={property.id} {...property} />
               ))}
             </AutoResizingGrid>
@@ -549,4 +545,4 @@ const ManageLandlord = ({ params }: { params: { landlordId: string } }) => {
   );
 };
 
-export default ManageLandlord;
+export default ManageClient;

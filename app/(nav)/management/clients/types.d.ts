@@ -112,7 +112,7 @@ interface AttachedDocument extends AttachedDocumentCard {
   id: string;
 }
 
-export type LandlordPageData = {
+export type ClientPageData = {
   id: string;
   picture?: string;
   // first_name: string;
@@ -168,7 +168,7 @@ export interface messageUserDataTypes {
   name: string;
   position: string;
 }
-export type LandlordHelpInfo = {
+export type ClientHelpInfo = {
   id: number;
   count: number;
   description: string;
@@ -202,5 +202,4 @@ export type LandlordHelpInfo = {
   };
 };
 
-export type LandlordHelpInfoList = LandlordHelpInfo[];
-  
+export type ClientHelpInfoList = ClientHelpInfo[];

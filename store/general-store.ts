@@ -141,6 +141,7 @@ interface GlobalStoreState {
   selectedSubPlan: PropertyManagerSubsTransformedPlan | null;
   selectedLandlordId: string | null;
   selectedTenantId: string | null;
+  selectedClientId?: string; // Add this line
 
   caution_unit_occupant: {
     requestId: string | null;

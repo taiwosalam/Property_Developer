@@ -8,7 +8,7 @@ import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
 import { empty } from "@/app/config";
 
-interface LandlordCardProps {
+interface ClientCardProps {
   id: string;
   name: string;
   email: string | null;
@@ -19,33 +19,33 @@ interface LandlordCardProps {
   note?: boolean;
 }
 
-export interface LandlordsPageData {
-  total_landlords: number;
-  new_landlords_this_month: number;
-  mobile_landlords: number;
-  new_mobile_landlords_this_month: number;
-  web_landlords: number;
-  new_web_landlords_this_month: number;
+export interface ClientsPageData {
+  total_clients: number;
+  new_clients_this_month: number;
+  mobile_clients: number;
+  new_mobile_clients_this_month: number;
+  web_clients: number;
+  new_web_clients_this_month: number;
   total_pages: number;
   current_page: number;
-  landlords: LandlordCardProps[];
+  clients: ClientCardProps[];
 }
 
-export const initialLandlordsPageData: LandlordsPageData = {
+export const initialClientsPageData: ClientsPageData = {
   total_pages: 1,
   current_page: 1,
-  total_landlords: 0,
-  new_landlords_this_month: 0,
-  mobile_landlords: 0,
-  new_mobile_landlords_this_month: 0,
-  web_landlords: 0,
-  new_web_landlords_this_month: 0,
-  landlords: [],
+  total_clients: 0,
+  new_clients_this_month: 0,
+  mobile_clients: 0,
+  new_mobile_clients_this_month: 0,
+  web_clients: 0,
+  new_web_clients_this_month: 0,
+  clients: [],
 };
 
-export const getOneLandlord = async (id: string) => {};
+export const getOneClient = async (id: string) => { };
 
-export const getLandlordsHelpInfo = async () => {
+export const getClientsHelpInfo = async () => {
   try {
     const response = await fetch(
       `https://kb.ourproperty.ng/property-manager/api/helpinfo/landlord`,
@@ -70,7 +70,7 @@ export const getLandlordsHelpInfo = async () => {
   }
 };
 
-export const landlordTableFields: Field[] = [
+export const clientTableFields: Field[] = [
   {
     id: "1",
     accessor: "picture_url",
@@ -104,23 +104,120 @@ export const landlordTableFields: Field[] = [
   { id: "6", accessor: "manage/chat" },
 ];
 
-const generateMockdata = (numItems: number): LandlordCardProps[] => {
+const generateMockdata = (numItems: number): ClientCardProps[] => {
+  const names = [
+    "John Smith",
+    "Sarah Johnson",
+    "Michael Brown",
+    "Emily Davis",
+    "David Wilson",
+    "Lisa Anderson",
+    "Robert Taylor",
+    "Jennifer Martinez",
+    "William Garcia",
+    "Amanda Rodriguez"
+  ];
+
+  const emails = [
+    "john.smith@email.com",
+    "sarah.j@email.com",
+    "mike.brown@email.com",
+    "emily.davis@email.com",
+    "david.wilson@email.com",
+    "lisa.anderson@email.com",
+    "robert.t@email.com",
+    "jen.martinez@email.com",
+    "will.garcia@email.com",
+    "amanda.rod@email.com"
+  ];
+
+  const phoneNumbers = [
+    "08012345678",
+    "08023456789",
+    "08034567890",
+    "08045678901",
+    "08056789012",
+    "08067890123",
+    "08078901234",
+    "08089012345",
+    "08090123456",
+    "08001234567"
+  ];
+
   return Array.from({ length: numItems }, (_, index) => ({
     id: `${index + 1}`,
     picture_url: "/empty/SampleLandlord.jpeg",
-    name: "Sample name",
+    name: names[index % names.length],
     user_tag: index % 2 === 0 ? "mobile" : "web",
-    email: `test${index + 1}@test.com`,
-    phone_number: `08012345678`,
-    badge_color: index % 5 === 0 ? "black" : "red",
+    email: emails[index % emails.length],
+    phone_number: phoneNumbers[index % phoneNumbers.length],
+    badge_color: index % 5 === 0 ? "black" : index % 3 === 0 ? "red" : "green",
+    note: index % 7 === 0, // Some clients have notes
   }));
 };
 
 export const mockData = generateMockdata(10);
 
-export interface LandlordApiResponse {
+// Generate dummy API response data for development/testing
+export const generateDummyClientApiResponse = (page: number = 1, search?: string): ClientApiResponse => {
+  const totalItems = 50; // Total dummy clients
+  const perPage = 10;
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  // Filter clients if search is provided
+  let filteredClients = generateMockdata(totalItems);
+  if (search) {
+    filteredClients = filteredClients.filter(client =>
+      client.name.toLowerCase().includes(search.toLowerCase()) ||
+      client.email?.toLowerCase().includes(search.toLowerCase())
+    );
+  }
+
+  // Paginate results
+  const startIndex = (page - 1) * perPage;
+  const endIndex = startIndex + perPage;
+  const paginatedClients = filteredClients.slice(startIndex, endIndex);
+
+  // Transform to API response format
+  const apiClients = paginatedClients.map(client => ({
+    id: client.id,
+    name: client.name,
+    email: client.email,
+    phone: {
+      user_phone: client.phone_number,
+      profile_phone: client.phone_number,
+    },
+    username: client.name.toLowerCase().replace(' ', '.'),
+    picture: client.picture_url,
+    agent: client.user_tag,
+    tier_id: client.badge_color === "black" ? 1 : client.badge_color === "red" ? 2 : 3,
+    user_tier: client.badge_color === "black" ? 1 : client.badge_color === "red" ? 2 : 3,
+    note: {
+      note: client.note ? "Important client note" : null,
+    },
+  }));
+
+  return {
+    data: {
+      clients: apiClients,
+      pagination: {
+        current_page: page,
+        per_page: perPage,
+        total_pages: totalPages,
+      },
+    },
+    mobile_client_count: Math.floor(totalItems * 0.6), // 60% mobile
+    web_client_count: Math.floor(totalItems * 0.4), // 40% web
+    mobile_monthly_count: Math.floor(totalItems * 0.1), // 10% new this month
+    web_monthly_count: Math.floor(totalItems * 0.05), // 5% new this month
+    total_count_monthly: Math.floor(totalItems * 0.15), // 15% total new this month
+    total_data_count: totalItems,
+  };
+};
+
+export interface ClientApiResponse {
   data: {
-    landlords: {
+    clients: {
       id: string;
       name: string;
       email: string | null;
@@ -144,58 +241,57 @@ export interface LandlordApiResponse {
       total_pages: number;
     };
   };
-  mobile_landlord_count: number;
-  web_landlord_count: number;
+  mobile_client_count: number;
+  web_client_count: number;
   mobile_monthly_count: number;
   web_monthly_count: number;
   total_count_monthly: number;
   total_data_count: number;
 }
 
-export const transformLandlordApiResponse = (
-  response: LandlordApiResponse
-): LandlordsPageData => {
+export const transformClientApiResponse = (
+  response: ClientApiResponse
+): ClientsPageData => {
   // console.log("res", response)
   const {
-    data: { landlords, pagination },
-    mobile_landlord_count,
-    web_landlord_count,
+    data: { clients, pagination },
+    mobile_client_count,
+    web_client_count,
     mobile_monthly_count,
     web_monthly_count,
     total_count_monthly,
     total_data_count,
   } = response;
   return {
-    total_landlords: total_data_count,
-    new_landlords_this_month: total_count_monthly,
-    mobile_landlords: mobile_landlord_count,
-    new_mobile_landlords_this_month: mobile_monthly_count,
-    web_landlords: web_landlord_count,
-    new_web_landlords_this_month: web_monthly_count,
+    total_clients: total_data_count,
+    new_clients_this_month: total_count_monthly,
+    mobile_clients: mobile_client_count,
+    new_mobile_clients_this_month: mobile_monthly_count,
+    web_clients: web_client_count,
+    new_web_clients_this_month: web_monthly_count,
     total_pages: pagination.total_pages,
     current_page: pagination.current_page,
-    landlords: landlords.map((landlord) => ({
-      id: landlord.id,
-      name: landlord.name,
-      email: landlord.email,
-      phone_number: `${landlord?.phone?.profile_phone || ""}${
-        landlord?.phone?.user_phone && landlord?.phone?.profile_phone
-          ? " / " + landlord?.phone?.user_phone
-          : ""
-      }`,
-      // phone_number: landlord.phone,
-      user_tag: landlord.agent.toLowerCase() === "mobile" ? "mobile" : "web",
-      picture_url: landlord?.picture,
-      note: landlord?.note?.note !== null && landlord?.note?.note !== "",
+    clients: clients.map((client) => ({
+      id: client.id,
+      name: client.name,
+      email: client.email,
+      phone_number: `${client?.phone?.profile_phone || ""}${client?.phone?.user_phone && client?.phone?.profile_phone
+        ? " / " + client?.phone?.user_phone
+        : ""
+        }`,
+      // phone_number: client.phone,
+      user_tag: client.agent.toLowerCase() === "mobile" ? "mobile" : "web",
+      picture_url: client?.picture,
+      note: client?.note?.note !== null && client?.note?.note !== "",
 
-      badge_color: landlord?.user_tier
-        ? tierColorMap[landlord?.user_tier]
+      badge_color: client?.user_tier
+        ? tierColorMap[client?.user_tier]
         : undefined,
     })),
   };
 };
 
-export interface LandlordRequestParams {
+export interface ClientRequestParams {
   page?: number;
   search?: string;
   sort_order?: "asc" | "desc";

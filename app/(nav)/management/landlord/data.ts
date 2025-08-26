@@ -13,7 +13,7 @@ interface LandlordCardProps {
   name: string;
   email: string | null;
   user_tag: "mobile" | "web";
-  phone_number: string | null;
+  phone_number: string | null; 
   picture_url: string | null;
   badge_color?: BadgeIconColors;
   note?: boolean;

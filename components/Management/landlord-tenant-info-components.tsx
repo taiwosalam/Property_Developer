@@ -283,7 +283,7 @@ export const NotesInfoBox: React.FC<{
 };
 
 export const MobileNotesModal: React.FC<{
-  page?: "landlord" | "tenant" | "service-provider" | "vehicle-record";
+  page?: "landlord" | "tenant" | "service-provider" | "vehicle-record" | "client";
   notes?: { last_updated: string; write_up: string };
   defaultNote?: string;
   id?: string;
