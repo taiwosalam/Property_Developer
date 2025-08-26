@@ -106,43 +106,16 @@ const Clients = () => {
         return { params: queryParams };
     }, [page, searchQuery, appliedFilters]);
 
-    const {
-        data: apiData,
-        loading,
-        silentLoading,
-        isNetworkError,
-        error,
-        refetch,
-        fromCache,
-        clearCache,
-    } = useFetch<ClientApiResponse>("clients", {
-        ...config,
-        cache: {
-            enabled: true,
-            key: `clients-page-${config.params.page}-search-${searchQuery || "none"
-                }-states-${config.params.states || "none"}-branch_ids-${config.params.branch_ids || "none"
-                }-agent-${config.params.agent || "none"}-dates-${config.params.start_date || "none"
-                }-${config.params.end_date || "none"}-sort-${config.params.sort_order || "none"
-                }`,
-            ttl: CACHE_TTL,
-        },
-    });
-
-    const { data: branchesData } = useFetch<AllBranchesResponse>(
-        "/branches/select",
-        {
-            cache: {
-                enabled: true,
-                key: "branches-select",
-                ttl: BRANCHES_CACHE_TTL,
-            },
-        }
-    );
-
-    useRefetchOnEvent("refetchClients", () => {
-        clearCache?.();
-        refetch({ silent: true });
-    });
+    // Backend disabled for clients: use only dummy data
+    const apiData = undefined;
+    const loading = false;
+    const silentLoading = false;
+    const isNetworkError = false;
+    const error = undefined as unknown as string | undefined;
+    const fromCache = false;
+    const clearCache = undefined;
+    const refetch = (_?: any) => { };
+    const branchesData = undefined;
 
     // Infinite scroll callback
     const handleInfiniteScroll = useCallback(async () => {
@@ -185,9 +158,7 @@ const Clients = () => {
     useEffect(() => {
         setPage(1);
         sessionStorage.setItem("client_page", "1");
-        clearCache?.();
-        refetch({ silent: true });
-    }, [view, clearCache, refetch]);
+    }, [view]);
 
     const isFilterApplied = () => {
         const { options, menuOptions, startDate, endDate } = appliedFilters;
@@ -232,59 +203,25 @@ const Clients = () => {
     };
 
     useEffect(() => {
-        if (apiData?.data && Array.isArray(apiData.data.clients)) {
-            console.log("API data received:", {
-                page: config.params.page,
-                total_pages: apiData.data.pagination.total_pages,
-                clients: apiData.data.clients.length,
-                fromCache,
-                apiData, // Log full apiData for debugging
-            });
-            const transformedData = transformClientApiResponse(apiData);
-            setPageData((prevData) => {
-                const updatedClients =
-                    view === "grid" || transformedData.current_page === 1
-                        ? transformedData.clients
-                        : [...prevData.clients, ...transformedData.clients];
-                return {
-                    ...transformedData,
-                    clients: updatedClients,
-                    total_clients: apiData.total_data_count,
-                    new_clients_this_month: apiData.total_count_monthly,
-                    web_clients: apiData.web_client_count,
-                    mobile_clients: apiData.mobile_client_count,
-                    new_web_clients_this_month: apiData.web_monthly_count,
-                    new_mobile_clients_this_month: apiData.mobile_monthly_count,
-                };
-            });
-        } else if (!loading && !apiData) {
-            // Fallback to dummy data when API is not available
-            console.log("Using dummy data for clients");
-            const dummyData = generateDummyClientApiResponse(page, searchQuery);
-            const transformedData = transformClientApiResponse(dummyData);
-            setPageData((prevData) => {
-                const updatedClients =
-                    view === "grid" || transformedData.current_page === 1
-                        ? transformedData.clients
-                        : [...prevData.clients, ...transformedData.clients];
-                return {
-                    ...transformedData,
-                    clients: updatedClients,
-                    total_clients: dummyData.total_data_count,
-                    new_clients_this_month: dummyData.total_count_monthly,
-                    web_clients: dummyData.web_client_count,
-                    mobile_clients: dummyData.mobile_client_count,
-                    new_web_clients_this_month: dummyData.web_monthly_count,
-                    new_mobile_clients_this_month: dummyData.mobile_monthly_count,
-                };
-            });
-        } else {
-            console.warn(
-                "apiData is invalid or data.clients is not an array:",
-                apiData
-            );
-        }
-    }, [apiData, view, fromCache, loading, page, searchQuery]);
+        const dummyData = generateDummyClientApiResponse(page, searchQuery);
+        const transformedData = transformClientApiResponse(dummyData);
+        setPageData((prevData) => {
+            const updatedClients =
+                view === "grid" || transformedData.current_page === 1
+                    ? transformedData.clients
+                    : [...prevData.clients, ...transformedData.clients];
+            return {
+                ...transformedData,
+                clients: updatedClients,
+                total_clients: dummyData.total_data_count,
+                new_clients_this_month: dummyData.total_count_monthly,
+                web_clients: dummyData.web_client_count,
+                mobile_clients: dummyData.mobile_client_count,
+                new_web_clients_this_month: dummyData.web_monthly_count,
+                new_mobile_clients_this_month: dummyData.mobile_monthly_count,
+            };
+        });
+    }, [view, page, searchQuery]);
 
     const branchOptions =
         branchesData?.data.map((branch) => ({
@@ -333,7 +270,7 @@ const Clients = () => {
         return row;
     });
 
-    if (loading)
+    if (!pageData || (page === 1 && pageData.clients.length === 0))
         return (
             <CustomLoader
                 layout="page"
@@ -341,9 +278,6 @@ const Clients = () => {
                 pageTitle="Clients"
             />
         );
-
-    if (isNetworkError) return <NetworkError />;
-    if (error) return <ServerError error={error} />;
 
     return (
         <div className="my-8">

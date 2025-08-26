@@ -1,32 +1,26 @@
 "use client";
 
-import useFetch from "@/hooks/useFetch";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useRef } from "react";
 import {
-  IndividualLandlordAPIResponse,
   statementTableFields,
-  transformIndividualLandlordAPIResponse,
+  transformIndividualClientAPIResponse,
+  generateDummyIndividualClientAPIResponse,
 } from "../manage/data";
 import BackButton from "@/components/BackButton/back-button";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import TableLoading from "@/components/Loader/TableLoading";
 import CustomTable from "@/components/Table/table";
-import { walletTableFields } from "@/app/(nav)/wallet/data";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 
-const LandlordExport = () => {
-  const { landlordId } = useParams();
-  const router = useRouter();
-  const { data, error, loading, isNetworkError, refetch } =
-    useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
-  //   useRefetchOnEvent("refetchlandlord", () => refetch({ silent: true }));
+const ClientExport = () => {
+  const { clientsId } = useParams();
+  const printRef = useRef<HTMLDivElement>(null);
 
-  const landlordData = data
-    ? transformIndividualLandlordAPIResponse(data)
-    : null;
+  const clientData = transformIndividualClientAPIResponse(
+    generateDummyIndividualClientAPIResponse(String(clientsId))
+  );
 
-  const transformedTableData = landlordData?.statement?.map((item) => ({
+  const transformedTableData = clientData?.statement?.map((item) => ({
     ...item,
     name: (
       <p className="flex items-center whitespace-nowrap">
@@ -46,14 +40,12 @@ const LandlordExport = () => {
     ),
   }));
 
-  const printRef = useRef<HTMLDivElement>(null);
-
   return (
     <div className="custom-flex-col gap-8">
-      <BackButton>Landlord Statement</BackButton>
+      <BackButton>Client Statement</BackButton>
       <div ref={printRef}>
         <FilterBar
-          pageTitle={landlordData?.name}
+          pageTitle={clientData?.name}
           hasGridListToggle={false}
           handleFilterApply={() => { }}
           hiddenSearchInput
@@ -62,23 +54,17 @@ const LandlordExport = () => {
           printRef={printRef}
           noExclamationMark
           noFilterButton
-        // filterOptionsMenu={transactionHistoryFilterMenu}
-        // appliedFilters={appliedFilters}
         />
 
-        {loading ? (
-          <TableLoading />
-        ) : (
-          <CustomTable
-            fields={statementTableFields}
-            data={transformedTableData ?? []}
-            tableBodyCellSx={{ fontSize: "1rem" }}
-            tableHeadCellSx={{ fontSize: "1rem" }}
-          />
-        )}
+        <CustomTable
+          fields={statementTableFields}
+          data={transformedTableData ?? []}
+          tableBodyCellSx={{ fontSize: "1rem" }}
+          tableHeadCellSx={{ fontSize: "1rem" }}
+        />
       </div>
     </div>
   );
 };
 
-export default LandlordExport;
+export default ClientExport;

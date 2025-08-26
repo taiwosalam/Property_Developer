@@ -17,6 +17,7 @@ import {
   ViewNote,
 } from "@/components/Management/landlord-tenant-info-components";
 import PropertyCard from "@/components/Management/Properties/property-card";
+import PropertyListItem from "@/components/Management/Properties/property-list-item";
 import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import { ChevronLeft } from "@/public/icons/icons";
@@ -53,22 +54,16 @@ const AddPropertyModal = dynamic(
   { ssr: false }
 );
 
-const ManageClient = ({ params }: { params: { clientId: string } }) => {
-  const { clientId } = params;
+const ManageClient = ({ params }: { params: { clientsId: string } }) => {
+  const clientId = params.clientsId;
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
 
-  const { data, error, loading, isNetworkError, refetch } =
-    useFetch<IndividualClientAPIResponse>(`client/${clientId}`);
-  useRefetchOnEvent("refetchclient", () => refetch({ silent: true }));
-
-  const apiClient = data;
-  const fallbackClient = !apiClient ? generateDummyIndividualClientAPIResponse(clientId) : null;
-
-  const clientData = (apiClient || fallbackClient)
-    ? transformIndividualClientAPIResponse((apiClient || fallbackClient) as IndividualClientAPIResponse)
-    : null;
+  // Backend disabled: use only dummy data
+  const apiClient: IndividualClientAPIResponse | null = null;
+  const fallbackClient = generateDummyIndividualClientAPIResponse(clientId);
+  const clientData = transformIndividualClientAPIResponse(fallbackClient);
 
   useEffect(() => {
     if (clientData) {
@@ -87,10 +82,7 @@ const ManageClient = ({ params }: { params: { clientId: string } }) => {
 
   const userData = clientData ? transformCardData(clientData) : null;
 
-  if (loading) return <CustomLoader layout="profile" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <div className="text-red-500">{error}</div>;
-  if (!clientData) return null;
+  if (!clientData) return <CustomLoader layout="profile" />;
   const groupedDocuments = groupDocumentsByType(clientData?.documents);
 
   const CAN_DELETE =
@@ -116,6 +108,50 @@ const ManageClient = ({ params }: { params: { clientId: string } }) => {
       </p>
     ),
   }));
+
+  // Dummy properties for Property Listing section
+  const dummyProperties = [
+    {
+      id: "101",
+      images: ["/empty/SampleProperty.jpeg"],
+      property_name: "Ocean View Apartments",
+      total_units: 12,
+      address: "23 Marine Road, Oniru, Lagos",
+      available_units: 3,
+      owing_units: 1,
+      mobile_tenants: 7,
+      web_tenants: 5,
+      accountOfficer: "Adeola Johnson",
+      last_updated: "12/09/2024",
+      total_returns: 24500000,
+      total_income: 3675000,
+      currency: "naira" as const,
+      branch: "Lagos HQ",
+      property_type: "rental" as const,
+      total_unit_pictures: 4,
+      hasVideo: true,
+    },
+    {
+      id: "102",
+      images: ["/empty/SampleProperty2.jpeg"],
+      property_name: "Greenwood Estate",
+      total_units: 8,
+      address: "5B Admiralty Way, Lekki Phase 1, Lagos",
+      available_units: 1,
+      owing_units: 2,
+      mobile_tenants: 3,
+      web_tenants: 5,
+      accountOfficer: "Chinedu Okafor",
+      last_updated: "03/08/2024",
+      total_returns: 12800000,
+      total_income: 1920000,
+      currency: "naira" as const,
+      branch: "Island Branch",
+      property_type: "rental" as const,
+      total_unit_pictures: 2,
+      hasVideo: false,
+    },
+  ];
 
   const goToMessage = () => {
     if (!clientData.user_id)
@@ -450,6 +486,15 @@ const ManageClient = ({ params }: { params: { clientId: string } }) => {
             )}
           </SectionContainer>
         )}
+
+      {/* Property Listing (List View) */}
+      <LandlordTenantInfoSection title="Property Listing">
+        <div className="custom-flex-col gap-4">
+          {dummyProperties.map((property) => (
+            <PropertyListItem key={`pli-${property.id}`} {...property} />
+          ))}
+        </div>
+      </LandlordTenantInfoSection>
 
       {/* Shared Documents */}
       <div>
