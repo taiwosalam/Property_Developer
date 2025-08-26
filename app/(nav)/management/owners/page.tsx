@@ -322,7 +322,7 @@ const Owners = () => {
             ],
           },
           ...(branchOptions.length > 0
-            ? [{ label: "Branch", value: branchOptions }]
+            ? [{ label: "Branch", value: branchOptions as any }]
             : []),
         ]}
       />

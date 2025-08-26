@@ -62,7 +62,7 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
 
     useEffect(() => {
         if (ownerData) {
-            setGlobalStore("selectedOwnerId", ownerData.id);
+            setGlobalStore("selectedClientId", ownerData.id);
             const newMessageUserData = ownerData?.messageUserData;
             const currentMessageUserData = useGlobalStore.getState()?.messageUserData;
 
@@ -89,7 +89,7 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
         name: (
             <p className="flex items-center whitespace-nowrap">
                 <span>{item.name || "--- ---"}</span>
-                {item?.badge_color && <BadgeIcon color={item.badge_color} />}
+                {item?.badge_color && <BadgeIcon color={item.badge_color as any} />}
             </p>
         ),
         credit: (
@@ -192,7 +192,7 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
                                     </p>
                                     <div className="flex gap-2 items-center">
                                         {ownerData.badge_color && (
-                                            <BadgeIcon color={ownerData.badge_color} />
+                                            <BadgeIcon color={ownerData.badge_color as any} />
                                         )}
                                     </div>
                                 </div>
@@ -333,10 +333,10 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
                     <LandlordTenantInfo
                         info={{
                             gender: ownerData.gender,
-                            birthday: ownerData.birthday,
-                            religion: ownerData.religion,
+                            // birthday: ownerData.birthday,
+                            // religion: ownerData.religion,
                             phone: ownerData.phone_number,
-                            marital_status: ownerData.marital_status,
+                            // marital_status: ownerData.marital_status,
                         }}
                     />
                 )}
@@ -399,7 +399,7 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
 
             {/* Edit attachment */}
             {ownerData?.user_tag === "mobile" && (
-                <LandlordEditContext.Provider value={{ data: ownerData }}>
+                <LandlordEditContext.Provider value={{ data: ownerData as any }}>
                     <LandlordEditAttachmentInfoSection noDefault />
                 </LandlordEditContext.Provider>
             )}
@@ -413,7 +413,7 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
                         ) : (
                             <AutoResizingGrid minWidth={315}>
                                 {ownerData?.properties_managed?.map((property) => (
-                                    <PropertyCard key={property.id} {...property} />
+                                    <PropertyCard key={property.id} {...property as any} />
                                 ))}
                             </AutoResizingGrid>
                         )}
@@ -536,7 +536,7 @@ const ManageOwner = ({ params }: { params: { ownersId: string } }) => {
                     <LandlordTenantInfoSection title="previous property">
                         <AutoResizingGrid minWidth={315}>
                             {ownerData?.previous_properties?.map((property) => (
-                                <PropertyCard key={property.id} {...property} />
+                                <PropertyCard key={property.id} {...property as any} />
                             ))}
                         </AutoResizingGrid>
                     </LandlordTenantInfoSection>

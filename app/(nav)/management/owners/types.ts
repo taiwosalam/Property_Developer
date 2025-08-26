@@ -58,7 +58,7 @@ export interface OwnerPageData {
         credit: string | null;
         debit: string | null;
         date: string;
-        badge_color?: string;
+        badge_color?: string | null;
     }[];
     propertyOptions: {
         label: string;

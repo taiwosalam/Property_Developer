@@ -24,7 +24,37 @@ export interface InvestorsPageData {
     new_web_investors_this_month: number;
     total_pages: number;
     current_page: number;
-    investors: InvestorCardProps[];
+    investors: {
+        id: string;
+        name: string;
+        email: string | null;
+        phone_number: string | null;
+        picture_url: string | null;
+        badge_color?: BadgeIconColors;
+        note?: string | null;
+        user_tag: "mobile" | "web";
+        user_id?: string;
+        title?: string;
+        picture?: string;
+        gender?: string;
+        birthday?: string;
+        religion?: string;
+        marital_status?: string;
+        bank_name?: string;
+        account_name?: string;
+        account_number?: string;
+        occupation?: string;
+        employment_type?: string;
+        family_type?: string;
+        investor_type?: string;
+        address?: string;
+        phone?: string;
+        relationship?: string;
+    }[];
+    statement: any[];
+    propertyOptions: any[];
+    messageUserData: any;
+    documents?: { type: string; files: ({ url: string; updated_at: string } | string)[] }[];
 }
 
 export const initialInvestorsPageData: InvestorsPageData = {
@@ -37,6 +67,9 @@ export const initialInvestorsPageData: InvestorsPageData = {
     web_investors: 0,
     new_web_investors_this_month: 0,
     investors: [],
+    statement: [],
+    propertyOptions: [],
+    messageUserData: [],
 };
 
 export const investorTableFields: Field[] = [
@@ -114,7 +147,7 @@ export const generateDummyInvestorApiResponse = (page: number = 1, search?: stri
         note: { note: c.note ? "VIP investor" : null },
     }));
     return {
-        data: { investors: paginated, pagination: { current_page: page, per_page: perPage, total_pages: totalPages } },
+        data: { investors: paginated as any, pagination: { current_page: page, per_page: perPage, total_pages: totalPages } },
         mobile_investor_count: Math.floor(totalItems * 0.5),
         web_investor_count: Math.floor(totalItems * 0.5),
         mobile_monthly_count: Math.floor(totalItems * 0.1),
@@ -142,7 +175,7 @@ export const transformInvestorApiResponse = (response: InvestorApiResponse) => {
             phone_number: `${inv.phone.profile_phone || ""}${inv.phone.user_phone && inv.phone.profile_phone ? " / " + inv.phone.user_phone : ""}`,
             user_tag: inv.agent.toLowerCase() === "mobile" ? "mobile" : "web",
             picture_url: inv.picture,
-            note: inv?.note?.note !== null && inv?.note?.note !== "",
+            note: inv?.note?.note,
             badge_color: inv?.user_tier ? tierColorMap[inv.user_tier] : undefined,
         }))
     } as InvestorsPageData;

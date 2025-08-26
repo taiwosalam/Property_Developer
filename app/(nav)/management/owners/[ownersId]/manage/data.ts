@@ -119,9 +119,7 @@ export interface IndividualOwnerAPIResponse {
     };
 }
 
-export const transformIndividualOwnerAPIResponse = ({
-    data,
-}: IndividualOwnerAPIResponse): OwnerPageData => {
+export const transformIndividualOwnerAPIResponse = ({data}: IndividualOwnerAPIResponse): OwnerPageData => {
     const lastUpdated = data.note.last_updated_at
         ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
         : "";
@@ -294,7 +292,7 @@ export const transformIndividualOwnerAPIResponse = ({
                 ) || [],
             };
         }),
-        statement: data?.statement?.map((s) => {
+        statement: data?.statement?.map((s: any) => {
             const amount = parseFloat(s?.amount_paid || 0);
             return {
                 id: s?.id || 0,

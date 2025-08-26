@@ -1,6 +1,13 @@
 import api, { handleAxiosError } from "@/services/api";
 import { toast } from "sonner";
-import { LandlordPageData } from "../../../types";
+// import { LandlordPageData } from "../../../types";
+
+interface LandlordPageData {
+  documents: {
+    document_type: string;
+    file: File | null;
+  }[];
+}
 
 export const updateLandlordProfile = async (id: string, payload: FormData) => {
   payload.append("_method", "PUT");

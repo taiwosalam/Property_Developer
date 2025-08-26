@@ -25,7 +25,7 @@ const OwnerExport = () => {
         name: (
             <p className="flex items-center whitespace-nowrap">
                 <span>{item.name || "--- ---"}</span>
-                {item.badge_color && <BadgeIcon color={item.badge_color} />}
+                {item.badge_color && <BadgeIcon color={item.badge_color as any} />}
             </p>
         ),
         credit: (

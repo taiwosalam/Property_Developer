@@ -4,10 +4,11 @@ import Button from "@/components/Form/Button/button";
 import { useEffect, useState } from "react";
 import { LandlordEditContext } from "@/components/Management/Landlord/landlord-edit-context";
 import {
-  type IndividualLandlordAPIResponse,
-  transformIndividualLandlordAPIResponse,
+  type IndividualClientAPIResponse,
+  transformIndividualClientAPIResponse,
 } from "../data";
-import { LandlordPageData } from "../../../types";
+// import { LandlordPageData } from "../../../types";
+import { ClientPageData } from "../../../types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import BackButton from "@/components/BackButton/back-button";
@@ -33,18 +34,18 @@ import { ExclamationMark } from "@/public/icons/icons";
 const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
   const router = useRouter();
-  const [landlordData, setLandlordData] = useState<LandlordPageData | null>(
+  const [landlordData, setLandlordData] = useState<ClientPageData | null>(
     null
   );
 
   const { data, error, loading, refetch } =
-    useFetch<IndividualLandlordAPIResponse>(`landlord/${landlordId}`);
+    useFetch<IndividualClientAPIResponse>(`landlord/${landlordId}`);
 
   useRefetchOnEvent("landlord-updated", () => refetch({ silent: true }));
 
   useEffect(() => {
     if (data) {
-      setLandlordData(transformIndividualLandlordAPIResponse(data));
+      setLandlordData(transformIndividualClientAPIResponse(data));
     }
   }, [data]);
 

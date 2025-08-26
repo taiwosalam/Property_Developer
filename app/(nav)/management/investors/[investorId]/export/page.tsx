@@ -20,7 +20,7 @@ const InvestorExport = () => {
         generateDummyIndividualInvestorAPIResponse(String(investorId))
     );
 
-    const transformedTableData = investorData?.statement?.map((item) => ({
+    const transformedTableData = investorData?.statement?.map((item:any) => ({
         ...item,
         name: (
             <p className="flex items-center whitespace-nowrap">
@@ -45,7 +45,7 @@ const InvestorExport = () => {
             <BackButton>Investor Statement</BackButton>
             <div ref={printRef}>
                 <FilterBar
-                    pageTitle={investorData?.name}
+                    pageTitle={investorData?.investors[0]?.name}
                     hasGridListToggle={false}
                     handleFilterApply={() => { }}
                     hiddenSearchInput

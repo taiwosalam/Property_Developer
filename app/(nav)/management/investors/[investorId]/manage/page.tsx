@@ -38,14 +38,14 @@ const ManageInvestor = ({ params }: { params: { investorId: string } }) => {
         generateDummyIndividualInvestorAPIResponse(investorId)
     );
 
-    const groupedDocuments = groupDocumentsByType(investorData?.documents);
-    const IS_MOBILE = investorData?.user_tag === "mobile";
+    const groupedDocuments = groupDocumentsByType(investorData?.documents as any);
+    const IS_MOBILE = investorData?.investors[0]?.user_tag === "mobile";
 
     let transformedTableData: any[] = [];
 
     const goToMessage = () => {
-        if (!investorData.user_id) return toast.warning("Investor User ID not Found!");
-        router.push(`/messages/${investorData?.user_id}`);
+        if (!investorData?.investors[0]?.user_id) return toast.warning("Investor User ID not Found!");
+        router.push(`/messages/${investorData?.investors[0]?.user_id}`);
     };
 
     // Dummy investments (properties) to show in grid
@@ -127,50 +127,51 @@ const ManageInvestor = ({ params }: { params: { investorId: string } }) => {
                         <button type="button" aria-label="back" className="absolute top-3 left-3" onClick={() => router.back()}>
                             <ChevronLeft />
                         </button>
-                        <Picture src={investorData?.picture || ""} alt="profile picture" size={120} containerClassName="w-fit custom-secondary-bg rounded-full" rounded />
+                        <Picture src={investorData?.investors[0]?.picture || ""} alt="profile picture" size={120} containerClassName="w-fit custom-secondary-bg rounded-full" rounded />
 
                         <div className="custom-flex-col gap-4">
                             <div className="custom-flex-col">
                                 <div className="flex items-center">
                                     <p className="text-black dark:text-white text-lg lg:text-xl font-bold capitalize">
-                                        {investorData.title} {investorData.name}
+                                        {investorData.investors[0]?.title} {investorData.investors[0]?.name}
                                     </p>
                                     <div className="flex gap-2 items-center">
-                                        {investorData.badge_color && <BadgeIcon color={investorData.badge_color} />}
+                                        {investorData.investors[0]?.badge_color && <BadgeIcon color={investorData.investors[0]?.badge_color} />}
                                     </div>
                                 </div>
                                 <p className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}>
-                                    {investorData?.email}
+                                    {investorData?.investors[0]?.email}
                                 </p>
                                 {!IS_MOBILE && (
                                     <p className={`${secondaryFont.className} text-sm font-normal text-[#151515B2] dark:text-[#FFFFFFB2]`}>
-                                        {investorData?.phone_number}
+                                        {investorData?.investors[0]?.phone_number}
                                     </p>
                                 )}
                             </div>
                             <div className="custom-flex-col gap-2">
                                 <div className="flex gap-2 items-center">
-                                    <UserTag type={investorData.user_tag} />
-                                    {investorData?.note && (
+                                    <UserTag type={investorData.investors[0]?.user_tag} />
+                                    {investorData?.investors[0]?.note && (
                                         <Modal>
                                             <ModalTrigger>
                                                 <NoteBlinkingIcon size={20} className="blink-color" />
                                             </ModalTrigger>
                                             <ModalContent>
-                                                <ViewNote note={investorData.notes?.write_up || ""} />
+                                                {/* <ViewNote note={investorData.investors[0]?.note?.note || ""} /> */}
+                                                <ViewNote note={investorData.investors[0]?.note || "High net worth investor with excellent track record"} />
                                             </ModalContent>
                                         </Modal>
                                     )}
                                 </div>
                                 {IS_MOBILE && (
-                                    <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">ID: {investorData?.id}</p>
+                                    <p className="text-neutral-800 dark:text-darkText-1 text-base font-medium">ID: {investorData?.investors[0]?.id}</p>
                                 )}
                             </div>
                         </div>
                     </div>
 
                     <div className="w-fit mx-auto flex flex-wrap gap-4">
-                        {investorData?.user_tag === "mobile" ? (
+                        {investorData?.investors[0]?.user_tag === "mobile" ? (
                             <>
                                 <Button onClick={goToMessage} size="base_medium" className="py-2 px-4 page-header-button">message</Button>
                             </>
@@ -183,15 +184,15 @@ const ManageInvestor = ({ params }: { params: { investorId: string } }) => {
                 </LandlordTenantInfoBox>
 
                 {IS_MOBILE && (
-                    <LandlordTenantInfo info={{ gender: investorData.gender, birthday: investorData.birthday, religion: investorData.religion, phone: investorData.phone_number, marital_status: investorData.marital_status }} />
+                    <LandlordTenantInfo info={{ gender: investorData.investors[0]?.gender, birthday: investorData.investors[0]?.birthday, religion: investorData.investors[0]?.religion, phone: investorData.investors[0]?.phone_number, marital_status: investorData.investors[0]?.marital_status }} />
                 )}
 
                 <LandlordTenantInfo
                     heading="bank details"
                     info={{
-                        bank: investorData.bank_details.bank_name,
-                        "account name": investorData.bank_details.account_name,
-                        "account number": investorData.bank_details.account_number,
+                        bank: investorData.investors[0]?.bank_name,
+                        "account name": investorData.investors[0]?.account_name,
+                        "account number": investorData.investors[0]?.account_number,
                     }}
                 />
 
@@ -199,21 +200,21 @@ const ManageInvestor = ({ params }: { params: { investorId: string } }) => {
                     containerClassName="flex flex-col justify-center"
                     heading="Others"
                     info={{
-                        occupation: investorData.others.employment,
-                        ...(investorData.others.employment && investorData.others.employment.toLowerCase() === "employed" && { employment_title: investorData.others.employment_type }),
-                        family_type: investorData.others.family_type,
-                        investor_type: investorData.owner_type,
-                        ...(!IS_MOBILE && { gender: investorData.gender }),
+                        occupation: investorData.investors[0]?.occupation,
+                        ...(investorData.investors[0]?.occupation && investorData.investors[0]?.occupation.toLowerCase() === "employed" && { employment_title: investorData.investors[0]?.employment_type }),
+                        family_type: investorData.investors[0]?.family_type,
+                        investor_type: investorData.investors[0]?.investor_type,
+                        ...(!IS_MOBILE && { gender: investorData.investors[0]?.gender }),
                     }}
                 />
 
                 <LandlordTenantInfo
                     heading="Next of Kin"
                     info={{
-                        name: investorData.next_of_kin.name,
-                        address: investorData.next_of_kin.address,
-                        "phone number": investorData.next_of_kin.phone,
-                        relationship: investorData.next_of_kin.relationship,
+                        name: investorData.investors[0]?.name,
+                        address: investorData.investors[0]?.address,
+                        "phone number": investorData.investors[0]?.phone,
+                        relationship: investorData.investors[0]?.relationship,
                     }}
                 />
             </div>
@@ -228,14 +229,14 @@ const ManageInvestor = ({ params }: { params: { investorId: string } }) => {
             </LandlordTenantInfoSection>
 
             {/* Statement
-            {investorData && investorData?.statement && investorData.statement?.length > 0 && (
+                    {investorData && investorData?.investors && investorData.investors?.length > 0 && (
                 <SectionContainer heading="Statement" style={{ fontSize: "25px", fontWeight: "700" }}>
                     <CustomTable fields={statementTableFields} data={transformedTableData ?? []} tableBodyCellSx={{ fontSize: "1rem" }} tableHeadCellSx={{ fontSize: "1rem" }} />
                 </SectionContainer>
             )} */}
 
             {/* Statement */}
-            {investorData && investorData?.statement && investorData.statement?.length > 0 && (
+            {investorData && investorData?.investors && investorData.investors?.length > 0 && (
                 <SectionContainer heading="Statement" style={{ fontSize: "25px", fontWeight: "700" }}>
                     <CustomTable fields={statementTableFields} data={transformedTableData ?? []} tableBodyCellSx={{ fontSize: "1rem" }} tableHeadCellSx={{ fontSize: "1rem" }} />
                 </SectionContainer>

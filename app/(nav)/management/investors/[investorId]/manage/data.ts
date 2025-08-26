@@ -1,8 +1,8 @@
 import type { Field } from "@/components/Table/types";
-import type { OwnerPageData } from "../../owners/types";
+import type { InvestorsPageData } from "../../data";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
-import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
+
 import dayjs from "dayjs";
 import { empty } from "@/app/config";
 
@@ -40,34 +40,59 @@ export interface IndividualInvestorAPIResponse {
         properties: any[];
         previous_properties: any[];
         statement: any[];
+        birthday: string;
+        religion: string;
+        marital_status: string;
         documents: { type: string; files: ({ url: string; updated_at: string } | string)[] }[];
     };
 }
 
-export const transformIndividualInvestorAPIResponse = ({ data }: IndividualInvestorAPIResponse): OwnerPageData => {
-    const lastUpdated = data.note.last_updated_at ? moment(data.note.last_updated_at).format("DD/MM/YYYY") : "";
+export const transformIndividualInvestorAPIResponse = ({ data }: IndividualInvestorAPIResponse): InvestorsPageData => {
     return {
-        id: data.id,
-        picture: data.picture || "",
-        name: data.name,
-        title: data.title || "",
-        email: data.email,
-        phone_number: `${data.phone.profile_phone ?? ""}${data.phone.user_phone && data.phone.profile_phone ? " / " + data.phone.user_phone : ""}`,
-        gender: data.gender,
-        notes: { last_updated: lastUpdated, write_up: data?.note?.note ?? "" },
-        note: data?.note?.note !== null && data?.note?.note !== "",
-        owner_type: data.investor_type,
-        user_id: data.user_id,
-        badge_color: data?.user_tier ? tierColorMap[data?.user_tier] : undefined,
-        user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
-        contact_address: { address: data.address, city: data.city, state: data.state, local_govt: data.local_government },
-        next_of_kin: data.next_of_kin,
-        bank_details: data.bank_details,
-        others: { employment: data?.Others?.occupation ?? "", employment_type: data?.Others?.job_type ?? "", family_type: data?.Others?.family_type ?? "" },
-        documents: data?.documents?.flatMap((doc) => doc.files.map((file, index) => typeof file === "string" ? ({ id: uuidv4(), name: `${doc?.type ?? ""} ${index + 1}`, link: file, document_type: doc?.type ?? "" }) : ({ id: uuidv4(), name: `${doc?.type ?? ""} ${index + 1}`, date: moment(file.updated_at).format("DD/MM/YYYY"), link: file.url, document_type: doc.type }))),
-        properties_managed: [],
-        previous_properties: [],
-        statement: data?.statement?.map((s) => ({
+        investors: [{
+            id: data.id,
+            name: data.name,
+            email: data.email,
+            phone_number: `${data.phone.profile_phone ?? ""}${data.phone.user_phone && data.phone.profile_phone ? " / " + data.phone.user_phone : ""}`,
+            picture_url: data.picture || "",
+            badge_color: data?.user_tier ? tierColorMap[data?.user_tier] : undefined,
+            user_tag: data?.agent?.toLowerCase() === "mobile" ? "mobile" : "web",
+            user_id: data.user_id,
+            title: data.title,
+            picture: data.picture,
+            gender: data.gender,
+            birthday: data.birthday,
+            religion: data.religion,
+            marital_status: data.marital_status,
+            bank_name: data.bank_details.bank_name,
+            account_name: data.bank_details.account_name,
+            account_number: data.bank_details.account_number,
+            occupation: data.Others.occupation || undefined,
+            employment_type: data.Others.job_type || undefined,
+            family_type: data.Others.family_type || undefined,
+            investor_type: data.investor_type,
+            address: data.address,
+            phone: data.next_of_kin.phone,
+            relationship: data.next_of_kin.relationship,
+            note: data.note?.note,
+        }],
+        total_investors: 1,
+        new_investors_this_month: 0,
+        mobile_investors: 0,
+        new_mobile_investors_this_month: 0,
+        web_investors: 0,
+        new_web_investors_this_month: 0,
+        total_pages: 1,
+        current_page: 1,
+        statement: data?.statement?.map((s: any) => ({
+            sn: s?.id || 0,
+            property_name: s?.property_name || "",
+            total_units: s?.total_units || "",
+            total_amount: s?.total_amount || "",
+            total_sold: s?.total_sold || "",
+            return_date: s?.return_date || "",
+            payment_date: s?.payment_date || "",
+            badge_color: s?.payer_tier ? tierColorMap[s?.payer_tier as keyof typeof tierColorMap] : undefined,
             id: s?.id || 0,
             picture: s?.payer_picture || empty,
             name: s?.payer_name || "",
@@ -76,11 +101,10 @@ export const transformIndividualInvestorAPIResponse = ({ data }: IndividualInves
             unit_name: s?.unit_name || "",
             credit: s?.amount_paid ? `₦${Number(s.amount_paid).toLocaleString()}` : null,
             debit: null,
-            date: s?.date ? s?.date : "--- ---",
-            badge_color: s?.payer_tier ? tierColorMap[s?.payer_tier as any] : undefined,
         })),
         propertyOptions: [],
         messageUserData: { id: Number(data?.user_id) || 0, name: data?.name || "", position: "investor", imageUrl: data?.picture ?? empty, branch_id: 1 },
+        documents: data.documents,
     };
 };
 
@@ -105,6 +129,9 @@ export const generateDummyIndividualInvestorAPIResponse = (id: string): Individu
             local_government: "Ikoyi",
             city: "Ikoyi",
             address: "7 Queen's Drive",
+            birthday: "15/03/1985",
+            religion: "Christianity",
+            marital_status: "Married",
             note: { last_updated_at: now.toDate(), note: "High net worth investor" },
             bank_details: { bank_name: "Access Bank", account_name: name, account_number: "1234567890" },
             Others: { occupation: "Investor", job_type: "Self-employed", family_type: "Nuclear" },

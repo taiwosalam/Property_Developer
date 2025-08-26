@@ -199,7 +199,7 @@ export const generateDummyClientApiResponse = (page: number = 1, search?: string
 
   return {
     data: {
-      clients: apiClients,
+      clients: apiClients as any,
       pagination: {
         current_page: page,
         per_page: perPage,

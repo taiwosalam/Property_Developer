@@ -263,7 +263,7 @@ const Investors = () => {
                         email={l.email}
                         phone_number={l.phone_number}
                         badge_color={l.badge_color}
-                        note={l.note}
+                        note={l.note as any}
                       />
                     </Link>
                   ))

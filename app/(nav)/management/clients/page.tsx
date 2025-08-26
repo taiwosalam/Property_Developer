@@ -113,7 +113,7 @@ const Clients = () => {
     const isNetworkError = false;
     const error = undefined as unknown as string | undefined;
     const fromCache = false;
-    const clearCache = undefined;
+    const clearCache = undefined as any;
     const refetch = (_?: any) => { };
     const branchesData = undefined;
 
@@ -223,11 +223,12 @@ const Clients = () => {
         });
     }, [view, page, searchQuery]);
 
-    const branchOptions =
-        branchesData?.data.map((branch) => ({
-            label: branch.branch_name,
-            value: branch.id,
-        })) || [];
+    // const branchOptions = branchesData?.data?.map((branch: any) => ({
+    //     label: branch.branch_name,
+    //     value: branch.id,
+    // })) || [];
+    const branchOptions: { label: string; value: string | number }[] = [];
+
 
     const transformedClients = pageData.clients.map((l, index) => {
         const row = {
@@ -353,7 +354,7 @@ const Clients = () => {
                         ],
                     },
                     ...(branchOptions.length > 0
-                        ? [{ label: "Branch", value: branchOptions }]
+                        ? [{ label: "Branch", value: branchOptions as any }]
                         : []),
                 ]}
             />

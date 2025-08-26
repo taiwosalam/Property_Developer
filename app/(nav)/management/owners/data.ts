@@ -195,7 +195,7 @@ export const generateDummyOwnerApiResponse = (page: number = 1, search?: string)
 
     return {
         data: {
-            owners: apiOwners,
+            owners: apiOwners as any,
             pagination: {
                 current_page: page,
                 per_page: perPage,
