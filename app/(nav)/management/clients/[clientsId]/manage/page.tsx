@@ -472,9 +472,6 @@ const ManageClient = ({ params }: { params: { clientsId: string } }) => {
             style={{ fontSize: "25px", fontWeight: "700" }}
           >
             {(clientData?.statement?.length ?? 0) === 0 ? (
-              // <div className="flex justify-center items-center h-32 text-neutral-500">
-              //   The client does not have any statement yet
-              // </div>
               ""
             ) : (
               <CustomTable
@@ -488,7 +485,7 @@ const ManageClient = ({ params }: { params: { clientsId: string } }) => {
         )}
 
       {/* Property Listing (List View) */}
-      <LandlordTenantInfoSection title="Property Listing">
+      <LandlordTenantInfoSection title="Property ">
         <div className="custom-flex-col gap-4">
           {dummyProperties.map((property) => (
             <PropertyListItem key={`pli-${property.id}`} {...property} />
