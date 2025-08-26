@@ -196,7 +196,7 @@ const Examine = () => {
           />
         </div>
         <Modal
-          state={{ 
+          state={{
             isOpen: isOpen,
             setIsOpen: setIsOpen,
           }}
@@ -207,7 +207,7 @@ const Examine = () => {
             </Button>
           </ModalTrigger>
           <ModalContent>
-            <DynamicExamineModal setIsOpen={setIsOpen}/>
+            <DynamicExamineModal setIsOpen={setIsOpen} />
             {/* <CreateExamineModal setIsOpen={setIsOpen} /> */}
           </ModalContent>
         </Modal>

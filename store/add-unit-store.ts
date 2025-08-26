@@ -1,7 +1,10 @@
 import { create } from "zustand";
 import type { Categories } from "@/data";
 import { currencySymbols } from "@/utils/number-formatter";
-import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import {
+  InstallmentUnitDataObject,
+  type UnitDataObject,
+} from "@/app/(nav)/management/properties/data";
 
 const initialState = {
   property_id: null,
@@ -77,6 +80,20 @@ export interface AddUnitStore {
   addUnit: (unitData: UnitDataObject, duplicateCount?: number) => void;
   editUnit: (index: number, unitData: UnitDataObject) => void;
   removeUnit: (index: number) => void;
+
+  // PROPERTY DEVELOPER
+  installmentUnits: (InstallmentUnitDataObject & {
+    notYetUploaded?: boolean;
+  })[];
+  addInstallmentUnit: (
+    unitData: InstallmentUnitDataObject & { notYetUploaded?: boolean },
+    duplicateCount?: number
+  ) => void;
+  editInstallmentUnit: (
+    index: number,
+    unitData: InstallmentUnitDataObject & { notYetUploaded?: boolean }
+  ) => void;
+  removeInstallmentUnit: (index: number) => void;
 }
 
 export const useAddUnitStore = create<AddUnitStore>((set) => ({
@@ -120,4 +137,32 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
       };
     });
   },
+
+  // PROPERTY DEVELOPER
+  installmentUnits: [],
+  addInstallmentUnit: (unitData, duplicateCount = 0) => {
+    set((state) => {
+      const updatedUnits = [
+        ...state.installmentUnits,
+        { ...unitData, notYetUploaded: true },
+      ];
+      const replicatedUnits = Array(duplicateCount).fill({
+        ...unitData,
+        id: "",
+        images: [],
+        notYetUploaded: true,
+      });
+      return { installmentUnits: [...updatedUnits, ...replicatedUnits] };
+    });
+  },
+  removeInstallmentUnit: (index) =>
+    set((state) => ({
+      installmentUnits: state.installmentUnits.filter((_, i) => i !== index),
+    })),
+  editInstallmentUnit: (index, unitData) =>
+    set((state) => {
+      const updatedUnits = [...state.installmentUnits];
+      updatedUnits[index] = unitData;
+      return { installmentUnits: updatedUnits };
+    }),
 }));

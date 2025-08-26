@@ -12,9 +12,14 @@ import {
 import { useUnitForm } from "./unit-form-context";
 import { usePathname } from "next/navigation";
 import { useTourStore } from "@/store/tour-store";
+import { UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 const UnitBreakdownFacility = () => {
-  const { formResetKey, unitData } = useUnitForm();
+  // const { formResetKey, unitData } = useUnitForm();
+  const { formResetKey, unitData } = useUnitForm() as {
+    formResetKey: number;
+    unitData: UnitDataObject | undefined;
+  };
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.management_fee || "0")

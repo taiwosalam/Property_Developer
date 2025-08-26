@@ -10,11 +10,20 @@ import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
 import { usePathname } from "next/navigation";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
+import { useModule } from "@/contexts/moduleContext";
+import { UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 const UnitFeatures = () => {
   const { handleInputChange } = useContext(FlowProgressContext);
-  const { unitType, formResetKey, unitData } = useUnitForm();
+  // const { unitType, formResetKey, unitData } = useUnitForm();
+  const { formResetKey, unitData, unitType } = useUnitForm() as {
+    formResetKey: number;
+    unitData: UnitDataObject | undefined;
+    unitType: string | undefined;
+  };
   const propertyType = useAddUnitStore((state) => state.propertyType);
+  const { activeModule, designVariant } = useModule();
+  const isPropertyDeveloperModule = activeModule.id === "property_developer";
   const propertyCategory = useAddUnitStore(
     (state) => state.propertyDetails?.category
   );
@@ -52,36 +61,12 @@ const UnitFeatures = () => {
     goToStep(stepIndex, pathname);
   };
 
-  const handleTourSection = () => {
-    if (!isRental && pathname.startsWith("/manager")) {
-      handleGoToTourStep(26);
-    } else if (isRental && pathname.startsWith("/accountant")) {
-      handleGoToTourStep(30);
-    } else if (!isRental && pathname.startsWith("/accountant")) {
-      handleGoToTourStep(25);
-    } else if (!isRental) {
-      handleGoToTourStep(27);
-    } else if (isRental && pathname.startsWith("/manager")) {
-      handleGoToTourStep(31);
-    } else if (isRental) {
-      handleGoToTourStep(32);
-    }
-  };
-
   return (
     <div className="unit-measurement-form unit-features-wrapper">
       <div className="flex items-center gap-2">
         <h4 className="text-primary-navy dark:text-white text-lg md:text-xl font-bold">
           Units Features
         </h4>
-
-        {/* <button
-          onClick={handleTourSection}
-          type="button"
-          className="text-orange-normal"
-        >
-          <ExclamationMark />
-        </button> */}
       </div>
       <hr className="my-4" />
       <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-3 mb-4 md:mb-5">
@@ -170,23 +155,72 @@ const UnitFeatures = () => {
             />
           </>
         )}
-        {isRental && unitType?.toLowerCase() !== "land" && (
-          <MultiSelect
-            options={facilitiesOptions}
-            maxSelections={
-              propertyCategory?.toLowerCase() !== "commercial" ? 10 : undefined
-            }
-            id="facilities"
-            label={`Select Facilities${
-              propertyCategory?.toLowerCase() !== "commercial"
-                ? " (Maximum of 10)"
-                : ""
-            }`}
-            resetKey={formResetKey}
-            defaultSelections={unitData?.facilities || []}
-          />
-        )}
+
+        {isPropertyDeveloperModule ||
+          (isRental && unitType?.toLowerCase() !== "land" && (
+            <MultiSelect
+              options={facilitiesOptions}
+              maxSelections={
+                propertyCategory?.toLowerCase() !== "commercial"
+                  ? 10
+                  : undefined
+              }
+              id="facilities"
+              label={`Select Facilities${
+                propertyCategory?.toLowerCase() !== "commercial"
+                  ? " (Maximum of 10)"
+                  : ""
+              }`}
+              resetKey={formResetKey}
+              defaultSelections={unitData?.facilities || []}
+            />
+          ))}
       </div>
+      {isPropertyDeveloperModule && (
+        <div className="grid gap-4 md:gap-5 md:grid-cols-2 lg:grid-cols-4 mb-4 md:mb-5">
+          <Select
+            required
+            options={["yes", "no"]}
+            id="drainage"
+            label="Drainage"
+            inputContainerClassName="bg-white w-full"
+            isSearchable={false}
+            resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
+          />
+          <Select
+            required
+            options={["yes", "no"]}
+            id="fence"
+            label="Fence"
+            inputContainerClassName="bg-white"
+            isSearchable={false}
+            resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
+          />
+          <Select
+            required
+            options={["yes", "no"]}
+            id="interlocking"
+            label="interlocking"
+            inputContainerClassName="bg-white"
+            isSearchable={false}
+            resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
+          />
+          <Select
+            required
+            options={["yes", "no"]}
+            id="gated_estate"
+            label="Gated Estate"
+            inputContainerClassName="bg-white"
+            isSearchable={false}
+            resetKey={formResetKey}
+            hiddenInputClassName="unit-form-input"
+          />
+        </div>
+      )}
+
       {unitType?.toLowerCase() !== "land" &&
         isRental &&
         propertyCategory?.toLowerCase() !== "commercial" && (

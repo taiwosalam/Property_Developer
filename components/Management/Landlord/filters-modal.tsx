@@ -1,30 +1,18 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ModalTrigger } from "@/components/Modal/modal";
 import { ChevronRight, ChevronLeft } from "lucide-react";
 import DateInput from "@/components/Form/DateInput/date-input";
 import dayjs, { Dayjs } from "dayjs";
 import Button from "@/components/Form/Button/button";
-// import { FilterModalProps, FilterOptionMenu } from "./types";
 import { CancelIcon, CheckboxCheckedIcon } from "@/public/icons/icons";
 import { useModal } from "@/components/Modal/modal";
 import Checkbox from "@/components/Form/Checkbox/checkbox";
-import { FilterOptionObj } from "./types";
-import { FilterResult } from "./types";
-import { empty } from "@/app/config";
-import Image from "next/image";
-
-interface FilterOption {
-  label: string;
-  value: string;
-  isChecked?: boolean;
-}
-
-interface FilterOptionMenu {
-  radio?: boolean;
-  label: string;
-  isChecked?: boolean;
-  value: FilterOption[];
-}
+import {
+  FilterOptionObj,
+  FilterResult,
+  FilterOption,
+  FilterOptionMenu,
+} from "./types";
 
 interface FilterModalProps {
   handleFilterApply: (selectedFilters: FilterResult) => void;
@@ -60,49 +48,18 @@ const FilterModal: React.FC<FilterModalProps> = ({
     appliedFilters?.endDate || null
   );
 
-  const handleDateChange = (type: "start" | "end", date?: Dayjs | null) => {
-    if (type === "start") {
-      setSelectedStartDate(date && date.isValid() ? date.toISOString() : null);
-    } else if (type === "end") {
-      setSelectedEndDate(date && date.isValid() ? date.toISOString() : null);
-    }
-  };
-
-  // Apply filters and close modal
-  const handleApplyFilter = () => {
-    const selectedOptions = [...selectedFilters];
-    const selectedMenuOptions = { ...selectedFilterMenus };
-    const filtersToApply = {
-      options: selectedOptions,
-      menuOptions: selectedMenuOptions,
-      startDate: selectedStartDate,
-      endDate: selectedEndDate,
-    };
-    handleFilterApply(filtersToApply);
-    setIsOpen(false);
-  };
-
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFilters, setSelectedFilters] = useState<string[]>(() => {
     if (appliedFilters?.options) return appliedFilters.options;
-
-    // Find radio group with default checked option
     const defaultRadioValue = filterOptionsMenu
       ?.find((menu) => menu.radio)
       ?.value.find((option) => option.isChecked)?.value;
-
-    if (defaultRadioValue) {
-      return [String(defaultRadioValue)];
-    }
-
-    return [];
+    return defaultRadioValue ? [String(defaultRadioValue)] : [];
   });
   const [selectedFilterMenus, setSelectedFilterMenus] = useState<
     Record<string, string[]>
   >(() => {
     if (appliedFilters?.menuOptions) return appliedFilters.menuOptions;
-
-    // Initialize radio groups with default values
     const initialMenus: Record<string, string[]> = {};
     filterOptionsMenu?.forEach((menu) => {
       if (menu.radio) {
@@ -114,16 +71,107 @@ const FilterModal: React.FC<FilterModalProps> = ({
         }
       }
     });
-
     return initialMenus;
   });
   const [view, setView] = useState<"default" | "date" | "menu">("default");
-  const commonCheckboxClasses =
-    "flex-row-reverse w-full justify-between bg-[#F5F5F5] dark:bg-[#3C3D37] py-2 px-4 capitalize";
-  const commonLabelClasses =
-    "text-text-secondary dark:text-darkText-1 font-medium flex items-center justify-between py-2 px-4 bg-[#F5F5F5] dark:bg-[#3C3D37] capitalize cursor-pointer";
   const [activeOptionMenu, setActiveOptionMenu] =
     useState<FilterOptionMenu | null>(null);
+  const [filteredOptions, setFilteredOptions] = useState<FilterOption[]>([]);
+  const [visibleOptions, setVisibleOptions] = useState<FilterOption[]>([]);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Virtualization constants
+  const ITEMS_PER_PAGE = 20;
+  const SCROLL_THRESHOLD = 100;
+  const DEBOUNCE_DELAY = 300;
+
+  // Debounce function
+  const debounce = <T extends (...args: any[]) => void>(
+    func: T,
+    delay: number
+  ) => {
+    let timeoutId: NodeJS.Timeout;
+    return (...args: Parameters<T>) => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => func(...args), delay);
+    };
+  };
+
+  // Filter options based on search query
+  const filterMenuOptions = (options: FilterOption[], query: string) => {
+    return options.filter((option) =>
+      option.label.toLowerCase().includes(query.toLowerCase())
+    );
+  };
+
+  // Load more options for virtualization
+  const loadMoreOptions = debounce(() => {
+    setVisibleOptions((prev) => {
+      if (prev.length >= filteredOptions.length) {
+        return prev;
+      }
+      const nextBatch = filteredOptions.slice(
+        prev.length,
+        prev.length + ITEMS_PER_PAGE
+      );
+      return [...prev, ...nextBatch];
+    });
+  }, DEBOUNCE_DELAY);
+
+  // Handle scroll to load more options
+  const handleScroll = () => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
+    const scrollPosition = container.scrollTop + container.clientHeight;
+    const scrollHeight = container.scrollHeight;
+    if (scrollPosition >= scrollHeight - SCROLL_THRESHOLD) {
+      loadMoreOptions();
+    }
+  };
+
+  // Update filtered and visible options when searchQuery or activeOptionMenu changes
+  useEffect(() => {
+    if (activeOptionMenu) {
+      const newFilteredOptions = filterMenuOptions(
+        activeOptionMenu.value,
+        searchQuery
+      );
+      setFilteredOptions(newFilteredOptions);
+      setVisibleOptions(newFilteredOptions.slice(0, ITEMS_PER_PAGE));
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTop = 0;
+      }
+    }
+  }, [searchQuery, activeOptionMenu]);
+
+  // Add scroll event listener
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container || view !== "menu") return;
+    container.addEventListener("scroll", handleScroll);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [view]);
+
+  const handleDateChange = (type: "start" | "end", date?: Dayjs | null) => {
+    if (type === "start") {
+      setSelectedStartDate(date && date.isValid() ? date.toISOString() : null);
+    } else if (type === "end") {
+      setSelectedEndDate(date && date.isValid() ? date.toISOString() : null);
+    }
+  };
+
+  const handleApplyFilter = () => {
+    const filtersToApply = {
+      options: [...selectedFilters],
+      menuOptions: { ...selectedFilterMenus },
+      startDate: selectedStartDate,
+      endDate: selectedEndDate,
+    };
+    handleFilterApply(filtersToApply);
+    setIsOpen(false);
+  };
 
   const handleOptionMenuClick = (option: FilterOptionMenu) => {
     setSearchQuery("");
@@ -158,13 +206,14 @@ const FilterModal: React.FC<FilterModalProps> = ({
     });
   };
 
-  const filteredOptions = activeOptionMenu?.value.filter((option) =>
-    option.label.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const commonCheckboxClasses =
+    "flex-row-reverse w-full justify-between bg-[#F5F5F5] dark:bg-[#3C3D37] py-2 px-4 capitalize";
+  const commonLabelClasses =
+    "text-text-secondary dark:text-darkText-1 font-medium flex items-center justify-between py-2 px-4 bg-[#F5F5F5] dark:bg-[#3C3D37] capitalize cursor-pointer";
 
   return (
     <div className="w-full sm:w-[400px] max-h-[90vh] overflow-y-auto rounded-[20px] bg-white dark:bg-darkText-primary p-[20px] mx-[20px] custom-flex-col">
-      <div className="flex items-center justify-between border-b border-solid border-gray-300 ">
+      <div className="flex items-center justify-between border-b border-solid border-gray-300">
         <div className="flex items-center gap-1">
           {view !== "default" && (
             <button
@@ -220,15 +269,6 @@ const FilterModal: React.FC<FilterModalProps> = ({
                   <CheckboxCheckedIcon />
                 ) : (
                   <ChevronRight className="text-[#344054]" />
-                )}
-                {option.isChecked && (
-                  <Checkbox
-                    checked={
-                      selectedFilters.includes(String(option.value)) ||
-                      option.isChecked
-                    }
-                    onChange={() => handleOptionClick(String(option.value))}
-                  />
                 )}
               </div>
             ))}
@@ -288,26 +328,33 @@ const FilterModal: React.FC<FilterModalProps> = ({
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             )}
-            <div className="max-h-[200px] overflow-y-auto pr-1 custom-round-scrollbar space-y-2 my-2">
-              {filteredOptions?.map((option, i) => (
-                <Checkbox
-                  key={i}
-                  radio={activeOptionMenu?.radio}
-                  className={commonCheckboxClasses}
-                  checked={selectedFilterMenus[
-                    activeOptionMenu!.label
-                  ]?.includes(option.value)}
-                  onChange={() =>
-                    handleOptionMenuItemClick(
-                      activeOptionMenu!.label,
-                      option.value,
-                      activeOptionMenu!.radio
-                    )
-                  }
-                >
-                  {option.label}
-                </Checkbox>
-              ))}
+            <div
+              className="max-h-[200px] overflow-y-auto pr-1 custom-round-scrollbar space-y-2 my-2"
+              ref={scrollContainerRef}
+            >
+              {visibleOptions.length > 0 ? (
+                visibleOptions.map((option, i) => (
+                  <Checkbox
+                    key={i}
+                    radio={activeOptionMenu?.radio}
+                    className={commonCheckboxClasses}
+                    checked={selectedFilterMenus[
+                      activeOptionMenu!.label
+                    ]?.includes(option.value)}
+                    onChange={() =>
+                      handleOptionMenuItemClick(
+                        activeOptionMenu!.label,
+                        option.value,
+                        activeOptionMenu!.radio
+                      )
+                    }
+                  >
+                    {option.label}
+                  </Checkbox>
+                ))
+              ) : (
+                <div className="p-2 text-gray-500">No match</div>
+              )}
             </div>
           </>
         )}

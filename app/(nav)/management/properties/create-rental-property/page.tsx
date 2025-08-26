@@ -59,7 +59,6 @@ const CreateProperty = () => {
 
   return (
     <>
-     {/* <ProgressCardLoader loading={requestLoading} steps={[]} /> */}
       <BackButton className="mb-1">
         <div className="flex gap-2 items-center">
           <h1 className="text-lg lg:text-xl capitalize font-normal">

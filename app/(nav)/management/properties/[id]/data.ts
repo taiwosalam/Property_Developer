@@ -1,4 +1,4 @@
-import { type PropertyPreviewProps } from "@/components/Management/Properties/property-preview";
+import { type PropertyPreviewProps } from "@/components/Management/Properties/previews/property-preview";
 import { mapNumericToYesNo } from "@/utils/checkFormDataForImageOrAvatar";
 import type { PropertyDataObject } from "../data";
 import moment from "moment";

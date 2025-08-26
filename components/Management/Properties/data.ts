@@ -110,7 +110,9 @@ export const transformUnitFormData = (
     const firstImage = images[0];
     if (typeof firstImage === "string") {
       defaultImage = firstImage;
-      const matchingImage = originalImages.find((img) => img.path === firstImage);
+      const matchingImage = originalImages.find(
+        (img) => img.path === firstImage
+      );
       if (matchingImage) {
         defaultImageId = matchingImage.id;
       }
@@ -183,3 +185,26 @@ export const addPropertyWithId = async (
     return false;
   }
 };
+
+export const agreements = [
+  {
+    title: "Refunds Policy",
+    desc: "This will outline your preferred guidelines for clients intending to terminate their purchase.",
+  },
+  {
+    title: "Other Rules",
+    desc: "Here are some additional rules that could be included for guests to read and accept before onboarding",
+  },
+  {
+    title: "Refunds Terms",
+    desc: "Revised conditions outlining circumstances that warrant Clients canceling their Purchase. Penalties for cancellation, and dos and don'ts regarding cancellations.",
+  },
+  {
+    title: "Other Services",
+    desc: "Itemized range of services catered to clients, ensuring their needs are met during their purchase stay.",
+  },
+  {
+    title: "Extra Purchase Terms",
+    desc: "The terms and conditions governing clients, extending beyond thier basic purchase and requirements.",
+  },
+];

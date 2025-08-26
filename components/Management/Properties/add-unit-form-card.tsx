@@ -1,16 +1,20 @@
 import UnitCard from "./unit-card";
 import { useState } from "react";
-import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import {
+  InstallmentUnitDataObject,
+  type UnitDataObject,
+} from "@/app/(nav)/management/properties/data";
 import UnitForm from "./unit-form";
 
-// set d data structute and dont continue with any
-const AddUnitFormCard = ({
-  data,
-  index,
-}: {
-  data: UnitDataObject & { notYetUploaded?: boolean };
+interface AddUnitFormCardProps {
+  data:
+    | (UnitDataObject & { notYetUploaded?: boolean })
+    | (InstallmentUnitDataObject & { notYetUploaded?: boolean });
   index: number;
-}) => {
+}
+
+// set d data structute and dont continue with any
+const AddUnitFormCard = ({ data, index }: AddUnitFormCardProps) => {
   const [isEditing, setIsEditing] = useState(false);
   return (
     <div

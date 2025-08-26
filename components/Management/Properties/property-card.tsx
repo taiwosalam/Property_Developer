@@ -17,7 +17,7 @@ export interface PropertyCardProps {
   address: string;
   total_unit_pictures: number | null;
   hasVideo: boolean;
-  property_type: "rental" | "facility";
+  property_type: "rental" | "facility" | "outright" | "installment";
   total_returns: number;
   total_income: number;
   branch?: string;
@@ -114,7 +114,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <Button
               size="base_bold"
               className="py-2 px-8"
-              // href={`/management/properties/${id}/edit-property`}
               href={getRoute("edit")}
             >
               Manage
@@ -122,7 +121,6 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             <Button
               size="base_bold"
               className="py-2 px-8"
-              // href={`/management/properties/${id}`}
               href={getRoute("preview")}
             >
               Preview
@@ -208,47 +206,69 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
             exit={{ y: "100%" }}
             className="bg-white dark:bg-darkText-primary px-8 pt-4 pb-10 text-xs grid grid-cols-3 gap-x-4 gap-y-2 absolute bottom-0 w-full rounded-b-2xl z-[3] cursor-default h-[55%]"
           >
-            <div>
-              <p className="text-label font-normal">Branch</p>
-              <p className="text-brand-9 font-bold">{branch}</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Total Units</p>
-              <p className="text-brand-9 font-bold">{total_units}</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">
-                Available Units
-                {/* {isRental ? "Available" : "Owing"} Units */}
-              </p>
-              <p className="text-brand-9 font-bold">
-                {available_units}
-                {/* {isRental ? available_units : owing_units} */}
-              </p>
-            </div>
-            <div>
-              <p className="text-label font-normal">
-                {isRental ? "Mobile Tenants" : "Mobile Occupants"}
-              </p>
-              <p className="text-brand-9 font-bold">{mobile_tenants}</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">
-                {isRental ? "Web Tenants" : "Web Occupants"}
-              </p>
-              <p className="text-brand-9 font-bold">{web_tenants}</p>
-            </div>
-            <div>
-              <p className="text-label font-normal">Last Updated</p>
-              <p className="text-brand-9 font-bold">{last_updated}</p>
-            </div>
-            <div className="col-span-3">
-              <p className="text-label font-normal">Account Officer</p>
-              <p className="text-brand-9 font-bold truncate line-clamp-1">
-                {accountOfficer}
-                {/* {accountOfficer ? `${accountOfficer.substring(0, 30)}...` : ""} */}
-              </p>
-            </div>
+            {property_type === "outright" ? (
+              <>
+                <div>
+                  <p className="text-label font-normal">Total Views</p>
+                  <p className="text-brand-9 font-bold">{`26 (+2 today)`}</p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">Added On</p>
+                  <p className="text-brand-9 font-bold">23/05/2025</p>
+                </div>
+                <div>
+                  <p className="text-label font-normal"> Last Updted </p>
+                  <p className="text-brand-9 font-bold"> 5 hours ago </p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">Expires In</p>
+                  <p className="text-brand-9 font-bold"> 90 days </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <p className="text-label font-normal">Branch</p>
+                  <p className="text-brand-9 font-bold">{branch}</p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">Total Units</p>
+                  <p className="text-brand-9 font-bold">{total_units}</p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">
+                    Available Units
+                    {/* {isRental ? "Available" : "Owing"} Units */}
+                  </p>
+                  <p className="text-brand-9 font-bold">
+                    {available_units}
+                    {/* {isRental ? available_units : owing_units} */}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">
+                    {isRental ? "Mobile Tenants" : "Mobile Occupants"}
+                  </p>
+                  <p className="text-brand-9 font-bold">{mobile_tenants}</p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">
+                    {isRental ? "Web Tenants" : "Web Occupants"}
+                  </p>
+                  <p className="text-brand-9 font-bold">{web_tenants}</p>
+                </div>
+                <div>
+                  <p className="text-label font-normal">Last Updated</p>
+                  <p className="text-brand-9 font-bold">{last_updated}</p>
+                </div>
+                <div className="col-span-3">
+                  <p className="text-label font-normal">Account Officer</p>
+                  <p className="text-brand-9 font-bold truncate line-clamp-1">
+                    {accountOfficer}
+                  </p>
+                </div>
+              </>
+            )}
           </motion.div>
         )}
       </AnimatePresence>

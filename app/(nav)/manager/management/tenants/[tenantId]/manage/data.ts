@@ -12,7 +12,7 @@ import { v4 as uuidv4 } from "uuid";
 import moment from "moment";
 import api, { handleAxiosError } from "@/services/api";
 import { UnitItemProps } from "@/components/Management/Properties/unit-item";
-import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+import { UnitStatusColors } from "@/components/Management/Properties/previews/property-preview";
 import { formatNumber } from "@/utils/number-formatter";
 import dayjs from "dayjs";
 import { formatFee } from "../../../rent-unit/data";

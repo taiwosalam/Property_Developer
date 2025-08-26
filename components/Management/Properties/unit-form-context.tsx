@@ -2,7 +2,7 @@
 import { createContext, useContext } from "react";
 import { UnitTypeKey } from "@/data";
 import { UnitFormState } from "./unit-form";
-import { type UnitDataObject } from "@/app/(nav)/management/properties/data";
+import { InstallmentUnitDataObject, type UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 interface UnitFormContextType extends UnitFormState {
   setImages: (a: { images: string[]; imageFiles: (File | string)[] }) => void;
@@ -18,7 +18,10 @@ interface UnitFormContextType extends UnitFormState {
   setDuplicate?: (duplicate: { val: boolean; count: number }) => void;
   isEditing?: boolean;
   setIsEditing?: (isEditing: boolean) => void;
-  unitData?: UnitDataObject;
+  // unitData?: UnitDataObject;
+  unitData?:
+    | (UnitDataObject & { notYetUploaded?: boolean })
+    | (InstallmentUnitDataObject & { notYetUploaded?: boolean });
   index?: number;
   clickedNo?: boolean;
   formSubmitted?: boolean;

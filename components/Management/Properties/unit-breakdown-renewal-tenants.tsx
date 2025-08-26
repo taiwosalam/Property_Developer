@@ -12,9 +12,14 @@ import {
 import { useUnitForm } from "./unit-form-context";
 import { useTourStore } from "@/store/tour-store";
 import { usePathname } from "next/navigation";
+import { UnitDataObject } from "@/app/(nav)/management/properties/data";
 
 const UnitBreakdownRenewalTenant = () => {
-  const { formResetKey, unitData } = useUnitForm();
+  // const { formResetKey, unitData } = useUnitForm();
+  const { formResetKey, unitData } = useUnitForm() as {
+    formResetKey: number;
+    unitData: UnitDataObject | undefined;
+  };
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const CURRENCY_SYMBOL =
