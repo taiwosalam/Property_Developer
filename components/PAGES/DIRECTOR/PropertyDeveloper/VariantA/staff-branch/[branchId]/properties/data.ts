@@ -3,7 +3,8 @@ import { currencySymbols } from "@/utils/number-formatter";
 import { type PropertyCardProps } from "@/components/Management/Properties/property-card";
 import type { FilterOptionMenu } from "@/components/Management/Landlord/types";
 import moment from "moment";
-import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+// import  UnitStatusColors from "@/components/Management/Properties/property-card";
+import  UnitStatusColors from "@/components/Management/Properties/property-card";
 
 export const initialState: PropertiesPageState = {
   total_pages: 1,

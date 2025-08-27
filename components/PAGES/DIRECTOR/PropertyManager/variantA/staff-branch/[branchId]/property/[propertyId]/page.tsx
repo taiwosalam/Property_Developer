@@ -1,9 +1,10 @@
-import PropertyPreview from "@/components/Management/Properties/property-preview";
+// import PropertyPreview from "@/components/Management/Properties/property-card";
+import PropertyPreview from "@/components/Management/Properties/property-card";
 
 const BranchPPropertyPreview = () => {
   return (
     <PropertyPreview
-      propertyType="facility"
+      property_type="facility"
       images={[
         "/empty/SampleProperty.jpeg",
         // "/empty/SampleProperty2.jpeg",
@@ -20,9 +21,12 @@ const BranchPPropertyPreview = () => {
       currency="naira"
       state="Lagos"
       local_government="Ikeja"
-      isRental={false}
+      // isRental={false}
       id="22"
       units={[]}
+      total_unit_pictures={null}
+      hasVideo={false}
+      // units={[]}
     />
   );
 };

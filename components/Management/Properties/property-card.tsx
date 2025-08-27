@@ -32,6 +32,14 @@ export interface PropertyCardProps {
   viewOnly?: boolean;
   default_image?: string;
   isManagerPage?: boolean;
+  category?: string;
+  state?: string;
+  local_government?: string;
+  city_area?: string;
+  full_address?: string;
+  units?: any;
+  isRental?: boolean;
+  isFacility?: boolean;
 }
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -50,6 +58,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   last_updated,
   mobile_tenants,
   web_tenants,
+  category,
+  state,
+  units,
   owing_units,
   available_units,
   currency,
@@ -57,6 +68,10 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   viewOnly,
   isManagerPage,
   default_image,
+  local_government,
+  isFacility,
+  city_area,
+  full_address,
 }) => {
   const isRental = property_type === "rental";
   // const symbol =
