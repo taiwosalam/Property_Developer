@@ -170,6 +170,8 @@ const CreateAnnouncementForm: React.FC<{
     const title = formData.get("title");
     const description = formData.get("description");
 
+    formData.append("is_announcement", "1");
+
     if (!title) {
       toast.error("You need to provide a title");
       return;

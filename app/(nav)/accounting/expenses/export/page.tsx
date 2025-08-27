@@ -1,140 +1,130 @@
 "use client";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import { useModule } from "@/contexts/moduleContext";
+import { useRole } from "@/hooks/roleContext";
+import dynamic from "next/dynamic";
+import { Suspense } from "react";
+import { m, LazyMotion, domAnimation, AnimatePresence } from "framer-motion";
 
-// Imports
-import Signature from "@/components/Signature/signature";
-import KeyValueList from "@/components/KeyValueList/key-value-list";
-import ExportPageHeader from "@/components/reports/export-page-header";
-import { empty } from "@/app/config";
-import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import AccountStatsCard from "@/components/Accounting/account-stats-card";
-import BackButton from "@/components/BackButton/back-button";
-import ExportPageFooter from "@/components/reports/export-page-footer";
-import CustomTable from "@/components/Table/table";
-import {
-  expenseTableFields,
-  expenseTableData,
-  transformExpensesData,
-} from "../data";
-import { useEffect, useRef, useState } from "react";
-import useFetch from "@/hooks/useFetch";
-import CustomLoader from "@/components/Loader/CustomLoader";
-import NetworkError from "@/components/Error/NetworkError";
-import {
-  ExpensesApiResponse,
-  ExpenseStats,
-  TransformedExpensesData,
-} from "../types.";
-import { useGlobalStore } from "@/store/general-store";
-import ServerError from "@/components/Error/ServerError";
+/** PROPERTY MANAGER */
+const PropertyManagerExpensesVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/variantA/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerExpensesVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantB/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyManagerExpensesVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantC/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
 
-const Exportexpense = () => {
-  const exportRef = useRef<HTMLDivElement>(null);
-  const [fullContent, setFullContent] = useState(false);
-  const [pageData, setPageData] = useState<TransformedExpensesData>({
-    expenses: [],
-    stats: {
-      total_amount: 0,
-      total_balance: 0,
-      total_deduct: 0,
-      percentage_change_amount: 0,
-      percentage_change_deduct: 0,
-      percentage_change_balance: 0,
-    } as ExpenseStats,
-  });
+/** PROPERTY DEVELOPER */
+const PropertyDeveloperExpensesVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperExpensesVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/accounting/expenses/expenses-page"
+    ),
+  { ssr: false }
+);
+const PropertyDeveloperExpensesVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
 
-  const { expenses, stats } = pageData;
+/** HOSPITALITY MANAGEMENT */
+const HospitalityManagementExpensesVariantA = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantA/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementExpensesVariantB = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantB/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
+const HospitalityManagementExpensesVariantC = dynamic(
+  () =>
+    import(
+      "@/components/PAGES/DIRECTOR/HospitalityManager/VariantC/accounting/expenses/export/export-page"
+    ),
+  { ssr: false }
+);
 
-  const { data, loading, isNetworkError, error } =
-    useFetch<ExpensesApiResponse>("/expenses");
+const ApplicationPage = () => {
+  const { activeModule, designVariant } = useModule();
+  const { role } = useRole();
 
-  const filteredAccountingExpenses = useGlobalStore(
-    (s) => s.accounting_expenses
-  );
-  useEffect(() => {
-    if (data) {
-      setPageData(transformExpensesData(data));
-    }
-  }, [data]);
+  if (role !== "director") {
+    return (
+      <div className="p-4 text-red-500">
+        Access Denied: Director role required.
+      </div>
+    );
+  }
 
-  // Filter out the action field for the export page
-  const exportTableFields = expenseTableFields.filter(
-    (field) => field.accessor !== "action"
-  );
-  const transformedTableData = expenses.map((item) => ({
-    ...item,
-    amount: <p className="text-status-success-3">{item.amount}</p>,
-    payment: <p className="text-status-error-2">{item.payment}</p>,
-    balance: item.balance ? item.balance : "--- ---",
-  }));
-
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  const InvoicePageComponent =
+    {
+      property_manager: {
+        variant_a: PropertyManagerExpensesVariantA,
+        variant_b: PropertyManagerExpensesVariantB,
+        variant_c: PropertyManagerExpensesVariantC,
+      },
+      property_developer: {
+        variant_a: PropertyDeveloperExpensesVariantA,
+        variant_b: PropertyDeveloperExpensesVariantB,
+        variant_c: PropertyDeveloperExpensesVariantC,
+      },
+      hospitality_manager: {
+        variant_a: HospitalityManagementExpensesVariantA,
+        variant_b: HospitalityManagementExpensesVariantB,
+        variant_c: HospitalityManagementExpensesVariantC,
+      },
+    }[activeModule.id]?.[designVariant] || PropertyManagerExpensesVariantA;
 
   return (
-    <div className="custom-flex-col gap-10 pb-[100px]">
-      <BackButton as="p">Back</BackButton>
-      <div ref={exportRef} className="space-y-9">
-        <div className="custom-flex-col gap-[18px]">
-          <ExportPageHeader />
-        </div>
-        <div className="custom-flex-col gap-6">
-          <h1 className="text-black dark:text-white text-2xl font-medium text-center">
-            Expenses Summary
-          </h1>
-          <AutoResizingGrid gap={30} minWidth={300}>
-            <AccountStatsCard
-              title="Total Expenses"
-              balance={Number(stats.total_amount)}
-              variant="redOutgoing"
-              trendDirection={
-                stats.percentage_change_amount < 0 ? "down" : "up"
-              }
-              trendColor={stats.percentage_change_amount < 0 ? "red" : "green"}
-              percentage={stats.percentage_change_amount}
-            />
-            <AccountStatsCard
-              title="Part Payment"
-              balance={Number(stats.total_deduct)}
-              variant="blueIncoming"
-              trendDirection={
-                stats.percentage_change_deduct < 0 ? "down" : "up"
-              }
-              trendColor={stats.percentage_change_deduct < 0 ? "red" : "green"}
-              percentage={stats.percentage_change_deduct}
-            />
-            <AccountStatsCard
-              title="Balance"
-              balance={Number(stats.total_balance)}
-              variant="yellowCard"
-              trendDirection={
-                stats.percentage_change_balance < 0 ? "down" : "up"
-              }
-              trendColor={stats.percentage_change_balance < 0 ? "red" : "green"}
-              percentage={stats.percentage_change_balance}
-            />
-          </AutoResizingGrid>
-          <CustomTable
-            className={`${fullContent && "max-h-none"}`}
-            fields={exportTableFields}
-            // data={transformedTableData}
-            data={filteredAccountingExpenses || []}
-            tableHeadStyle={{ height: "76px" }}
-            tableHeadCellSx={{ fontSize: "1rem" }}
-            tableBodyCellSx={{
-              fontSize: "1rem",
-              paddingTop: "12px",
-              paddingBottom: "12px",
-            }}
-          />
-
-          <Signature />
-        </div>
-      </div>
-      <ExportPageFooter printRef={exportRef} setFullContent={setFullContent} />
-    </div>
+    <>
+      <Suspense fallback={<PageCircleLoader />}>
+        <LazyMotion features={domAnimation}>
+          <AnimatePresence mode="wait">
+            <m.div
+              key={`${activeModule.id}-${designVariant}`}
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+            >
+              <InvoicePageComponent />
+            </m.div>
+          </AnimatePresence>
+        </LazyMotion>
+      </Suspense>
+    </>
   );
 };
 
-export default Exportexpense;
+export default ApplicationPage;

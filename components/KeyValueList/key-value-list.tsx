@@ -35,12 +35,15 @@ const KeyValueList = <T extends object>({
   // If no valid keys, return null to avoid rendering anything
   if (validKeys.length === 0) return null;
 
+  // Keys that should have special styling
+  const specialKeys = ["investor capital", "unit price", "first deposit"];
+
   return (
     <>
       {chunkedKeys.map((chunk, chunkIndex) => (
         <div
           key={chunkIndex}
-          className={clsx("flex-1  text-base font-medium capitalize", {
+          className={clsx("flex-1 text-base font-medium capitalize", {
             "flex gap-10 max-sm:gap-4": direction === "row",
             "custom-flex-col gap-6": direction === "column",
           })}
@@ -60,7 +63,9 @@ const KeyValueList = <T extends object>({
                   </p>
                   {String(key) === "description" ? (
                     <p
-                      className="text-black dark:text-darkText-2 line-clamp-1"
+                      className={clsx(" line-clamp-1", {
+                        "text-brand-9 font-semibold": specialKeys.includes(String(key)),
+                      })}
                       style={styles?.[key]?.value}
                       dangerouslySetInnerHTML={{
                         __html: truncateText(String(data[key]), truncateLength),
@@ -68,7 +73,9 @@ const KeyValueList = <T extends object>({
                     />
                   ) : (
                     <p
-                      className="text-black dark:text-darkText-2 line-clamp-1"
+                      className={clsx("text-black dark:text-darkText-2 line-clamp-1", {
+                        "text-brand-9 font-semibold": specialKeys.includes(String(key)),
+                      })}
                       style={styles?.[key]?.value}
                     >
                       {truncateText(String(data[key]), truncateLength)}
@@ -95,7 +102,9 @@ const KeyValueList = <T extends object>({
                   String(key) === "description" ? (
                     <p
                       key={`${chunkIndex}-${String(key)}-value`}
-                      className="text-black dark:text-darkText-2"
+                      className={clsx("text-black dark:text-darkText-2", {
+                        "text-brand-9 font-semibold": specialKeys.includes(String(key)),
+                      })}
                       style={styles?.[key]?.value}
                       dangerouslySetInnerHTML={{
                         __html: truncateText(String(data[key]), truncateLength),
@@ -104,7 +113,9 @@ const KeyValueList = <T extends object>({
                   ) : (
                     <p
                       key={`${chunkIndex}-${String(key)}-value`}
-                      className="text-black dark:text-darkText-2"
+                      className={clsx("text-black dark:text-darkText-2", {
+                        "text-brand-9 font-semibold": specialKeys.includes(String(key)),
+                      })}
                       style={styles?.[key]?.value}
                     >
                       {truncateText(String(data[key]), truncateLength)}
