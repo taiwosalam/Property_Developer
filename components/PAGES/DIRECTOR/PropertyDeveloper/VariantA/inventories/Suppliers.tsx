@@ -5,9 +5,10 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import { PlusIcon } from "@/public/icons/icons";
 import UserCardList, { SupplierCreateModal } from "./suppliers/card";
 import Pagination from "@/components/Pagination/pagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { ManageInventoryModal } from "./inventory/cards";
+import useView from "@/hooks/useView";
 
 const Suppliers = () => {
   const cardData = [
@@ -16,10 +17,17 @@ const Suppliers = () => {
     { title: "Mobile Users", total: 90, newData: 30, colorScheme: 3 },
   ];
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const storedView = useView();
+  const [view, setView] = useState<string | null>(storedView);
+  useEffect(() => {
+    setView(storedView);
+  }, [storedView]);
+
+  console.log("view", view);
   return (
     <section>
       <div className="itsms flex justify-between items-center">
-        <div className="flex flex-wrap gap-4">
+        <div className="flex overflow-x-auto mt-4 no-scrollbar gap-4">
           {cardData.map((card, index) => (
             <ManagementStatistcsCard
               key={index}
@@ -37,8 +45,9 @@ const Suppliers = () => {
           }}
         >
           <ModalTrigger asChild>
-            <Button className="bg-brand-9 flex items-center gap-2">
-              <PlusIcon /> Create New Supplier
+            <Button className="bg-brand-9 fixed md:static bottom-4 rounded-full md:rounded-lg  md:size-auto grid right-4 md:right-auto md:flex items-center gap-2">
+              <PlusIcon />{" "}
+              <span className="md:block hidden">Create New Supplier</span>
             </Button>
           </ModalTrigger>
           <ModalContent>
@@ -50,7 +59,9 @@ const Suppliers = () => {
       <div className="items py-8">
         <FilterBar
           isDateTrue
-          hasGridListToggle={false}
+          hasGridListToggle={true}
+          setGridView={() => setView("grid")}
+          setListView={() => setView("list")}
           pageTitle="Suppliers"
           aboutPageModalData={{
             title: "Applications",
@@ -65,7 +76,7 @@ const Suppliers = () => {
       </div>
 
       <div className="users">
-        <UserCardList />
+        <UserCardList view={view as string} />
         <Pagination
           totalPages={8}
           currentPage={4}

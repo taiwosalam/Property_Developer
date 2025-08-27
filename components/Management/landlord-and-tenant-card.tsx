@@ -11,7 +11,7 @@ import { capitalizeWords } from "@/hooks/capitalize-words";
 import Picture from "../Picture/picture";
 
 // Function to map user tags to display names
-const getUserTagDisplay = (userTag: string): string => {
+export const getUserTagDisplay = (userTag: string): string => {
   switch (userTag.toLowerCase()) {
     case "account officer":
       return "Account Manager";
