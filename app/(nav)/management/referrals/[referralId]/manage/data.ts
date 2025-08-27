@@ -1,5 +1,5 @@
 import type { Field } from "@/components/Table/types";
-import type { ReferralsPageData } from "../../data";
+import type { ReferralsPageData } from "../../../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/management/referrals/data";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { v4 as uuidv4 } from "uuid";
 
