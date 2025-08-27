@@ -37,7 +37,7 @@ import UpdateProfileWithIdModal from "@/components/Management/update-with-id-mod
 import { TenantEditContext } from "@/components/Management/Tenants/Edit/tenant-edit-context";
 import { TenantData } from "../../types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { UnitStatusColors } from "@/components/Management/Properties/property-preview";
+import { UnitStatusColors } from "@/components/Management/Properties/previews/property-preview";
 import dayjs from "dayjs";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
 import {

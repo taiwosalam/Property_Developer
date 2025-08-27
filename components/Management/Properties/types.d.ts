@@ -9,11 +9,19 @@ export interface AddPropertyOptionsViewProps {
   setModalView: React.Dispatch<React.SetStateAction<AddPropertyModalViews>>;
 }
 
+// export interface UnitCardProps {
+//   data: UnitDataObject & { notYetUploaded?: boolean };
+//   setIsEditing: (a: boolean) => void;
+//   index: number;
+//   default_image?: string;
+// }
+
 export interface UnitCardProps {
-  data: UnitDataObject & { notYetUploaded?: boolean };
+  data:
+    | (UnitDataObject & { notYetUploaded?: boolean })
+    | (InstallmentUnitDataObject & { notYetUploaded?: boolean });
   setIsEditing: (a: boolean) => void;
   index: number;
-  default_image?: string;
 }
 
 export interface CreatePropertyFormProps {

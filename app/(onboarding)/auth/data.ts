@@ -214,6 +214,50 @@ export const getRentalPropertyCreatePath = (
   }
 };
 
+
+export const getOutrightSalesPropertyCreatePath = (
+  role: string | null,
+  landlordId?: number
+): string => {
+  const basePath = (prefix: string = "") =>
+    `${prefix}/management/properties/create-outright-property${landlordId ? `?landlord=${landlordId}` : ""
+    }`;
+  switch (role) {
+    case "director":
+      return basePath();
+    case "manager":
+      return basePath("/manager");
+    case "account":
+      return basePath("/accountant");
+    case "staff":
+      return basePath("/staff");
+    default:
+      return basePath();
+  }
+};
+
+
+export const getInstallmentSalesPropertyCreatePath = (
+  role: string | null,
+  landlordId?: number
+): string => {
+  const basePath = (prefix: string = "") =>
+    `${prefix}/management/properties/create-installment-property${landlordId ? `?landlord=${landlordId}` : ""
+    }`;
+  switch (role) {
+    case "director":
+      return basePath();
+    case "manager":
+      return basePath("/manager");
+    case "account":
+      return basePath("/accountant");
+    case "staff":
+      return basePath("/staff");
+    default:
+      return basePath();
+  }
+};
+
 export const getFacilityPropertyCreatePath = (
   role: string | null,
   landlordId?: number

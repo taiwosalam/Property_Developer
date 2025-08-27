@@ -17,11 +17,17 @@ import { empty } from "@/app/config";
 import { transformUnitDetails } from "@/app/(nav)/listing/data";
 import { useRole } from "@/hooks/roleContext";
 import { usePermission } from "@/hooks/getPermission";
+import { useModule } from "@/contexts/moduleContext";
 
 const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const propertySettings = useAddUnitStore((state) => state.propertySettings);
   const removeUnit = useAddUnitStore((state) => state.removeUnit);
+  const removeInstallmentUnit = useAddUnitStore(
+    (state) => state.removeInstallmentUnit
+  );
+  const { activeModule, designVariant } = useModule();
+  const isPropertyDeveloperModule = activeModule.id === "property_developer";
   const { role } = useRole();
 
   // PERMISSIONS
@@ -29,45 +35,72 @@ const UnitCard: React.FC<UnitCardProps> = ({ data, setIsEditing, index }) => {
     usePermission(role, "Can add/delete branch properties") ||
     role === "director";
 
-  const currency = propertySettings?.currency;
-  // console.log("data hereeee", data);
-  const referenceObject = {
-    unit_details: "",
-    "unit no/name": "",
-    rent: "",
-    ...(data.caution_fee ? { caution_deposit: "" } : {}),
-    total_package: "",
-    unit_type: "",
-    service_charge: "",
-    account_officer: "",
-  };
+  const currency = propertySettings?.currency || "naira";
 
-  const keyValueData = {
-    unit_details: transformUnitDetails(data),
-    "unit no/name": data.unit_name,
-    rent: `${currencySymbols[currency || "naira"]}${formatNumber(
-      parseFloat(data.fee_amount)
-    )}`,
-    ...(data.caution_fee
-      ? {
-          caution_deposit: `${
-            currencySymbols[currency || "naira"]
-          }${formatNumber(parseFloat(data.caution_fee))}`,
-        }
-      : {}),
-    total_package: `${currencySymbols[currency || "naira"]}${formatNumber(
-      parseFloat(data.total_package || "0")
-    )}`,
-    unit_type: data.unit_type,
-    service_charge: `${currencySymbols[currency || "naira"]}${formatNumber(
-      parseFloat(data.service_charge || "0")
-    )}`,
-    account_officer: data.account_officer || "Not Assigned Yet",
-  };
+  const referenceObject = isPropertyDeveloperModule
+    ? {
+        unit_details: "",
+        "unit preference": "",
+        unit_type: "",
+        "unit sub_type": "",
+        unit_price: "",
+        first_deposit: "",
+      }
+    : {
+        unit_details: "",
+        "unit no/name": "",
+        rent: "",
+        ...(data.caution_fee ? { caution_deposit: "" } : {}),
+        total_package: "",
+        unit_type: "",
+        service_charge: "",
+        account_officer: "",
+      };
+
+  const keyValueData = isPropertyDeveloperModule
+    ? {
+        unit_details: transformUnitDetails(data),
+        "unit preference": data.unit_preference,
+        unit_type: data.unit_type,
+        "unit sub_type": data.unit_sub_type,
+        unit_price: `${currencySymbols[currency]}${formatNumber(
+          parseFloat(data.initial_price)
+        )}`,
+        first_deposit: `${currencySymbols[currency]}${formatNumber(
+          parseFloat(data.first_deposit)
+        )}`,
+      }
+    : {
+        unit_details: transformUnitDetails(data),
+        "unit no/name": data.unit_name,
+        rent: `${currencySymbols[currency]}${formatNumber(
+          parseFloat(data.fee_amount)
+        )}`,
+        ...(data.caution_fee
+          ? {
+              caution_deposit: `${currencySymbols[currency]}${formatNumber(
+                parseFloat(data.caution_fee)
+              )}`,
+            }
+          : {}),
+        total_package: `${currencySymbols[currency]}${formatNumber(
+          parseFloat(data.total_package || "0")
+        )}`,
+        unit_type: data.unit_type,
+        service_charge: `${currencySymbols[currency]}${formatNumber(
+          parseFloat(data.service_charge || "0")
+        )}`,
+        account_officer: data.account_officer || "Not Assigned Yet",
+      };
+
 
   const handleRemove = async () => {
     if (data.notYetUploaded) {
-      removeUnit(index);
+      if (isPropertyDeveloperModule) {
+        removeInstallmentUnit(index);
+      } else {
+        removeUnit(index);
+      }
     } else {
       setModalOpen(true);
     }

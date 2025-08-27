@@ -13,8 +13,9 @@ const PropertyTag: React.FC<PropertyTagProps> = ({
         "rounded-lg py-1 px-4 font-normal max-w-fit text-center",
         {
           "bg-status-success-1 text-status-success-3":
-            propertyType === "rental",
-          "bg-brand-3 text-brand-9": propertyType === "facility",
+            propertyType === "rental" || propertyType === "outright",
+          "bg-brand-3 text-brand-9":
+            propertyType === "facility" || propertyType === "installment",
         },
         sm ? "text-[10px]" : "text-sm",
         className
@@ -22,6 +23,10 @@ const PropertyTag: React.FC<PropertyTagProps> = ({
     >
       {propertyType === "rental"
         ? "Rental Property"
+        : propertyType === "outright"
+        ? "Outright Sales"
+        : propertyType === "installment"
+        ? "Installment Sales"
         : list
         ? "Estate/Facility Property"
         : "Facility Property"}

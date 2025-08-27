@@ -1,18 +1,27 @@
 "use client";
+
 import { useEffect, useState } from "react";
-import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
-import UnitItem from "./unit-item";
-import PropeertyDetailsSettingsCard from "./property-details-settings-others-card";
+import { LocationIcon } from "@/public/icons/icons";
+import UnitItem from "../unit-item";
+import PropeertyDetailsSettingsCard from "../property-details-settings-others-card";
 import BackButton from "@/components/BackButton/back-button";
 import dynamic from "next/dynamic";
 import ImageSlider from "@/components/ImageSlider/image-slider";
-import { type PropertyDetailsSettingsOthersCardProps } from "./property-details-settings-others-card";
-import { type UnitItemProps } from "./unit-item";
+import { type PropertyDetailsSettingsOthersCardProps } from "../property-details-settings-others-card";
+import { type UnitItemProps } from "../unit-item";
 import DOMPurify from "dompurify";
 import TruncatedText from "@/components/TruncatedText/truncated-text";
-import parse from "html-react-parser";
 import Button from "@/components/Form/Button/button";
 import { useRole } from "@/hooks/roleContext";
+import useFetch from "@/hooks/useFetch";
+import PageCircleLoader from "@/components/Loader/PageCircleLoader";
+import NetworkError from "@/components/Error/NetworkError";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
+import {
+  SinglePropertyResponse,
+  transformSinglePropertyData,
+} from "@/app/(nav)/management/properties/[id]/data";
+import parse from "html-react-parser";
 
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
@@ -26,18 +35,16 @@ export const UnitStatusColors = {
   relocate: "#620E13",
 } as const;
 
-export interface PropertyPreviewProps
-  extends PropertyDetailsSettingsOthersCardProps {
+export interface PropertyPreviewProps extends PropertyDetailsSettingsOthersCardProps {
   id: string;
   property_name: string;
   address: string;
-  // propertyType: "rental" | "facility";
-  propertyType: string;
+  propertyType: string; 
   total_units: number;
   images: string[];
   video_link?: string;
   landlord?: boolean;
-  landlordData?: any;
+  landlordData?: any; 
   rent_penalty?: string;
   fee_period?: string;
   description?: string;
@@ -45,9 +52,29 @@ export interface PropertyPreviewProps
   page?: "manager" | "account";
 }
 
-const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
+const PropertyManagerPropertyPreviewVariantA: React.FC<
+  PropertyPreviewProps
+> = ({ id }) => {
+  const { role } = useRole();
+  const { data, loading, error, isNetworkError, refetch } =
+    useFetch<SinglePropertyResponse>(`property/${id}/view`);
+  useRefetchOnEvent("property-updated", () => refetch({ silent: true }));
+
+  const [isClient, setIsClient] = useState(false);
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Transform the fetched data
+  const propertyData = data ? transformSinglePropertyData(data) : null;
+
+  // Handle loading, error, and no data states
+  if (loading) return <PageCircleLoader />;
+  if (isNetworkError) return <NetworkError />;
+  if (error) return <div>{error}</div>;
+  if (!propertyData) return <div>No property data found</div>;
+
   const {
-    id,
     property_name,
     address,
     images,
@@ -60,20 +87,15 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
     description,
     page,
     ...others
-  } = props;
-  const { role } = useRole();
-  const sanitizedDescription = DOMPurify.sanitize(description ?? "");
+  } = propertyData;
 
-  const [isClient, setIsClient] = useState(false);
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
+  const sanitizedDescription = DOMPurify.sanitize(description ?? "");
 
   const getManagePropertyLink = () => {
     switch (role) {
       case "manager":
         return `/manager/management/properties/${id}/edit-property`;
-      case "account": 
+      case "account":
         return `/accountant/management/properties/${id}/edit-property`;
       case "director":
         return `/management/properties/${id}/edit-property`;
@@ -83,6 +105,7 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
         return `/unauthorized`;
     }
   };
+
   return (
     <div className="space-y-5">
       <BackButton as="p" bold>
@@ -158,4 +181,4 @@ const PropertyPreview: React.FC<PropertyPreviewProps> = (props) => {
   );
 };
 
-export default PropertyPreview;
+export default PropertyManagerPropertyPreviewVariantA;

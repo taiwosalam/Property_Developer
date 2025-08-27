@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAddUnitStore } from "@/store/add-unit-store";
 import { useRole } from "@/hooks/roleContext";
+import { sampleInstallmentUnits } from "@/app/(nav)/management/properties/create-installment-property/[propertyId]/add-unit/data";
 
 interface AddUnitFooterProps {
   noForm?: boolean;
@@ -41,7 +42,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
   }, []);
   // -------------------------------------------
 
-  const hasAddedUnits = addedUnits.length > 0;
+  const hasAddedUnits = addedUnits.length > 0 || sampleInstallmentUnits.length > 0;
 
   const getPropertiesRoute = () => {
     switch (role) {
@@ -150,6 +151,8 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
     }
   };
 
+  console.log("formInDom", formInDom);
+  console.log("hasAddedUnits", hasAddedUnits);
   return (
     <FixedFooter className="unit-footer-actions flex items-center justify-end gap-10">
       <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>

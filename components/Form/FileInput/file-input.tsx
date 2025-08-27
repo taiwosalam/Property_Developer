@@ -142,7 +142,7 @@ const FileInput: React.FC<FileInputProps> = ({
     setIsLgScreen(width >= 1024);
   }, [width]);
 
-  console.log(fileName);
+  // console.log(fileName);
 
   useEffect(() => {
     if (file) {
