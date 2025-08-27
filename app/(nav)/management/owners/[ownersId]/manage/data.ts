@@ -3,7 +3,7 @@ import type {
     OwnerPageData,
     PreviousProperties,
     PropertiesManaged,
-} from "../../types";
+} from "../../../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/management/owners/types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";

@@ -34,7 +34,7 @@ import {
 } from "./data";
 import { groupDocumentsByType } from "@/utils/group-documents";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
-import { transformCardData } from "../../data";
+import { transformCardData } from "../../../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/management/owners/data";
 import Link from "next/link";
 import { SectionContainer } from "@/components/Section/section-components";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
