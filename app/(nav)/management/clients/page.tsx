@@ -2,7 +2,8 @@
 
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
-import { useModule } from "@/contexts/moduleContext";
+// import { useModule } from "@/contexts/moduleContext";
+import  useModule  from "@/contexts/moduleContext";
 import { useRole } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { AnimatePresence, motion } from "framer-motion";
@@ -33,7 +34,8 @@ const PropertyDeveloperClientVariantC = dynamic(
 );
 
 const ClientPage = () => {
-  const { activeModule, designVariant } = useModule();
+//   const { activeModule, designVariant } = useModule();
+  const { activeModule, designVariant } = useModule;
   const { role } = useRole();
 
   // Restrict access to director role
