@@ -6,4 +6,4 @@ const ClientsPageVariantB = () => {
   )
 }
 
-export default ClientsPageVariantB
+export default ClientsPageVariantB 
