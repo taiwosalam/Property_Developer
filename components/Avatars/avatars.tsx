@@ -19,20 +19,6 @@ const Avatars: React.FC<AvatarsProps> = ({
     ({ id: string; image_url: string } | string)[]
   >([]);
 
-  // useEffect(() => {
-  //   const fetchAvatarLinks = async () => {
-  //     setLoading(true);
-  //     if (branch) {
-  //       setLinks(branchAvatarLinks);
-  //     } else {
-  //       const fetchedLinks = await getAvatarLinks();
-  //       setLinks(fetchedLinks);
-  //     }
-  //     setLoading(false);
-  //   };
-  //   fetchAvatarLinks();
-  // }, [branch]);
-
   useEffect(() => {
     const fetchAvatarLinks = async () => {
       setLoading(true);
