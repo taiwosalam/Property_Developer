@@ -15,7 +15,6 @@ import { ReloadIcon } from "@/public/icons/icons";
 import { useRole } from "@/hooks/roleContext";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { useBranchInfoStore } from "@/store/branch-info-store";
-import useBranchData from "@/hooks/useBranchData";
 
 const ActivateWalletModal = () => {
   const { setIsOpen } = useModal();
@@ -23,7 +22,6 @@ const ActivateWalletModal = () => {
   const [resendReqLoading, setResendReqLoading] = useState(false);
   const email = useAuthStore((state) => state.email);
   const { branch } = usePersonalInfoStore();
-  // useBranchData(branch?.branch_id || 0);
   const { sub_wallet } = useBranchInfoStore();
   const [pin, setPin] = useState("");
   const [confirmPin, setConfirmPin] = useState("");
