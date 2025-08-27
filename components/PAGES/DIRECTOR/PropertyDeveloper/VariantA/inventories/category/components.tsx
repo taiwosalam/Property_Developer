@@ -4,6 +4,7 @@ import { InventoryItem, InventorySection } from "./types";
 import Image from "next/image";
 // components/InventorySection.tsx
 import { useCallback, useEffect, useState } from "react";
+// import useEmblaCarousel from "embla-carousel-react";
 import useEmblaCarousel from "embla-carousel-react";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import { AuthForm } from "@/components/Auth/auth-components";
