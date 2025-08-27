@@ -14,7 +14,7 @@ import {
   UnitFilterResponse,
   UnitPageState,
 } from "@/app/(nav)/management/rent-unit/data";
-import StatusIndicator from "@/components/Management/status-indicator";
+// import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";
 import RentalPropertyListCard from "@/components/Management/Rent And Unit/rental-property-list";
