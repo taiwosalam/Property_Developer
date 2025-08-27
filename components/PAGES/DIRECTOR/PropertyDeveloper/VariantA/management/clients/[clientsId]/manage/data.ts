@@ -3,13 +3,13 @@ import type {
   ClientPageData,
   PreviousProperties,
   PropertiesManaged,
-} from "../../types";
+} from "../../../../../../../../../app/(nav)/management/clients/types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
 import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
-import { formatFee } from "../../../rent-unit/data";
+import { formatFee } from "../../../../../../../../../app/(nav)/management/rent-unit/data";
 import { empty } from "@/app/config";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 

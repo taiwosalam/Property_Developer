@@ -38,7 +38,7 @@ import {
 import { groupDocumentsByType } from "@/utils/group-documents";
 import useFetch from "@/hooks/useFetch";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
-import { transformCardData } from "../../data";
+import { transformCardData } from "../../../../../../../../../app/(nav)/management/clients/data";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import Link from "next/link";
 import { SectionContainer } from "@/components/Section/section-components";

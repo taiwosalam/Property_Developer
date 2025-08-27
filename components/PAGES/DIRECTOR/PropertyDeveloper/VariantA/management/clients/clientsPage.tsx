@@ -13,17 +13,30 @@ import Pagination from "@/components/Pagination/pagination";
 import { getAllStates } from "@/utils/states";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import Button from "@/components/Form/Button/button";
-import {
-    getClientsHelpInfo,
-    clientTableFields,
-    type ClientApiResponse,
-    type ClientsPageData,
-    type ClientRequestParams,
-    transformClientApiResponse,
-    initialClientsPageData,
-    generateDummyClientApiResponse, // Add this import
-} from "./data";
-import NetworkError from "@/components/Error/NetworkError";
+// import {
+//     getClientsHelpInfo,
+//     clientTableFields,
+//     type ClientApiResponse,
+//     type ClientsPageData,
+//     type ClientRequestParams,
+//     transformClientApiResponse,
+//     initialClientsPageData,
+//     generateDummyClientApiResponse, // Add this import
+// } from "./data";
+// import {
+//     getClientsHelpInfo,
+//     clientTableFields,
+//     type ClientApiResponse,
+//     type ClientsPageData,
+//     type ClientRequestParams,
+//     transformClientApiResponse,
+//     initialClientsPageData,
+//     generateDummyClientApiResponse, // Add this import
+// } from "./data";
+import { ClientPageData, ClientRequestParams } from "./types";
+import getClientHelpInfo
+// import ClientRequestParams from "./types";
+// import {getClientsHelpIngo} from "./data";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";

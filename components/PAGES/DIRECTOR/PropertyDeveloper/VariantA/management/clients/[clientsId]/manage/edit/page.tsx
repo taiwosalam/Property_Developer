@@ -8,7 +8,7 @@ import {
   transformIndividualClientAPIResponse,
 } from "../data";
 // import { LandlordPageData } from "../../../types";
-import { ClientPageData } from "../../../types";
+import { ClientPageData } from "../../../../../../../../../../app/(nav)/management/clients/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import BackButton from "@/components/BackButton/back-button";
