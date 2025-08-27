@@ -26,20 +26,16 @@ import UserTag from "@/components/Tags/user-tag";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import { LandlordEditAttachmentInfoSection } from "@/components/Management/Landlord/Edit/landlord-edit-info-sections";
-import NetworkError from "@/components/Error/NetworkError";
 import CustomTable from "@/components/Table/table";
 import {
   statementTableFields,
-  statementTableData,
   transformIndividualClientAPIResponse,
   type IndividualClientAPIResponse,
   generateDummyIndividualClientAPIResponse,
+  transformCardData,
 } from "./data";
 import { groupDocumentsByType } from "@/utils/group-documents";
-import useFetch from "@/hooks/useFetch";
 import UpdateProfileWithIdModal from "@/components/Management/update-with-id-modal";
-import { transformCardData } from "../../../../../../../../../app/(nav)/management/clients/data";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import Link from "next/link";
 import { SectionContainer } from "@/components/Section/section-components";
 import EditMobileUser from "@/components/Management/edit-mobile-user";
@@ -159,7 +155,6 @@ const ManageClient = ({ params }: { params: { clientsId: string } }) => {
     router.push(`/messages/${clientData?.user_id}`);
   };
 
-
   const handleAttachProperty = () => {
     router.push(
       `/management/properties/create-rental-property?clientId=${clientId}`
@@ -183,7 +178,7 @@ const ManageClient = ({ params }: { params: { clientsId: string } }) => {
               <ChevronLeft />
             </button>
             <Picture
-              src={clientData?.picture || ""}
+              src={clientData?.picture_url || ""}
               alt="profile picture"
               size={120}
               containerClassName="w-fit custom-secondary-bg rounded-full"
@@ -439,7 +434,7 @@ const ManageClient = ({ params }: { params: { clientsId: string } }) => {
 
       {/* Edit attachment */}
       {clientData?.user_tag === "mobile" && (
-        <LandlordEditContext.Provider value={{ data: clientData }}>
+        <LandlordEditContext.Provider value={{ data: clientData as any }}>
           <LandlordEditAttachmentInfoSection noDefault />
         </LandlordEditContext.Provider>
       )}

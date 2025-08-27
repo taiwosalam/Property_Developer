@@ -1,5 +1,5 @@
+// "use client";
 
-"use client";
 import { Suspense } from "react";
 import dynamic from "next/dynamic";
 import { useModule } from "@/contexts/moduleContext";
@@ -85,4 +85,4 @@ const ClientPage = () => {
   );
 };
 
-export default ClientPage;
+export default ClientPage;

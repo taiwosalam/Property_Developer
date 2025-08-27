@@ -1,15 +1,10 @@
 import type { Field } from "@/components/Table/types";
-import type {
-  ClientPageData,
-  PreviousProperties,
-  PropertiesManaged,
-} from "../../../../../../../../../app/(nav)/management/clients/types";
+import { IndividualClientData } from "../../types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";
-import api, { handleAxiosError } from "@/services/api";
 import dayjs from "dayjs";
-import { formatFee } from "../../../../../../../../../app/(nav)/management/rent-unit/data";
+import { formatFee } from "@/app/(nav)/management/rent-unit/data";
 import { empty } from "@/app/config";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 
@@ -127,7 +122,7 @@ export interface IndividualClientAPIResponse {
 
 export const transformIndividualClientAPIResponse = ({
   data,
-}: IndividualClientAPIResponse): ClientPageData => {
+}: IndividualClientAPIResponse): IndividualClientData => {
   const lastUpdated = data.note.last_updated_at
     ? moment(data.note.last_updated_at).format("DD/MM/YYYY")
     : "";
@@ -151,7 +146,7 @@ export const transformIndividualClientAPIResponse = ({
 
   return {
     id: data.id,
-    picture: data.picture || "",
+    picture_url: data.picture || "",
     name: capitalizeWords(data.name),
     title: data.title || "",
     email: data.email,
@@ -160,11 +155,14 @@ export const transformIndividualClientAPIResponse = ({
       : ""
       }`,
     gender: data?.gender ?? "",
+    birthday: "",
+    religion: "",
+    marital_status: "",
     notes: {
-      last_updated: lastUpdated,
       write_up: data?.note?.note ?? "",
+      last_updated: lastUpdated,
     },
-    note: data?.note?.note !== null && data?.note?.note !== "",
+    note: data?.note?.note ?? "",
     owner_type: data?.owner_type ?? "",
     user_id: data?.user_id ?? "",
     badge_color: data?.user_tier ? tierColorMap[data?.user_tier] : undefined,
@@ -175,13 +173,26 @@ export const transformIndividualClientAPIResponse = ({
       state: data?.state ?? "",
       local_govt: data?.local_government ?? "",
     },
-    next_of_kin: data?.next_of_kin ?? "",
-    bank_details: data?.bank_details ?? "",
+    next_of_kin: {
+      name: data?.next_of_kin?.name ?? "",
+      address: data?.next_of_kin?.address ?? "",
+      phone: data?.next_of_kin?.phone ?? "",
+      relationship: data?.next_of_kin?.relationship ?? "",
+    },
+    bank_details: {
+      bank_name: data?.bank_details?.bank_name ?? "",
+      account_name: data?.bank_details?.account_name ?? "",
+      account_number: data?.bank_details?.account_number ?? "",
+      wallet_id: "",
+    },
     others: {
       employment: data?.Others?.occupation ?? "",
       employment_type: data?.Others?.job_type ?? "",
       family_type: data?.Others?.family_type ?? "",
     },
+    employment: data?.Others?.occupation ?? "",
+    employment_type: data?.Others?.job_type ?? "",
+    family_type: data?.Others?.family_type ?? "",
     documents: data?.documents?.flatMap((doc) => {
       return doc.files.map((file, index) => {
         if (typeof file === "string") {
@@ -320,7 +331,6 @@ export const transformIndividualClientAPIResponse = ({
           : null,
       };
     }),
-    propertyOptions,
     messageUserData: {
       id: Number(data?.user_id) || 0,
       name: data?.name || "",
@@ -407,15 +417,72 @@ export const generateDummyIndividualClientAPIResponse = (id: string): Individual
   };
 };
 
+export const transformCardData = (data: any) => {
+  if (!data) return null;
 
+  return {
+    id: data.id || "",
+    name: data.name || "",
+    title: data.title || "",
+    email: data.email || "",
+    phone_number: data.phone?.profile_phone || data.phone?.user_phone || "",
+    picture_url: data.picture || "",
+    user_tag: data.agent || "web",
+    badge_color: data.tier_id && data.tier_id in tierColorMap ? tierColorMap[data.tier_id as keyof typeof tierColorMap] : undefined,
+    note: data.note?.note || "",
+    gender: data.gender || "",
+    birthday: data.birthday || "",
+    religion: data.religion || "",
+    marital_status: data.marital_status || "",
+    employment: data.Others?.occupation || "",
+    employment_type: data.Others?.job_type || "",
+    family_type: data.Others?.family_type || "",
+    owner_type: data.owner_type || "",
+    contact_address: {
+      address: data.address || "",
+      city: data.city || "",
+      state: data.state || "",
+      local_govt: data.local_government || "",
+    },
+    bank_details: {
+      bank_name: data.bank_details?.bank_name || "",
+      account_name: data.bank_details?.account_name || "",
+      account_number: data.bank_details?.account_number || "",
+      wallet_id: data.bank_details?.wallet_id || "",
+    },
+    next_of_kin: {
+      name: data.next_of_kin?.name || "",
+      address: data.next_of_kin?.address || "",
+      phone: data.next_of_kin?.phone || "",
+      relationship: data.next_of_kin?.relationship || "",
+    },
+    others: {
+      employment: data.Others?.occupation || "",
+      employment_type: data.Others?.job_type || "",
+      family_type: data.Others?.family_type || "",
+    },
+    notes: {
+      write_up: data.note?.note || "",
+    },
+    properties_managed: data.properties || [],
+    previous_properties: data.previous_properties || [],
+    statement: data.statement || [],
+    documents: data.documents || [],
+    user_id: data.user_id || "",
+    messageUserData: {
+      id: Number(data?.user_id) || 0,
+      name: data?.name || "",
+      position: "client",
+      imageUrl: data?.picture ?? empty,
+      branch_id: 1,
+    },
+  };
+};
+
+
+// API function removed - using dummy data for now
 export const updateClientWithEmailOrID = async (data: any, id: number) => {
-  try {
-    const res = await api.post(`client-update/email/${id}`, data);
-    if (res.status === 201) {
-      return true;
-    }
-  } catch (error) {
-    handleAxiosError(error);
-    return false;
-  }
+  // TODO: Implement when API is ready
+  console.log('Update client with email/ID:', { data, id });
+  return true;
 };

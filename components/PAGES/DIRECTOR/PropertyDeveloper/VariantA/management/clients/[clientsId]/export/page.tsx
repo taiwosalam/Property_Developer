@@ -20,7 +20,7 @@ const ClientExport = () => {
     generateDummyIndividualClientAPIResponse(String(clientsId))
   );
 
-  const transformedTableData = clientData?.statement?.map((item:any) => ({
+  const transformedTableData = clientData?.statement?.map((item: any) => ({
     ...item,
     name: (
       <p className="flex items-center whitespace-nowrap">
