@@ -17,7 +17,7 @@ import {
   type TenantPageData,
   type TenantRequestParams,
   transformTenantApiResponse,
-} from "../../../tenants/data";
+} from "@/app/(nav)/management/tenants/data";
 import Link from "next/link";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import FilterBar from "@/components/FIlterBar/FilterBar";

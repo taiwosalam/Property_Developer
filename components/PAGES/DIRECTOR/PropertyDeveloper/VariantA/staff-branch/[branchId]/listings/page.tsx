@@ -25,7 +25,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import { ExclamationMark, LocationIcon } from "@/public/icons/icons";
-import { RentUnitFilterParams } from "../../../rent-unit/data";
+import { RentUnitFilterParams } from "@/app/(nav)/management/rent-unit/data";
 import BackButton from "@/components/BackButton/back-button";
 import useBranchStore from "@/store/branch-store";
 import { useParams } from "next/navigation";

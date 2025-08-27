@@ -1,6 +1,17 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import ManagementStatistcsCard from "@/components/Management/ManagementStatistcsCard";
+// import {
+//   initialState,
+//   RentAndUnitFilters,
+//   RentAndUnitFiltersWithDropdown,
+//   RentAndUnitState,
+//   RentUnitFilterParams,
+//   transformRentUnitApiResponse,
+//   UnitApiResponse,
+//   UnitFilterResponse,
+//   UnitPageState,
+// } from "../../../rent-unit/data";
 import {
   initialState,
   RentAndUnitFilters,
@@ -11,7 +22,7 @@ import {
   UnitApiResponse,
   UnitFilterResponse,
   UnitPageState,
-} from "../../../rent-unit/data";
+} from "@/app/(nav)/management/rent-unit/data";
 import StatusIndicator from "@/components/Management/status-indicator";
 import Pagination from "@/components/Pagination/pagination";
 import RentalPropertyCard from "@/components/Management/Rent And Unit/rental-property-card";

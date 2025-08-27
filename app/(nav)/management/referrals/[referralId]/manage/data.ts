@@ -76,7 +76,8 @@ export const transformIndividualReferralAPIResponse = ({ data }: IndividualRefer
             relationship: data.next_of_kin.relationship,
             note: data.note?.note,
             referral_source: data.referral_source,
-            referral_status: data.referral_status,
+            // referral_status: data.referral_status,
+            referral_status: "pending" as "rejected" | "approved" | "pending" | undefined,
         }],
         total_referrals: 1,
         new_referrals_this_month: 0,
@@ -138,7 +139,7 @@ export const generateDummyIndividualReferralAPIResponse = (referralId: string): 
             address: "123 Victoria Island, Lagos",
             note: {
                 last_updated_at: new Date(),
-                note: parseInt(referralId) % 7 === 0 ? "VIP referral with high potential" : null
+                note: parseInt(referralId) % 7 === 0 ? "VIP referral with high potential" : ""
             },
             bank_details: {
                 bank_name: "First Bank",
