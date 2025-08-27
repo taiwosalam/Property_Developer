@@ -1,5 +1,5 @@
 import type { Field } from "@/components/Table/types";
-import type { InvestorsPageData } from "../../data";
+import type { InvestorsPageData } from "../../../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/management/investors/data";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { v4 as uuidv4 } from "uuid";
 
