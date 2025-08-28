@@ -53,13 +53,13 @@ const InventoryUnitCard: React.FC<{
   const getManageLink = () => {
     switch (role) {
       case "director":
-        return `/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "manager":
-        return `/manager/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/manager/management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "account":
-        return `/accountant/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/accountant/management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       case "staff":
-        return `/staff/management/inventory/${propertyId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
+        return `/staff/management/inventory/${unitId}/manage?inventoryId=${inventoryId}&propertyId=${propertyId}`;
       default:
         return `/unauthorized`;
     }
