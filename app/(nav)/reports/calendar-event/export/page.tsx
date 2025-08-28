@@ -16,7 +16,7 @@ import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
 import { useGlobalStore } from "@/store/general-store";
 import { DomainFields, SponsorFields } from "@/app/(nav)/settings/add-on/data";
-import { CalendarTableFields } from "@/app/(nav)/tasks/calendars/data";
+import { CalendarTableFields } from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
 
 dayjs.extend(advancedFormat);
 

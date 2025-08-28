@@ -44,7 +44,7 @@ import { DataItem } from "@/components/Table/types";
 import {
   CalendarTable,
   ICalendarEventsTable,
-} from "@/app/(nav)/tasks/calendars/data";
+} from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
 
 interface GlobalStoreState {
   sponsorValue: number;

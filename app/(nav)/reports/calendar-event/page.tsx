@@ -34,8 +34,8 @@ import {
   CalendarTableFields,
   ICalendarEventsTable,
   transformEventTable,
-} from "../../tasks/calendars/data";
-import { CalendarEventsApiResponse } from "../../tasks/calendars/types";
+} from "../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
+import { CalendarEventsApiResponse } from "../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/types";
 import { LandlordRequestParams } from "../../management/landlord/data";
 
 const CalendarEventRecord = () => {

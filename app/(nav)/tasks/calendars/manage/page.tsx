@@ -46,8 +46,8 @@ import { EventCalendarContext } from "@/components/tasks/Examine/EventCalendar/e
 import CalendarActivities from "@/components/Calendar/calendar-activities";
 import { CalendarEventProps } from "@/components/Calendar/types";
 import useFetch from "@/hooks/useFetch";
-import { transformEventTable, transformCalendarEvents } from "../data";
-import { CalendarEventsApiResponse } from "../types";
+import { transformEventTable, transformCalendarEvents } from "../../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
+import { CalendarEventsApiResponse } from "../../../../../components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/types";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 
 const ManageCalendar = () => {
@@ -221,10 +221,10 @@ const ManageCalendar = () => {
                   activeLayout === "Year"
                     ? prevYear
                     : activeLayout === "Month"
-                    ? prevMonth
-                    : activeLayout === "Week"
-                    ? prevWeek
-                    : undefined
+                      ? prevMonth
+                      : activeLayout === "Week"
+                        ? prevWeek
+                        : undefined
                 }
                 className="py-2 px-1"
               >
@@ -235,10 +235,10 @@ const ManageCalendar = () => {
                   activeLayout === "Year"
                     ? nextYear
                     : activeLayout === "Month"
-                    ? nextMonth
-                    : activeLayout === "Week"
-                    ? nextWeek
-                    : undefined
+                      ? nextMonth
+                      : activeLayout === "Week"
+                        ? nextWeek
+                        : undefined
                 }
                 className="py-2 px-1"
               >
@@ -249,8 +249,8 @@ const ManageCalendar = () => {
               {activeLayout === "Month"
                 ? format(setMonth(new Date(year, 0), month), "MMMM")
                 : activeLayout === "Week"
-                ? weekData.title
-                : null}{" "}
+                  ? weekData.title
+                  : null}{" "}
               {year}
             </p>
           </div>

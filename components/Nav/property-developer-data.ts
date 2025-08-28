@@ -50,15 +50,15 @@ export const property_developer_director_nav_items: NavItemsProps = [
   {
     type: "briefcase_timer",
     label: "tasks",
-    href: "#",
+    href: "/tasks",
     content: [
-      { label: "calendar", href: "#" },
-      { label: "inspections", href: "#" },
-      { label: "announcement", href: "#" },
-      { label: "to do", href: "#" },
-      { label: "request", href: "#" },
-      { label: "inquires", href: "#" },
-      { label: "complain", href: "#" },
+      { label: "calendar", href: "/calendars" },
+      { label: "inspections", href: "/inspections" },
+      { label: "announcement", href: "/annoncement" },
+      { label: "to do", href: "/to-do" },
+      { label: "request", href: "/requests" },
+      { label: "inquires", href: "/inquires" },
+      { label: "complain", href: "/complaints" },
     ],
   },
   {

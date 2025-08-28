@@ -15,7 +15,7 @@ export const calendarsrFilterOptionsWithDropdown = [
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-export const getAllEventsOnCalendar = async () => {};
+export const getAllEventsOnCalendar = async () => { };
 
 export const CalendarTableFields: Field[] = [
   { id: "1", label: "Date & Time", accessor: "date" },
@@ -66,9 +66,9 @@ export const transformCalendarEvents = (
     const cleanDescription =
       event.type === "reminders"
         ? `${event?.title}: ${event?.description?.replace(
-            /^General Reminder:\s*/i,
-            ""
-          )}`
+          /^General Reminder:\s*/i,
+          ""
+        )}`
         : event?.description?.replace(/^General Reminder:\s*/i, "");
 
     return {
@@ -82,12 +82,12 @@ export const transformCalendarEvents = (
 };
 
 export interface CalendarTable {
-   date: string;
-    event: string;
-    creator: string;
-    property_name: string;
-    branch: string | null;
-    account_officer: string | null;
+  date: string;
+  event: string;
+  creator: string;
+  property_name: string;
+  branch: string | null;
+  account_officer: string | null;
 }
 
 export interface ICalendarEventsTable {

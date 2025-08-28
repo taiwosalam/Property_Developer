@@ -15,9 +15,9 @@ import { CalendarDay, CalendarWeekDays } from "../Calendar/calendar-components";
 import { Calendar } from "../Calendar/data";
 import { calendar_events } from "../Calendar/events";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { CalendarEventsApiResponse } from "@/app/(nav)/tasks/calendars/types";
+import { CalendarEventsApiResponse } from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/types";
 import useFetch from "@/hooks/useFetch";
-import { transformCalendarEvents } from "@/app/(nav)/tasks/calendars/data";
+import { transformCalendarEvents } from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
 import { CalendarEventProps } from "../Calendar/types";
 import { useRouter } from "next/navigation";
 

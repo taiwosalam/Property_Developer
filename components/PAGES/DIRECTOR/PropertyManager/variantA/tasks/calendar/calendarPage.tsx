@@ -4,18 +4,20 @@ import CustomTable from "@/components/Table/table";
 import Pagination from "@/components/Pagination/pagination";
 import { useEffect, useState } from "react";
 import {
+  calendarsrFilterOptionsWithDropdown,
   getAllEventsOnCalendar,
   CalendarTableFields,
   ICalendarEventsTable,
-  transformCalendarEvents,
   transformEventTable,
-} from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
+  transformCalendarEvents,
+} from "./data";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import CalendarComponent from "@/components/Calendar/calendar";
 import useFetch from "@/hooks/useFetch";
-import { CalendarEventsApiResponse } from "@/components/Management/Staff-And-Branches/types";
+import { CalendarEventsApiResponse } from "./types";
 import { AxiosRequestConfig } from "axios";
-import { LandlordRequestParams } from "../../management/landlord/data";
+// import { LandlordRequestParams } from "./management/landlord/data";
+import { LandlordRequestParams } from "@/app/(nav)/management/landlord/data";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import CardsLoading from "@/components/Loader/CardsLoading";
@@ -25,18 +27,12 @@ import Link from "next/link";
 import PageLoader from "next/dist/client/page-loader";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import CalendarSkeletonLoader from "@/components/Loader/calendar-page-loader";
-import { usePermission } from "@/hooks/getPermission";
-import { useRole } from "@/hooks/roleContext";
 
 const CalendarPage = () => {
   const [fetchedTabelData, setFetchedTableData] = useState([]);
   const [eventTable, setEventTable] = useState<ICalendarEventsTable | null>(
     null
   );
-  const { role } = useRole();
-  const canManageCalendar =
-    usePermission(role, "Can manage calendar") || role === "director";
-
   const [calendarEvents, setCalendarEvents] = useState<CalendarEventProps[]>(
     []
   );

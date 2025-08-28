@@ -29,8 +29,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { debounce } from "@/utils/debounce";
 import { Activity } from "lucide-react";
 import { LandlordRequestParams } from "../../management/landlord/data";
-import { ICalendarEventsTable, transformEventTable } from "@/app/(nav)/tasks/calendars/data";
-import { CalendarEventsApiResponse } from "@/app/(nav)/tasks/calendars/types";
+import { ICalendarEventsTable, transformEventTable } from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/data";
+import { CalendarEventsApiResponse } from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/types";
 import { CalendarTableFields } from "../../tasks/calendars/data";
 
 const CalendarEventRecord = () => {
@@ -80,10 +80,10 @@ const CalendarEventRecord = () => {
           description: "This page contains all calendar events",
         }}
         searchInputPlaceholder="Search for calendar events"
-        handleFilterApply={() => {}}
+        handleFilterApply={() => { }}
         //={() => {}}
-        onSort={() => {}}
-        handleSearch={() => {}}
+        onSort={() => { }}
+        handleSearch={() => { }}
         //filterOptionsMenu={() => {}}
         hasGridListToggle={false}
         exportHref="/reports/calendar-event/export"

@@ -49769,6 +49769,8 @@ export const adminRoutes = [
   "/tasks/move-out",
   "/tasks/inspections",
   "/tasks/calendars",
+  "/tasks/to-do",
+  "/tasks/requests",
   "/tasks/inquires",
   "/tasks/visitors",
   "/tasks/vehicles-record",
