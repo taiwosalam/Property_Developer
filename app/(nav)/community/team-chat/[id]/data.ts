@@ -26,6 +26,8 @@ export interface IChatDetailsPage {
 export const transformTeamDetails = (
   data: GroupChatDetailsResponse
 ): IChatDetailsPage => {
+
+  console.log({ data })
   return {
     about: {
       id: data?.group_chat?.id || 0,

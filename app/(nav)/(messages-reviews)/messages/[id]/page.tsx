@@ -23,6 +23,7 @@ import BadgeIcon, { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import { ChevronLeftIcon } from "lucide-react";
 import { useEchoMessages, useChatMessagesQuery } from "../hooks";
 import { useMessageStore } from "@/store/messagesStore";
+import { saveTeamData } from "@/store/teamdetailsstore";
 
 const useUserProfile = (id: string | number) => {
   const { data, loading } = useFetch<UserDetailsResponse>(
@@ -62,7 +63,7 @@ const Chat = () => {
 
   // React Query hook for messages
   const {
-    messages: queryMessages,
+    messages: { normalizedMessages: queryMessages },
     isPending,
     isLoading: loading,
     error,
@@ -149,7 +150,7 @@ const Chat = () => {
   // if (loading || loadingUser) {
   //   return <ChatSkeleton />;
   // }
-  if (groupedMessages.length < 1) {
+  if (groupedMessages.length < 1 && loading) {
     return <ChatSkeleton />;
   }
 

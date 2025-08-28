@@ -4,6 +4,7 @@ import { ReadEvent } from "./types";
 import { useEcho } from "@/lib/echo";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { base_url } from "@/app/(onboarding)/auth/data";
+import { saveTeamData, useGroupStore } from "@/store/teamdetailsstore";
 
 export const useChatMessages = (id: string, isGroupChat: boolean) => {
     const [messages, setMessages] = useState<NormalizedMessage[]>([]);
@@ -23,12 +24,14 @@ export const useEchoMessages = (
     id: string,
     onNewMessage: (message: NormalizedMessage) => void,
     onMessagesRead: (messageIds: number[]) => void,
-    isGroupChat: boolean
+    isGroupChat: boolean,
+    isTeamchat?: boolean
 ) => {
 
     // console.log({ isGroupChat })
     const { echo, isConnected } = useEcho();
     const token = localStorage.getItem("user_id");
+    const { setGroups } = useGroupStore();
 
     useEffect(() => {
         if (!echo || !isConnected || !id || !token) return;
@@ -37,6 +40,7 @@ export const useEchoMessages = (
             const channel = isGroupChat
                 ? echo.private(`group-chat.${id}`)
                 : echo.private(`user.${token}`);
+            const channel2 = echo.private(`user.${token}`);
             // const channel = echo.private(`user.${token}`);
             console.log(`Connected to ${isGroupChat ? 'group' : 'user'}`);
             const handleMessageReceived = (data: any) => {
@@ -51,13 +55,11 @@ export const useEchoMessages = (
                 }
             };
             const handleMessagesRead = (data: ReadEvent) => {
-                console.log("passing data here", { data })
                 onMessagesRead(data.message_ids);
             };
             const handleMessageSent = (data: any) => {
                 console.log({ isGroupChat, id }, "id:", Number(id) === data.group_chat_id, "group id", data.group_chat_id)
                 if (isGroupChat && data.data.group_chat_id !== Number(id)) return
-                console.log("data from the group chat", { data })
                 const dataToPass = isGroupChat ? data.data : data
                 const cleanedMessage = transformMessageFromAPI(dataToPass, isGroupChat ? true : false);
                 onNewMessage(cleanedMessage);
@@ -65,19 +67,22 @@ export const useEchoMessages = (
 
             const handleGroupMessageRecieved = (data: any) => {
                 if (isGroupChat && data.data.group_chat_id !== Number(id)) return
-                console.log("data from the group chat", { data })
-                const dataToPass = isGroupChat ? data.data : data
+                const dataToPass = isGroupChat ? data.data : data;
+
                 const cleanedMessage = transformNewMessageVariant(dataToPass, isGroupChat);
                 onNewMessage(cleanedMessage);
             };
             channel.listen('.message.received', handleMessageReceived);
-            channel.listen('.chat.received', handleGroupMessageRecieved);
+            channel2.listen('.conversation.updated', (data: any) => {
+                console.log("event received")
+                setGroups(data)
+            });
+            channel.listen('.chat.message', handleGroupMessageRecieved);
             // channel.listen('.chat.sent', (data: any) => console.log("whats happening", { data }));
             channel.listen('.chat.received', (data: any) => console.log("whats happening", { data }));
             channel.listen('.messages.read', handleMessagesRead);
             channel.listen('.message.sent', handleMessageSent);
             channel.listen('.conversation.created', (data: any) => console.log("conversation created", { data }));
-            channel.listen('.conversation.updated', (data: any) => console.log("conversation created", { data }));
 
 
         } catch (error) {
@@ -149,7 +154,7 @@ export const chatKeys = {
 };
 
 // Fetch functions
-export const fetchChatMessages = async (id: string, isGroupChat: boolean): Promise<NormalizedMessage[]> => {
+export const fetchChatMessages = async (id: string, isGroupChat: boolean): Promise<{ normalizedMessages: NormalizedMessage[], api: any }> => {
     const endpoint = isGroupChat ? `group-chats/${id}` : `messages/conversations/${id}`;
     const authToken = localStorage.getItem('authToken')
     const strippedToken = authToken ? authToken.replace(/^['"]|['"]$/g, "") : "";
@@ -159,16 +164,11 @@ export const fetchChatMessages = async (id: string, isGroupChat: boolean): Promi
             'Content-Type': 'application/json',
         },
     });
-
     if (!response.ok) {
         throw new Error(`Failed to fetch messages: ${response.statusText}`);
     }
-
     const data = await response.json();
-
     let normalizedMessages: NormalizedMessage[] = [];
-
-
     if (isGroupChat && isGroupChatResponse(data.data)) {
         if (String(data.data.group_chat?.id) === String(id)) {
             const msgs = transformMessagesFromAPI(data.data, true);
@@ -178,7 +178,7 @@ export const fetchChatMessages = async (id: string, isGroupChat: boolean): Promi
         const msgs = transformMessagesFromAPI(data, false);
         normalizedMessages = Array.isArray(msgs) ? msgs : [];
     }
-    return normalizedMessages;
+    return { normalizedMessages, api: data.data };
 };
 
 export const fetchUserProfile = async (id: string) => {
@@ -213,6 +213,7 @@ export const useChatMessagesQuery = (id: string, isGroupChat: boolean) => {
         queryFn: () => fetchChatMessages(id, isGroupChat),
         enabled: !!id,
         staleTime: 60 * 1000,
+        initialData: { api: null, normalizedMessages: [] },
         // cacheTime: 5 * 60 * 1000,
         refetchOnWindowFocus: true,
         // refetchInterval: 60 * 1000, // Background refresh

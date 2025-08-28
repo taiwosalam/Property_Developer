@@ -123,6 +123,8 @@ export interface FormState {
   picture?: string;
 }
 
+const ERROR_MESSAGE =
+  "Invalid credentials: Failed to authenticate SMTP username or password";
 export const updateSMTPSettings = async (data: FormData) => {
   try {
     data.append("_method", "PATCH");
@@ -131,7 +133,8 @@ export const updateSMTPSettings = async (data: FormData) => {
       return true;
     }
   } catch (error) {
-    handleAxiosError(error);
+    console.log(error);
+    toast.error(ERROR_MESSAGE);
     return false;
   }
 };
