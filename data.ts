@@ -49771,7 +49771,7 @@ export const adminRoutes = [
   "/tasks/calendars",
   "/tasks/to-do",
   "/tasks/requests",
-  "/tasks/inquires",
+  "/tasks/inquiries",
   "/tasks/visitors",
   "/tasks/vehicles-record",
   "/tasks/property-request",

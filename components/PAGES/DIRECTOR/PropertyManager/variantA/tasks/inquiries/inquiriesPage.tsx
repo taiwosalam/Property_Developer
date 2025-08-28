@@ -22,7 +22,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import ServerError from "@/components/Error/ServerError";
 import { AxiosRequestConfig } from "axios";
-import { LandlordRequestParams } from "../../management/landlord/data";
+import { LandlordRequestParams } from "../../../../../../../app/(nav)/management/landlord/data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
@@ -31,9 +31,9 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import Link from "next/link";
 import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
 import { debounce } from "lodash";
-import { MaintenanceRequestParams } from "../maintenance/data";
-import { hasActiveFilters } from "../../reports/data/utils";
-import { IPropertyApi } from "../../settings/others/types";
+import { MaintenanceRequestParams } from "../../../../../../../app/(nav)/tasks/maintenance/data";
+import { hasActiveFilters } from "../../../../../../../app/(nav)/reports/data/utils";
+import { IPropertyApi } from "../../../../../../../app/(nav)/settings/others/types";
 import { useSearchParams } from "next/navigation";
 
 const transformToCallBackRequestCardProps = (
@@ -174,22 +174,22 @@ const Inquires = () => {
 
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
-        ...new Map(
-          propertiesData.data.properties.data
-            .filter(
-              (property: any) =>
-                typeof property.request_call_back === "boolean" &&
-                property.request_call_back
-            )
-            .map((property: any) => [
-              property.title, // Use property title as the unique key
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data
+          .filter(
+            (property: any) =>
+              typeof property.request_call_back === "boolean" &&
+              property.request_call_back
+          )
+          .map((property: any) => [
+            property.title, // Use property title as the unique key
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   if (loading)
@@ -243,11 +243,11 @@ const Inquires = () => {
         filterOptionsMenu={[
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
           {
             radio: true,

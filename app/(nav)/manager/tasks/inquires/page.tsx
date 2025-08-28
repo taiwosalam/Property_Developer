@@ -5,7 +5,7 @@ import {
   ICallRequestPageData,
   transformCallbackRequestPageData,
   type RequestCallBackCardDataType,
-} from "@/app/(nav)/tasks/inquires/data";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inquiries/data";
 import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import RequestCallBackCard from "@/components/tasks/CallBack/RequestCard";
@@ -13,7 +13,7 @@ import type { CallRequestCardProps } from "@/components/tasks/CallBack/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
-import { CallRequestApiResponse } from "@/app/(nav)/tasks/inquires/type";
+import { CallRequestApiResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inquiries/type";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import NetworkError from "@/components/Error/NetworkError";
 import CustomLoader from "@/components/Loader/CustomLoader";
@@ -202,22 +202,22 @@ const Inquires = () => {
 
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
-        ...new Map(
-          propertiesData.data.properties.data
-            .filter(
-              (property: any) =>
-                typeof property.request_call_back === "boolean" &&
-                property.request_call_back
-            )
-            .map((property: any) => [
-              property.title, // Use property title as the unique key
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data
+          .filter(
+            (property: any) =>
+              typeof property.request_call_back === "boolean" &&
+              property.request_call_back
+          )
+          .map((property: any) => [
+            property.title, // Use property title as the unique key
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   if (loading)
@@ -271,11 +271,11 @@ const Inquires = () => {
         filterOptionsMenu={[
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
           {
             radio: true,

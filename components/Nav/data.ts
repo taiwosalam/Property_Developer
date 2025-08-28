@@ -39,7 +39,7 @@ export const nav_items: NavItemsProps = [
       { label: "maintenance", href: "/maintenance" },
       { label: "calendars", href: "/calendars" },
       { label: "announcements", href: "/announcements" },
-      { label: "call request", href: "/inquires" },
+      { label: "call request", href: "/inquiries" },
       { label: "visitors request", href: "/visitors" },
       { label: "vehicles record", href: "/vehicles-record" },
       { label: "property request", href: "/property-request" },

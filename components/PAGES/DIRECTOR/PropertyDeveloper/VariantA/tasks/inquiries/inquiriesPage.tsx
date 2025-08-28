@@ -8,35 +8,33 @@ import {
   RequestCallBackCardData as MockData,
   transformCallbackRequestPageData,
   type RequestCallBackCardDataType,
-} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inquiries/data";
+} from "./data";
 import Pagination from "@/components/Pagination/pagination";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
 import RequestCallBackCard from "@/components/tasks/CallBack/RequestCard";
 import type { CallRequestCardProps } from "@/components/tasks/CallBack/types";
 import { useCallback, useEffect, useRef, useState } from "react";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import BackButton from "@/components/BackButton/back-button";
-import { LocationIcon } from "@/public/icons/icons";
-import { AllBranchesResponse } from "@/components/Management/Properties/types";
-import useBranchStore from "@/store/branch-store";
-import { useParams, useSearchParams } from "next/navigation";
-import { CallRequestApiResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inquiries/type";
 import useFetch from "@/hooks/useFetch";
-import { LandlordRequestParams } from "../../../landlord/data";
-import { AxiosRequestConfig } from "axios";
+import { CallRequestApiResponse } from "./type";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { FilterResult } from "@/components/Management/Landlord/types";
-import { debounce } from "lodash";
-import { MaintenanceRequestParams } from "@/app/(nav)/tasks/maintenance/data";
-import dayjs from "dayjs";
-import { IPropertyApi } from "@/app/(nav)/settings/others/types";
-import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
+import CustomLoader from "@/components/Loader/CustomLoader";
 import ServerError from "@/components/Error/ServerError";
-import EmptyList from "@/components/EmptyList/Empty-List";
-import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
-import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
+import { AxiosRequestConfig } from "axios";
+import { LandlordRequestParams } from "../../../../../../../app/(nav)/management/landlord/data";
+import { FilterResult } from "@/components/Management/Landlord/types";
+import dayjs from "dayjs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
+import EmptyList from "@/components/EmptyList/Empty-List";
+import CardsLoading from "@/components/Loader/CardsLoading";
+import Link from "next/link";
+import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-request-loader";
+import { debounce } from "lodash";
+import { MaintenanceRequestParams } from "../../../../../../../app/(nav)/tasks/maintenance/data";
+import { hasActiveFilters } from "../../../../../../../app/(nav)/reports/data/utils";
+import { IPropertyApi } from "../../../../../../../app/(nav)/settings/others/types";
+import { useSearchParams } from "next/navigation";
 
 const transformToCallBackRequestCardProps = (
   data: RequestCallBackCardDataType
@@ -47,24 +45,27 @@ const transformToCallBackRequestCardProps = (
       { label: "Phone Number", accessor: "phoneNumber" },
       { label: "Branch", accessor: "branch" },
       { label: "Property Name", accessor: "propertyName" },
-      { label: "Account Officer", accessor: "accountOfficer" },
+      { label: "Account Manager", accessor: "accountOfficer" },
       { label: "Property Address", accessor: "propertyAddress" },
+      { label: "Unit Name", accessor: "unitName" },
     ],
     ...data,
-    unitName: data.unitName ?? "",
+    unitName: data.unitName ?? "___ ___",
   };
 };
 
-const BranchInquires = () => {
-  const { branchId } = useParams();
-  const { branch } = useBranchStore();
+const Inquires = () => {
   const [callRequestPageData, setCallRequestPageDate] =
     useState<ICallRequestPageData | null>(null);
-  const [requestCallBackCardData, setRequestCallBackCardData] = useState<
-    RequestCallBackCardDataType[]
-  >([]);
   const searchParams = useSearchParams();
   const urlStatus = searchParams.get("status");
+
+  // const [config, setConfig] = useState<AxiosRequestConfig>({
+  //   params: {
+  //     page: 1,
+  //     search: "",
+  //   } as LandlordRequestParams,
+  // });
 
   const [config, setConfig] = useState<AxiosRequestConfig>({
     params: {
@@ -74,6 +75,16 @@ const BranchInquires = () => {
     } as LandlordRequestParams,
   });
 
+  // Optionally, keep config in sync if user navigates with a different status param
+  useEffect(() => {
+    if (urlStatus) {
+      setConfig((prev) => ({
+        ...prev,
+        params: { ...prev.params, status: urlStatus },
+      }));
+    }
+  }, [urlStatus]);
+
   const {
     data: apiData,
     silentLoading,
@@ -81,10 +92,7 @@ const BranchInquires = () => {
     error,
     isNetworkError,
     refetch,
-  } = useFetch<CallRequestApiResponse>(
-    `call-requests?branch_ids[0]=${branchId}`,
-    config
-  );
+  } = useFetch<CallRequestApiResponse>(`call-requests`, config);
 
   useRefetchOnEvent("dispatchRequest", () => refetch({ silent: true }));
 
@@ -101,6 +109,16 @@ const BranchInquires = () => {
     startDate: null,
     endDate: null,
   });
+
+  const isFilterApplied = () => {
+    const { options, menuOptions, startDate, endDate } = appliedFilters;
+    return (
+      options.length > 0 ||
+      Object.keys(menuOptions).some((key) => menuOptions[key].length > 0) ||
+      startDate !== null ||
+      endDate !== null
+    );
+  };
 
   const handleAppliedFilter = useCallback(
     debounce((filters: FilterResult) => {
@@ -120,9 +138,9 @@ const BranchInquires = () => {
         });
       }
       if (startDate)
-        queryParams.start_date = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
       if (endDate)
-        queryParams.end_date = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
       setConfig({ params: queryParams });
     }, 300),
     []
@@ -142,7 +160,7 @@ const BranchInquires = () => {
 
   const handleSort = (order: "asc" | "desc") => {
     setConfig({
-      params: { ...config.params, sort_order: order },
+      params: { ...config.params, sort_by: order },
     });
   };
 
@@ -176,7 +194,11 @@ const BranchInquires = () => {
 
   if (loading)
     return (
-      <CustomLoader layout="page" statsCardCount={3} pageTitle="Inquiries" />
+      <CustomLoader
+        layout="page"
+        statsCardCount={3}
+        pageTitle="Inquiries"
+      />
     );
 
   if (isNetworkError) return <NetworkError />;
@@ -184,26 +206,35 @@ const BranchInquires = () => {
 
   return (
     <section className="space-y-9">
-      <div className="w-full gap-2 flex items-center justify-between flex-wrap">
-        <BackButton reducePaddingTop as="div" className="items-start">
-          <h1 className="text-lg md:text-xl lg:text-2xl font-bold text-black dark:text-white">
-            {branch?.branch_name}
-          </h1>
-          <div className="text-text-disabled flex items-center space-x-1">
-            <LocationIcon />
-            <p className="text-sm font-medium">{branch?.address}</p>
-          </div>
-        </BackButton>
-      </div>
+      {/* <div className="flex gap-5 py-4 scrollbar-hide overflow-x-auto md:flex-wrap">
+        <ManagementStatistcsCard
+          total={callRequestPageData?.total_call || 0}
+          title="Total Request"
+          newData={callRequestPageData?.total_call_month || 0}
+          colorScheme={1}
+        />
+        <ManagementStatistcsCard
+          total={callRequestPageData?.total_resolved_call || 0}
+          title="Total Resolved"
+          newData={callRequestPageData?.total_resolved_call_month || 0}
+          colorScheme={2}
+        />
+        <ManagementStatistcsCard
+          total={callRequestPageData?.total_unresolved || 0}
+          title="Total Unresolved"
+          newData={callRequestPageData?.total_unresolved_month || 0}
+          colorScheme={3}
+        />
+      </div> */}
       <FilterBar
         azFilter
-        pageTitle="Request Callback"
+        pageTitle="Inquiries"
         aboutPageModalData={{
-          title: "Request Callback",
+          title: "Inquiries",
           description:
-            "This page contains a list of Request Callback on the platform.",
+            "This page contains a list of inquiries on the platform.",
         }}
-        searchInputPlaceholder="Search Call Request"
+        searchInputPlaceholder="Search inquiry"
         handleFilterApply={handleAppliedFilter}
         handleSearch={handleSearch}
         onSort={handleSort}
@@ -244,7 +275,7 @@ const BranchInquires = () => {
         // Show empty state when no visitors exist
         <EmptyList
           noButton
-          title="No Call Back Requests Available"
+          title="No Inquiries Available"
           body={
             <p>
               There are currently no call back requests. Once a request is
@@ -287,6 +318,7 @@ const BranchInquires = () => {
 
       {(callRequestPageData?.call_requests?.length ?? 0) > 0 && (
         <Pagination
+          className="pb-4"
           totalPages={callRequestPageData?.pagination?.total ?? 1}
           currentPage={callRequestPageData?.pagination?.current_page ?? 1}
           onPageChange={handlePageChange}
@@ -296,4 +328,4 @@ const BranchInquires = () => {
   );
 };
 
-export default BranchInquires;
+export default Inquires;

@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 import { getBadgeColor } from "@/lib/utils";
 import { useGlobalStore } from "@/store/general-store";
 import { toast } from "sonner";
-import { resolveCallRequest } from "@/app/(nav)/tasks/inquires/data";
+import { resolveCallRequest } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inquiries/data";
 import { usePermission } from "@/hooks/getPermission";
 import { useRole } from "@/hooks/roleContext";
 
@@ -97,7 +97,7 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
     //
   };
 
-  const handlePreview = () => {};
+  const handlePreview = () => { };
 
   const handleButtonClick = () => {
     if (cardType === "callback") {
@@ -120,8 +120,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       return props.status === "completed"
         ? "Details"
         : isResolving
-        ? "Please wait..."
-        : "Resolve";
+          ? "Please wait..."
+          : "Resolve";
     } else if (cardType === "property") {
       return "More Details";
     } else if (cardType === "deposit") {
@@ -193,23 +193,23 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
               props.status === "completed" || props.status === "active"
                 ? "bg-status-success-1 border-status-success-1 text-status-success-2"
                 : props.status === "pending" || props.status === "inactive"
-                ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
-                : props.status === "in-progress" ||
-                  props.status === "checked_in" ||
-                  props.status === "progress"
-                ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
-                : props.status === "decline" || props.status === "cancelled"
-                ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
-                : props.status === "approved"
-                ? "bg-blue-300/45 text-blue-600"
-                : ""
+                  ? "bg-status-caution-1 border-status-caution-1 text-status-caution-2"
+                  : props.status === "in-progress" ||
+                    props.status === "checked_in" ||
+                    props.status === "progress"
+                    ? "bg-[rgba(140,98,255,0.19)] border-[rgba(140,98,255,0.19)] text-[#9747FF]"
+                    : props.status === "decline" || props.status === "cancelled"
+                      ? "bg-[rgba(233,33,46,0.10)] border-[rgba(233,33,46,0.10)] text-status-error-primary"
+                      : props.status === "approved"
+                        ? "bg-blue-300/45 text-blue-600"
+                        : ""
             )}
           >
             {props.status === "checked_in" || props.status === "progress"
               ? "In-Progress"
               : props.status === "cancelled"
-              ? "Declined"
-              : props.status}
+                ? "Declined"
+                : props.status}
           </p>
         )}
       </div>
@@ -222,14 +222,14 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
           {cardType === "callback"
             ? "Request For Call Back"
             : cardType === "visitor"
-            ? "Book For Visitors"
-            : cardType === "property"
-            ? "Property Request"
-            : cardType === "agent-community"
-            ? `${truncateText(props.propertyTitle, 30)}`
-            : cardType === "deposit"
-            ? "Caution Deposit Request"
-            : ""}
+              ? "Book For Visitors"
+              : cardType === "property"
+                ? "Property Request"
+                : cardType === "agent-community"
+                  ? `${truncateText(props.propertyTitle, 30)}`
+                  : cardType === "deposit"
+                    ? "Caution Deposit Request"
+                    : ""}
         </p>
         {/* Property card and agent community card has no ID on display */}
         {cardType !== "property" && cardType !== "agent-community" ? (
@@ -241,16 +241,16 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
       <div className="px-[18px] grid grid-cols-2 sm:grid-cols-3 gap-x-5 gap-y-4">
         {cardType === "callback"
           ? cardViewDetails.map(({ label, accessor }, index) => {
-              return (
-                <UserDetailItems
-                  key={index}
-                  label={label}
-                  value={String(props[accessor])}
-                />
-              );
-            })
+            return (
+              <UserDetailItems
+                key={index}
+                label={label}
+                value={String(props[accessor])}
+              />
+            );
+          })
           : cardType === "agent-community"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
+            ? cardViewDetails.map(({ label, accessor }, index) => {
               return (
                 <div
                   key={index}
@@ -268,43 +268,43 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
                 </div>
               );
             })
-          : cardType === "visitor"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
-              const value =
-                accessor === "secretQuestion" ||
-                accessor === "purpose" ||
-                accessor === "visitorName" ||
-                accessor === "visitorPhoneNumber" ||
-                accessor === "propertyName" ||
-                accessor === "unitName" ||
-                accessor === "branch"
-                  ? String(props[accessor])
-                  : "attached";
-              return (
-                <UserDetailItems key={index} label={label} value={value} />
-              );
-            })
-          : cardType === "property"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
-              return (
-                <UserDetailItems
-                  key={index}
-                  label={label}
-                  value={String(props[accessor])}
-                />
-              );
-            })
-          : cardType === "deposit"
-          ? cardViewDetails.map(({ label, accessor }, index) => {
-              return (
-                <UserDetailItems
-                  key={index}
-                  label={label}
-                  value={String(props[accessor])}
-                />
-              );
-            })
-          : null}
+            : cardType === "visitor"
+              ? cardViewDetails.map(({ label, accessor }, index) => {
+                const value =
+                  accessor === "secretQuestion" ||
+                    accessor === "purpose" ||
+                    accessor === "visitorName" ||
+                    accessor === "visitorPhoneNumber" ||
+                    accessor === "propertyName" ||
+                    accessor === "unitName" ||
+                    accessor === "branch"
+                    ? String(props[accessor])
+                    : "attached";
+                return (
+                  <UserDetailItems key={index} label={label} value={value} />
+                );
+              })
+              : cardType === "property"
+                ? cardViewDetails.map(({ label, accessor }, index) => {
+                  return (
+                    <UserDetailItems
+                      key={index}
+                      label={label}
+                      value={String(props[accessor])}
+                    />
+                  );
+                })
+                : cardType === "deposit"
+                  ? cardViewDetails.map(({ label, accessor }, index) => {
+                    return (
+                      <UserDetailItems
+                        key={index}
+                        label={label}
+                        value={String(props[accessor])}
+                      />
+                    );
+                  })
+                  : null}
       </div>
       <div className="flex justify-end px-[18px]">
         {cardType === "deposit" ||
@@ -383,9 +383,8 @@ const RequestCard: React.FC<RequestCardProps> = (props) => {
             </Link> */}
 
             <Link
-              href={`/community/agent-request/${
-                props.user ? "my-properties-request/" : ""
-              }${props.slug}/preview`}
+              href={`/community/agent-request/${props.user ? "my-properties-request/" : ""
+                }${props.slug}/preview`}
               className="mr-4 border bg-brand-9 text-white rounded-[4px] px-5 py-1"
             >
               Preview

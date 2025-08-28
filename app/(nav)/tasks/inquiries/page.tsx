@@ -7,55 +7,55 @@ import { useRole } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { AnimatePresence, motion } from "framer-motion";
 
-const PropertyManagerCalendarVariantA = dynamic(
+const PropertyManagerInquiryVariantA = dynamic(
   () =>
     import(
-      "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/calendar/calendarPage"
+      "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inquiries/inquiriesPage"
     ),
   { ssr: false }
 );
 
-const PropertyManagerCalendarVariantB = dynamic(
+const PropertyManagerInquiryVariantB = dynamic(
   () =>
     import(
-      "@/components/PAGES/DIRECTOR/PropertyManager/VariantB/tasks/calendar/calendarPage"
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantB/tasks/inquiries/inquiriesPage"
     ),
   { ssr: false }
 );
 
-const PropertyManagerCalendarVariantC = dynamic(
+const PropertyManagerInquiryVariantC = dynamic(
   () =>
     import(
-      "@/components/PAGES/DIRECTOR/PropertyManager/VariantC/tasks/calendar/calendarPage"
+      "@/components/PAGES/DIRECTOR/PropertyManager/VariantC/tasks/inquiries/inquiriesPage"
     ),
   { ssr: false }
 );
 
-const PropertyDeveloperCalendarVariantA = dynamic(
+const PropertyDeveloperInquiryVariantA = dynamic(
   () =>
     import(
-      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/calendar/calendarPage"
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/tasks/inquiries/inquiriesPage"
     ),
   { ssr: false }
 );
 
-const PropertyDeveloperCalendarVariantB = dynamic(
+const PropertyDeveloperInquiryVariantB = dynamic(
   () =>
     import(
-      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/tasks/calendar/calendarPage"
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantB/tasks/inquiries/inquiriesPage"
     ),
   { ssr: false }
 );
 
-const PropertyDeveloperCalendarVariantC = dynamic(
+const PropertyDeveloperInquiryVariantC = dynamic(
   () =>
     import(
-      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/tasks/calendar/calendarPage"
+      "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantC/tasks/inquiries/inquiriesPage"
     ),
   { ssr: false }
 );
 
-const CalendarPage = () => {
+const InquiryPage = () => {
   const { activeModule, designVariant } = useModule();
   const { role } = useRole();
 
@@ -70,18 +70,18 @@ const CalendarPage = () => {
   const CalendarComponent =
     {
       property_manager: {
-        variant_a: PropertyManagerCalendarVariantA,
-        variant_b: PropertyManagerCalendarVariantB,
-        variant_c: PropertyManagerCalendarVariantC,
+        variant_a: PropertyManagerInquiryVariantA,
+        variant_b: PropertyManagerInquiryVariantB,
+        variant_c: PropertyManagerInquiryVariantC,
       },
       hospitality_manager: {
       },
       property_developer: {
-        variant_a: PropertyDeveloperCalendarVariantA,
-        variant_b: PropertyDeveloperCalendarVariantB,
-        variant_c: PropertyDeveloperCalendarVariantC,
+        variant_a: PropertyDeveloperInquiryVariantA,
+        variant_b: PropertyDeveloperInquiryVariantB,
+        variant_c: PropertyDeveloperInquiryVariantC,
       },
-    }[activeModule.id]?.[designVariant] || PropertyManagerCalendarVariantA;
+    }[activeModule.id]?.[designVariant] || PropertyManagerInquiryVariantA;
 
   return (
     <Suspense fallback={<PageCircleLoader />}>
@@ -100,4 +100,4 @@ const CalendarPage = () => {
   );
 };
 
-export default CalendarPage;
+export default InquiryPage;
