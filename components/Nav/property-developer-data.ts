@@ -54,7 +54,7 @@ export const property_developer_director_nav_items: NavItemsProps = [
     content: [
       { label: "calendar", href: "/calendars" },
       { label: "inspections", href: "/inspections" },
-      { label: "announcement", href: "/annoncement" },
+      { label: "announcement", href: "/announcements" },
       { label: "to do", href: "/to-do" },
       { label: "request", href: "/requests" },
       { label: "inquires", href: "/inquires" },

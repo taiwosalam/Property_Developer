@@ -49760,7 +49760,7 @@ export const adminRoutes = [
   "/management/agent-community",
   "/management/property-draft",
   "/tasks/schedule",
-  "/tasks/announcement",
+  "/tasks/announcements",
   "/tasks/applications",
   "/tasks/complaints",
   "/tasks/examine",

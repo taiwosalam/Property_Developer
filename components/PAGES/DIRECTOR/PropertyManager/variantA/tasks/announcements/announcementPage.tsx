@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
@@ -5,11 +6,12 @@ import ManagementStatistcsCard from "@/components/Management/ManagementStatistcs
 import Button from "@/components/Form/Button/button";
 import AnnouncementCard from "@/components/tasks/announcements/announcement-card";
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-
 import {
-  AnnouncementApiResponse,
-  Announcements,
-} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/types";
+  announcementrFilterOptionsWithDropdown,
+  getAllAnnouncements,
+  postLikeOrDislike,
+} from "./data";
+import { Announcement, AnnouncementApiResponse, Announcements } from "./types";
 import FilterBar from "@/components/FIlterBar/FilterBar";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -18,31 +20,21 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
 import EmptyList from "@/components/EmptyList/Empty-List";
-import { hasActiveFilters } from "../../reports/data/utils";
+import { hasActiveFilters } from "@/app/(nav)/reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { AxiosRequestConfig } from "axios";
-
-import { FilterResult } from "@/components/Management/Landlord/types";
-import { InspectionRequestParams } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
+import { FilterResult, InspectionRequestParams } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "@/app/(nav)/tasks/maintenance/data";
 import dayjs from "dayjs";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import Pagination from "@/components/Pagination/pagination";
-import { useRole } from "@/hooks/roleContext";
-import { usePermission } from "@/hooks/getPermission";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { PlusIcon } from "@/public/icons/icons";
 
 const AnnouncementPage = () => {
   const [announcements, setAnnouncements] = useState<Announcements[]>([]);
-  const { role } = useRole();
-  // PERMISSIONS
-  const canCreateManageAnnouncement = usePermission(
-    role,
-    "Can create and manage announcement"
-  );
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
 
@@ -58,21 +50,6 @@ const AnnouncementPage = () => {
     startDate: null,
     endDate: null,
   });
-
-  const gotoPage = () => {
-    switch (role) {
-      case "director":
-        return "/tasks/announcements/create-announcement";
-      case "manager":
-        return "/manager/tasks/announcements/create-announcement";
-      case "staff":
-        return "/staff/tasks/announcements/create-announcement";
-      case "accountant":
-        return "/accountant/tasks/announcements/create-announcement";
-      default:
-        return "/unauthorized";
-    }
-  };
 
   const {
     data: apiData,
@@ -106,32 +83,43 @@ const AnnouncementPage = () => {
   }, [query]);
 
   const handleAppliedFilter = useCallback(
-    (filters: FilterResult) => {
-      const debouncedFilter = debounce((filters: FilterResult) => {
-        setAppliedFilters(filters);
-        const { menuOptions, startDate, endDate } = filters;
-        const accountOfficer = menuOptions["Account Officer"] || [];
-        const status = menuOptions["Status"] || [];
-        const property = menuOptions["Property"] || [];
-
-        const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
-        if (accountOfficer.length > 0)
-          queryParams.account_officer_id = accountOfficer.join(",");
-        if (status.length > 0) queryParams.status = status.join(",");
-        if (property.length > 0) queryParams.property_ids = property.join(",");
-        if (startDate)
-          queryParams.date_from = dayjs(startDate).format(
-            "YYYY-MM-DD:hh:mm:ss"
-          );
-        if (endDate)
-          queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
-        setConfig({ params: queryParams });
-      }, 300);
-
-      debouncedFilter(filters);
-    },
-    [setAppliedFilters, setConfig]
+    debounce((filters: FilterResult) => {
+      setAppliedFilters(filters);
+      const { menuOptions, startDate, endDate } = filters;
+      const accountOfficer = menuOptions["Account Officer"] || [];
+      const status = menuOptions["Status"] || [];
+      const property = menuOptions["Property"] || [];
+      const branches = menuOptions["Branch"] || [];
+      const queryParams: MaintenanceRequestParams = { page: 1, search: "" };
+      if (accountOfficer.length > 0)
+        queryParams.account_officer_id = accountOfficer.join(",");
+      if (status.length > 0) queryParams.status = status.join(",");
+      if (branches.length > 0) queryParams.branch_id = status.join(",");
+      if (property.length > 0) queryParams.property_ids = property.join(",");
+      if (startDate)
+        queryParams.date_from = dayjs(startDate).format("YYYY-MM-DD:hh:mm:ss");
+      if (endDate)
+        queryParams.date_to = dayjs(endDate).format("YYYY-MM-DD:hh:mm:ss");
+      setConfig({ params: queryParams });
+    }, 300),
+    []
   );
+
+  const { data: branchesData } = useFetch<any>("/branches");
+
+  const branchOptions = Array.isArray(branchesData?.data)
+    ? [
+      ...new Map(
+        branchesData.data.map((branch: any) => [
+          branch.branch_name.toLowerCase(), // Use lowercase for comparison
+          {
+            label: branch.branch_name, // Keep original case for display
+            value: branch.id,
+          },
+        ])
+      ).values(),
+    ]
+    : [];
 
   const handlePageChange = (page: number) => {
     setConfig((prev) => ({
@@ -191,15 +179,19 @@ const AnnouncementPage = () => {
             colorScheme={1}
             total={apiData?.total_announcement || 0}
           />
+          {/* <ManagementStatistcsCard
+            title="Examine"
+            newData={apiData?.total_examine_month ?? 0}
+            total={apiData?.total_examine ?? 0}
+            colorScheme={2}
+          /> */}
         </div>
-        {canCreateManageAnnouncement && (
-          <Button
-            href="/tasks/announcements/create-announcement"
-            className="page-header-button hidden md:block"
-          >
-            + Create Announcement
-          </Button>
-        )}
+        <Button
+          href="/tasks/announcements/create-announcement"
+          className="page-header-button hidden md:block"
+        >
+          + Create Announcement
+        </Button>
       </div>
       <FilterBar
         azFilter
@@ -220,6 +212,14 @@ const AnnouncementPage = () => {
               {
                 label: "Property",
                 value: propertyOptions,
+              },
+            ]
+            : []),
+          ...(branchOptions.length > 0
+            ? [
+              {
+                label: "Branch",
+                value: branchOptions,
               },
             ]
             : []),
@@ -276,7 +276,7 @@ const AnnouncementPage = () => {
                     newViews={announcement?.views_count_today}
                     likes={announcement?.likes_count}
                     dislikes={announcement?.dislikes_count}
-                    imageUrls={announcement?.images?.map((img) => ({
+                    imageUrls={announcement?.images?.map((img:any) => ({
                       ...img,
                       url: img.url,
                     }))}
@@ -334,14 +334,12 @@ const AnnouncementPage = () => {
         </section>
       )}
 
-      {canCreateManageAnnouncement && (
-        <Link
-          href="/tasks/announcements/create-announcement"
-          className="mobile-button"
-        >
-          <PlusIcon />
-        </Link>
-      )}
+      <Link
+        href="/tasks/announcements/create-announcement"
+        className="mobile-button"
+      >
+        <PlusIcon />
+      </Link>
 
       <Pagination
         totalPages={apiData?.pagination?.total_pages || 0}

@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import {
   AnnouncementDetailsResponse,
   AnnouncementResponseDetails,
-} from "../../types";
+} from "../../../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/types";
 import { empty } from "@/app/config";
 //import { transformComment } from "@/app/(nav)/community/agent-request/[requestId]/preview/data";
 
@@ -91,8 +91,8 @@ export const transformComment = (
   tier_id: comment.tier
     ? Number(comment.tier)
     : comment?.user?.tier
-    ? Number(comment?.user?.tier)
-    : 0,
+      ? Number(comment?.user?.tier)
+      : 0,
   text: comment.content,
   likes: comment.likes || comment?.likes_count || 0,
   user_liked: comment.user_liked ?? comment?.my_like ?? false,

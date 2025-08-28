@@ -14,7 +14,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import {
   AnnouncementDetailsResponse,
   AnnouncementResponseDetails,
-} from "../../types";
+} from "../../../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/types";
 import { useEffect, useState } from "react";
 import {
   AnnouncementDetailsPageData,
@@ -51,8 +51,8 @@ const PreviewAnnouncement = () => {
     }
   }, [apiData]);
 
-  
-// Show skeleton if loading or silentLoading is true, or if delay hasn't completed
+
+  // Show skeleton if loading or silentLoading is true, or if delay hasn't completed
   if ((loading) && !error && !isNetworkError) {
     return <AnnouncementSkeleton />;
   }
@@ -118,14 +118,14 @@ const PreviewAnnouncement = () => {
             readBy={
               pageData?.read_by
                 ? pageData.read_by.map((user) => ({
-                    ...user,
-                    name: user.user_name?.toLowerCase(), // adjust property names as needed
-                    tier: user.tier_id, // adjust property names as needed
-                    dateTime: `${dayjs(user?.date).format(
-                      "DD/MM/YYYY"
-                    )} ${dayjs(user?.time).format("hh:mm A")}`,
-                    image: user.image ?? "", // ensure image is always a string
-                  }))
+                  ...user,
+                  name: user.user_name?.toLowerCase(), // adjust property names as needed
+                  tier: user.tier_id, // adjust property names as needed
+                  dateTime: `${dayjs(user?.date).format(
+                    "DD/MM/YYYY"
+                  )} ${dayjs(user?.time).format("hh:mm A")}`,
+                  image: user.image ?? "", // ensure image is always a string
+                }))
                 : undefined
             }
           />

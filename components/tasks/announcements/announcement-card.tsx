@@ -11,7 +11,7 @@ import {
 import Button from "@/components/Form/Button/button";
 import Cookies from "js-cookie";
 import { useRole } from "@/hooks/roleContext";
-import { postLikeOrDislike } from "@/app/(nav)/tasks/announcements/data";
+import { postLikeOrDislike } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/data";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -30,12 +30,12 @@ interface AnnouncementCardProps {
   dislikes: number;
   video: string | null;
   imageUrls:
-    | {
-        id: number;
-        url: string;
-        is_default: number;
-      }[]
-    | string[];
+  | {
+    id: number;
+    url: string;
+    is_default: number;
+  }[]
+  | string[];
   mediaCount: {
     image: number;
     video: number;
@@ -74,12 +74,12 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
     role === "director"
       ? ""
       : role === "account"
-      ? "/accountant"
-      : role === "manager"
-      ? "/manager"
-      : role === "staff"
-      ? "/staff"
-      : "";
+        ? "/accountant"
+        : role === "manager"
+          ? "/manager"
+          : role === "staff"
+            ? "/staff"
+            : "";
 
   const handlePostLikeOrDislike = async (route: string) => {
     if (!announcementId) return;
@@ -204,9 +204,8 @@ const AnnouncementCard: React.FC<AnnouncementCardProps> = ({
               />
             </button>
             <span
-              className={`text-xs font-normal ${
-                isDisliked ? "text-black" : ""
-              }`}
+              className={`text-xs font-normal ${isDisliked ? "text-black" : ""
+                }`}
             >
               {dislikes}
             </span>

@@ -1,6 +1,6 @@
 "use client";
 import CreateAnnouncementForm from "@/components/tasks/announcements/create-announcement-form";
-import { createAnnouncement, updateAnnouncement } from "../data";
+import { createAnnouncement, updateAnnouncement } from "../../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/data";
 import BackButton from "@/components/BackButton/back-button";
 import { useEffect, useState } from "react";
 import { useParams, usePathname, useRouter } from "next/navigation";

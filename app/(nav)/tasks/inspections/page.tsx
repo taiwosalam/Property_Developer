@@ -55,7 +55,7 @@ const PropertyDeveloperInspectionVariantC = dynamic(
   { ssr: false }
 );
 
-const DashboardPage = () => {
+const InspectionPage = () => {
   const { activeModule, designVariant } = useModule();
   const { role } = useRole();
 
@@ -67,7 +67,7 @@ const DashboardPage = () => {
     );
   }
 
-  const DashboardComponent =
+  const InspectionComponent =
     {
       property_manager: {
         variant_a: PropertyManagerInspectionVariantA,
@@ -93,11 +93,11 @@ const DashboardPage = () => {
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.3 }}
         >
-          <DashboardComponent />
+          <InspectionComponent />
         </motion.div>
       </AnimatePresence>
     </Suspense>
   );
 };
 
-export default DashboardPage;
+export default InspectionPage;

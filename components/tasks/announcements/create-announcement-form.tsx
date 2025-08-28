@@ -16,7 +16,7 @@ import { useParams, useRouter } from "next/navigation";
 import {
   deleteAnnouncement,
   updateAnnouncement,
-} from "@/app/(nav)/tasks/announcements/data";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/data";
 import { useRole } from "@/hooks/roleContext";
 
 const MAX_IMAGES = 4;
@@ -320,36 +320,36 @@ const CreateAnnouncementForm: React.FC<{
   // Build select options for branches based on editMode
   const branchSelectOptions = editMode
     ? [
-        { value: "", label: "Send to all Branches" },
-        ...branches.map((branch) => ({
-          value: branch.id.toString(),
-          label: branch.branch_name,
-        })),
-      ]
-    : branches.map((branch) => ({
+      { value: "", label: "Send to all Branches" },
+      ...branches.map((branch) => ({
         value: branch.id.toString(),
         label: branch.branch_name,
-      }));
+      })),
+    ]
+    : branches.map((branch) => ({
+      value: branch.id.toString(),
+      label: branch.branch_name,
+    }));
 
   // Same logic for properties if you need "Send to all Properties" in editMode
   const propertySelectOptions = editMode
     ? [
-        { value: "", label: "Send to all Properties" },
-        ...properties.map((property) => ({
-          value: property.id.toString(),
-          label: property.title,
-        })),
-      ]
-    : properties.map((property) => ({
+      { value: "", label: "Send to all Properties" },
+      ...properties.map((property) => ({
         value: property.id.toString(),
         label: property.title,
-      }));
+      })),
+    ]
+    : properties.map((property) => ({
+      value: property.id.toString(),
+      label: property.title,
+    }));
 
   return (
     <AuthForm
       returnType="form-data"
       onFormSubmit={editMode ? handleUpdate : onFormSubmit}
-      setValidationErrors={() => {}}
+      setValidationErrors={() => { }}
     >
       <div className="flex flex-col gap-y-5 gap-x-[40px] lg:flex-row lg:items-start pb-[200px]">
         <div className="grid gap-x-4 gap-y-5 md:grid-cols-2 lg:w-[63%]">
@@ -364,9 +364,9 @@ const CreateAnnouncementForm: React.FC<{
               value={
                 selectedBranch && selectedBranch.id !== null
                   ? {
-                      value: selectedBranch.id.toString(),
-                      label: selectedBranch.branch_name,
-                    }
+                    value: selectedBranch.id.toString(),
+                    label: selectedBranch.branch_name,
+                  }
                   : ""
               }
               onChange={(selectedOption) => {
@@ -396,9 +396,9 @@ const CreateAnnouncementForm: React.FC<{
               value={
                 selectedProperty && selectedProperty.id !== null
                   ? {
-                      value: selectedProperty.id.toString(),
-                      label: selectedProperty.title,
-                    }
+                    value: selectedProperty.id.toString(),
+                    label: selectedProperty.title,
+                  }
                   : ""
               }
               onChange={(selectedValue) => {

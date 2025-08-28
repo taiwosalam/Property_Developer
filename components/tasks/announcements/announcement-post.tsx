@@ -7,7 +7,7 @@ import {
   IAnnounceUserSummary,
   toggleAnnouncementLike,
 } from "@/app/(nav)/tasks/announcements/[announcementId]/preview/data";
-import { Comment } from "@/app/(nav)/tasks/announcements/types";
+import { Comment } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/announcements/types";
 import { CommentData } from "./comment";
 import PropertyRequestComments from "@/components/Community/PropertyRequestComments";
 import { useState } from "react";
