@@ -20,6 +20,7 @@ import { getCleanRoleName } from "./data";
 import { capitalizeWords } from "@/hooks/capitalize-words";
 import { truncateText } from "../tasks/vehicles-record/data";
 import { useChatPrefetch } from "@/app/(nav)/(messages-reviews)/messages/hooks";
+import { throttle } from "lodash";
 
 const MessageCard: React.FC<MessageCardProps> = ({
   id,
@@ -96,13 +97,12 @@ const MessageCard: React.FC<MessageCardProps> = ({
 
   const { prefetchChatMessages, prefetchUserProfile } = useChatPrefetch();
 
-  // Prefetch on hover for instant loading
-  const handleMouseEnter = () => {
+  const handleMouseEnter = throttle((id: string, isGroupChat: boolean) => {
     prefetchChatMessages(id, isGroupChat);
     if (!isGroupChat) {
       prefetchUserProfile(id);
     }
-  };
+  }, 4000);
 
   // Prefetch on click too (just in case hover didn't trigger)
 
@@ -161,7 +161,9 @@ const MessageCard: React.FC<MessageCardProps> = ({
       data-id={dataId}
       tabIndex={0}
       onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
+      onMouseEnter={() => {
+        handleMouseEnter(id, isGroupChat);
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();

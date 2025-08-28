@@ -13,6 +13,7 @@ import FilterButton from "../FilterButton/filter-button";
 import MessagesFilterMenu from "../Message/messages-filter-menu";
 import { useState } from "react";
 import { useRole } from "@/hooks/roleContext";
+import { useGroupStore } from "@/store/teamdetailsstore";
 
 const TeamChatSidebar = () => {
   const {
@@ -33,13 +34,45 @@ const TeamChatSidebar = () => {
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
+  // Get groups from store
+  const groups = useGroupStore((state) => state.groups);
+  const setGroups = useGroupStore((state) => state.setGroups);
+
+  const data = groups.map((group) => {
+    // Find the member in filtered list by id
+    const member = filteredMemberList.find(
+      (m) => m.id.toString() === group.id.toString()
+    );
+
+    if (member) {
+      return {
+        ...member,
+        desc: group.latest_message, // update last message
+        messages: group.unread_count, // update unread count
+        time: group.latest_message_time, // update latest time
+      };
+    }
+
+    // If not in filtered list, you can choose to add it or skip
+    return {
+      id: group.id.toString(),
+      fullname: group.name,
+      pfp: group.avatar,
+      desc: group.latest_message,
+      messages: group.unread_count,
+      time: group.latest_message_time,
+    };
+  });
+
+  const updatedFilteredList = data.length > 0 ? data : filteredMemberList;
+
   return (
     <div className="custom-flex-col pr-2 w-full overflow-y-auto custom-round-scrollbar relative">
       {/* sticky search and filter */}
       <div className="flex gap-4 sticky top-0 z-[2] bg-white dark:bg-black pb-2">
         <div className="flex-1 relative">
           <Input
-            id="search" 
+            id="search"
             className="w-full"
             placeholder="Search for messages"
             leftIcon={"/icons/search-icon.svg"}
@@ -72,9 +105,9 @@ const TeamChatSidebar = () => {
         {silentLoading ? (
           <TeamMessageCardSkeleton count={10} />
         ) : (
-          filteredMemberList &&
-          filteredMemberList.length > 0 &&
-          filteredMemberList.map((member, idx) => (
+          updatedFilteredList &&
+          updatedFilteredList.length > 0 &&
+          updatedFilteredList.map((member, idx) => (
             <TeamChatCard
               key={idx}
               {...member}
