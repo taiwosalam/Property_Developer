@@ -17,7 +17,7 @@ import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
-import { FilterResult } from "../inspections/data";
+import { FilterResult } from "../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import dayjs from "dayjs";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import NetworkError from "@/components/Error/NetworkError";
@@ -149,22 +149,22 @@ const Examine = () => {
     propertiesData?.data.properties.data
   )
     ? [
-        ...new Map(
-          propertiesData.data.properties.data
-            .filter(
-              (property: any) =>
-                typeof property.book_visitors === "boolean" &&
-                property.book_visitors
-            )
-            .map((property: any) => [
-              property.title, // Use property title as the unique key
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data
+          .filter(
+            (property: any) =>
+              typeof property.book_visitors === "boolean" &&
+              property.book_visitors
+          )
+          .map((property: any) => [
+            property.title, // Use property title as the unique key
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   const { data: branchesData } =
@@ -227,19 +227,19 @@ const Examine = () => {
         filterOptionsMenu={[
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
           ...(branchOptions.length > 0
             ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
+              {
+                label: "Branch",
+                value: branchOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}

@@ -22,7 +22,7 @@ import EmptyList from "@/components/EmptyList/Empty-List";
 import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { AxiosRequestConfig } from "axios";
-import { FilterResult, InspectionRequestParams } from "../inspections/data";
+import { FilterResult, InspectionRequestParams } from "../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "../maintenance/data";
 import dayjs from "dayjs";
@@ -108,16 +108,16 @@ const AnnouncementPage = () => {
 
   const branchOptions = Array.isArray(branchesData?.data)
     ? [
-        ...new Map(
-          branchesData.data.map((branch: any) => [
-            branch.branch_name.toLowerCase(), // Use lowercase for comparison
-            {
-              label: branch.branch_name, // Keep original case for display
-              value: branch.id,
-            },
-          ])
-        ).values(),
-      ]
+      ...new Map(
+        branchesData.data.map((branch: any) => [
+          branch.branch_name.toLowerCase(), // Use lowercase for comparison
+          {
+            label: branch.branch_name, // Keep original case for display
+            value: branch.id,
+          },
+        ])
+      ).values(),
+    ]
     : [];
 
   const handlePageChange = (page: number) => {
@@ -144,21 +144,21 @@ const AnnouncementPage = () => {
     propertiesData?.data.properties.data
   )
     ? [
-        ...new Map(
-          propertiesData.data.properties.data
-            .filter(
-              (property: any) =>
-                property.property_type === "rental" && property.units.length > 0
-            )
-            .map((property: any) => [
-              property.title,
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data
+          .filter(
+            (property: any) =>
+              property.property_type === "rental" && property.units.length > 0
+          )
+          .map((property: any) => [
+            property.title,
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   if (loading)
@@ -208,19 +208,19 @@ const AnnouncementPage = () => {
         filterOptionsMenu={[
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
           ...(branchOptions.length > 0
             ? [
-                {
-                  label: "Branch",
-                  value: branchOptions,
-                },
-              ]
+              {
+                label: "Branch",
+                value: branchOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}

@@ -56,7 +56,7 @@ import clsx from "clsx";
 import { useSearchParams } from "next/navigation";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 
 const AccountingInvoicePage = () => {
   const isDarkMode = useDarkMode();
@@ -137,14 +137,14 @@ const AccountingInvoicePage = () => {
     const fromDate = selectedDateRange?.from
       ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
       : appliedFilters.startDate
-      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-      : undefined;
+        ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+        : undefined;
 
     const toDate = selectedDateRange?.to
       ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
       : appliedFilters.endDate
-      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-      : undefined;
+        ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+        : undefined;
 
     const Status = appliedFilters.menuOptions["Status"]?.[0];
 
@@ -496,11 +496,11 @@ const AccountingInvoicePage = () => {
                       },
                       ...(propertyOptions.length > 0
                         ? [
-                            {
-                              label: "Property",
-                              value: propertyOptions,
-                            },
-                          ]
+                          {
+                            label: "Property",
+                            value: propertyOptions,
+                          },
+                        ]
                         : []),
                     ]}
                     handleFilterApply={handleFilterApply}

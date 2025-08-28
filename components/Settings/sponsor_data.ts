@@ -1,4 +1,4 @@
-import { formatToNaira } from "@/app/(nav)/tasks/inspections/data";
+import { formatToNaira } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import dayjs from "dayjs";
 
 import duration from "dayjs/plugin/duration";

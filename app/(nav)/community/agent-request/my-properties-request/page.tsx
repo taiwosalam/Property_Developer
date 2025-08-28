@@ -16,7 +16,7 @@ import { PropertyrequestSkeletonLoader } from "@/components/Loader/property-requ
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
+import { stateOptions } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { PropertyRequestParams } from "../../agent-forum/type";
 import { transformToAgentCommunityCardProps } from "./data";

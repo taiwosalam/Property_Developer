@@ -5,12 +5,12 @@ import {
   InspectionDataApiResponse,
   InspectionDetailsApiResponse,
 } from "./type";
-import { transformUnitDetails } from "../../listing/data";
+import { transformUnitDetails } from "../../../../../../../app/(nav)/listing/data";
 import { boolean } from "zod";
 
 import dayjs from "dayjs";
 import advancedFormat from "dayjs/plugin/advancedFormat";
-import { formatTime } from "../../notifications/data";
+import { formatTime } from "../../../../../../../app/(nav)/notifications/data";
 import api, { handleAxiosError } from "@/services/api";
 import { empty } from "@/app/config";
 

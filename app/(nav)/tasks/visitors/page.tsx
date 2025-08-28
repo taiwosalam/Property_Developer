@@ -19,7 +19,7 @@ import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
 import { AxiosRequestConfig } from "axios";
 import { LandlordRequestParams } from "../../management/landlord/data";
-import { FilterResult } from "../inspections/data";
+import { FilterResult } from "../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import dayjs from "dayjs";
 import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
@@ -109,22 +109,22 @@ const BookVisitorsPage = () => {
 
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
-        ...new Map(
-          propertiesData.data.properties.data
-            .filter(
-              (property: any) =>
-                typeof property.book_visitors === "boolean" &&
-                property.book_visitors
-            )
-            .map((property: any) => [
-              property.title, // Use property title as the unique key
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data
+          .filter(
+            (property: any) =>
+              typeof property.book_visitors === "boolean" &&
+              property.book_visitors
+          )
+          .map((property: any) => [
+            property.title, // Use property title as the unique key
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   const handleAppliedFilter = useCallback(
@@ -235,11 +235,11 @@ const BookVisitorsPage = () => {
         filterOptionsMenu={[
           ...(propertyOptions.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
           visitationStatus,
         ]}

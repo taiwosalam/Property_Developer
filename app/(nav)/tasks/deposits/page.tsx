@@ -16,7 +16,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import useFetch from "@/hooks/useFetch";
 import { ICautionApiResponse } from "./type";
 import { AxiosRequestConfig } from "axios";
-import { FilterResult, InspectionRequestParams } from "../inspections/data";
+import { FilterResult, InspectionRequestParams } from "../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import dayjs from "dayjs";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
@@ -144,16 +144,16 @@ const DepositRequest = () => {
 
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
-        ...new Map(
-          propertiesData.data.properties.data.map((property: any) => [
-            property.title,
-            {
-              label: property.title?.toLowerCase(),
-              value: property.id.toString(),
-            },
-          ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data.map((property: any) => [
+          property.title,
+          {
+            label: property.title?.toLowerCase(),
+            value: property.id.toString(),
+          },
+        ])
+      ).values(),
+    ]
     : [];
 
   const statusOptions = {
@@ -224,11 +224,11 @@ const DepositRequest = () => {
           statusOptions,
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}

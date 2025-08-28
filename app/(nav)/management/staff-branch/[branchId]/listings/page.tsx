@@ -31,7 +31,7 @@ import useBranchStore from "@/store/branch-store";
 import { useParams } from "next/navigation";
 import { useGlobalStore } from "@/store/general-store";
 import { AllBranchesResponse } from "@/components/Management/Properties/types";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import Pagination from "@/components/Pagination/pagination";
@@ -246,11 +246,11 @@ const BranchUnits = () => {
           ...listingUnitFilter,
           ...(propertyOptions.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}

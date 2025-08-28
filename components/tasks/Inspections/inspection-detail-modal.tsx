@@ -10,12 +10,12 @@ import {
 } from "./inspection-card-components";
 import Button from "@/components/Form/Button/button";
 import { CancelIcon } from "@/public/icons/icons";
-import { Inspection } from "@/app/(nav)/tasks/inspections/type";
+import { Inspection } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import {
   formatToNaira,
   requestApplication,
   TInspectionDetails,
-} from "@/app/(nav)/tasks/inspections/data";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { formatTime } from "@/app/(nav)/notifications/data";
 import { useRouter } from "next/navigation";
 import BadgeIcon, {

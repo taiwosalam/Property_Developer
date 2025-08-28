@@ -23,7 +23,7 @@ import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import { AxiosRequestConfig } from "axios";
 
 import { FilterResult } from "@/components/Management/Landlord/types";
-import { InspectionRequestParams } from "@/app/(nav)/tasks/inspections/data";
+import { InspectionRequestParams } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { debounce } from "lodash";
 import { MaintenanceRequestParams } from "@/app/(nav)/tasks/maintenance/data";
 import dayjs from "dayjs";
@@ -157,21 +157,21 @@ const AnnouncementPage = () => {
     propertiesData?.data.properties.data
   )
     ? [
-        ...new Map(
-          propertiesData.data.properties.data
-            .filter(
-              (property: any) =>
-                property.property_type === "rental" && property.units.length > 0
-            )
-            .map((property: any) => [
-              property.title,
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data
+          .filter(
+            (property: any) =>
+              property.property_type === "rental" && property.units.length > 0
+          )
+          .map((property: any) => [
+            property.title,
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   if (loading)
@@ -217,11 +217,11 @@ const AnnouncementPage = () => {
         filterOptionsMenu={[
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}

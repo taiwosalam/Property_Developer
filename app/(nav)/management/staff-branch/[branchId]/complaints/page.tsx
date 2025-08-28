@@ -10,7 +10,7 @@ import {
   ComplaintsPageData,
   ComplaintsResponse,
 } from "@/app/(nav)/tasks/complaints/types";
-import { FilterResult } from "@/app/(nav)/tasks/inspections/data";
+import { FilterResult } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import BackButton from "@/components/BackButton/back-button";
 import {
   ColumnId,
@@ -293,20 +293,20 @@ const BranchComplaintsPage = () => {
         filterOptionsMenu={[
           ...(propertyOptions.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
 
           ...(tenantsOptions.length > 0
             ? [
-                {
-                  label: "Tenant/Occupant",
-                  value: tenantsOptions,
-                },
-              ]
+              {
+                label: "Tenant/Occupant",
+                value: tenantsOptions,
+              },
+            ]
             : []),
         ]}
       />

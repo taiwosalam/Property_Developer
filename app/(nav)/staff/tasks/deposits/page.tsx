@@ -17,7 +17,7 @@ import { AxiosRequestConfig } from "axios";
 import {
   FilterResult,
   InspectionRequestParams,
-} from "@/app/(nav)/tasks/inspections/data";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import dayjs from "dayjs";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
@@ -134,16 +134,16 @@ const DepositRequest = () => {
 
   const propertyOptions = Array.isArray(propertiesData?.data.properties.data)
     ? [
-        ...new Map(
-          propertiesData.data.properties.data.map((property: any) => [
-            property.title, // Use property title as the unique key
-            {
-              label: property.title,
-              value: property.id.toString(),
-            },
-          ])
-        ).values(),
-      ]
+      ...new Map(
+        propertiesData.data.properties.data.map((property: any) => [
+          property.title, // Use property title as the unique key
+          {
+            label: property.title,
+            value: property.id.toString(),
+          },
+        ])
+      ).values(),
+    ]
     : [];
 
   const statusOptions = {
@@ -213,11 +213,11 @@ const DepositRequest = () => {
           statusOptions,
           ...(propertyOptions?.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}

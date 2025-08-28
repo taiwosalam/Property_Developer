@@ -24,7 +24,7 @@ import CustomLoader from "@/components/Loader/CustomLoader";
 import ServerError from "@/components/Error/ServerError";
 import NetworkError from "@/components/Error/NetworkError";
 import dayjs from "dayjs";
-import { FilterResult } from "../inspections/data";
+import { FilterResult } from "../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { IPropertyApi } from "../../settings/others/types";
 import { hasActiveFilters } from "../../reports/data/utils";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
@@ -269,19 +269,19 @@ const ComplaintsPage = () => {
         filterOptionsMenu={[
           ...(propertyOptions.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
           ...(tenantsOptions.length > 0
             ? [
-                {
-                  label: "Tenant/Occupant",
-                  value: tenantsOptions,
-                },
-              ]
+              {
+                label: "Tenant/Occupant",
+                value: tenantsOptions,
+              },
+            ]
             : []),
         ]}
       />
@@ -289,7 +289,7 @@ const ComplaintsPage = () => {
       <SectionContainer
         heading={
           pageData &&
-          pageData.complaints.some((c) => c.content?.status === "pending")
+            pageData.complaints.some((c) => c.content?.status === "pending")
             ? "Recent Complains"
             : ""
         }

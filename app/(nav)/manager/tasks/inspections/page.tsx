@@ -9,13 +9,13 @@ import {
   FilterResult,
   InspectionRequestParams,
   transformInspectionCard,
-} from "@/app/(nav)/tasks/inspections/data";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import useFetch from "@/hooks/useFetch";
 import {
   InspectionDataApiResponse,
   InspectionPageType,
   PropertyListResponse,
-} from "@/app/(nav)/tasks/inspections/type";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import { useEffect, useRef, useState } from "react";
 import NetworkError from "@/components/Error/NetworkError";
 import MessageCardSkeleton from "@/components/Skeleton/message-card-skeleton";

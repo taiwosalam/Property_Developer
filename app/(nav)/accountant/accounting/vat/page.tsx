@@ -42,7 +42,7 @@ import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";
 import useFetch from "@/hooks/useFetch";
 import NetworkError from "@/components/Error/NetworkError";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import useStaffRoles from "@/hooks/getStaffs";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
@@ -102,13 +102,13 @@ const Vat = () => {
     const dateFrom = selectedDateRange?.from
       ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
       : appliedFilters.startDate
-      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-      : undefined;
+        ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+        : undefined;
     const dateTo = selectedDateRange?.to
       ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
       : appliedFilters.endDate
-      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-      : undefined;
+        ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+        : undefined;
 
     return {
       params: {
@@ -361,19 +361,19 @@ const Vat = () => {
                     filterOptionsMenu={[
                       ...(propertyOptions.length > 0
                         ? [
-                            {
-                              label: "Property",
-                              value: propertyOptions,
-                            },
-                          ]
+                          {
+                            label: "Property",
+                            value: propertyOptions,
+                          },
+                        ]
                         : []),
                       ...(accountOfficersOptions.length > 0
                         ? [
-                            {
-                              label: "Account Officer",
-                              value: accountOfficersOptions,
-                            },
-                          ]
+                          {
+                            label: "Account Officer",
+                            value: accountOfficersOptions,
+                          },
+                        ]
                         : []),
                     ]}
                     handleFilterApply={handleFilterApply}

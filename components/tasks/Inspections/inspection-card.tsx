@@ -16,13 +16,13 @@ import useFetch from "@/hooks/useFetch";
 import {
   Inspection,
   InspectionDetailsApiResponse,
-} from "@/app/(nav)/tasks/inspections/type";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import { useEffect, useState } from "react";
 import { formatTime } from "@/app/(nav)/notifications/data";
 import {
   TInspectionDetails,
   transformInspectionDetails,
-} from "@/app/(nav)/tasks/inspections/data";
+} from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
@@ -108,11 +108,10 @@ const InspectionCard: React.FC<InspectionCardProps> = ({ data }) => {
           <p className="text-text-secondary">
             Status:{" "}
             <span
-              className={`${
-                inspection?.is_application
-                  ? "text-green-500"
-                  : "text-yellow-500"
-              }`}
+              className={`${inspection?.is_application
+                ? "text-green-500"
+                : "text-yellow-500"
+                }`}
             >
               {inspection?.is_application ? "Inspected" : "Pending"}
             </span>

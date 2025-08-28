@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
@@ -52,32 +52,32 @@ const Disbursement = () => {
 
   const propertyOptions = Array.isArray(propertyData?.data)
     ? [
-        ...new Map(
-          propertyData.data
-            .filter((property: any) => property.units.length > 0)
-            .map((property: any) => [
-              property.title.toLowerCase(),
-              {
-                label: property.title,
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertyData.data
+          .filter((property: any) => property.units.length > 0)
+          .map((property: any) => [
+            property.title.toLowerCase(),
+            {
+              label: property.title,
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   const landlordOptions = Array.isArray(landlordsData?.data)
     ? [
-        ...new Map(
-          landlordsData.data.map((l) => [
-            l.name.toLowerCase(), // Use lowercase for comparison
-            {
-              label: l.name.toLowerCase(), // Keep original case for display
-              value: l.id,
-            },
-          ])
-        ).values(),
-      ]
+      ...new Map(
+        landlordsData.data.map((l) => [
+          l.name.toLowerCase(), // Use lowercase for comparison
+          {
+            label: l.name.toLowerCase(), // Keep original case for display
+            value: l.id,
+          },
+        ])
+      ).values(),
+    ]
     : [];
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
@@ -195,19 +195,19 @@ const Disbursement = () => {
           filterOptionsMenu={[
             ...(landlordOptions.length > 0
               ? [
-                  {
-                    label: "Landlords",
-                    value: landlordOptions,
-                  },
-                ]
+                {
+                  label: "Landlords",
+                  value: landlordOptions,
+                },
+              ]
               : []),
             ...(propertyOptions.length > 0
               ? [
-                  {
-                    label: "Property",
-                    value: propertyOptions,
-                  },
-                ]
+                {
+                  label: "Property",
+                  value: propertyOptions,
+                },
+              ]
               : []),
           ]}
           // onSort={handleSort}

@@ -55,7 +55,7 @@ const PropertyDeveloperCalendarVariantC = dynamic(
   { ssr: false }
 );
 
-const DashboardPage = () => {
+const CalendarPage = () => {
   const { activeModule, designVariant } = useModule();
   const { role } = useRole();
 
@@ -67,7 +67,7 @@ const DashboardPage = () => {
     );
   }
 
-  const DashboardComponent =
+  const CalendarComponent =
     {
       property_manager: {
         variant_a: PropertyManagerCalendarVariantA,
@@ -93,14 +93,14 @@ const DashboardPage = () => {
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.3 }}
         >
-          <DashboardComponent />
+          <CalendarComponent />
         </motion.div>
       </AnimatePresence>
     </Suspense>
   );
 };
 
-export default DashboardPage;
+export default CalendarPage;
 
 
 

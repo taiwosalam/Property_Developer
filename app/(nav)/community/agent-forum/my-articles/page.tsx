@@ -17,7 +17,7 @@ import { FilterResult } from "@/components/Management/Landlord/types";
 import { ArticlesRequestParams } from "../type";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
-import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
+import { stateOptions } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import ThreadSkeleton from "@/components/Community/threadskeleton";
 import ThreadCard from "@/components/Community/ThreadCard";

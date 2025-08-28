@@ -17,7 +17,7 @@ import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import NetworkError from "@/components/Error/NetworkError";
-import { stateOptions } from "@/app/(nav)/tasks/inspections/data";
+import { stateOptions } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import { AxiosRequestConfig } from "axios";

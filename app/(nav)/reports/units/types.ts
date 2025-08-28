@@ -1,4 +1,4 @@
-import { formatToNaira } from "../../tasks/inspections/data";
+import { formatToNaira } from "../../../../components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/data";
 import { CURRENCY_SIGN } from "./data";
 
 export type UnitListResponse = {
@@ -60,12 +60,10 @@ export const transformUnitListData = (
       unit_name: unit.unit_name || "__ __",
       status: unit.is_active || "__ __",
       annual_rent:
-        `${CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦"}${
-          unit.annual_rent
+        `${CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦"}${unit.annual_rent
         }` || "__ __",
       total_package:
-        `${CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦"}${
-          unit.total_package
+        `${CURRENCY_SIGN[unit.currency as keyof typeof CURRENCY_SIGN] || "₦"}${unit.total_package
         }` || "__ __",
       period: unit.period || "__ __",
       currency:

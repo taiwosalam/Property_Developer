@@ -20,7 +20,7 @@ import { useRouter } from "next/navigation";
 import useFetch from "@/hooks/useFetch";
 import CustomLoader from "@/components/Loader/CustomLoader";
 import NetworkError from "@/components/Error/NetworkError";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import { AxiosRequestConfig } from "axios";
 import dayjs from "dayjs";
@@ -76,35 +76,35 @@ const Disbursement = () => {
 
   const propertyOptions = Array.isArray(propertyData?.data)
     ? [
-        ...new Map(
-          propertyData.data
-            .filter(
-              (property: any) =>
-                property.property_type === "rental" && property.units.length > 0
-            )
-            .map((property: any) => [
-              property.title,
-              {
-                label: property.title?.toLowerCase(),
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertyData.data
+          .filter(
+            (property: any) =>
+              property.property_type === "rental" && property.units.length > 0
+          )
+          .map((property: any) => [
+            property.title,
+            {
+              label: property.title?.toLowerCase(),
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   const landlordOptions = Array.isArray(landlordsData?.data)
     ? [
-        ...new Map(
-          landlordsData.data.map((l: any) => [
-            l.name,
-            {
-              label: l.name?.toLowerCase(),
-              value: l.id.toString(),
-            },
-          ])
-        ).values(),
-      ]
+      ...new Map(
+        landlordsData.data.map((l: any) => [
+          l.name,
+          {
+            label: l.name?.toLowerCase(),
+            value: l.id.toString(),
+          },
+        ])
+      ).values(),
+    ]
     : [];
 
   const config: AxiosRequestConfig = useMemo(() => {
@@ -204,19 +204,19 @@ const Disbursement = () => {
           filterOptionsMenu={[
             ...(landlordOptions.length > 0
               ? [
-                  {
-                    label: "Landlords",
-                    value: landlordOptions,
-                  },
-                ]
+                {
+                  label: "Landlords",
+                  value: landlordOptions,
+                },
+              ]
               : []),
             ...(propertyOptions.length > 0
               ? [
-                  {
-                    label: "Property",
-                    value: propertyOptions,
-                  },
-                ]
+                {
+                  label: "Property",
+                  value: propertyOptions,
+                },
+              ]
               : []),
           ]}
           // onSort={handleSort}

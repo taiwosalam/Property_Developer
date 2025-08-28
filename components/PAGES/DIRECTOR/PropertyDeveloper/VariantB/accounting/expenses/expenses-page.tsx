@@ -41,7 +41,7 @@ import { AxiosRequestConfig } from "axios";
 import { FilterResult } from "@/components/Management/Landlord/types";
 import dayjs from "dayjs";
 import FilterBar from "@/components/FIlterBar/FilterBar";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 import SearchError from "@/components/SearchNotFound/SearchNotFound";
 import EmptyList from "@/components/EmptyList/Empty-List";
 import TableLoading from "@/components/Loader/TableLoading";
@@ -101,14 +101,14 @@ const AccountingExpensesPage = () => {
     const fromDate = selectedDateRange?.from
       ? dayjs(selectedDateRange.from).format("YYYY-MM-DD")
       : appliedFilters.startDate
-      ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
-      : undefined;
+        ? dayjs(appliedFilters.startDate).format("YYYY-MM-DD")
+        : undefined;
 
     const toDate = selectedDateRange?.to
       ? dayjs(selectedDateRange.to).format("YYYY-MM-DD")
       : appliedFilters.endDate
-      ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
-      : undefined;
+        ? dayjs(appliedFilters.endDate).format("YYYY-MM-DD")
+        : undefined;
 
     const params: ExpensesRequestParams = {
       from_date: fromDate,
@@ -173,32 +173,32 @@ const AccountingExpensesPage = () => {
 
   const accountOfficersOptions = Array.isArray(accountOfficers)
     ? [
-        ...new Map(
-          accountOfficers.map((officer: any) => [
-            officer.name.toLowerCase(),
-            {
-              label: officer.name.toLowerCase(),
-              value: officer.id.toString(),
-            },
-          ])
-        ).values(),
-      ]
+      ...new Map(
+        accountOfficers.map((officer: any) => [
+          officer.name.toLowerCase(),
+          {
+            label: officer.name.toLowerCase(),
+            value: officer.id.toString(),
+          },
+        ])
+      ).values(),
+    ]
     : [];
 
   const propertyOptions = Array.isArray(propertyData?.data)
     ? [
-        ...new Map(
-          propertyData.data
-            .filter((property: any) => property.units.length > 0)
-            .map((property: any) => [
-              property.title.toLowerCase(),
-              {
-                label: property.title.toLowerCase(),
-                value: property.id.toString(),
-              },
-            ])
-        ).values(),
-      ]
+      ...new Map(
+        propertyData.data
+          .filter((property: any) => property.units.length > 0)
+          .map((property: any) => [
+            property.title.toLowerCase(),
+            {
+              label: property.title.toLowerCase(),
+              value: property.id.toString(),
+            },
+          ])
+      ).values(),
+    ]
     : [];
 
   const [timeRange, setTimeRange] = useState("90d");
@@ -352,19 +352,19 @@ const AccountingExpensesPage = () => {
               filterOptionsMenu={[
                 ...(accountOfficersOptions.length > 0
                   ? [
-                      {
-                        label: "Account Manager",
-                        value: accountOfficersOptions,
-                      },
-                    ]
+                    {
+                      label: "Account Manager",
+                      value: accountOfficersOptions,
+                    },
+                  ]
                   : []),
                 ...(propertyOptions.length > 0
                   ? [
-                      {
-                        label: "Property",
-                        value: propertyOptions,
-                      },
-                    ]
+                    {
+                      label: "Property",
+                      value: propertyOptions,
+                    },
+                  ]
                   : []),
               ]}
               handleSearch={handleSearch}

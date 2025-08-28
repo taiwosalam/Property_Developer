@@ -32,7 +32,7 @@ import CardsLoading from "@/components/Loader/CardsLoading";
 import Pagination from "@/components/Pagination/pagination";
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
-import { PropertyListResponse } from "@/app/(nav)/tasks/inspections/type";
+import { PropertyListResponse } from "@/components/PAGES/DIRECTOR/PropertyManager/variantA/tasks/inspections/type";
 
 const Units = () => {
   const [pageData, setPageData] = useState<UnitPageState>(initialState);
@@ -277,11 +277,11 @@ const Units = () => {
           ...listingUnitFilter,
           ...(propertyOptions.length > 0
             ? [
-                {
-                  label: "Property",
-                  value: propertyOptions,
-                },
-              ]
+              {
+                label: "Property",
+                value: propertyOptions,
+              },
+            ]
             : []),
         ]}
         hasGridListToggle={false}
