@@ -230,7 +230,7 @@ const NavLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             style={{ boxShadow: "0px 2px 20px 0px rgba(0, 0, 0, 0.02)" }}
           />
           <>
-            <SmartMarquee className=" bg-white dark:bg-[#020617]" />
+            <SmartMarquee className="bg-white dark:bg-[#020617]" />
           </>
           <div
             className={`h-[50px] px-3 flex items-center ${navbar !== "row" ? "justify-between" : "justify-end"

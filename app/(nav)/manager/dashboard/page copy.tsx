@@ -1,47 +1,54 @@
 "use client";
-import CompanyStatusModal from "@/components/dashboard/company-status";
-import { Modal, ModalContent } from "@/components/Modal/modal";
-import { usePersonalInfoStore } from "@/store/personal-info-store";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+
+// Imports
+import Card from "@/components/dashboard/card";
 import {
-  dashboardCardData,
   dashboardListingsChartConfig,
   invoiceTableFields,
+  complaintsData,
+  dashboardCardData,
 } from "./data";
+import WalletBalanceCard from "@/components/dashboard/wallet-balance";
+import NotificationCard from "@/components/dashboard/notification-card";
+import { DashboardChart } from "@/components/dashboard/chart";
+import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
+import { SectionContainer } from "@/components/Section/section-components";
+import { TaskCard } from "@/components/dashboard/kanban/TaskCard";
+import CustomTable from "@/components/Table/table";
+import Link from "next/link";
+import { useWalletStore } from "@/store/wallet-store";
+import useWindowWidth from "@/hooks/useWindowWidth";
+import useFetch from "@/hooks/useFetch";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { usePersonalInfoStore } from "@/store/personal-info-store";
 import {
   SingleBranchResponseType,
   Stats,
 } from "../../management/staff-branch/[branchId]/types";
-import useFetch from "@/hooks/useFetch";
-import Link from "next/link";
-import Card from "@/components/dashboard/card";
+import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import {
   branchIdChartConfig,
   transformSingleBranchAPIResponse,
 } from "../../management/staff-branch/[branchId]/data";
-import { DashboardChart } from "@/components/dashboard/chart";
+import { useGlobalStore } from "@/store/general-store";
+import { getTransactionIcon } from "@/components/Wallet/icons";
+import clsx from "clsx";
 import BranchBalanceCard, {
   normalizeIsActive,
 } from "@/components/Management/Staff-And-Branches/Branch/branch-balance-card";
-import DashboarddCalendar from "@/components/dashboard/Dashcalendar";
-import { useBranchInfoStore } from "@/store/branch-info-store";
-import NotificationCard from "@/components/dashboard/notification-card";
-import { getRecentMessages, initialDashboardStats } from "../../dashboard/data";
-import { usePermission } from "@/hooks/getPermission";
-import { useRole } from "@/hooks/roleContext";
 import {
   ConversationsAPIResponse,
   PageMessages,
 } from "../../(messages-reviews)/messages/types";
-import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { transformUsersMessages } from "../../(messages-reviews)/messages/data";
 import { useChatStore } from "@/store/message";
+import { getRecentMessages, initialDashboardStats } from "../../dashboard/data";
+import { InvoiceListResponse } from "../../accounting/invoice/types";
+import { transformInvoiceData } from "../accounting/invoice/data";
+import { TransformedInvoiceData } from "../accounting/invoice/types";
+import BadgeIcon from "@/components/BadgeIcon/badge-icon";
+import NetworkError from "@/components/Error/NetworkError";
+import DashboardLoading from "@/components/Loader/DashboardLoading";
 import {
   ComplaintsPageData,
   ComplaintsResponse,
@@ -51,48 +58,45 @@ import {
   transformComplaintDashboard,
   transformComplaintsData,
 } from "../../tasks/complaints/data";
-import { SectionContainer } from "@/components/Section/section-components";
-import CustomTable from "@/components/Table/table";
-import {
-  InvoiceListResponse,
-  TransformedInvoiceData,
-} from "../accounting/invoice/types";
-import { transformInvoiceData } from "../accounting/invoice/data";
-import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { KanbanBoard } from "@/components/dashboard/kanban/KanbanBoard";
+import { useRole } from "@/hooks/roleContext";
 import { useTourStore } from "@/store/tour-store";
+import { Modal, ModalContent } from "@/components/Modal/modal";
+import CompanyStatusModal from "@/components/dashboard/company-status";
+import { useBranchInfoStore } from "@/store/branch-info-store";
+import { usePermission } from "@/hooks/getPermission";
 
-const ManagerDashboard = () => {
-  // ============= HOOKS (PUT FIRST ALWAYS) ==============
-  const { role } = useRole();
-  const company_status = usePersonalInfoStore((state) => state.company_status);
-  const company_id = usePersonalInfoStore((state) => state.company_id);
+const Dashboard = () => {
+  const { isMobile } = useWindowWidth();
   const { branch } = usePersonalInfoStore();
-  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
-  const setChatData = useChatStore((s) => s.setChatData);
-  const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } =
-    useTourStore();
-  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
-
-  // ============== useState HOOKS follows ============
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
-  const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
-  const [recentComplaints, setRecentComplaints] =
-    useState<ComplaintsDashboard | null>(null);
-  const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(
-    null
-  );
-
   const BRANCH_ID = branch?.branch_id || 0;
-  // ============ Use refs to prevent infinite loops ===========
+  const { role } = useRole();
+  
+  // Use refs to prevent infinite loops
   const prevSetChatDataRef = useRef<string>("");
   const prevWalletStoreRef = useRef<string>("");
   const prevGlobalStoreRef = useRef<string>("");
   const prevBranchInfoRef = useRef<string>("");
 
-  // ============== PERMISSIONS ==================
+  // Get store setters
+  const setChatData = useChatStore((s) => s.setChatData);
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
+  const { setGlobalInfoStore } = useGlobalStore((s) => ({
+    setGlobalInfoStore: s.setGlobalInfoStore,
+  }));
+
+  // PERMISSIONS
   const canViewComplain = usePermission(role, "Can view complaints");
+
+  const [pageUsersMsg, setPageUsersMsg] = useState<PageMessages[] | null>([]);
+  const [invoiceData, setInvoiceData] = useState<TransformedInvoiceData | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const company_status = usePersonalInfoStore((state) => state.company_status);
+  const company_id = usePersonalInfoStore((state) => state.company_id);
+  const branchWallet = useBranchInfoStore((s) => s.sub_wallet);
+  const managerWalletIsActive = normalizeIsActive(
+    branchWallet?.is_active as string | boolean
+  );
 
   // Open modal if company status is "pending" or "rejected"
   useEffect(() => {
@@ -101,24 +105,76 @@ const ManagerDashboard = () => {
     }
   }, [company_status]);
 
-  //=============== GET BRANCH DATA with cache ===============
-  const branchURL =
-    BRANCH_ID && BRANCH_ID !== 0 ? `/branch/${BRANCH_ID}` : null;
-
-  const { data, error, loading, isNetworkError, refetch } =
-    useFetch<SingleBranchResponseType>(branchURL, {
-      cache: {
-        enabled: true,
-        key: `branch-${BRANCH_ID}`,
-        ttl: 5 * 60 * 1000, // 5 minutes (adjust as needed)
-      },
-    });
+  const branchURL = BRANCH_ID && BRANCH_ID !== 0 ? `/branch/${BRANCH_ID}` : null;
+  const { data, error, loading, isNetworkError, refetch } = useFetch<SingleBranchResponseType>(branchURL);
+  
   useRefetchOnEvent("refetch-branch-data", () => {
     refetch({ silent: true });
   });
-  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
 
-  //================= STATS CARD ================
+  // =========== INVOICE DATA ===========
+  const fetchUrl = BRANCH_ID && BRANCH_ID !== 0 ? `/invoice/list?branch_id=${BRANCH_ID}` : null;
+
+  const {
+    data: invoiceResponseData,
+    error: invoiceError,
+    loading: invoiceLoading,
+    isNetworkError: invoiceNetworkError,
+    silentLoading: invoiceSilentLoading,
+  } = useFetch<InvoiceListResponse>(fetchUrl);
+
+  useEffect(() => {
+    if (invoiceResponseData) {
+      const transformed = transformInvoiceData(invoiceResponseData);
+      setInvoiceData(transformed);
+    }
+  }, [invoiceResponseData]);
+
+  // Handle invoiceData nullability
+  const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
+  const transformedRecentInvoiceTableData = useMemo(() => {
+    const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
+    return invoiceList.map((i) => ({
+      ...i,
+      client_name: (
+        <p className="flex items-center whitespace-nowrap">
+          <span>{i.client_name}</span>
+          {i.badge_color && <BadgeIcon color={i.badge_color} />}
+        </p>
+      ),
+    }));
+  }, [invoiceData?.invoices]);
+
+  // =========== BRANCH DATA ===========
+  const branchData = data ? transformSingleBranchAPIResponse(data) : null;
+  const {
+    branch_wallet,
+    transactions,
+    recent_transactions,
+    receipt_statistics,
+  } = branchData || {};
+
+  const yesNoToActiveInactive = useCallback((yesNo: string): boolean => {
+    return yesNo === "Yes";
+  }, []);
+
+  // FIXED: Wallet store update with proper change detection
+  useEffect(() => {
+    if (branchData?.branch_wallet) {
+      const walletData = {
+        status: branch_wallet !== null ? "active" : "inactive",
+        wallet_id: Number(branchData.branch_wallet.wallet_id),
+        is_active: yesNoToActiveInactive(branchData.branch_wallet.is_active as string),
+      };
+
+      const walletDataString = JSON.stringify(walletData);
+      if (prevWalletStoreRef.current !== walletDataString) {
+        prevWalletStoreRef.current = walletDataString;
+        setWalletStore("sub_wallet", walletData);
+      }
+    }
+  }, [branchData?.branch_wallet, branch_wallet, setWalletStore, yesNoToActiveInactive]);
+
   const updatedDashboardCardData = useMemo(() => {
     return dashboardCardData.map((card) => {
       let stats: Stats | undefined;
@@ -173,8 +229,6 @@ const ManagerDashboard = () => {
     });
   }, [branchData]);
 
-  // ============== DASHBOARD CHART DATA ===============
-  const { branch_wallet, recent_transactions } = branchData || {};
   const walletChartData = useMemo(() => {
     return recent_transactions?.map((t: any) => ({
       date: t.date,
@@ -190,23 +244,18 @@ const ManagerDashboard = () => {
     }));
   }, [recent_transactions]);
 
-  // ============= LISTING PERFORMANCE DATA  ===========
-  const bookmarkChartData = useMemo(() => {
-    return (
-      branchData?.chart_data?.map((item: any) => ({
-        date: item?.date,
-        views: item?.total_views,
-        bookmarks: item?.total_bookmarks,
-      })) || []
-    );
-  }, [branchData?.chart_data]);
+  // FIXED: Global store update with proper change detection
+  useEffect(() => {
+    if (transactions) {
+      const transactionsString = JSON.stringify(transactions);
+      if (prevGlobalStoreRef.current !== transactionsString) {
+        prevGlobalStoreRef.current = transactionsString;
+        setGlobalInfoStore("branchWalletTransactions", transactions);
+      }
+    }
+  }, [transactions, setGlobalInfoStore]);
 
-  // ================= CONDITIONAL CHECKS ==========
-  const managerWalletIsActive = normalizeIsActive(
-    branchWallet?.is_active as string | boolean
-  );
-
-  // ================= RECENT MESSAGCES ============
+  // Recent messages
   const {
     data: usersMessages,
     loading: usersMsgLoading,
@@ -214,7 +263,7 @@ const ManagerDashboard = () => {
     refetch: refetchMsg,
     isNetworkError: MsgNetworkError,
   } = useFetch<ConversationsAPIResponse>("/messages");
-
+  
   useRefetchOnEvent("refetch-users-msg", () => {
     refetchMsg({ silent: true });
   });
@@ -224,7 +273,7 @@ const ManagerDashboard = () => {
     if (usersMessages) {
       const transformed = transformUsersMessages(usersMessages);
       const transformedString = JSON.stringify(transformed);
-
+      
       if (prevSetChatDataRef.current !== transformedString) {
         prevSetChatDataRef.current = transformedString;
         setPageUsersMsg(transformed);
@@ -233,68 +282,58 @@ const ManagerDashboard = () => {
     }
   }, [usersMessages, setChatData]);
 
-  //=============== GET COMPLAINT DATA with cache ===============
-  const complaintsURL = `/complaints`;
-  const { data: complaintData } = useFetch<ComplaintsResponse>(complaintsURL, {
-    cache: {
-      enabled: true,
-      key: "complaints-data", // unique cache key
-      ttl: 5 * 60 * 1000, // 5 minutes
-    },
-  });
+  // ======== LISTING PERFORMANCE CHART DATA ===========
+  const bookmarkChartData = useMemo(() => {
+    return (
+      branchData?.chart_data?.map((item: any) => ({    
+        date: item?.date,
+        views: item?.total_views,
+        bookmarks: item?.total_bookmarks,
+      })) || []
+    );
+  }, [branchData?.chart_data]);
+
+  // ====== Handle Complaints KanbanBoard ======
+  const [pageData, setPageData] = useState<ComplaintsPageData | null>(null);
+  const [recentComplaints, setRecentComplaints] = useState<ComplaintsDashboard | null>(null);
+
+  const { data: complaintData } = useFetch<ComplaintsResponse>(`/complaints`);
 
   useEffect(() => {
     if (complaintData) {
       const transformData = transformComplaintsData(complaintData);
       setPageData(transformData);
 
-      const transformRecentComplaints =
-        transformComplaintDashboard(complaintData);
+      const transformRecentComplaints = transformComplaintDashboard(complaintData);
       setRecentComplaints(transformRecentComplaints);
     }
   }, [complaintData]);
 
-  // =========== INVOICE DATA ===========
-  // =========== INVOICE DATA with cache ===========
-  const fetchUrl =
-    BRANCH_ID && BRANCH_ID !== 0
-      ? `/invoice/list?branch_id=${BRANCH_ID}`
-      : null;
+  // Tour logic
+  const { setShouldRenderTour, completeTour, setPersist, isTourCompleted } = useTourStore();
+  const [dashboardStats, setDashboardStats] = useState(initialDashboardStats);
 
-  const { data: invoiceResponseData } = useFetch<InvoiceListResponse>(
-    fetchUrl,
-    {
-      cache: {
-        enabled: true,
-        key: `invoices-${BRANCH_ID}`, // unique per branch
-        ttl: 5 * 60 * 1000, // 5 minutes cache
-      },
-    }
-  );
+  // Memoize tour conditions
+  const tourShouldRun = useMemo(() => {
+    if (loading) return false;
+    
+    const hasNoProperties = dashboardStats.some(
+      (stat) => stat.title === "Properties" && stat.value === "0"
+    );
+    const hasNoVacantUnits = dashboardStats.some(
+      (stat) => stat.title === "Vacant Unit" && stat.value === "0"
+    );
+    
+    return company_status === "approved" && hasNoProperties && hasNoVacantUnits;
+  }, [company_status, dashboardStats, loading]);
 
   useEffect(() => {
-    if (invoiceResponseData) {
-      const transformed = transformInvoiceData(invoiceResponseData);
-      setInvoiceData(transformed);
-    }
-  }, [invoiceResponseData]);
+    setPersist(false);
+    setShouldRenderTour(tourShouldRun);
+    
+    return () => setShouldRenderTour(false);
+  }, [tourShouldRun, setShouldRenderTour, setPersist]);
 
-  // Handle invoiceData nullability
-  const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
-  const transformedRecentInvoiceTableData = useMemo(() => {
-    const invoiceList = invoiceData?.invoices?.slice(0, 15) || [];
-    return invoiceList.map((i) => ({
-      ...i,
-      client_name: (
-        <p className="flex items-center whitespace-nowrap">
-          <span>{i.client_name}</span>
-          {i.badge_color && <BadgeIcon color={i.badge_color} />}
-        </p>
-      ),
-    }));
-  }, [invoiceData?.invoices]);
-
-  // ============= REDIRECT & HELPERS =============
   const gotoPage = useCallback(() => {
     switch (role) {
       case "director":
@@ -310,36 +349,23 @@ const ManagerDashboard = () => {
     }
   }, [role]);
 
-  const yesNoToActiveInactive = useCallback((yesNo: string): boolean => {
-    return yesNo === "Yes";
-  }, []);
-
-  // =============== TOUR LOGIC HANDLER =================
-  // Memoize tour conditions
-  const tourShouldRun = useMemo(() => {
-    if (loading) return false;
-
-    const hasNoProperties = dashboardStats.some(
-      (stat) => stat.title === "Properties" && stat.value === "0"
-    );
-    const hasNoVacantUnits = dashboardStats.some(
-      (stat) => stat.title === "Vacant Unit" && stat.value === "0"
-    );
-
-    return company_status === "approved" && hasNoProperties && hasNoVacantUnits;
-  }, [company_status, dashboardStats, loading]);
-
+  // FIXED: Branch info bulk update with proper change detection
+  const setBranchInfoBulk = useBranchInfoStore((s) => s.setBranchInfoBulk);
+  
   useEffect(() => {
-    setPersist(false);
-    setShouldRenderTour(tourShouldRun);
+    if (branchData) {
+      const branchDataString = JSON.stringify(branchData);
+      if (prevBranchInfoRef.current !== branchDataString) {
+        prevBranchInfoRef.current = branchDataString;
+        setBranchInfoBulk(branchData);
+      }
+    }
+  }, [branchData, setBranchInfoBulk]);
 
-    return () => setShouldRenderTour(false);
-  }, [tourShouldRun, setShouldRenderTour, setPersist]);
+  if (isNetworkError) return <NetworkError />;
 
-
-//================================= RENDER STARTS HERE ========================================
   return (
-    <div>
+    <>
       {isModalOpen && (
         <Modal state={{ isOpen: isModalOpen, setIsOpen: setIsModalOpen }}>
           <ModalContent disableOutsideClick>
@@ -350,8 +376,6 @@ const ManagerDashboard = () => {
           </ModalContent>
         </Modal>
       )}
-
-      {/* BODY */}
       <section className="custom-flex-col gap-10">
         <div className="w-full h-full flex flex-col xl:flex-row gap-x-10 gap-y-6">
           <div className="w-full xl:flex-1 space-y-4 xl:space-y-6">
@@ -394,8 +418,8 @@ const ManagerDashboard = () => {
           <div className="w-full xl:w-[30%] xl:max-w-[342px] h-full grid md:grid-cols-2 xl:grid-cols-1 gap-6">
             {managerWalletIsActive && (
               <BranchBalanceCard
-                mainBalance={parseFloat(branch_wallet?.balance_total || 0)}
-                cautionDeposit={parseFloat(branch_wallet?.escrow_balance || 0)}
+                mainBalance={Number(branch_wallet?.balance_total || 0)}
+                cautionDeposit={Number(branch_wallet?.escrow_balance || 0)}
                 className="max-w-full"
               />
             )}
@@ -420,6 +444,7 @@ const ManagerDashboard = () => {
             )}
           </div>
         </div>
+
         {/* =========== RECENT INVOICES =========== */}
         <SectionContainer
           className="recent-invoice-table"
@@ -445,6 +470,7 @@ const ManagerDashboard = () => {
             </div>
           )}
         </SectionContainer>
+
         {/* =========== RECENT COMPLAINS =========== */}
         {canViewComplain && (
           <SectionContainer
@@ -462,10 +488,9 @@ const ManagerDashboard = () => {
             )}
           </SectionContainer>
         )}
-        ˝
       </section>
-    </div>
+    </>
   );
 };
 
-export default ManagerDashboard;
+export default Dashboard;

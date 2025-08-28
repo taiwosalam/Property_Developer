@@ -190,7 +190,7 @@ const AddTenantModal = () => {
   return (
     <LandlordTenantModalPreset
       heading={modal_states[activeStep].heading}
-      style={{ overflow: "hidden", maxWidth: isMobile ? "100%" : "50%" }}
+      // style={{ overflow: "auto", maxWidth: isMobile ? "100%" : "50%" }}
       back={activeStep !== "options" ? { handleBack } : undefined}
     >
       {modal_states[activeStep].content}

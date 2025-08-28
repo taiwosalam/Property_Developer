@@ -54,45 +54,6 @@ function getBackgroundColor(title: string): string {
   return backgroundColor;
 }
 
-// "property_count": 1,
-// "month_count": 1,
-// "vacant_unit": 1,
-// "month_vacant_unit": 1,
-// "expired_unit": 0,
-// "month_expired_unit": 0,
-// "landlord_count": 0,
-// "month_landlord_count": 0,
-// "tenant_count": 0,
-// "month_tenant_count": 0,
-// "listing_count": 1,
-// "month_listing_count": 1,
-// "complaint_count": 0,
-// "month_complaint_count": 0,
-// "invoice_count": 0,
-// "month_invoice_count": 0,
-// "inquiry_count": 0,
-// "month_inquiry_count": 0,
-//  "invoices": [
-//   {
-//     "id": 22,
-//     "invoice_id": "cShTBR",
-//     "client_name": "Mubarak Abdulrafiu",
-//     "client_picture": null,
-//     "reason": null,
-//     "total_amount": "1014100.00",
-//     "invoice_date": "2025-02-19"
-// },
-// {
-//     "id": 13,
-//     "invoice_id": "ATW18t",
-//     "client_name": "Mubarak Abdulrafiu",
-//     "client_picture": null,
-//     "reason": null,
-//     "total_amount": "1014100.00",
-//     "invoice_date": "2025-02-12"
-// }
-// ]
-
 export type BranchDashboardResponse = {
   status: "success";
   data: DashboardData;
@@ -141,89 +102,16 @@ export const transformDashboardData = (data: BranchDashboardResponse) => {
           name: invoice.client_name || "___ ___",
           invoice_id: invoice.invoice_id || "___ ___",
           details: invoice.reason ?? "___ ___",
-          total_amount: `₦${parseFloat(invoice.total_amount).toLocaleString()}` || "___ ___",
-          date: format(new Date(invoice.invoice_date), "dd/MM/yyyy") || "___ ___",
+          total_amount:
+            `₦${parseFloat(invoice.total_amount).toLocaleString()}` ||
+            "___ ___",
+          date:
+            format(new Date(invoice.invoice_date), "dd/MM/yyyy") || "___ ___",
         };
       }),
     },
   };
 };
-
-// export const dashboardCardData = (data: Record<string, any>) => [
-//   {
-//     title: "Properties",
-//     bg: getBackgroundColor("properties"),
-//     icon: BuildingIcon,
-//     value: data?.property_count ?? 0,
-//     subValue: data?.month_count ?? 0,
-//     link: "/management/staff-branch/",
-//   },
-//   {
-//     title: "Landlords",
-//     bg: getBackgroundColor("landlords"),
-//     icon: LandlordIcon,
-//     value: data?.landlord_count ?? 0,
-//     subValue: data?.month_landlord_count ?? 0,
-//     link: "/management/landlord",
-//   },
-//   {
-//     title: "Tenants & Occupants",
-//     bg: getBackgroundColor("tenants & occupants"),
-//     icon: TenantIcon,
-//     value: data?.tenant_count ?? 0,
-//     subValue: data?.month_tenant_count ?? 0,
-//     link: "/management/tenants",
-//   },
-//   {
-//     title: "Vacant Unit",
-//     bg: getBackgroundColor("vacant unit"),
-//     icon: BedIcon,
-//     value: data?.vacant_unit ?? 0,
-//     subValue: data?.month_vacant_unit ?? 0,
-//     link: "/management/rent-unit",
-//   },
-//   {
-//     title: "Expired",
-//     bg: getBackgroundColor("expired"),
-//     icon: ExpiredIcon,
-//     value: data?.expired_unit ?? 0,
-//     subValue: data?.month_expired_unit ?? 0,
-//     link: "/management/rent-unit",
-//   },
-//   {
-//     title: "Invoices",
-//     bg: getBackgroundColor("invoices"),
-//     icon: InvoiceIcon,
-//     value: data?.invoice_count ?? 0,
-//     subValue: data?.month_invoice_count ?? 0,
-//     link: "/accounting/invoice",
-//   },
-//   {
-//     title: "Inquiries",
-//     bg: getBackgroundColor("inquiries"),
-//     icon: InquiriesIcon,
-//     value: data?.inquiry_count ?? 0,
-//     subValue: data?.month_inquiry_count ?? 0,
-//     link: "/tasks/inquires",
-//   },
-
-//   {
-//     title: "Complaints",
-//     bg: getBackgroundColor("complaints"),
-//     icon: ComplaintsIcon,
-//     value: data?.complaint_count ?? 0,
-//     subValue: data?.month_complaint_count ?? 0,
-//     link: "/tasks/complaints",
-//   },
-//   {
-//     title: "Listings",
-//     bg: getBackgroundColor("listings"),
-//     icon: ListingsIcon,
-//     value: data?.listing_count ?? 0,
-//     subValue: data?.month_listing_count ?? 0,
-//     link: "/listing/units",
-//   },
-// ];
 
 export const walletBalanceCardData = {
   mainBalance: 1000,
@@ -336,7 +224,6 @@ export const dashboardPerformanceChartConfig = {
   },
 } satisfies ChartConfig;
 
-
 export const dashboardListingsChartConfig = {
   views: {
     label: "Views",
@@ -347,7 +234,6 @@ export const dashboardListingsChartConfig = {
     color: "#2DD4BF",
   },
 };
-
 
 export const dashboardPerformanceChartData = [
   { date: "2024-09-01", profits: 50, sales: 70, expenses: 30 },
@@ -419,7 +305,6 @@ export const dashboardInvoiceTableData = Array.from(
     };
   }
 );
-
 
 export const dashboardCardData = [
   {
@@ -496,7 +381,6 @@ export const dashboardCardData = [
   },
 ];
 
-
 export const transformDashboardCardData = (
   dashboardCardData: DashboardCard[],
   branchData: BranchData | null,
@@ -554,3 +438,61 @@ export const transformDashboardCardData = (
     };
   });
 };
+
+export function getUpdatedDashboardCardData(
+  dashboardCardData: DashboardCard[],
+  branchData?: BranchData
+): DashboardCard[] {
+  return dashboardCardData.map((card) => {
+    let stats: Stats | undefined;
+    let link = "";
+
+    switch (card.title) {
+      case "Properties":
+        stats = branchData?.properties;
+        link = `/manager/management/properties`;
+        break;
+      case "Landlords":
+        stats = branchData?.landlords;
+        link = `/manager/management/landlord`;
+        break;
+      case "Tenants & Occupants":
+        stats = branchData?.tenants;
+        link = `/manager/management/tenants`;
+        break;
+      case "Vacant Unit":
+        stats = branchData?.vacant_units;
+        link = `/manager/management/rent-unit?is_active=vacant`;
+        break;
+      case "Expired":
+        stats = branchData?.expired;
+        link = `/manager/management/rent-unit?is_active=expired`;
+        break;
+      case "Invoices":
+        stats = branchData?.invoices;
+        link = `/manager/accounting/invoice?status=pending`;
+        break;
+      case "Inquiries":
+        stats = branchData?.inquiries;
+        link = `/manager/tasks/inquires`;
+        break;
+      case "Complaints":
+        stats = branchData?.complaints;
+        link = `/manager/tasks/complaints`;
+        break;
+      case "Listings":
+        stats = branchData?.listings;
+        link = `/manager/listing/units`;
+        break;
+      default:
+        break;
+    }
+
+    return {
+      ...card,
+      link,
+      value: stats ? stats.total : card.value,
+      subValue: stats ? stats.new_this_month : card.subValue,
+    };
+  });
+}
