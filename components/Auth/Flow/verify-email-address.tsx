@@ -131,7 +131,7 @@ const VerifyEmailAddress: React.FC<VerifyEmailAddressProps> = ({
         <span className="text-supporting-1">{email}</span>) for verification
       </AuthHeading>
 
-      <div className="custom-flex-col gap-10">
+      <div className="custom-flex-col gap-[50px]">
         <div className="custom-flex-col gap-2">
           <AuthPinField onChange={handlePinChange} />
           {validationError && (
