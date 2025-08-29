@@ -31,6 +31,8 @@ import {
   addPayment,
   deductPayment,
   deleteExpense,
+  expenseManageTableData,
+  expenseManageTableFields,
   ManageExpenseApiResponse,
   ManageExpensePageData,
   transformManageExpenseData,
@@ -40,6 +42,13 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { useRole } from "@/hooks/roleContext";
+import { sampleUser } from "../../../../application/data";
+import UserProfileCard from "@/components/Management/Rent And Unit/application-user-card";
+import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
+import { SearchBar } from "@/components/tasks/vehicles-record/components";
+import Select from "@/components/Form/Select/select";
+import MultiSelectObj from "@/components/Form/MultiSelect/multi-select-object";
+import CustomTable from "@/components/Table/table";
 
 const ManageExpenses = () => {
   const router = useRouter();
@@ -211,11 +220,33 @@ const ManageExpenses = () => {
     0
   );
 
+  const clientOptionsMenu = [
+    {
+      label: "Client 1",
+      value: "client_1",
+    },
+    {
+      label: "Client 2",
+      value: "client_2",
+    },
+  ];
+
+  const unitOptionsMenu = [
+    {
+      label: "Unit 1",
+      value: "unit_11",
+    },
+    {
+      label: "Unit 2",
+      value: "unit_2",
+    },
+  ];
+
   const totalBalance = totalExpenses - totalDeductions;
 
-  if (loading) return <PageCircleLoader />;
-  if (error) return <div>Error loading expense data.</div>;
-  if (!pageData) return <div>No data available.</div>;
+  // if (loading) return <PageCircleLoader />;
+  // if (error) return <div>Error loading expense data.</div>;
+  // if (!pageData) return <div>No data available.</div>;
 
   return (
     <div className="custom-flex-col gap-10 pb-[150px] sm:pb-[100px]">
@@ -225,198 +256,79 @@ const ManageExpenses = () => {
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{
-              "payment id": pageData?.expenseDetails.paymentId,
-              "account officer": pageData?.expenseDetails.customerName,
-              "property name": pageData?.expenseDetails.propertyName,
-              date: pageData?.expenseDetails.date,
-              "unit ID": pageData?.expenseDetails.unitId,
+              "payment id": "6387889938",
+              "property name": "Harmony Estate",
+              "account officer": "Mr Ajadi",
+              "client name": "Dupe Ololade",
+              date: "29th July 2003",
+              description:
+                "Here's a full description of expenses form 29th of July",
             }}
             chunkSize={2}
             direction="column"
             referenceObject={{
               "payment id": "",
-              date: "",
               "property name": "",
-              landlord: "",
               "account officer": "",
-              "unit ID": "",
+              "client name": "",
+              date: "",
+              description: "",
             }}
           />
         </div>
-        <AccountingTitleSection title="Description">
-          <p className="text-sm text-text-secondary dark:text-darkText-2">
-            {pageData?.description}
-          </p>
-        </AccountingTitleSection>
-        <AccountingTitleSection title="Add Expense">
-          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              <Input
-                id="payment-title"
-                label="payment title"
-                value={paymentTitle}
-                onChange={(v) => setPaymentTitle(v)}
-              />
-              <Input
-                id="payment_amount"
-                label="amount"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                // placeholder="300,000"
-                inputClassName="bg-white"
-                formatNumber
-                value={paymentAmount}
-                onChange={(v) => setPaymentAmount(v)}
-              />
-            </div>
-            <div className="flex justify-end">
-              <Button
-                size="base_medium"
-                className="py-2 px-14"
-                disabled={reqLoading}
-                onClick={handleAddPaymentClick}
-              >
-                {reqLoading ? "Please wait..." : "Add"}
-              </Button>
-            </div>
-          </div>
-        </AccountingTitleSection>
-        <AccountingTitleSection title="Expenses">
-          <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
-            <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-              {payments.map((payment, index) => (
-                <div key={index} className="flex flex-col gap-4">
-                  <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1 capitalize">
-                    {payment.title}
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                      {new Intl.NumberFormat("en-NG", {
-                        style: "currency",
-                        currency: "NGN",
-                      }).format(payment.amount)}
-                    </p>
-                    <Modal>
-                      {/* <ModalTrigger aria-label={`Delete ${payment.title}`}>
-                        <DeleteIconX />
-                      </ModalTrigger> */}
-                      <ModalContent>
-                        <DeleteItemWarningModal
-                          item={payment.title}
-                          amount={payment.amount}
-                          handleDelete={() => handleDeletePayment(index)}
-                          useCase="expenses"
-                        />
-                      </ModalContent>
-                    </Modal>
-                  </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8">
+          {/* Left Section */}
+          <div className="lg:col-span-3 space-y-8 py-10 mt-16">
+            <AutoResizingGrid>
+              <div className="space-y-6">
+                <Select
+                  id="client"
+                  label={`Client Name`}
+                  options={clientOptionsMenu}
+                  //disabled={propertiesLoading}
+                />
+                <MultiSelectObj
+                  id="units"
+                  options={unitOptionsMenu}
+                  label="Unit ID"
+                  className="unit-selection-dropdown max-w-[300px]"
+                  disabled={true}
+                />
+              </div>
+
+              <div className="space-y-6">
+                <Input id="" label="Total Expenses (₦)" />
+                <Input id="" label="Part payment (₦)" />
+              </div>
+              <div className="spacey-6">
+                <Input id="balance" label="Balance (₦)" />
+                <div className="py-4 mt-10 flex gap-4">
+                  <Button className="" variant="light_red">
+                    Remove
+                  </Button>
+                  <Button>Add</Button>
                 </div>
-              ))}
-            </div>
-            <SectionSeparator />
-            <div className="flex flex-col gap-4">
-              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Expenses
-              </p>
-              <p className="font-bold text-xl text-brand-9">
-                {new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                }).format(totalExpenses)}
-              </p>
-            </div>
-          </div>
-        </AccountingTitleSection>
-        <AccountingTitleSection title="Deduct Payment">
-          <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px]">
-              <DateInput
-                id="payment-date"
-                label="Select Date"
-                disablePast
-                value={deductionDate}
-                onChange={(date) => setDeductionDate(date)}
-              />
-              <Input
-                id="amount"
-                label="amount"
-                CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-                inputClassName="bg-white"
-                formatNumber
-                value={deductionAmount}
-                onChange={(value) => setDeductionAmount(value)}
-              />
-            </div>
-            <div className="flex justify-end">
-              <Button
-                size="base_medium"
-                className="py-2 px-14"
-                onClick={handleDeductClick}
-                disabled={reqLoading}
-              >
-                {reqLoading ? "Please wait..." : "Deduct"}
-              </Button>
-            </div>
-          </div>
-        </AccountingTitleSection>
-        {deductions.length > 0 && (
-          <AccountingTitleSection title="Deducted Payment">
-            <div className="flex bg-white dark:bg-darkText-primary w-full p-6 rounded-lg flex-col gap-8">
-              <div className="w-full max-w-[968px] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
-                {deductions.map((deduction, index) => (
-                  <div key={index} className="flex flex-col gap-4">
-                    <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                      {format(deduction.date.toDate(), "dd MMMM yyyy")}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <p className="font-bold text-[14px] text-text-secondary dark:text-darkText-2">
-                        {new Intl.NumberFormat("en-NG", {
-                          style: "currency",
-                          currency: "NGN",
-                        }).format(deduction.amount)}
-                      </p>
-                      <Modal>
-                        {/* <ModalTrigger aria-label={`Delete ${deduction.date}`}>
-                          <DeleteIconX />
-                        </ModalTrigger> */}
-                        <ModalContent>
-                          <DeleteItemWarningModal
-                            item={deduction.date.toDate().toLocaleDateString()}
-                            amount={deduction.amount}
-                            handleDelete={() => handleDeleteDeduction(index)}
-                            useCase="deductions"
-                          />
-                        </ModalContent>
-                      </Modal>
-                    </div>
-                  </div>
-                ))}
               </div>
-              <SectionSeparator />
-              <div className="flex flex-col gap-4">
-                <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                  Total Deductions
-                </p>
-                <p className="font-bold text-xl text-brand-9">
-                  {new Intl.NumberFormat("en-NG", {
-                    style: "currency",
-                    currency: "NGN",
-                  }).format(pageData?.stats?.totalDeducted)}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-4 p-6">
-              <p className="font-medium text-[16px] text-text-tertiary dark:darkText-1">
-                Total Balance
-              </p>
-              <p className="font-bold text-xl text-brand-9">
-                {new Intl.NumberFormat("en-NG", {
-                  style: "currency",
-                  currency: "NGN",
-                }).format(pageData?.stats?.totalBalance)}
-              </p>
-            </div>
-          </AccountingTitleSection>
-        )}
+            </AutoResizingGrid>
+
+            <AccountingTitleSection title="Added Details">
+              <CustomTable
+                fields={expenseManageTableFields}
+                data={expenseManageTableData()}
+              />
+            </AccountingTitleSection>
+          </div>
+
+          {/* Right Section */}
+          <div className="lg:col-span-2">
+            <UserProfileCard
+              user={sampleUser}
+              showCloseButton={false}
+              isSticky={false}
+            />
+          </div>
+        </div>
       </div>
       <FixedFooter className="flex flex-wrap gap-6 items-center justify-between">
         <Modal>

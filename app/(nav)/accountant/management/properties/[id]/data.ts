@@ -11,7 +11,8 @@ export interface SinglePropertyResponse {
 
 export const transformSinglePropertyData = (
   response: SinglePropertyResponse
-): PropertyPreviewProps | null => {
+// ): PropertyPreviewProps | null => {
+): any => {
   const { data } = response;
   if (!data) return null;
   const totalReturns = data.units.reduce((sum, unit) => {

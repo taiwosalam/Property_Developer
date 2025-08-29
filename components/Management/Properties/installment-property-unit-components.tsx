@@ -109,7 +109,6 @@ export const InstallmentPropertyDetails = ({
   );
 };
 
-
 export const InstallmentPropertySettings = ({
   heading,
 }: {
@@ -161,6 +160,61 @@ export const InstallmentPropertySettings = ({
             <p className="text-[#747474]">Return Duration</p>
             <p className="text-black dark:text-darkText-1 font-medium capitalize">
               Monthly
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const InstallmentPropertyTerms = ({ heading }: { heading: string }) => {
+  return (
+    <div
+      className="unit-propert-settings-wrapper py-6 px-4 rounded-lg bg-white dark:bg-darkText-primary"
+      style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+    >
+      <h2 className="text-primary-navy dark:text-white text-lg lg:text-xl font-bold">
+        {heading}
+      </h2>
+      <hr className="my-2.5" />
+
+      <div className="overflow-x-auto max-w-full flex-grow">
+        <div className="min-w-[400px] text-sm md:text-base grid grid-cols-2 lg:grid-cols-3 gap-x-2 gap-y-4 lg:[&>div]:grid lg:[&>div]:gap-x-3 lg:[&>div]:grid-cols-[50%,1fr]">
+          <div>
+            <p className="text-[#747474]">Collaboration Policy</p>
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
+              Yes
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]"> Outdoor Facility </p>
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
+              Yes
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Other Rules </p>
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
+              Yes
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]"> Other Services </p>
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
+              Yes
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]">Cancelllation Text </p>
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
+              Yes
+            </p>
+          </div>
+          <div>
+            <p className="text-[#747474]"> Extra People Text </p>
+            <p className="text-black dark:text-darkText-1 font-medium capitalize">
+              Yes
             </p>
           </div>
         </div>

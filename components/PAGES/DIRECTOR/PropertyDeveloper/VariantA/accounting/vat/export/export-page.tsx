@@ -48,7 +48,8 @@ const ExportVat = () => {
   } = useFetch<VATAPIResponse>("/vat/list");
   const filteredAccountingVat = useGlobalStore((s) => s.accounting_vat);
   const filteredData = useGlobalStore((s) => s.accounting_vat_data);
-  const vatTimeRangeLabel = useGlobalStore((s) => s.vatTimeRangeLabel) || "Last 3 months";
+  const vatTimeRangeLabel =
+    useGlobalStore((s) => s.vatTimeRangeLabel) || "Last 3 months";
 
   useEffect(() => {
     if (apiData) {
@@ -82,22 +83,26 @@ const ExportVat = () => {
         <BackButton as="p">Back</BackButton>
         <div ref={printRef}>
           <ExportPageHeader />
-          {/* <div className="rounded-lg my-4 bg-white dark:bg-darkText-primary p-8 flex">
+          <div className="rounded-lg my-4 bg-white dark:bg-darkText-primary p-8 flex">
             <KeyValueList
               data={{
-                "summary id": "-- --",
-                "start date": "--- ---",
-                "end date": "--- ---",
+                "export id": "638798",
+                branch: "Bodija Branch",
+                "branch manager": "Ajadi Ola",
+                "start date": "29th July 2009",
+                "end date": "30th June 2009",
               }}
-              chunkSize={1}
+              chunkSize={2}
               direction="column"
               referenceObject={{
-                "summary id": "",
+                "export id": "",
+                branch: "",
+                "branch manager": "",
                 "start date": "",
                 "end date": "",
               }}
             />
-          </div> */}
+          </div>
           <div className="custom-flex-col gap-6">
             <h1 className="text-black my-4 dark:text-white text-lg md:text-xl lg:text-2xl font-medium text-center">
               VAT Summary -{" "}
@@ -107,37 +112,36 @@ const ExportVat = () => {
             </h1>
             <AutoResizingGrid gap={24} minWidth={300}>
               <AccountStatsCard
-                title="Total Vat Paid"
-                balance={filteredData.total_vat_created || 0}
-                percentage={filteredData.percentage_change_total || 0}
-                variant="blueIncoming"
-                otherCurrency={otherCurrency}
-                timeRangeLabel={vatTimeRangeLabel}
-                trendDirection={filteredData.percentage_change_total < 0 ? "down" : "up"}
-                trendColor={filteredData.percentage_change_total < 0 ? "red" : "green"}
-              />
-              {/* <AccountStatsCard
-                title="Total Paid Vat"
-                balance={total_paid_vat}
-                variant="greenIncoming"
-                trendDirection={percentage_change_paid < 0 ? "down" : "up"}
-                trendColor={percentage_change_paid < 0 ? "red" : "green"}
-                percentage={percentage_change_paid}
+                className="!min-w-[320px] shrink-0"
+                title="Total VAT Created"
+                balance={"500,000"}
+                variant="redOutgoing"
+                trendDirection={20 < 0 ? "down" : "up"}
+                trendColor={10 < 0 ? "red" : "green"}
+                percentage={20}
               />
               <AccountStatsCard
-                title="Total Pending Vat"
-                balance={total_pending_vat}
+                className="!min-w-[320px] shrink-0"
+                title="Total Paid VAT"
+                balance={"200,000"}
+                variant="blueIncoming"
+                trendDirection={20 < 0 ? "down" : "up"}
+                trendColor={3 < 0 ? "red" : "green"}
+                percentage={10}
+              />
+              <AccountStatsCard
+                className="!min-w-[320px] shrink-0"
+                title="Total Pending VAT"
+                balance={"320,000"}
                 variant="yellowCard"
-                trendDirection={percentage_change_pending < 0 ? "down" : "up"}
-                trendColor={percentage_change_pending < 0 ? "red" : "green"}
-                percentage={percentage_change_pending}
-              /> */}
+                trendDirection={20 > 0 ? "down" : "up"}
+                trendColor={20 < 0 ? "red" : "green"}
+                percentage={20}
+              />
             </AutoResizingGrid>
             <CustomTable
-              className={`${fullContent && "max-h-none"}`}
               fields={vatTableFields}
-              // data={transformedTableData}
-              data={filteredAccountingVat || []}
+              data={vatTableData}
               tableHeadStyle={{ height: "76px" }}
               tableHeadCellSx={{ fontSize: "1rem" }}
               tableBodyCellSx={{
@@ -145,6 +149,7 @@ const ExportVat = () => {
                 paddingTop: "12px",
                 paddingBottom: "12px",
               }}
+              // handleSelect={handleRowClick}
             />
             <Signature />
           </div>

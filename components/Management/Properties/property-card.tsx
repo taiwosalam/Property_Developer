@@ -59,8 +59,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   default_image,
 }) => {
   const isRental = property_type === "rental";
-  // const symbol =
-  //   isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
+  const isInstallmentProperty = property_type === "installment";
   const symbol = currency ? currencySymbols[currency] : currencySymbols.naira;
   const modalRef = useRef<HTMLDivElement>(null);
   const { role } = useRole();
@@ -88,7 +87,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       case "edit":
         return `${baseRoute}/properties/${id}/edit-property`;
       case "preview":
-        return `${baseRoute}/properties/${id}`;
+        return `${baseRoute}/properties/${id}?property_type=${property_type}`;
       default:
         return "#";
     }

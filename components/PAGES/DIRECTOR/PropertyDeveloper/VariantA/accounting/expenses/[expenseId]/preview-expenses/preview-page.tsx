@@ -21,6 +21,8 @@ import ExportPageFooter from "@/components/reports/export-page-footer";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import CustomTable from "@/components/Table/table";
+import { expensePreviewTableData, expensePreviewTableFields } from "./data";
 
 const PreviewExpenses = () => {
   const { expenseId } = useParams();
@@ -32,9 +34,8 @@ const PreviewExpenses = () => {
   const [deductions, setDeductions] = useState<
     { date: Dayjs; amount: number }[]
   >(pageData?.deductions || []);
-  const { data, error, loading, refetch, isNetworkError } = useFetch<ManageExpenseApiResponse>(
-    `/expenses/${expenseId}`
-  );
+  const { data, error, loading, refetch, isNetworkError } =
+    useFetch<ManageExpenseApiResponse>(`/expenses/${expenseId}`);
 
   useEffect(() => {
     if (data) {
@@ -55,14 +56,14 @@ const PreviewExpenses = () => {
     }
   }, [pageData]);
 
-  if (loading)
-    return (
-      <div className="custom-flex-col gap-2">
-        <CardsLoading length={5} />
-      </div>
-    );
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  // if (loading)
+  //   return (
+  //     <div className="custom-flex-col gap-2">
+  //       <CardsLoading length={5} />
+  //     </div>
+  //   );
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 pb-28">
@@ -73,30 +74,33 @@ const PreviewExpenses = () => {
           <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{
-                "Expenses id": pageData?.expenseDetails.paymentId,
-                // "account officer": pageData?.expenseDetails.customerName,
-                "property name": pageData?.expenseDetails.propertyName,
-                date: pageData?.expenseDetails.date,
-                "unit ID": pageData?.expenseDetails.unitId,
+                "payment id": "6387889938",
+                "property name": "Harmony Estate",
+                "account officer": "Mr Ajadi",
+                "client name": "Dupe Ololade",
+                date: "29th July 2003",
+                description:
+                  "Here's a full description of expenses form 29th of July",
               }}
-              chunkSize={1}
+              chunkSize={2}
               direction="column"
               referenceObject={{
-                "Expenses id": "",
-                // "Customer name": "",
+                "payment id": "",
                 "property name": "",
+                "account officer": "",
+                "client name": "",
                 date: "",
-                // "account officer": "",
-                "unit ID": "",
+                description: "",
               }}
             />
           </div>
-          <AccountingTitleSection title="Description">
-            <p className="text-sm text-text-secondary">
-              {pageData?.description}
-            </p>
+          <AccountingTitleSection title="Details">
+            <CustomTable
+              fields={expensePreviewTableFields}
+              data={expensePreviewTableData()}
+            />
           </AccountingTitleSection>
-          <AccountingTitleSection title="Expenses Details">
+          {/* <AccountingTitleSection title="Expenses Details">
             <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
               <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
                 {payments.map((payment, index) => (
@@ -174,7 +178,7 @@ const PreviewExpenses = () => {
                 </p>
               </div>
             </AccountingTitleSection>
-          )}
+          )} */}
         </div>
       </div>
       <ExportPageFooter printRef={exportRef} />

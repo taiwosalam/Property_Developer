@@ -150,9 +150,7 @@ const AddUnitFooter = ({ noForm }: AddUnitFooterProps) => {
       return;
     }
   };
-
-  console.log("formInDom", formInDom);
-  console.log("hasAddedUnits", hasAddedUnits);
+  
   return (
     <FixedFooter className="unit-footer-actions flex items-center justify-end gap-10">
       <Modal state={{ isOpen: footerModalOpen, setIsOpen: setFooterModalOpen }}>

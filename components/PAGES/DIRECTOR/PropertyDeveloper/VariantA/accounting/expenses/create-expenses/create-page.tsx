@@ -175,6 +175,28 @@ const CreateExpensePage = () => {
     return () => setShouldRenderTour(false);
   }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
+  const propertyOptionsMenu = [
+    {
+      label: "Property 1",
+      value: "property_1",
+    },
+    {
+      label: "Property 2",
+      value: "property_1",
+    },
+  ];
+
+  const unitOptionsMenu = [
+    {
+      label: "Unit 1",
+      value: "unit_11",
+    },
+    {
+      label: "Unit 2",
+      value: "unit_2",
+    },
+  ];
+
   return (
     <section className="space-y-7 pb-[100px]">
       <AuthForm onFormSubmit={handleCreateExpense}>
@@ -194,8 +216,8 @@ const CreateExpensePage = () => {
               id="property"
               label={`Choose Property`}
               onChange={setSelectedPropertyId}
-              options={propertyOptions}
-              disabled={propertiesLoading}
+              options={propertyOptionsMenu}
+              //disabled={propertiesLoading}
               placeholder={
                 propertiesLoading
                   ? "Loading properties..."
@@ -208,7 +230,7 @@ const CreateExpensePage = () => {
             />
             <MultiSelectObj
               id="units"
-              options={unitsOptions}
+              options={unitOptionsMenu}
               onValueChange={setUnitsSelecetd}
               resetKey={Number(selectedPropertyId) || 0}
               label="Unit Name"
@@ -329,7 +351,7 @@ const CreateExpensePage = () => {
         </Button> */}
           <Button
             disabled={reqLoading}
-            type="submit"
+            //type="submit"
             size="sm_normal"
             className="create-button py-2 px-8"
           >

@@ -38,82 +38,82 @@ import CustomTable from "@/components/Table/table";
 const PreviewExpenses = () => {
   const router = useRouter();
   const { invoiceId } = useParams();
-  const [pageData, setPageData] = useState<InvoicePageData>(defaultInvoiceData);
-  const {
-    companyBankDetails,
-    error: bankError,
-    loading: bankLoading,
-  } = useCompanyBankDetails();
-  const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
-    `/invoice/${invoiceId}`
-  );
+//  const [pageData, setPageData] = useState<InvoicePageData>(defaultInvoiceData);
+  // const {
+  //   companyBankDetails,
+  //   error: bankError,
+  //   loading: bankLoading,
+  // } = useCompanyBankDetails();
+  // const { data, error, loading, isNetworkError } = useFetch<InvoiceResponse>(
+  //   `/invoice/${invoiceId}`
+  // );
 
-  const {
-    data: walletData,
-    error: walletError,
-    refetch: walletRefetch,
-  } = useFetch<WalletDataResponse>("/wallets/dashboard");
+  // const {
+  //   data: walletData,
+  //   error: walletError,
+  //   refetch: walletRefetch,
+  // } = useFetch<WalletDataResponse>("/wallets/dashboard");
 
-  useEffect(() => {
-    if (data) {
-      setPageData(transformInvoiceData(data.data));
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setPageData(transformInvoiceData(data.data));
+  //   }
+  // }, [data]);
 
-  const printRef = useRef<HTMLDivElement>(null);
+   const printRef = useRef<HTMLDivElement>(null);
 
-  const BANK_DETAILS = pageData.branchBankDetails;
+  // const BANK_DETAILS = pageData.branchBankDetails;
 
-  const CURRENCY = pageData.currency || "naira"; //TODO: change to real currency from endpount
-  const IS_PAID = pageData.status.toLowerCase() === "paid";
-  const UNIT_ID = pageData.unit_id;
+  // const CURRENCY = pageData.currency || "naira"; //TODO: change to real currency from endpount
+  // const IS_PAID = pageData.status.toLowerCase() === "paid";
+  // const UNIT_ID = pageData.unit_id;
 
-  const UnitKeyValData = {
-    "invoice id": pageData.invoice_id,
-    "property name": pageData.property_name,
-    "Client name": capitalizeWords(pageData.client_name),
-    date: pageData.invoice_date,
-    "account officer": pageData.account_officer,
-    "unit name": pageData.unit_name,
-    "invoice type": pageData.invoice_type,
-    status: pageData.status,
-  };
+  // const UnitKeyValData = {
+  //   "invoice id": pageData.invoice_id,
+  //   "property name": pageData.property_name,
+  //   "Client name": capitalizeWords(pageData.client_name),
+  //   date: pageData.invoice_date,
+  //   "account officer": pageData.account_officer,
+  //   "unit name": pageData.unit_name,
+  //   "invoice type": pageData.invoice_type,
+  //   status: pageData.status,
+  // };
 
-  const NoUnitKeyValData = {
-    "invoice id": pageData.invoice_id,
-    "property name": pageData.property_name,
-    "client name": capitalizeWords(pageData.client_name),
-    date: pageData.invoice_date,
-    status: pageData.status,
-    "Auto Generate": pageData.auto_generate,
-  };
+  // const NoUnitKeyValData = {
+  //   "invoice id": pageData.invoice_id,
+  //   "property name": pageData.property_name,
+  //   "client name": capitalizeWords(pageData.client_name),
+  //   date: pageData.invoice_date,
+  //   status: pageData.status,
+  //   "Auto Generate": pageData.auto_generate,
+  // };
 
-  const UnitRefObj = {
-    "invoice id": "",
-    "Client name": "",
-    "property name": "",
-    date: "",
-    "account officer": "",
-    "unit name": "",
-    "invoice type": "",
-    status: "",
-  };
+  // const UnitRefObj = {
+  //   "invoice id": "",
+  //   "Client name": "",
+  //   "property name": "",
+  //   date: "",
+  //   "account officer": "",
+  //   "unit name": "",
+  //   "invoice type": "",
+  //   status: "",
+  // };
 
-  const NoUnitRefObj = {
-    "invoice id": "",
-    "property name": "",
-    "client name": "",
-    "Auto Generate": "",
-    date: "",
-    status: "",
-  };
+  // const NoUnitRefObj = {
+  //   "invoice id": "",
+  //   "property name": "",
+  //   "client name": "",
+  //   "Auto Generate": "",
+  //   date: "",
+  //   status: "",
+  // };
 
-  const KEY_VALUE_DATA = UNIT_ID ? UnitKeyValData : NoUnitKeyValData;
-  const KEY_VALUE_REF_OBJ = UNIT_ID ? UnitRefObj : NoUnitRefObj;
+  // const KEY_VALUE_DATA = UNIT_ID ? UnitKeyValData : NoUnitKeyValData;
+  // const KEY_VALUE_REF_OBJ = UNIT_ID ? UnitRefObj : NoUnitRefObj;
 
-  if (loading) return <PageCircleLoader />;
-  if (error) return <ServerError error={error} />;
-  if (isNetworkError) return <NetworkError />;
+  // if (loading) return <PageCircleLoader />;
+  // if (error) return <ServerError error={error} />;
+  // if (isNetworkError) return <NetworkError />;
 
   return (
     <div className="custom-flex-col gap-10 pb-28">

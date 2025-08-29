@@ -23,6 +23,8 @@ import { useParams } from "next/navigation";
 import {
   addDisburse,
   DisburseApiResponse,
+  disbursementTableManageData,
+  disbursementTableManageFields,
   ManageDisbursementPageData,
   transformDisburseData,
   transformUnitOptions,
@@ -35,6 +37,11 @@ import { toast, Toaster } from "sonner";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import CustomTable from "@/components/Table/table";
+import {
+  disbursementTablePreviewData,
+  disbursementTablePreviewFields,
+} from "../preview-disbursement/data";
 
 const paymentModes = [
   "Bank Transfer",
@@ -47,8 +54,8 @@ const paymentModes = [
 const ManageDisbursement = () => {
   const { disbursementId } = useParams();
   const [unitsOptions, setUnitsOptions] = useState<any[]>([]);
-  const [reqLoading, setReqLoading] = useState(false)
-  const [unitId, setUnitId] = useState('')
+  const [reqLoading, setReqLoading] = useState(false);
+  const [unitId, setUnitId] = useState("");
   const [pageData, setPageData] = useState<ManageDisbursementPageData | null>(
     null
   );
@@ -57,9 +64,8 @@ const ManageDisbursement = () => {
     []
   );
 
-  const { data, error, loading, refetch, isNetworkError } = useFetch<DisburseApiResponse>(
-    `/disburses/${disbursementId}`
-  );
+  const { data, error, loading, refetch, isNetworkError } =
+    useFetch<DisburseApiResponse>(`/disburses/${disbursementId}`);
   useRefetchOnEvent("fetch-disburses", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -92,7 +98,7 @@ const ManageDisbursement = () => {
   const [paymentTitle, setPaymentTitle] = useState("");
   const [paymentAmount, setPaymentAmount] = useState("");
 
-  const handleAddPaymentClick = async() => {
+  const handleAddPaymentClick = async () => {
     if (!disbursementId) return toast.warning("Invalid Disbursement Id");
     if (paymentTitle && paymentAmount) {
       // Remove commas and parse the amount as a float
@@ -109,24 +115,23 @@ const ManageDisbursement = () => {
       const payload = {
         amount: parsedAmount,
         title: paymentTitle,
-      }
+      };
 
       // console.log("payload", payload)
       try {
-        setReqLoading(true)
-        const res = await addDisburse(payload, Number(disbursementId))
-        if(res){
-          toast.success("Disbursement added successfully")
-          window.dispatchEvent(new Event('fetch-disburses'));
+        setReqLoading(true);
+        const res = await addDisburse(payload, Number(disbursementId));
+        if (res) {
+          toast.success("Disbursement added successfully");
+          window.dispatchEvent(new Event("fetch-disburses"));
         }
       } catch (error) {
-        toast.error("Failed to add disbursement. Please try again!")
-      }finally{
-        setReqLoading(false)
+        toast.error("Failed to add disbursement. Please try again!");
+      } finally {
+        setReqLoading(false);
       }
     }
   };
-
 
   const handleDeletePayment = (index: number) => {
     setPayments(payments.filter((_, i) => i !== index));
@@ -171,19 +176,17 @@ const ManageDisbursement = () => {
 
   const handleUnitChange = (e: any) => {
     setPaymentTitle(e.target.value);
-    setUnitId(e.target.value)
-  }
+    setUnitId(e.target.value);
+  };
 
-
-  if (loading)
-    return (
-      <div className="custom-flex-col gap-2">
-        <CardsLoading length={5} />
-      </div>
-    );
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
-
+  // if (loading)
+  //   return (
+  //     <div className="custom-flex-col gap-2">
+  //       <CardsLoading length={5} />
+  //     </div>
+  //   );
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -193,26 +196,28 @@ const ManageDisbursement = () => {
         <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
           <KeyValueList
             data={{
-              "disbursement id": pageData?.date ?? "--- ---",
-              "landlord / landlady name": pageData?.landlord ?? "--- ---",
-              "property name": pageData?.property_name ?? "--- ---",
-              date: pageData?.date ?? "__,__,__",
+              "disbursement id": "638739383",
+              "investors / referrals": "Mr James",
+              "property name": "House Estate",
+              "account officer": "Ololade Dupe",
+              date: "28 June 2009",
               // "unit name": pageData?.unit_names ?? "--- ---",
-              "disbursement mode": pageData?.disbursement_mode ?? "--- ---",
+              "disbursement mode": "Bank Transfer",
             }}
             chunkSize={2}
             direction="column"
             referenceObject={{
               "disbursement id": "",
-              "landlord / landlady name": "",
+              "investors / referrals": "",
               "property name": "",
+              "account officer": "",
               date: "",
               // "unit name": "",
               "disbursement mode": "",
             }}
           />
         </div>
-        <AccountingTitleSection title="Details">
+        {/* <AccountingTitleSection title="Details">
           <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
             <TextArea
               id="transaction-description"
@@ -230,27 +235,36 @@ const ManageDisbursement = () => {
               defaultValue={pageData?.disbursement_mode ?? ""}
             />
           </div>
-        </AccountingTitleSection>
+        </AccountingTitleSection> */}
         <AccountingTitleSection title="Add Disbursement">
           <div className="p-6 custom-flex-col gap-4 bg-white dark:bg-darkText-primary rounded-lg">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-[18px] max-w-[968px]">
-              <Select
-                id="title"
-                label="Unit name"
-                required
-                placeholder="Select Options"
-                options={unitsOptions}
-                value={paymentTitle}
-                onChange={(v) => setPaymentTitle(v)}
-              />
               <Input
                 id="amount"
-                label="amount"
+                label="Add amount (₦)"
                 CURRENCY_SYMBOL={CURRENCY_SYMBOL}
                 // placeholder="300,000"
                 value={paymentAmount}
                 onChange={(v) => setPaymentAmount(v)}
               />
+              <Select
+                id="title"
+                label="Payment details"
+                required
+                placeholder="Select Options"
+                options={[
+                  {
+                    label: "OPtion 1",
+                    value: "option_1",
+                  },
+                ]}
+                //value={paymentTitle}
+                onChange={(v) => setPaymentTitle(v)}
+              />
+            </div>
+            <div className="flex gap-4 py-4">
+              <Button variant="light_red">Remove</Button>
+              <Button>Add</Button>
             </div>
             <div className="flex justify-end">
               <Button
@@ -259,14 +273,19 @@ const ManageDisbursement = () => {
                 disabled={reqLoading}
                 onClick={handleAddPaymentClick}
               >
-               {reqLoading ? "Please wait..." : "add"}
+                {reqLoading ? "Please wait..." : "update"}
               </Button>
             </div>
           </div>
         </AccountingTitleSection>
         {/* ADDED PAYMENT */}
-        <AccountingTitleSection title="Disbursement">
-          <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
+        <AccountingTitleSection title="Details">
+          <CustomTable
+            fields={disbursementTableManageFields}
+            // data={tableData}
+            data={disbursementTableManageData}
+          />
+          {/* <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
             <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
               {payments.map((payment, index) => (
                 <div key={index} className="flex flex-col gap-4">
@@ -309,7 +328,7 @@ const ManageDisbursement = () => {
                 }).format(Number(pageData?.total_amount))}
               </p>
             </div>
-          </div>
+          </div> */}
         </AccountingTitleSection>
       </div>
       <FixedFooter className="flex gap-4 items-center justify-between">

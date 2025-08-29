@@ -24,6 +24,11 @@ import ExportPageFooter from "@/components/reports/export-page-footer";
 import CardsLoading from "@/components/Loader/CardsLoading";
 import NetworkError from "@/components/Error/NetworkError";
 import ServerError from "@/components/Error/ServerError";
+import CustomTable from "@/components/Table/table";
+import {
+  disbursementTablePreviewData,
+  disbursementTablePreviewFields,
+} from "./data";
 
 const PreviewDisbursement = () => {
   const { disbursementId } = useParams();
@@ -37,9 +42,8 @@ const PreviewDisbursement = () => {
     []
   );
 
-  const { data, error, loading, refetch, isNetworkError } = useFetch<DisburseApiResponse>(
-    `/disburses/${disbursementId}`
-  );
+  const { data, error, loading, refetch, isNetworkError } =
+    useFetch<DisburseApiResponse>(`/disburses/${disbursementId}`);
   useRefetchOnEvent("fetch-disburses", () => refetch({ silent: true }));
 
   useEffect(() => {
@@ -48,22 +52,21 @@ const PreviewDisbursement = () => {
       setPageData(transformed);
       setPayments(
         transformed.disbursement.map((d) => ({
-          title: d.title || '--- ---',
+          title: d.title || "--- ---",
           amount: d.amount,
         }))
       );
     }
   }, [data]);
 
-  
-  if (loading)
-    return (
-      <div className="custom-flex-col gap-2">
-        <CardsLoading length={5} />
-      </div>
-    );
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  // if (loading)
+  //   return (
+  //     <div className="custom-flex-col gap-2">
+  //       <CardsLoading length={5} />
+  //     </div>
+  //   );
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -74,33 +77,45 @@ const PreviewDisbursement = () => {
           <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
               data={{
-                "disbursement id": pageData?.disbursementId ?? "--- ---",
-                "landlord / landlady name": pageData?.landlord ?? "--- ---",
-                "property name": pageData?.property_name ?? "--- ---",
-                date: pageData?.date ?? "__,__,__",
+                "disbursement id": "638739383",
+                "investors / referrals": "Mr James",
+                "property name": "House Estate",
+                "account officer": "Ololade Dupe",
+                date: "28 June 2009",
                 // "unit name": pageData?.unit_names ?? "--- ---",
-                "disbursement mode": pageData?.disbursement_mode ?? "--- ---",
+                "disbursement mode": "Bank Transfer",
               }}
               chunkSize={2}
               direction="column"
               referenceObject={{
                 "disbursement id": "",
-                "landlord / landlady name": "",
+                "investors / referrals": "",
                 "property name": "",
+                "account officer": "",
                 date: "",
                 // "unit name": "",
                 "disbursement mode": "",
               }}
             />
           </div>
-          <AccountingTitleSection title="Description">
-            <p className="text-sm text-text-secondary">
-              {pageData?.description ?? "--- ---"}
-            </p>
+          <AccountingTitleSection title="Details">
+            <CustomTable
+              //className={`${fullContent && "max-h-none"}`}
+              fields={disbursementTablePreviewFields}
+              // data={tableData}
+              data={disbursementTablePreviewData}
+              // tableHeadStyle={{ height: "76px" }}
+              // tableHeadCellSx={{ fontSize: "1rem" }}
+              // tableBodyCellSx={{
+              //   fontSize: "1rem",
+              //   paddingTop: "12px",
+              //   paddingBottom: "12px",
+              //}}
+            />
           </AccountingTitleSection>
 
           {/* ADDED PAYMENT */}
-          <AccountingTitleSection title="Disbursement">
+          {/* <AccountingTitleSection title="Disbursement">
             <div className="space-y-8 bg-white dark:bg-darkText-primary w-full p-6 rounded-lg">
               <div className="w-full max-w-[968px] grid sm:grid-cols-2 lg:grid-cols-3 gap-x-[34px] gap-y-6">
                 {payments.map((payment, index) => (
@@ -132,7 +147,7 @@ const PreviewDisbursement = () => {
                 </p>
               </div>
             </div>
-          </AccountingTitleSection>
+          </AccountingTitleSection> */}
         </div>
       </div>
       <ExportPageFooter printRef={exportRef} />

@@ -465,7 +465,7 @@ const CreateDisbursement = () => {
             Cancel
           </Button> */}
           <Button
-            type="submit"
+            //type="submit"
             className="create-button py-2 px-8"
             size="base_medium"
           >

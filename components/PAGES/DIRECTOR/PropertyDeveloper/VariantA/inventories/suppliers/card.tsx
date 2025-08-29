@@ -1,5 +1,7 @@
 import AutoResizingGrid from "@/components/AutoResizingGrid/AutoResizingGrid";
-import UserCard from "@/components/Management/landlord-and-tenant-card";
+import UserCard, {
+  getUserTagDisplay,
+} from "@/components/Management/landlord-and-tenant-card";
 import { UserCardProps } from "@/components/Management/landlord-and-tenant-card";
 import { useEffect, useState } from "react";
 import { getAllStates, getLocalGovernments } from "@/utils/states";
@@ -118,15 +120,112 @@ const mockUsers: UserCardProps[] = [
     is_active: true,
   },
 ];
+import { CheckCircle2, Wifi } from "lucide-react";
 
-export const UserCardList = () => {
+export const SupplierCard = ({
+  supplierData,
+}: {
+  supplierData: UserCardProps;
+}) => {
   return (
-    <AutoResizingGrid minWidth={240}>
-      {mockUsers.map((user) => (
-        <Link href={`/inventories/suppliers/${user.id}`} key={user.id}>
-          <UserCard {...user} />
-        </Link>
-      ))}
+    <div className="bg-white border border-gray-200 rounded-lg">
+      {/* Card Content */}
+      <div className="flex items-center justify-between p-4">
+        {/* Left section - Profile */}
+        <div className="flex items-center space-x-3">
+          {/* Profile Image */}
+          <div className="relative">
+            <Picture
+              src={supplierData.picture_url || empty}
+              alt={supplierData.name}
+              className="size-full object-cover rounded-full custom-secondary-bg"
+              width={60}
+              height={60}
+              status={supplierData.isOnline}
+            />
+          </div>
+
+          {/* Name and verification */}
+          <div className="flex items-center space-x-2">
+            <span className="font-medium text-gray-900 text-sm">
+              {supplierData.name}
+            </span>
+            {supplierData.badge_color && supplierData.user_tag !== "web" && (
+              <BadgeIcon color={supplierData.badge_color} />
+            )}
+
+            {supplierData.is_active === false && (
+              <div className="text-red-500 text-xs pl-2">
+                <FlagBadge size={18} />
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Middle section - Contact info */}
+        <div className="flex flex-col items-center space-y-1">
+          <span className="text-sm text-gray-600">{supplierData.email}</span>
+        </div>
+
+        <div className="flex flex-col items-center space-y-1">
+          <span className="text-sm text-gray-600">
+            {supplierData.phone_number}
+          </span>
+        </div>
+
+        {/* Tag section */}
+        {supplierData.user_tag === "mobile" ||
+        supplierData.user_tag === "web" ? (
+          <div className="flex gap-2 mb-2 items-center">
+            <UserTag type={supplierData.user_tag} />
+            {supplierData.note && (
+              <div className="flex items-center">
+                <NoteBlinkingIcon size={20} className="blink-color" />
+              </div>
+            )}
+            {supplierData.user_tag === "mobile" && supplierData?.is_flagged && (
+              <div className="flex text-red-500 items-center">
+                <FlagBadge size={20} />
+              </div>
+            )}
+          </div>
+        ) : (
+          <p className="text-xs text-brand-10 font-normal capitalize">
+            {getUserTagDisplay(supplierData.user_tag)}
+          </p>
+        )}
+
+        {/* Right section - Actions */}
+        <div className="flex items-center space-x-2">
+          <Button className="bg-brand-9 text-white px-4 py-2 rounded-md text-sm font-medium">
+            Manage
+          </Button>
+          <Button
+            disabled
+            className="bg-gray-100 !text-white hover:bg-gray-200 px-4 py-2 rounded-md text-sm font-medium"
+          >
+            Chat
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const UserCardList = ({ view }: { view: string }) => {
+  console.log({ view });
+
+  return (
+    <AutoResizingGrid minWidth={view === "list" ? 1000 : 350}>
+      {view === "grid"
+        ? mockUsers.map((user) => (
+            <Link href={`/inventories/suppliers/${user.id}`} key={user.id}>
+              <UserCard {...user} />
+            </Link>
+          ))
+        : mockUsers.map((user) => (
+            <SupplierCard supplierData={user} key={user.id} />
+          ))}
     </AutoResizingGrid>
   );
 };
@@ -145,6 +244,13 @@ import Avatars from "@/components/Avatars/avatars";
 import Image from "next/image";
 import BadgeIcon from "@/components/BadgeIcon/badge-icon";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
+import { empty } from "@/app/config";
+import {
+  FlagBadge,
+  NoteBlinkingIcon,
+} from "@/public/icons/dashboard-cards/icons";
+import Picture from "@/components/Picture/picture";
+import UserTag from "@/components/Tags/user-tag";
 
 // TypeScript interfaces
 interface InfoItem {

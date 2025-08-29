@@ -38,7 +38,7 @@ export const expenseTableFields = [
   // { id: "1", accessor: "picture", isImage: true, picSize: 40 },
   { id: "1", label: "S/N", accessor: "S/N" },
   { id: "2", label: "Date", accessor: "date" },
-  { id: "3", label: "Property Name", accessor: "name" },
+  { id: "3", label: "Client Name", accessor: "name" },
   {
     id: "4",
     label: "Description",
@@ -62,7 +62,7 @@ export const expenseTableData = () => {
     "Roof leakage",
     "Maintenance",
   ];
-  const getRandomValue = () => {
+ const getRandomValue = () => {
     return `₦${(Math.floor(Math.random() * 20000) + 102000).toLocaleString()}`;
   };
   return Array.from({ length: 15 }, (_, index) => ({

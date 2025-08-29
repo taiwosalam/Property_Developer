@@ -8,6 +8,7 @@ import type { DataItem } from "@/components/Table/types";
 import {
   DisburseApiResponse,
   DisbursementRequestParams,
+  disbursementTableData,
   disbursementTableFields,
   transformDisburseData,
   TransformedDisburseItem,
@@ -79,6 +80,12 @@ const Disbursement = () => {
         ).values(),
       ]
     : [];
+
+    const optionsMenu = [
+      {
+        
+      }
+    ]
 
   const [appliedFilters, setAppliedFilters] = useState<FilterResult>({
     options: [],
@@ -161,10 +168,10 @@ const Disbursement = () => {
     }
   }, [data, setGlobalStore]);
 
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  // if (loading)
+  //   return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-8">
@@ -211,8 +218,8 @@ const Disbursement = () => {
               : []),
           ]}
           // onSort={handleSort}
-          handleSearch={handleSearch}
-          appliedFilters={appliedFilters}
+          //handleSearch={handleSearch}
+          //appliedFilters={appliedFilters}
         />
         {tableData.length === 0 && !silentLoading ? (
           config.params.search || isFilterApplied() ? (
@@ -233,49 +240,43 @@ const Disbursement = () => {
             </section>
           )
         ) : (
-          <>
-            {silentLoading ? (
-              <TableLoading />
-            ) : (
-              <CustomTable
-                fields={disbursementTableFields}
-                data={tableData}
-                tableHeadStyle={{ height: "76px" }}
-                tableHeadCellSx={{ fontSize: "1rem" }}
-                tableBodyCellSx={{
-                  fontSize: "1rem",
-                  paddingTop: "12px",
-                  paddingBottom: "12px",
-                }}
-                onActionClick={(item, e) => {
-                  handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
-                }}
-              />
-            )}
-            <TableMenu
-              anchorEl={anchorEl}
-              open={Boolean(anchorEl)}
-              onClose={handleMenuClose}
-            >
-              <MenuItem onClick={handleMenuClose} disableRipple>
-                <Link
-                  href={`/accounting/disbursement/${selectedItemId}/manage-disbursement`}
-                  className="w-full text-left"
-                >
-                  Manage Disbursement
-                </Link>
-              </MenuItem>
-              <MenuItem onClick={handleMenuClose} disableRipple>
-                <Link
-                  href={`/accounting/disbursement/${selectedItemId}/preview-disbursement`}
-                  className="w-full text-left"
-                >
-                  Preview Disbursement
-                </Link>
-              </MenuItem>
-            </TableMenu>
-          </>
+          <CustomTable
+            fields={disbursementTableFields}
+            data={disbursementTableData}
+            tableHeadStyle={{ height: "76px" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "12px",
+              paddingBottom: "12px",
+            }}
+            onActionClick={(item, e) => {
+              handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+            }}
+          />
         )}
+        <TableMenu
+          anchorEl={anchorEl}
+          open={Boolean(anchorEl)}
+          onClose={handleMenuClose}
+        >
+          <MenuItem onClick={handleMenuClose} disableRipple>
+            <Link
+              href={`/accounting/disbursement/${selectedItemId}/manage-disbursement`}
+              className="w-full text-left"
+            >
+              Manage Disbursement
+            </Link>
+          </MenuItem>
+          <MenuItem onClick={handleMenuClose} disableRipple>
+            <Link
+              href={`/accounting/disbursement/${selectedItemId}/preview-disbursement`}
+              className="w-full text-left"
+            >
+              Preview Disbursement
+            </Link>
+          </MenuItem>
+        </TableMenu>
       </div>
     </div>
   );

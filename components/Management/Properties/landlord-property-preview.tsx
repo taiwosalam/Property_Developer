@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { LocationIcon, PlayIconButton } from '@/public/icons/icons';
 import UnitItem from './unit-item';
-import PropeertyDetailsSettingsCard from './property-details-settings-others-card';
+import PropeertyDetailsSettingsCard from './installment-property-details-settings-others-card';
 import BackButton from '@/components/BackButton/back-button';
 import ImageSlider from '@/components/ImageSlider/image-slider';
 
