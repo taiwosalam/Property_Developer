@@ -46,6 +46,7 @@ const AnnouncementPage = () => {
       search: "",
     } as InspectionRequestParams,
   });
+  
   const [appliedFilter, setAppliedFilters] = useState<FilterResult>({
     options: [],
     menuOptions: {},
