@@ -1,37 +1,39 @@
+import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
-export interface PropertyDetailsSettingsOthersCardProps {
-  isRental: boolean;
-  property_name: string;
-  landlord_name?: string;
-  category: string;
+export interface PropertyDetailsSettingsCardProps {
+  // Property Details
+  propertyTitle: string;
   state: string;
-  local_government: string;
-  account_officer?: string;
-  agency_fee?: number;
-  management_fee?: number;
-  caution_deposit?: string;
-  currency?: keyof typeof currencySymbols;
-  // fee_period: string;
-  group_chat?: "Yes" | "No";
-  who_to_charge_new_tenant?: string;
-  who_to_charge_renew_tenant?: string;
-  book_visitors?: "Yes" | "No";
-  request_call_back?: "Yes" | "No";
-  vehicle_records?: "Yes" | "No";
-  branch?: string;
-  total_units: number;
-  branch_manager?: string;
-  mobile_tenants?: number;
-  web_tenants?: number;
-  last_updated?: string;
-  available_units?: number;
-  owing_units?: number;
-  total_returns: number;
-  total_income: number;
-  landlord_info?: any;
-  landlord_id?: any;
+  localGovernment: string;
+  accountOfficer: string;
+  preferences: string;
+  staff: string;
+  manager: string;
+
+  // Property Settings
+  investorCapital: string;
+  returnPercentage: string;
+  returnDuration: string;
+
+  // Property Terms
+  cancellationPolicy: string;
+  otherRules: string;
+  cancellationTerms: string;
+  outdoorFacility: string;
+  extraServices: string;
+  extraPurchaseTerms: string;
+
+  // Additional Details
+  branch: string | number;
+  totalUnits: string | number;
+  lastUpdated: string;
+  availableUnits: string | number;
+  description: string;
+  status: InstallmentPropertyStatus;
 }
+
+export type InstallmentPropertyStatus = "available" | "pending payment" | "fully paid" | "owing" | "refunded";
 
 const DetailItem: React.FC<{ label: string; value?: string | number }> = ({
   label,
@@ -45,88 +47,83 @@ const DetailItem: React.FC<{ label: string; value?: string | number }> = ({
   </div>
 );
 
-const PropeertyDetailsSettingsCard: React.FC<
-  PropertyDetailsSettingsOthersCardProps
+const InstallmentPropertyDetailsSettingsCard: React.FC<
+  PropertyDetailsSettingsCardProps
 > = ({
-  isRental,
-  property_name,
-  landlord_name,
-  landlord_info,
-  category,
+  propertyTitle,
   state,
-  local_government,
-  account_officer,
-  agency_fee,
-  management_fee,
-  caution_deposit,
-  currency,
-  group_chat,
-  who_to_charge_new_tenant,
-  who_to_charge_renew_tenant,
-  book_visitors,
-  request_call_back,
-  vehicle_records,
+  localGovernment,
+  accountOfficer,
+  preferences,
+  staff,
+  manager,
+  investorCapital,
+  returnPercentage,
+  returnDuration,
+  cancellationPolicy,
+  otherRules,
+  cancellationTerms,
+  outdoorFacility,
+  extraServices,
+  extraPurchaseTerms,
   branch,
-  total_units,
-  branch_manager,
-  mobile_tenants,
-  web_tenants,
-  last_updated,
-  available_units,
-  owing_units,
-  total_returns,
-  total_income,
+  totalUnits,
+  lastUpdated,
+  availableUnits,
+  description,
 }) => {
-  const symbol =
-    isRental && currency ? currencySymbols[currency] : currencySymbols.naira;
-  // console.log(pro)
   return (
     <div className="bg-white dark:bg-darkText-primary p-6 lg:p-8 rounded-b-3xl space-y-8">
       <div className="space-y-4">
         {/* Property Details */}
         <div className="space-y-2">
-          <h3 className="text-brand-10 font-medium text-base">
-            {isRental ? "Property" : "Facility"} Details
+          <h3 className="text-brand-9 font-semibold text-base">
+            Property Details
           </h3>
-          <DetailItem
-            label={`${isRental ? "Property" : "Facility"} Title`}
-            value={property_name}
-          />
-          {isRental && <DetailItem label="Landlord" value={landlord_info.name} />}
-          <DetailItem label="Category" value={category} />
+          <DetailItem label="Property Title" value={propertyTitle} />
           <DetailItem label="State" value={state} />
-          <DetailItem label="Local Government" value={local_government} />
-          <DetailItem label="Account Officer" value={account_officer} />
+          <DetailItem label="Local Government" value={localGovernment} />
+          <DetailItem label="Account Officer" value={accountOfficer} />
+          <DetailItem label="Preferences" value={preferences} />
+          <DetailItem label="Staff" value={staff} />
+          <DetailItem label="Manager" value={manager} />
         </div>
 
         {/* Property Settings */}
         <div className="space-y-2">
-          <h3 className="text-brand-10 font-medium text-base">
-            {isRental ? "Property" : "Facility"} Settings
+          <h3 className="text-brand-9 font-semibold text-base">
+            Property Settings
           </h3>
-          <DetailItem
-            label={`${isRental ? "Agency" : "Management"} Fee`}
-            value={`${isRental ? agency_fee : management_fee}%`}
-          />
-          {/* <DetailItem label="Period" value={fee_period} /> */}
-          <DetailItem label="Group Chat" value={group_chat} />
-          {isRental && (
-            <>
-              <DetailItem label="Caution Deposit" value={caution_deposit} />
-              <DetailItem
-                label="Who to pay Agency Fee"
-                value={`New Rent: ${who_to_charge_new_tenant}, Renewal Rent: ${who_to_charge_renew_tenant}`}
-              />
-              <DetailItem label="Book Visitors" value={book_visitors} />
-              <DetailItem label="Request Call Back" value={request_call_back} />
-              <DetailItem label="Vehichle Records" value={vehicle_records} />
-            </>
-          )}
+          <DetailItem label="Investor Capital" value={investorCapital} />
+          <DetailItem label="Return Percentage" value={returnPercentage} />
+          <DetailItem label="Return Duration" value={returnDuration} />
+        </div>
+
+        {/* Property Terms */}
+        <div className="space-y-2">
+          <h3 className="text-brand-9 font-semibold text-base">
+            Property Terms
+          </h3>
+          <DetailItem label="Cancellation Policy" value={cancellationPolicy} />
+          <DetailItem label="Other Rules" value={otherRules} />
+          <DetailItem label="Cancellation Terms" value={cancellationTerms} />
+          <DetailItem label="Outdoor Facility" value={outdoorFacility} />
+          <DetailItem label="Extra Services" value={extraServices} />
+          <DetailItem label="Extra Purchase Terms" value={extraPurchaseTerms} />
+        </div>
+
+        {/* Property Description */}
+        <div className="space-y-2">
+          <h3 className="text-brand-9 font-semibold text-base">
+           Description
+          </h3>
+          <TruncatedText as="p" lines={3}>
+            {description}
+          </TruncatedText>
         </div>
       </div>
 
       {/* Additional Details */}
-
       <div className="text-sm grid grid-cols-2 gap-4">
         <div>
           <p className="text-label font-normal">Branch</p>
@@ -134,57 +131,19 @@ const PropeertyDetailsSettingsCard: React.FC<
         </div>
         <div>
           <p className="text-label font-normal">Total Units</p>
-          <p className="text-brand-9 font-bold">{total_units}</p>
-        </div>
-        <div>
-          <p className="text-label font-normal">Branch Manager</p>
-          <p className="text-brand-9 font-bold">{branch_manager}</p>
-        </div>
-        <div>
-          <p className="text-label font-normal">
-            Mobile {isRental ? "Tenants" : "Occupants"}
-          </p>
-          <p className="text-brand-9 font-bold">{mobile_tenants}</p>
-        </div>
-        <div>
-          <p className="text-label font-normal">
-            Web {isRental ? "Tenants" : "Occupants"}
-          </p>
-          <p className="text-brand-9 font-bold">{web_tenants}</p>
+          <p className="text-brand-9 font-bold">{totalUnits}</p>
         </div>
         <div>
           <p className="text-label font-normal">Last Updated</p>
-          <p className="text-brand-9 font-bold">{last_updated}</p>
+          <p className="text-brand-9 font-bold">{lastUpdated}</p>
         </div>
         <div>
-          <p className="text-label font-normal">
-          Available Units
-            {/* {isRental ? "Available Units" : "Owing Units"} */}
-          </p>
-          <p className="text-brand-9 font-bold">
-            {available_units}
-            {/* {isRental ? available_units : owing_units} */}
-          </p>
-        </div>
-        <div>
-          <p className="text-brand-9 text-xl font-bold">
-            {symbol}
-            {formatNumber(total_returns)}
-          </p>
-          <p className="text-[#606060] font-normal text-xs">
-            Total {isRental ? "Returns" : "Fees"}
-          </p>
-          <p className="text-text-disabled font-medium text-sm">
-            <span className="text-highlight">
-              {symbol}
-              {formatNumber(total_income)}
-            </span>{" "}
-            / Total Income
-          </p>
+          <p className="text-label font-normal">Available Units</p>
+          <p className="text-brand-9 font-bold">{availableUnits}</p>
         </div>
       </div>
     </div>
   );
 };
 
-export default PropeertyDetailsSettingsCard;
+export default InstallmentPropertyDetailsSettingsCard;

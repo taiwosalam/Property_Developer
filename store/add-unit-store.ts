@@ -140,20 +140,13 @@ export const useAddUnitStore = create<AddUnitStore>((set) => ({
 
   // PROPERTY DEVELOPER
   installmentUnits: [],
-  addInstallmentUnit: (unitData, duplicateCount = 0) => {
-    set((state) => {
-      const updatedUnits = [
+  addInstallmentUnit: (unitData) => {
+    set((state) => ({
+      installmentUnits: [
         ...state.installmentUnits,
         { ...unitData, notYetUploaded: true },
-      ];
-      const replicatedUnits = Array(duplicateCount).fill({
-        ...unitData,
-        id: "",
-        images: [],
-        notYetUploaded: true,
-      });
-      return { installmentUnits: [...updatedUnits, ...replicatedUnits] };
-    });
+      ],
+    }));
   },
   removeInstallmentUnit: (index) =>
     set((state) => ({

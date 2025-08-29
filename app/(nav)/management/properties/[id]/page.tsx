@@ -7,6 +7,7 @@ import { useRole } from "@/hooks/roleContext";
 import PageCircleLoader from "@/components/Loader/PageCircleLoader";
 import { AnimatePresence, motion } from "framer-motion";
 import { PropertyPreviewProps } from "@/components/Management/Properties/previews/property-preview";
+import { useSearchParams } from "next/navigation";
 
 // Dynamic imports for Property Developer PropertyPreview variants
 const PropertyDeveloperPropertyPreviewVariantA = dynamic(
@@ -43,6 +44,7 @@ const PropertyManagerPropertyPreviewVariantC = dynamic(
 );
 
 const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
+  const propertyType = useSearchParams().get("property_type");
   const { activeModule, designVariant } = useModule();
   const { role } = useRole();
 
@@ -94,7 +96,10 @@ const PropertyPreviewPage = ({ params }: { params: { id: string } }) => {
           exit={{ opacity: 0, x: -50 }}
           transition={{ duration: 0.3 }}
         >
-          <PropertyPreviewComponent id={params.id} />
+          <PropertyPreviewComponent
+            id={params.id}
+            propertyType={propertyType}
+          />
         </motion.div>
       </AnimatePresence>
     </Suspense>
