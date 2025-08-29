@@ -613,6 +613,7 @@ const Others = () => {
     useState<NotificationSettings>({
       management: true,
       rent: true,
+<<<<<<< HEAD
       tasks: true,
       calendar: true,
       announcements: true,
@@ -621,6 +622,16 @@ const Others = () => {
       settings: true,
       system: true,
       units: true,
+=======
+      tasks: false,
+      calendar: true,
+      announcements: false,
+      accounting: true,
+      listings: false,
+      settings: true,
+      system: true,
+      units: false,
+>>>>>>> 19d857c1 (integrate notification settings)
       community: true,
     });
 
