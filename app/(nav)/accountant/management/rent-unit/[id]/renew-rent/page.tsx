@@ -7,15 +7,7 @@ import dayjs, { Dayjs } from "dayjs";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
 import { useOccupantStore } from "@/hooks/occupant-store";
-<<<<<<< HEAD
-import {
-  getEstateSettingsData,
-  payDueRent,
-  startRent,
-} from "../start-rent/data";
-=======
 import { getEstateSettingsData, payDueRent, startRent } from "../start-rent/data";
->>>>>>> ea04af75 (fixes - pay due rent)
 import { addPartPayment, editRent, getEstateData } from "../edit-rent/data";
 import {
   formatFee,
@@ -275,12 +267,7 @@ const RenewRent = () => {
     try {
       setReqLoading(true);
       // const res = await startRent(payload);
-<<<<<<< HEAD
-      const action = HAS_PENALTY ? payDueRent : startRent;
-      const res = await action(payload);
-=======
       const res = await payDueRent(payload);
->>>>>>> ea04af75 (fixes - pay due rent)
       if (res) {
         toast.success(successMsg);
         router.push("/management/rent-unit");
