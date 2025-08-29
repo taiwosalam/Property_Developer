@@ -84,18 +84,42 @@ const PrintVatPage = () => {
               <CustomTable
                 className={`${fullContent && "max-h-none"}`}
                 fields={printVatTableFields}
-                data={tableData}
-                tableHeadStyle={{ height: "76px" }}
-                tableHeadCellSx={{ fontSize: "1rem" }}
-                tableBodyCellSx={{
-                  fontSize: "1rem",
-                  paddingTop: "16px",
-                  paddingBottom: "16px",
-                }}
+                data={printVatTableData}
+                // tableHeadStyle={{ height: "76px" }}
+                // tableHeadCellSx={{ fontSize: "1rem" }}
+                // tableBodyCellSx={{
+                //   fontSize: "1rem",
+                //   paddingTop: "16px",
+                //   paddingBottom: "16px",
+                // }}
               />
             </AccountingTitleSection>
           </div>
-          <Signature />
+
+          <div className="mt-5 shadow-sm">
+            <AccountingTitleSection title="Account Details">
+              {/* <div className="h-[2px] w-full max-w-[670px] bg-[#C0C2C8]" /> */}
+              <div className="rounded-lg mb-4 bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
+                <KeyValueList
+                  data={{
+                    "account number": "Olakunle Olasile",
+                    "account name": "2345678789",
+                    "bank name": "Zenith Bank",
+                  }}
+                  chunkSize={1}
+                  direction="column"
+                  referenceObject={{
+                    "account number": "",
+                    "account name": "",
+                    "bank name": "",
+                  }}
+                />
+              </div>
+            </AccountingTitleSection>
+          </div>
+          <div className="py-10">
+            <Signature />
+          </div>
         </div>
       </div>
       <ExportPageFooter printRef={printRef} setFullContent={setFullContent} />

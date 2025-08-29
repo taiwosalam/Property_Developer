@@ -594,7 +594,7 @@ const AccountingInvoicePage = () => {
             <AccountStatsCard
               className="!min-w-[320px] shrink-0"
               title="Total Pending Invoice"
-              balance={"100,0000"}
+              balance={"₦100,0000"}
               trendDirection={
                 mockInvoiceStatistics.percentage_change_paid < 0 ? "down" : "up"
               }

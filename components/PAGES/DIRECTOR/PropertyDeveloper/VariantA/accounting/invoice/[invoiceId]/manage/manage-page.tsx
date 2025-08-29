@@ -39,10 +39,7 @@ const ManageInvoice = () => {
   const router = useRouter();
   const [reqLoading, setReqLoading] = useState(false);
   const [pageData, setPageData] = useState<InvoicePageData>(defaultInvoiceData);
-  const { data, error, loading, isNetworkError, refetch } =
-    useFetch<InvoiceResponse>(`/invoice/${invoiceId}`);
-  // Listen for the refetch event
-  useRefetchOnEvent("refetchRentUnit", () => refetch({ silent: true }));
+
 
   // Helper function to safely format numbers
   const safeFormatNumber = (value: number | undefined | null): string => {
@@ -52,51 +49,51 @@ const ManageInvoice = () => {
     return formatNumber(value);
   };
 
-  useEffect(() => {
-    if (data) {
-      setPageData(transformInvoiceData(data.data));
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setPageData(transformInvoiceData(data.data));
+  //   }
+  // }, [data]);
 
-  const IS_PAID = pageData.status.toLowerCase() === "paid";
-  const IS_PENDING = pageData.status.toLowerCase() === "pending";
-  const UNIT_ID = pageData.unit_id;
+  // const IS_PAID = pageData.status.toLowerCase() === "paid";
+  // const IS_PENDING = pageData.status.toLowerCase() === "pending";
+  // const UNIT_ID = pageData.unit_id;
 
-  const UnitKeyValData = {
-    "invoice id": pageData.invoice_id,
-    "property name": pageData.property_name,
-    "unit name": pageData.unit_name,
-    date: pageData.invoice_date,
-    status: pageData.status,
-    "unit id": pageData.unit_id,
-  };
+  // const UnitKeyValData = {
+  //   "invoice id": pageData.invoice_id,
+  //   "property name": pageData.property_name,
+  //   "unit name": pageData.unit_name,
+  //   date: pageData.invoice_date,
+  //   status: pageData.status,
+  //   "unit id": pageData.unit_id,
+  // };
 
-  const NoUnitKeyValData = {
-    "invoice id": pageData.invoice_id,
-    "property name": pageData.property_name,
-    "client name": pageData.client_name,
-    date: pageData.invoice_date,
-    status: pageData.status,
-    "Auto Generate": pageData.auto_generate,
-  };
+  // const NoUnitKeyValData = {
+  //   "invoice id": pageData.invoice_id,
+  //   "property name": pageData.property_name,
+  //   "client name": pageData.client_name,
+  //   date: pageData.invoice_date,
+  //   status: pageData.status,
+  //   "Auto Generate": pageData.auto_generate,
+  // };
 
-  const UnitRefObj = {
-    "invoice id": "",
-    "unit name": "",
-    "property name": "",
-    date: "",
-    status: "",
-    "unit id": "",
-  };
+  // const UnitRefObj = {
+  //   "invoice id": "",
+  //   "unit name": "",
+  //   "property name": "",
+  //   date: "",
+  //   status: "",
+  //   "unit id": "",
+  // };
 
-  const NoUnitRefObj = {
-    "invoice id": "",
-    "property name": "",
-    "client name": "",
-    "Auto Generate": "",
-    date: "",
-    status: "",
-  };
+  // const NoUnitRefObj = {
+  //   "invoice id": "",
+  //   "property name": "",
+  //   "client name": "",
+  //   "Auto Generate": "",
+  //   date: "",
+  //   status: "",
+  // };
 
   const handlePaidClick = async () => {
     const INVOICE_ID = Number(invoiceId);
@@ -116,12 +113,8 @@ const ManageInvoice = () => {
     }
   };
 
-  if (loading) return <PageCircleLoader />;
-  if (error) return <ServerError error={error} />;
-  if (isNetworkError) return <NetworkError />;
-
-  const KEY_VALUE_DATA = UNIT_ID ? UnitKeyValData : NoUnitKeyValData;
-  const KEY_VALUE_REF_OBJ = UNIT_ID ? UnitRefObj : NoUnitRefObj;
+  // const KEY_VALUE_DATA = UNIT_ID ? UnitKeyValData : NoUnitKeyValData;
+  // const KEY_VALUE_REF_OBJ = UNIT_ID ? UnitRefObj : NoUnitRefObj;
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
       <div className="custom-flex-col gap-[18px]">

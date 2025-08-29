@@ -141,9 +141,7 @@ const PreviewExpenses = () => {
     0
   );
 
-  if (loading) return <PageCircleLoader />;
-  if (error) return <ServerError error={error} />;
-  if (isNetworkError) return <NetworkError />;
+
 
   return (
     <div className="custom-flex-col gap-10 pb-28">

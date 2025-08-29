@@ -19,7 +19,7 @@ export const accountingVatOptionsWithDropdown = [
 
 export const vatTableFields: Field[] = [
   { id: "1", accessor: "picture", isImage: true, picSize: 40 },
-  { id: "2", label: "Name", accessor: "name" },
+  { id: "2", label: "Client Name", accessor: "name" },
   { id: "3", label: "VAT ID", accessor: "vat_id" },
   {
     id: "4",
@@ -32,7 +32,7 @@ export const vatTableFields: Field[] = [
       maxWidth: "350px",
     },
   },
-  { id: "5", label: "VAT Amount", accessor: "total_vat" },
+  { id: "5", label: "Total VAT", accessor: "total_vat" },
   { id: "6", label: "Date", accessor: "date" },
   { id: "7", accessor: "action" },
 ];

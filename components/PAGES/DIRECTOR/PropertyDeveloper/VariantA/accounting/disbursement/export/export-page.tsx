@@ -46,10 +46,10 @@ const ExportDisbursement = () => {
     }
   }, [data]);
 
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  // if (loading)
+  //   return <CustomLoader layout="page" pageTitle="Disbursement" view="table" />;
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -59,11 +59,19 @@ const ExportDisbursement = () => {
           <ExportPageHeader />
           <div className="rounded-lg bg-white dark:bg-darkText-primary p-8 flex gap-6 lg:gap-0 flex-col lg:flex-row">
             <KeyValueList
-              data={{}}
-              chunkSize={1}
+              data={{
+                "export id": "3789093",
+                branch: "Bodija Branch",
+                "branch manager": "Ajadi Kola",
+                "start date": "23 January 2009",
+                "end date": "12 June 2010",
+              }}
+              chunkSize={2}
               direction="column"
               referenceObject={{
-                "summary id": "",
+                "export id": "",
+                branch: "",
+                "branch manager": "",
                 "start date": "",
                 "end date": "",
               }}
@@ -75,16 +83,16 @@ const ExportDisbursement = () => {
             </h1>
             <CustomTable
               className={`${fullContent && "max-h-none"}`}
-              fields={exportTableFields}
+              fields={disbursementTableFields}
               // data={tableData}
-              data={filteredAccountingDisburesments || []}
-              tableHeadStyle={{ height: "76px" }}
-              tableHeadCellSx={{ fontSize: "1rem" }}
-              tableBodyCellSx={{
-                fontSize: "1rem",
-                paddingTop: "12px",
-                paddingBottom: "12px",
-              }}
+              data={disbursementTableData}
+              // tableHeadStyle={{ height: "76px" }}
+              // tableHeadCellSx={{ fontSize: "1rem" }}
+              // tableBodyCellSx={{
+              //   fontSize: "1rem",
+              //   paddingTop: "12px",
+              //   paddingBottom: "12px",
+              //}}
             />
             <Signature />
           </div>

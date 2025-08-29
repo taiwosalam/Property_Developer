@@ -54,6 +54,8 @@ import {
 import { useGlobalStore } from "@/store/general-store";
 import ServerError from "@/components/Error/ServerError";
 import useStaffRoles from "@/hooks/getStaffs";
+import { invoiceTableData, invoiceTableFields } from "../invoice/data";
+import Pagination from "@/components/Pagination/pagination";
 
 const AccountingExpensesPage = () => {
   const router = useRouter();
@@ -171,6 +173,17 @@ const AccountingExpensesPage = () => {
 
   const accountOfficers = getAccountOfficers();
 
+  const clientOptions = [
+    {
+      label: "Client 1",
+      value: "client_1",
+    },
+    {
+      label: "Client 2",
+      value: "client_2",
+    },
+  ];
+
   const accountOfficersOptions = Array.isArray(accountOfficers)
     ? [
         ...new Map(
@@ -271,11 +284,6 @@ const AccountingExpensesPage = () => {
     }
   }, [timeRange, selectedDateRange]);
 
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
-
   return (
     <section className="space-y-8 mt-4">
       <div className="space-y-4">
@@ -353,19 +361,19 @@ const AccountingExpensesPage = () => {
                 ...(accountOfficersOptions.length > 0
                   ? [
                       {
-                        label: "Account Manager",
-                        value: accountOfficersOptions,
+                        label: "Client",
+                        value: clientOptions,
                       },
                     ]
                   : []),
-                ...(propertyOptions.length > 0
-                  ? [
-                      {
-                        label: "Property",
-                        value: propertyOptions,
-                      },
-                    ]
-                  : []),
+                // ...(propertyOptions.length > 0
+                //   ? [
+                //       {
+                //         label: "Property",
+                //         value: propertyOptions,
+                //       },
+                //     ]
+                //   : []),
               ]}
               handleSearch={handleSearch}
               appliedFilters={appliedFilters}
@@ -375,11 +383,9 @@ const AccountingExpensesPage = () => {
             <AccountStatsCard
               className="!min-w-[320px] shrink-0"
               title="Total Expenses"
-              balance={Number(stats.total_amount)}
+              balance={"500,000"}
               variant="redOutgoing"
-              trendDirection={
-                stats.percentage_change_amount < 0 ? "down" : "up"
-              }
+              trendDirection={20 < 0 ? "down" : "up"}
               trendColor={stats.percentage_change_amount < 0 ? "red" : "green"}
               percentage={stats.percentage_change_amount}
               timeRangeLabel={getTimeRangeLabel()}
@@ -387,11 +393,9 @@ const AccountingExpensesPage = () => {
             <AccountStatsCard
               className="!min-w-[320px] shrink-0"
               title="Deduction"
-              balance={Number(stats.total_deduct)}
+              balance={"200,000"}
               variant="blueIncoming"
-              trendDirection={
-                stats.percentage_change_deduct < 0 ? "down" : "up"
-              }
+              trendDirection={20 < 0 ? "down" : "up"}
               trendColor={stats.percentage_change_deduct < 0 ? "red" : "green"}
               percentage={stats.percentage_change_deduct}
               timeRangeLabel={getTimeRangeLabel()}
@@ -399,20 +403,18 @@ const AccountingExpensesPage = () => {
             <AccountStatsCard
               className="!min-w-[320px] shrink-0"
               title="Balance"
-              balance={Number(stats.total_balance)}
+              balance={"320,000"}
               variant="yellowCard"
-              trendDirection={
-                stats.percentage_change_balance < 0 ? "down" : "up"
-              }
-              trendColor={stats.percentage_change_balance < 0 ? "red" : "green"}
-              percentage={stats.percentage_change_balance}
+              trendDirection={20 > 0 ? "down" : "up"}
+              trendColor={20 < 0 ? "red" : "green"}
+              percentage={20}
               timeRangeLabel={getTimeRangeLabel()}
             />
           </div>
         </div>
       </div>
       {/* Table and Menu */}
-      {transformedTableData.length === 0 && !silentLoading ? (
+      {invoiceTableData.length === 0 ? (
         config.params.search || isFilterApplied() ? (
           <SearchError />
         ) : (
@@ -437,7 +439,7 @@ const AccountingExpensesPage = () => {
         )
       ) : (
         <>
-          {silentLoading ? (
+          {/* {silentLoading ? (
             <TableLoading />
           ) : transformedTableData.length === 0 ? (
             <section>
@@ -453,22 +455,23 @@ const AccountingExpensesPage = () => {
                 }
               />
             </section>
-          ) : (
-            <CustomTable
-              fields={expenseTableFields}
-              data={transformedTableData}
-              tableHeadStyle={{ height: "76px" }}
-              tableHeadCellSx={{ fontSize: "1rem" }}
-              tableBodyCellSx={{
-                fontSize: "1rem",
-                paddingTop: "12px",
-                paddingBottom: "12px",
-              }}
-              onActionClick={(item, e) => {
-                handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
-              }}
-            />
-          )}
+          ) : ( */}
+          <CustomTable
+            //className={`${fullContent && "max-h-none"}`}
+            fields={expenseTableFields}
+            //data={transformedTableData}
+            data={expenseTableData()}
+            onActionClick={(item, e) => {
+              handleMenuOpen(item, e as React.MouseEvent<HTMLElement>);
+            }}
+            tableHeadStyle={{ height: "76px" }}
+            tableHeadCellSx={{ fontSize: "1rem" }}
+            tableBodyCellSx={{
+              fontSize: "1rem",
+              paddingTop: "12px",
+              paddingBottom: "12px",
+            }}
+          />
           <TableMenu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
@@ -493,6 +496,13 @@ const AccountingExpensesPage = () => {
           </TableMenu>
         </>
       )}
+
+      <Pagination
+        className="!pb-3"
+        totalPages={10}
+        currentPage={1}
+        onPageChange={() => {}}
+      />
     </section>
   );
 };

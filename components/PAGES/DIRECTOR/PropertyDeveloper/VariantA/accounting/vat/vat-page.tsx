@@ -25,13 +25,13 @@ import AccountStatsCard from "@/components/Accounting/account-stats-card";
 import {
   accountingVatOptionsWithDropdown,
   vatTableFields,
-  vatTableData,
   VATPageState,
   initialVATPageState,
   VATFilterParams,
   VATAPIResponse,
   transformVATAPIResponse,
   getOtherCurrencyFromVats,
+  vatTableData,
 } from "./data";
 import { useRouter } from "next/navigation";
 import CustomTable from "@/components/Table/table";
@@ -55,6 +55,7 @@ import { getOtherCurrency } from "../invoice/data";
 import TableMenu from "@/components/Table/table-menu";
 import { MenuItem } from "@mui/material";
 import Link from "next/link";
+import Pagination from "@/components/Pagination/pagination";
 
 const Vat = () => {
   const router = useRouter();
@@ -309,10 +310,10 @@ const Vat = () => {
     setGlobalStore("vatTimeRangeLabel", timeRangeLabel);
   }, [getTimeRangeLabel, setGlobalStore]);
 
-  if (loading)
-    return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  // if (loading)
+  //   return <CustomLoader pageTitle="V.A.T" view="table" layout="page" />;
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10">
@@ -362,7 +363,7 @@ const Vat = () => {
               <SearchInput
                 placeholder="Search for Vat"
                 className="max-w-[255px]"
-                onSearch={handleSearch}
+                onSearch={() => {}}
               />
               <Modal>
                 <ModalTrigger asChild>
@@ -388,7 +389,7 @@ const Vat = () => {
                           ]
                         : []),
                     ]}
-                    handleFilterApply={handleFilterApply}
+                    handleFilterApply={() => {}}
                     isDateTrue
                     appliedFilters={appliedFilters}
                   />
@@ -407,19 +408,35 @@ const Vat = () => {
           <div className="account-card-container">
             <AccountStatsCard
               className="!min-w-[320px] shrink-0"
-              title="Total Vat Paid"
-              balance={total_vat_created}
-              percentage={percentage_change_total}
+              title="Total VAT Created"
+              balance={"500,000"}
+              variant="redOutgoing"
+              trendDirection={20 < 0 ? "down" : "up"}
+              trendColor={10 < 0 ? "red" : "green"}
+              percentage={20}
+            />
+            <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
+              title="Total Paid VAT"
+              balance={"200,000"}
               variant="blueIncoming"
-              otherCurrency={otherCurrency}
-              timeRangeLabel={getTimeRangeLabel()}
-              trendDirection={percentage_change_total < 0 ? "down" : "up"}
-              trendColor={percentage_change_total < 0 ? "red" : "green"}
+              trendDirection={20 < 0 ? "down" : "up"}
+              trendColor={3 < 0 ? "red" : "green"}
+              percentage={10}
+            />
+            <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
+              title="Total Pending VAT"
+              balance={"320,000"}
+              variant="yellowCard"
+              trendDirection={20 > 0 ? "down" : "up"}
+              trendColor={20 < 0 ? "red" : "green"}
+              percentage={20}
             />
           </div>
         </div>
       </div>
-      {vats.length === 0 && !silentLoading ? (
+      {vats.length === 0 ? (
         config.params.search || isFilterApplied() ? (
           <SearchError />
         ) : (
@@ -442,13 +459,11 @@ const Vat = () => {
             }
           />
         )
-      ) : silentLoading ? (
-        <TableLoading />
       ) : (
         <>
           <CustomTable
             fields={vatTableFields}
-            data={transformedTableData}
+            data={vatTableData}
             tableHeadStyle={{ height: "76px" }}
             tableHeadCellSx={{ fontSize: "1rem" }}
             tableBodyCellSx={{
@@ -477,6 +492,13 @@ const Vat = () => {
           </TableMenu>
         </>
       )}
+
+      <Pagination
+        className="!pb-3 "
+        totalPages={10}
+        currentPage={1}
+        onPageChange={() => {}}
+      />
     </div>
   );
 };

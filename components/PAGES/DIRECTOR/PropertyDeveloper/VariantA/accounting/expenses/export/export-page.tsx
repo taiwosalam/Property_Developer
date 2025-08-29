@@ -67,10 +67,10 @@ const Exportexpense = () => {
     balance: item.balance ? item.balance : "--- ---",
   }));
 
-  if (loading)
-    return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
-  if (isNetworkError) return <NetworkError />;
-  if (error) return <ServerError error={error} />;
+  // if (loading)
+  //   return <CustomLoader layout="page" pageTitle="Expenses" view="table" />;
+  // if (isNetworkError) return <NetworkError />;
+  // if (error) return <ServerError error={error} />;
 
   return (
     <div className="custom-flex-col gap-10 pb-[100px]">
@@ -79,47 +79,69 @@ const Exportexpense = () => {
         <div className="custom-flex-col gap-[18px]">
           <ExportPageHeader />
         </div>
+        <div
+          style={{ boxShadow: "4px 4px 20px 2px rgba(0, 0, 0, 0.02)" }}
+          className="custom-flex-col gap-[10px] p-6 rounded-lg overflow-hidden bg-white dark:bg-darkText-primary mt-6"
+        >
+          <div className="flex gap-4 lg:gap-0 flex-col lg:flex-row">
+            <KeyValueList
+              data={{
+                "export id": "6736878",
+                branch: "Bodija Branch",
+                "branch manger": "Ajadi Kola",
+                "start date": "26 July 2000",
+                "end date": "12 July 1990",
+              }}
+              direction={"column"}
+              chunkSize={2}
+              referenceObject={{
+                "export id": "",
+                branch: "",
+                "branch manger": "",
+                "start date": "",
+                "end date": "",
+              }}
+            />
+          </div>
+        </div>
         <div className="custom-flex-col gap-6">
           <h1 className="text-black dark:text-white text-2xl font-medium text-center">
             Expenses Summary
           </h1>
           <AutoResizingGrid gap={30} minWidth={300}>
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Total Expenses"
-              balance={Number(stats.total_amount)}
+              balance={"500,000"}
               variant="redOutgoing"
-              trendDirection={
-                stats.percentage_change_amount < 0 ? "down" : "up"
-              }
+              trendDirection={20 < 0 ? "down" : "up"}
               trendColor={stats.percentage_change_amount < 0 ? "red" : "green"}
               percentage={stats.percentage_change_amount}
             />
             <AccountStatsCard
-              title="Part Payment"
-              balance={Number(stats.total_deduct)}
+              className="!min-w-[320px] shrink-0"
+              title="Deduction"
+              balance={"200,000"}
               variant="blueIncoming"
-              trendDirection={
-                stats.percentage_change_deduct < 0 ? "down" : "up"
-              }
+              trendDirection={20 < 0 ? "down" : "up"}
               trendColor={stats.percentage_change_deduct < 0 ? "red" : "green"}
               percentage={stats.percentage_change_deduct}
             />
             <AccountStatsCard
+              className="!min-w-[320px] shrink-0"
               title="Balance"
-              balance={Number(stats.total_balance)}
+              balance={"320,000"}
               variant="yellowCard"
-              trendDirection={
-                stats.percentage_change_balance < 0 ? "down" : "up"
-              }
-              trendColor={stats.percentage_change_balance < 0 ? "red" : "green"}
-              percentage={stats.percentage_change_balance}
+              trendDirection={20 > 0 ? "down" : "up"}
+              trendColor={20 < 0 ? "red" : "green"}
+              percentage={20}
             />
           </AutoResizingGrid>
           <CustomTable
             className={`${fullContent && "max-h-none"}`}
-            fields={exportTableFields}
+            fields={expenseTableFields}
             // data={transformedTableData}
-            data={filteredAccountingExpenses || []}
+            data={expenseTableData()}
             tableHeadStyle={{ height: "76px" }}
             tableHeadCellSx={{ fontSize: "1rem" }}
             tableBodyCellSx={{
