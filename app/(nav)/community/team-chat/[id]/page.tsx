@@ -1,11 +1,22 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useMemo,
+  useCallback,
+} from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import useFetch from "@/hooks/useFetch";
 import useRefetchOnEvent from "@/hooks/useRefetchOnEvent";
-import { Modal, ModalContent, ModalTrigger, useModal } from "@/components/Modal/modal";
+import {
+  Modal,
+  ModalContent,
+  ModalTrigger,
+  useModal,
+} from "@/components/Modal/modal";
 import Picture from "@/components/Picture/picture";
 import Messages from "@/components/Message/messages";
 import { TeamChatGroupDetailsModal } from "../GroupDetailsModal";
@@ -17,6 +28,7 @@ import { IChatDetailsPage, transformTeamDetails } from "./data";
 import {
   transformMessagesFromAPI,
   groupMessagesByDay,
+  NormalizedMessage,
 } from "@/app/(nav)/(messages-reviews)/messages/data";
 import Pusher from "pusher-js";
 import { GroupChatDetailsResponse } from "./types";
@@ -26,6 +38,11 @@ import { useTeamChat } from "@/contexts/teamChatContext";
 import AddMembers from "../AddMembers";
 import MemberComponent from "../Member";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
+import {
+  useChatMessagesQuery,
+  useEchoMessages,
+} from "@/app/(nav)/(messages-reviews)/messages/hooks";
+import { saveTeamData, useTeamDetailsStore } from "@/store/teamdetailsstore";
 
 const Chat = () => {
   const router = useRouter();
@@ -33,10 +50,10 @@ const Chat = () => {
   const user_id = useAuthStore((state) => state.user_id);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const rhizome = useRef<string | null>(null);
-  const [pageData, setPageData] = useState<null | IChatDetailsPage>(null);
   const [groupedConversations, setGroupedConversations] = useState<any[]>([]);
   const { detailsStep, setDetailsStep } = useTeamChat();
-
+  const [localMessages, setLocalMessages] = useState<NormalizedMessage[]>([]);
+  const teamDetails = useTeamDetailsStore((s) => s.teamDetails);
 
   // Reset detailsStep when modal closes
   useEffect(() => {
@@ -44,71 +61,66 @@ const Chat = () => {
       setDetailsStep("detail");
     }
   }, [isOpen, setDetailsStep]);
+  const pageData = teamDetails;
+  // const {
+  //   data: apiData,
+  //   loading,
+  //   error,
+  //   refetch,
+  // } = useFetch<GroupChatDetailsResponse>(`/group-chats/${id}`);
 
   const {
-    data: apiData,
-    loading,
+    messages: { api, normalizedMessages: apiData },
+    isPending,
+    isLoading: loading,
     error,
     refetch,
-  } = useFetch<GroupChatDetailsResponse>(`/group-chats/${id}`);
+  } = useChatMessagesQuery(id, true);
 
-  // Pusher setup for real-time messages
   useEffect(() => {
-    const pusher = new Pusher(`${process.env.NEXT_PUBLIC_PUSHER_APP_KEY}`, {
-      cluster: `${process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER}`,
-    });
-    const channel = pusher.subscribe(`presence-group-chat.${id}`);
-    // channel.bind("new-message", (data: MessageChat) => {
-    //   setGroupedConversations((prev) => {
-    //     const normalizedMessage = transformMessagesFromAPI(
-    //       {
-    //         group_chat: { messages: [data] },
-    //         unread_count: 0,
-    //         pusher: null,
-    //       },
-    //       true
-    //     )[0];
-    //     const newConversations = groupMessagesByDay([
-    //       ...prev.flatMap((g) => g.messages),
-    //       normalizedMessage,
-    //     ]);
-    //     return newConversations;
-    //   });
-    // });
-    return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-      pusher.disconnect();
-    };
-  }, [id]);
+    if (api) {
+      saveTeamData(api);
+    }
+  }, [api]);
+
+  const groupedMessages = useMemo(
+    () => groupMessagesByDay(localMessages),
+    [localMessages]
+  );
+
+  // Echo handlers
+  const handleNewMessage = useCallback((message: NormalizedMessage) => {
+    setLocalMessages((prev) => [...prev, message]);
+  }, []);
+
+  const handleMessagesRead = useCallback((messageIds: number[]) => {
+    setLocalMessages((prev) =>
+      prev.map((msg) =>
+        messageIds.includes(msg.id)
+          ? { ...msg, seen: true, is_read: true }
+          : msg
+      )
+    );
+  }, []);
+  // bad code pl
+  useEchoMessages(id, handleNewMessage, handleMessagesRead, true, true);
 
   // Fetch and transform group chat details
   useEffect(() => {
-    if (apiData && apiData.group_chat) {
-      console.log("apiData", apiData);
-      const transDetailsData = transformTeamDetails(apiData);
-      setPageData(transDetailsData);
-      const normalizedMessages = transformMessagesFromAPI(apiData, true);
+    console.log("logging api data from the efefct", { apiData });
+    if (apiData) {
+      setLocalMessages(apiData);
+      const normalizedMessages = apiData;
       setGroupedConversations(groupMessagesByDay(normalizedMessages));
       rhizome.current = id;
     }
   }, [apiData, id]);
 
-  // Poll for new messages every 10 seconds
   useEffect(() => {
-    const interval = setInterval(() => {
-      refetch({ silent: true });
-    }, 10000);
-    return () => clearInterval(interval);
-  }, [refetch]);
+    refetch();
+  }, [id]);
 
-  // Refetch on custom event
-  useRefetchOnEvent("refetch_team_message", () => {
-    refetch({ silent: true });
-  });
-
-  // UI Guards
-  if (loading) {
+  if (groupedMessages.length < 1 && loading) {
     return <ChatSkeleton />;
   }
 
@@ -159,7 +171,7 @@ const Chat = () => {
                 style={{
                   height: "70vh",
                   position: "relative",
-                  width: detailsStep !== "detail" ? "35%" : undefined
+                  width: detailsStep !== "detail" ? "35%" : undefined,
                 }}
                 back={
                   detailsStep !== "detail"
@@ -184,8 +196,8 @@ const Chat = () => {
 
       {/* Messages */}
       <div className="py-5 px-6 flex-1 overflow-auto custom-round-scrollbar bg-white dark:bg-black custom-flex-col gap-8">
-        {groupedConversations.length > 0 ? (
-          groupedConversations.map((group, index) => (
+        {groupedMessages.length > 0 ? (
+          groupedMessages.map((group, index) => (
             <Messages
               key={index}
               day={group.day}

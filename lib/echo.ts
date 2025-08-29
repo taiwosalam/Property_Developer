@@ -1,111 +1,3 @@
-// // import { initializeEcho } from '@/lib/echo';
-// import Echo from 'laravel-echo';
-// import Pusher from 'pusher-js';
-// import { getLocalStorage } from '@/utils/local-storage';
-// import { configureEcho } from "@laravel/echo-react";
-
-// // // Explicitly type echoInstance with the 'pusher' broadcaster
-// // let echoInstance: Echo<'reverb'> | null = null;
-
-// // export const initializeEcho = () => {
-// //   if (typeof window === 'undefined' || echoInstance) {
-// //     return echoInstance;
-// //   }
-
-// //   try {
-// //     const pusherKey = process.env.NEXT_PUBLIC_PUSHER_APP_KEY;
-// //     const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_APP_CLUSTER;
-// //     const pusherHost = process.env.NEXT_PUBLIC_PUSHER_HOST || `ws-${pusherCluster}.pusher.com`;
-// //     const pusherPort = process.env.NEXT_PUBLIC_PUSHER_PORT || 80;
-
-// //     if (!pusherKey || !pusherCluster) {
-// //       throw new Error('Pusher configuration missing: key or cluster not defined');
-// //     }
-
-// //     const authToken = getLocalStorage('authToken');
-
-// //     console.log('Initializing Echo with config:', {
-// //       key: pusherKey,
-// //       cluster: pusherCluster,
-// //       host: pusherHost,
-// //       port: pusherPort,
-// //     });
-
-// //     echoInstance = new Echo<'reverb'>({
-// //       broadcaster: 'reverb',
-// //       key: pusherKey,
-// //       cluster: pusherCluster,
-// //       wsHost: pusherHost,
-// //       wsPort: pusherPort ? Number(pusherPort) : 80,
-// //       wssPort: pusherPort ? Number(pusherPort) : 443,
-// //       forceTLS: true,
-// //       enabledTransports: ['ws', 'wss'],
-// //       authEndpoint: 'https://be1.ourproperty.ng/broadcasting/auth',
-// //       auth: {
-// //         headers: {
-// //           'X-XSRF-TOKEN': getXsrfToken(),
-// //           Authorization: authToken ? `Bearer ${authToken}` : '',
-// //           Accept: 'application/json',
-// //         },
-// //       },
-// //     });
-
-// //     // Log connection events for debugging
-// //     echoInstance.connector.pusher.connection.bind('connected', () => {
-// //       console.log('✅ Pusher connected successfully');
-// //     });
-
-// //     echoInstance.connector.pusher.connection.bind('error', (err: any) => {
-// //       console.error('❌ Pusher connection error:', err);
-// //     });
-
-// //     return echoInstance;
-// //   } catch (error) {
-// //     console.error('Echo initialization failed:', error);
-// //     return null;
-// //   }
-// // };
-
-// // const getXsrfToken = (): string => {
-// //   try {
-// //     const cookie = document.cookie.match(/XSRF-TOKEN=([^;]+)/);
-// //     const token = cookie ? decodeURIComponent(cookie[1]) : '';
-// //     if (!token) {
-// //       console.warn('XSRF-TOKEN cookie not found');
-// //     }
-// //     return token;
-// //   } catch (error) {
-// //     console.error('Error retrieving XSRF token:', error);
-// //     return '';
-// //   }
-// // };
-
-
-// const initializeEcho = () => {
-//   return configureEcho({
-//     broadcaster: "reverb",
-//     key: process.env.NEXT_PUBLIC_REVERB_APP_KEY,
-//     wsHost: process.env.NEXT_PUBLIC_REVERB_HOST, // e.g. "socket.ourproperty.ng"
-//     wsPort: 80,
-//     wssPort: 443,
-//     forceTLS: true,
-//     enabledTransports: ["ws", "wss"],
-//     authEndpoint: "/broadcasting/auth",
-//     auth: {
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
-//       },
-//     },
-//   });
-// };
-
-
-
-
-// export default initializeEcho;
-
-
-
 import Echo from "laravel-echo";
 import Pusher from "pusher-js";
 import React from "react";
@@ -132,8 +24,8 @@ interface UseEchoReturn {
   echo: Echo<"reverb"> | null;
   isConnected: boolean;
   error: Error | null;
+  reconnect: () => Promise<void>;
 }
-
 
 interface AuthResponse {
   auth?: string;
@@ -148,16 +40,54 @@ if (typeof window !== 'undefined') {
   (window as any).Pusher = Pusher;
 }
 
-export async function initializeEcho(): Promise<Echo<"reverb"> | null> {
+// Helper function to wait for auth token with timeout
+async function waitForAuthToken(maxAttempts = 60, intervalMs = 400): Promise<string | null> {
+  let attempts = 0;
+
+  return new Promise((resolve) => {
+    const checkToken = () => {
+      const token = localStorage.getItem("authToken");
+
+      if (token && token !== 'null' && token !== 'undefined') {
+        resolve(token);
+        return;
+      }
+
+      attempts++;
+      if (attempts >= maxAttempts) {
+        resolve(null);
+        return;
+      }
+
+      setTimeout(checkToken, intervalMs);
+    };
+
+    checkToken();
+  });
+}
+
+// Helper function to clean auth token (remove quotes if present)
+function cleanAuthToken(token: string): string {
+  // Remove surrounding quotes if present
+  return token.replace(/^["']|["']$/g, '');
+}
+
+export async function initializeEcho(forceReconnect = false): Promise<Echo<"reverb"> | null> {
   // Only run on client side
   if (typeof window === 'undefined') return null;
 
-  if (echo) return echo;
+  // If forcing reconnect, disconnect existing instance
+  if (forceReconnect && echo) {
+    disconnectEcho();
+  }
+
+  if (echo && !forceReconnect) return echo;
 
   if (isInitializing) {
-    return new Promise<Echo<"reverb">>((resolve) => {
+    return new Promise<Echo<"reverb"> | null>((resolve) => {
       const check = () => {
         if (echo) resolve(echo);
+        else if (!isInitializing) resolve(null);
         else setTimeout(check, 100);
       };
       check();
@@ -165,15 +95,19 @@ export async function initializeEcho(): Promise<Echo<"reverb"> | null> {
   }
 
   isInitializing = true;
-  const transports: ("ws" | "wss")[] = ["ws", "wss"];
 
   try {
-    const authToken = localStorage.getItem("authToken");
+    // Wait for auth token to be available
+    console.log("Waiting for auth token...");
+    const authToken = await waitForAuthToken();
 
-    console.log("token here", { authToken })
     if (!authToken) {
-      throw new Error("No authentication token found");
+      throw new Error("Authentication token not available after waiting");
     }
+
+    const cleanToken = cleanAuthToken(authToken);
+    console.log("Auth token found, initializing Echo...", { tokenLength: cleanToken.length });
+
     // Create Echo instance
     echo = new Echo({
       broadcaster: "reverb",
@@ -186,7 +120,7 @@ export async function initializeEcho(): Promise<Echo<"reverb"> | null> {
       authEndpoint: `${process.env.NEXT_PUBLIC_BASE_URL}api/v1/broadcasting/auth`,
       auth: {
         headers: {
-          Authorization: `Bearer ${authToken.slice(1, -1)}`,
+          Authorization: `Bearer ${cleanToken}`,
           Accept: "application/json",
           "Content-Type": "application/json",
         },
@@ -197,16 +131,27 @@ export async function initializeEcho(): Promise<Echo<"reverb"> | null> {
             socketId: string,
             callback: (error: boolean, data?: any) => void
           ) => {
+            // Get fresh token for each authorization request
+            const currentToken = localStorage.getItem("authToken");
+            if (!currentToken) {
+              callback(true, new Error("No auth token available"));
+              return;
+            }
+
             const requestData = {
               socket_id: socketId,
               channel_name: channel.name,
             };
+
+            const headers = {
+              ...options.auth.headers,
+              Authorization: `Bearer ${cleanAuthToken(currentToken)}`,
+              "X-Socket-ID": socketId,
+            };
+
             fetch(options.authEndpoint, {
               method: "POST",
-              headers: {
-                ...options.auth.headers,
-                "X-Socket-ID": socketId,
-              },
+              headers,
               body: JSON.stringify(requestData),
             })
               .then(async (response: Response) => {
@@ -260,9 +205,18 @@ export async function initializeEcho(): Promise<Echo<"reverb"> | null> {
         pusher.connection.bind("disconnected", () => {
           console.log("Echo disconnected from WebSocket server");
         });
+
+        pusher.connection.bind("unavailable", () => {
+          console.warn("Echo connection unavailable");
+        });
+
+        pusher.connection.bind("failed", () => {
+          console.error("Echo connection failed");
+        });
       }
     }
 
+    console.log("Echo initialized successfully");
     return echo;
   } catch (error) {
     console.error("Echo initialization failed:", error);
@@ -272,7 +226,6 @@ export async function initializeEcho(): Promise<Echo<"reverb"> | null> {
     isInitializing = false;
   }
 }
-
 
 export function getEcho(): Echo<"reverb"> | null {
   if (!echo) {
@@ -294,8 +247,25 @@ export function useEcho(): UseEchoReturn {
   const [isConnected, setIsConnected] = React.useState(false);
   const [error, setError] = React.useState<Error | null>(null);
 
+  const reconnect = React.useCallback(async () => {
+    try {
+      setError(null);
+      console.log("Attempting to reconnect Echo...");
+      const instance = await initializeEcho(true); // Force reconnect
+      if (instance) {
+        setEchoInstance(instance);
+        console.log("Echo reconnected successfully");
+      }
+    } catch (err) {
+      const error = err as Error;
+      setError(error);
+      console.error("Failed to reconnect Echo:", error);
+    }
+  }, []);
+
   React.useEffect(() => {
     let mounted = true;
+    let connectionCleanup: (() => void) | null = null;
 
     const setupEcho = async () => {
       try {
@@ -312,7 +282,10 @@ export function useEcho(): UseEchoReturn {
           const connection = connector.pusher.connection;
 
           const handleConnected = () => {
-            if (mounted) setIsConnected(true);
+            if (mounted) {
+              setIsConnected(true);
+              setError(null);
+            }
           };
 
           const handleDisconnected = () => {
@@ -326,9 +299,25 @@ export function useEcho(): UseEchoReturn {
             }
           };
 
+          const handleUnavailable = () => {
+            if (mounted) {
+              setError(new Error('Connection unavailable'));
+              setIsConnected(false);
+            }
+          };
+
+          const handleFailed = () => {
+            if (mounted) {
+              setError(new Error('Connection failed'));
+              setIsConnected(false);
+            }
+          };
+
           connection.bind("connected", handleConnected);
           connection.bind("disconnected", handleDisconnected);
           connection.bind("error", handleError);
+          connection.bind("unavailable", handleUnavailable);
+          connection.bind("failed", handleFailed);
 
           // Set initial connection state
           if (connection.state === 'connected') {
@@ -336,10 +325,12 @@ export function useEcho(): UseEchoReturn {
           }
 
           // Cleanup function
-          return () => {
+          connectionCleanup = () => {
             connection.unbind("connected", handleConnected);
             connection.unbind("disconnected", handleDisconnected);
             connection.unbind("error", handleError);
+            connection.unbind("unavailable", handleUnavailable);
+            connection.unbind("failed", handleFailed);
           };
         }
       } catch (err) {
@@ -354,11 +345,28 @@ export function useEcho(): UseEchoReturn {
 
     return () => {
       mounted = false;
+      if (connectionCleanup) {
+        connectionCleanup();
+      }
     };
   }, []);
 
-  return { echo: echoInstance, isConnected, error };
+  // Auto-reconnect when auth token becomes available
+  React.useEffect(() => {
+    if (error && error.message.includes("Authentication token not available")) {
+      console.log("Auth token error detected, will retry when token becomes available");
+
+      const checkTokenAndReconnect = async () => {
+        const token = await waitForAuthToken(10, 1000); // Wait up to 10 seconds
+        if (token) {
+          console.log("Auth token now available, attempting reconnect...");
+          reconnect();
+        }
+      };
+
+      checkTokenAndReconnect();
+    }
+  }, [error, reconnect]);
+
+  return { echo: echoInstance, isConnected, error, reconnect };
 }
-
-
-

@@ -103,8 +103,8 @@ const Header = () => {
     theme === "light"
       ? getLocalStorage("light_logo")
       : getLocalStorage("dark_logo")
-        ? getLocalStorage("dark_logo")
-        : getLocalStorage("light_logo")
+      ? getLocalStorage("dark_logo")
+      : getLocalStorage("light_logo")
   );
 
   const { data, loading, refetch } = useFetch<ProfileResponse>("/user/profile");
@@ -510,11 +510,9 @@ const Header = () => {
                 <ModalTrigger asChild>
                   <Button
                     size="base_medium"
-                    className="nav-create-new py-[10px] px-5 rounded-lg flex-1 max-w-fit h-[45px]"
+                    className="nav-create-new py-[10px] px-5 rounded-lg h-[45px] flex items-center justify-center text-center"
                   >
-                    <span className="line-clamp-1 text-ellipsis">
-                      + Create New
-                    </span>
+                    + Create New
                   </Button>
                 </ModalTrigger>
                 <ModalContent>
@@ -668,8 +666,6 @@ const Header = () => {
           </Dropdown>
         </div>
       </header>
-
-
     </>
   );
 };

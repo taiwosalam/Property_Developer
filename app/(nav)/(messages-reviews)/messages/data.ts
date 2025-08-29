@@ -402,6 +402,7 @@ export const transformMessagesFromAPI = (
   apiData: GroupChatAPIResponse | DirectChatAPIResponse,
   isGroupChat: boolean
 ): NormalizedMessage[] => {
+  console.log("hello there man", { apiData })
   let messagesRaw: any[] = [];
   if ("messages" in apiData) messagesRaw = apiData.messages;
   return messagesRaw.map((msg) => {

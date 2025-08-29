@@ -84,6 +84,9 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   const selectedLandlordId = useGlobalStore((s) => s.selectedLandlordId);
   const { branch } = usePersonalInfoStore();
+  const { staff: storeSStaff } = usePersonalInfoStore();
+  const loggedInStaffID = storeSStaff?.id;
+
   const branchIdFromStore = useBranchInfoStore((state) => state.branch_id);
   const [state, setState] = useState<PropertyFormStateType>(
     property_form_state_data
@@ -129,13 +132,13 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     propertySettings?.coordinate || ""
   );
 
-  const BRANCH_MANAGER_ID = useBranchInfoStore((state) => state.manager.id);
+  const BRANCH_MANAGER_ID = useBranchInfoStore((state) => state?.manager?.id);
 
   const CautionDepositOptions = [
     { label: "Keep with Landlord", value: "Landlord" },
     { label: "Keep it with Manager", value: "Company" },
     { label: "Escrow it", value: "Escrow" }, //NB: OCHUKO SAID TO CHANGE TO Escrow
-    { label: "None", value: "" },
+    { label: "None", value: "none" },
   ];
 
   const {
@@ -310,16 +313,29 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [branchData?.accountOfficer?.data]
   );
 
+  // const staffOption = useMemo(
+  //   () =>
+  //     branchData?.staff?.data?.data
+  //       ?.filter((s: any) => s.staff_role !== "manager")
+  //       .map((s: any) => ({
+  //         value: s.id,
+  //         label: s.user.name,
+  //         icon: s.user.profile.picture,
+  //       })) || [],
+  //   [branchData?.staff?.data]
+  // );
+
   const staffOption = useMemo(
     () =>
       branchData?.staff?.data?.data
         ?.filter((s: any) => s.staff_role !== "manager")
+        ?.filter((s: any) => s.id !== loggedInStaffID) 
         .map((s: any) => ({
           value: s.id,
           label: s.user.name,
           icon: s.user.profile.picture,
         })) || [],
-    [branchData?.staff?.data]
+    [branchData?.staff?.data, loggedInStaffID] 
   );
 
   //Stabilize the selectedStaffs initialization to prevent rerendering
@@ -440,6 +456,11 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
   const handleFormSubmit = async (data: Record<string, any>) => {
     setRequestLoading(true);
     convertYesNoToBoolean(data, yesNoFields);
+    // Handle caution_deposit 'none' case - backend expects no value
+    if (data.caution_deposit.toLowerCase() === "none") {
+      delete data.caution_deposit;
+    }
+
     const payload = transformPropertyFormData(
       data,
       imageFiles,
@@ -832,18 +853,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                   options={branchOptions}
                   inputContainerClassName="bg-white"
                   onChange={handleBranchSelection}
-                  // onChange={(selectedBranchId) =>
-                  //   setPropertyState({
-                  //     selectedBranch: {
-                  //       value: selectedBranchId,
-                  //       label:
-                  //         branchOptions.find(
-                  //           (branch) =>
-                  //             String(branch.value) === String(selectedBranchId)
-                  //         )?.label || "",
-                  //     },
-                  //   })
-                  // }
                   value={selectedBranch}
                   hiddenInputClassName="property-form-input"
                   placeholder={
@@ -853,7 +862,15 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       ? "Error loading branches"
                       : "Select branch"
                   }
-                  // error={branchesError}
+                />
+              )}
+
+              {/* Hidden input for non-directors - sends current branch from store */}
+              {!isDirector && (
+                <input
+                  type="hidden"
+                  name="branch_id"
+                  value={branchIdFromStore || ""}
                 />
               )}
 
@@ -875,6 +892,14 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
                       : "Select account manager"
                   }
                   disabled={branchData.accountOfficer.loading}
+                />
+              )}
+              {/* Hidden input for account role - sends current staff's ID as account manager */}
+              {role === "account" && (
+                <input
+                  type="hidden"
+                  name="account_officer_id"
+                  value={loggedInStaffID || ""}
                 />
               )}
 

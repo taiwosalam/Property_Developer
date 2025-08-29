@@ -142,6 +142,8 @@ export const TeamChatProvider = ({
     isNetworkError,
   } = useFetch<TeamChatResponseData>("group-chats");
 
+  console.log({ teamData });
+
   useRefetchOnEvent("refetchTeamChat", () => {
     refetch({ silent: true });
   });
