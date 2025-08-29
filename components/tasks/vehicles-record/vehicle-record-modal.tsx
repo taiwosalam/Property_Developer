@@ -311,16 +311,7 @@ const VehicleRecordModal: React.FC<
             </Button>
           )}
 
-          {status === "check-in" ||
-          (status === "pending" && canCheckInAndManageVehicleRec) ? (
-            <Button
-              size="sm_bold"
-              className="py-[10px] px-6 rounded-lg"
-              onClick={() => setActiveStep("check-out")}
-            >
-              Check Out
-            </Button>
-          ) : status === "pending" && canCheckInAndManageVehicleRec ? (
+          {status === "pending" && canCheckInAndManageVehicleRec ? (
             <Button
               size="sm_bold"
               className="py-[10px] px-6 rounded-lg"
@@ -328,9 +319,15 @@ const VehicleRecordModal: React.FC<
             >
               Check In
             </Button>
-          ) : (
-            ""
-          )}
+          ) : status === "check-in" && canCheckInAndManageVehicleRec ? (
+            <Button
+              size="sm_bold"
+              className="py-[10px] px-6 rounded-lg"
+              onClick={() => setActiveStep("check-out")}
+            >
+              Check Out
+            </Button>
+          ) : null}
 
           {/* {(status === "no_record" || status === "completed") && ( 
           {(status === "pending" || status === "check-out") &&

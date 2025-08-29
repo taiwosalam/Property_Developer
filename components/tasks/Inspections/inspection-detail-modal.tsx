@@ -77,6 +77,8 @@ const InspectionDetailModal = ({
       setIsLoading(false);
     }
   };
+
+  // !hideCard && !isMobile
   return (
     <div
       className="w-[600px] max-w-[90%] max-h-[90vh] rounded-lg bg-white dark:bg-darkText-primary custom-flex-col pb-14 gap-6 overflow-x-hidden overflow-y-auto custom-round-scrollbar"
@@ -96,7 +98,7 @@ const InspectionDetailModal = ({
           Inspection details
         </h2>
       </div>
-      {!hideCard && !isMobile && (
+      {(
         <InspectionCardInfo
           className="px-6"
           address={data?.address}
