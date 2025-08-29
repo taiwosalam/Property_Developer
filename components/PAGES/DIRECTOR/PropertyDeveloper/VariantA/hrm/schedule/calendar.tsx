@@ -25,7 +25,6 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
   // Build weeks
   const weeks: Array<Array<number | null>> = [];
   let currentDay = 1 - firstDayIndex;
-
   while (currentDay <= totalDays) {
     const week: Array<number | null> = [];
     for (let i = 0; i < 7; i++) {
