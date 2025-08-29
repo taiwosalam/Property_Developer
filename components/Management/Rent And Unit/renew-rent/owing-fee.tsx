@@ -9,7 +9,10 @@ import { FeeDetails } from "../rent-section-container";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 import { useRenewRentContext } from "@/utils/renew-rent-context";
 import { calculateRentFeeAmountAndPeriods, getDueFeeDetails } from "./data";
-import { calculateRentPenalty, convertToYesNo } from "@/app/(nav)/management/rent-unit/data";
+import {
+  calculateRentPenalty,
+  convertToYesNo,
+} from "@/app/(nav)/management/rent-unit/data";
 import { RentPeriod } from "../data";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import Button from "@/components/Form/Button/button";
@@ -17,6 +20,7 @@ import { parseAmount } from "../Edit-Rent/data";
 import { DetailItem } from "../../detail-item";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import CalculationsComp from "./calculations";
+import { useGlobalStore } from "@/store/general-store";
 
 const OwingFee = ({ show = false }: { show?: boolean }) => {
   const {
@@ -27,20 +31,17 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
     start_date,
     isUpfrontPaymentChecked,
   } = useRenewRentContext();
-
+  const setGlobalStore = useGlobalStore((s) => s.setGlobalInfoStore);
   // Zustand store
   const { penaltyAmount, setPenaltyAmount, setOverduePeriods, overduePeriods } =
     useOccupantStore();
   const [owingAmount, setOwingAmount] = useState<number>(0);
 
-  console.log("unitData", unitData);
-
   const chargePenalty = unitData.chargePenalty ?? false;
   const rent_penalty_setting = unitData.rent_penalty_setting ?? {};
   const renew_fee_amount = Number(unitData.renew_fee_amount) || 0;
   const renewfeePeriod = unitData?.renew_fee_period || "monthly";
-  // const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
-  const renewalTenantTotalPrice = Number(unitData.renew_fee_amount) || 0;
+  const renewalTenantTotalPrice = Number(unitData.renewalTenantTotalPrice) || 0;
 
   const CURRENCY =
     currencySymbols[currency as keyof typeof currencySymbols] ||
@@ -59,14 +60,14 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
       start_date &&
       due_date &&
       renewfeePeriod &&
-      renew_fee_amount > 0
+      renewalTenantTotalPrice > 0
     ) {
       // Calculate owing amount and periods
       const { overduePeriods, owingAmount } = calculateRentFeeAmountAndPeriods({
         start_date,
         due_date,
         feePeriod: renewfeePeriod as RentPeriod,
-        renew_fee_amount,
+        renewalTenantTotalPrice,
       });
 
       // Calculate penalty using due_date
@@ -119,11 +120,14 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
     return parsedAmount > 0;
   });
 
-  const TOTAL = renew_fee_amount + owingAmount + penaltyAmount;
+  // const TOTAL = renew_fee_amount + owingAmount + penaltyAmount;
+  const TOTAL = renewalTenantTotalPrice + owingAmount + penaltyAmount;
+  useEffect(() => {
+    setGlobalStore("totalRenewAmount", TOTAL);
+  }, [TOTAL]);
 
   const OWNING_PERIODS = feeDetails?.[1]?.amount;
 
-  
   const calculationFeeDetails = [
     {
       name: "Overdue Periods",
@@ -136,13 +140,13 @@ const OwingFee = ({ show = false }: { show?: boolean }) => {
     {
       name: "Renewal Amount",
       amount: `${CURRENCY}${formatNumber(
-        parseFloat(renew_fee_amount.toString())
+        parseFloat(renewalTenantTotalPrice.toString())
       )}`,
     },
     {
       name: "Owing Amount (overdue periods × renewal amount)",
       amount: `${overduePeriods} × ${CURRENCY}${formatNumber(
-        parseFloat(renew_fee_amount.toString())
+        parseFloat(renewalTenantTotalPrice.toString())
       )}`,
     },
     {

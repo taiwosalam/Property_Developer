@@ -321,7 +321,7 @@ export const sendGroupMessage = async (groupId: string, data: FormData) => {
     handleAxiosError(error);
     return false;
   }
-}; 
+};
 
 export function isImageFile(filename: string): boolean {
   return /\.(jpg|jpeg|png|gif|bmp|webp|svg)$/i.test(filename);

@@ -12,7 +12,10 @@ import SettingsSection from "./settings-section";
 import Button from "../Form/Button/button";
 import { useAuthStore } from "@/store/authStore";
 import { toast } from "sonner";
-import { updateSettings, updateSMTPSettings } from "@/app/(nav)/settings/security/data";
+import {
+  updateSettings,
+  updateSMTPSettings,
+} from "@/app/(nav)/settings/security/data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { useSettings } from "@/hooks/settingsContext";
 
@@ -175,7 +178,12 @@ const SettingsSmtp = () => {
               />
             </div>
             <div className="flex justify-end mt-6">
-              <Button size="base_bold" className="py-[10px] px-8" type="submit">
+              <Button
+                size="base_bold"
+                className="py-[10px] px-8"
+                type="submit"
+                disabled={loading}
+              >
                 {loading ? "Please wait..." : "update"}
               </Button>
             </div>

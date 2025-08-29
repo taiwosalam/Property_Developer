@@ -205,6 +205,22 @@ export const showSelectedTenant = async (tenantId: string) => {
   }
 };
 
+export const updateNotificationSettings = async (data: any) => {
+  try {
+    const res = await api.patch(`/notification/update`, data, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (res.status === 200 || res.status === 201) {
+      return true;
+    }
+  } catch (error) {
+    handleAxiosError(error);
+    return false;
+  }
+};
+
 export const updateResetSettings = async (data: string[]) => {
   try {
     const payload = { types: data };
@@ -322,132 +338,327 @@ export const transformOtherSetting = (
   };
 };
 
+// Organized notification options by category
 export const notificationCategories = [
   {
     title: "Management",
+    value: "management",
     desc: "Stay updated on company-wide activities, approvals, and property status changes.",
     options: [
-      { name: "vehicle_activity_summary", text: "Vehicle activity summary (daily/weekly/monthly)" },
-      { name: "management_summary", text: "Management summary (weekly/monthly)" },
-      { name: "property_invite_approved_rejected", text: "Property invite approved/rejected" },
-      { name: "drafted_property_reminder", text: "Drafted property reminder" },
-      { name: "tenant_branch_staff_company_limit_alerts", text: "Tenant/branch/staff/company limit alerts" },
-      { name: "new_property_awaiting_approval", text: "New property awaiting approval" },
-      { name: "property_vacant_listed", text: "Property vacant & listed" },
-      { name: "new_landlord_tenant_profile_awaiting_approval", text: "New landlord/tenant profile awaiting approval" },
+      {
+        name: "vehicle_activity_summary",
+        text: "Vehicle activity summary (daily/weekly/monthly)",
+      },
+      {
+        name: "management_summary",
+        text: "Management summary (weekly/monthly)",
+      },
+      {
+        name: "property_invite_approved_rejected",
+        text: "Property invite approved/rejected",
+      },
+      {
+        name: "drafted_property_reminder",
+        text: "Drafted property reminder",
+      },
+      {
+        name: "tenant_branch_staff_company_limit_alerts",
+        text: "Tenant/branch/staff/company limit alerts",
+      },
+      {
+        name: "new_property_awaiting_approval",
+        text: "New property awaiting approval",
+      },
+      {
+        name: "property_vacant_listed",
+        text: "Property vacant & listed",
+      },
+      {
+        name: "new_landlord_tenant_profile_awaiting_approval",
+        text: "New landlord/tenant profile awaiting approval",
+      },
     ],
   },
   {
     title: "Rent & Payments",
+    value: "rent",
     desc: "Get alerts for rent creation, due dates, expiries, payments, and property/unit changes.",
     options: [
-      { name: "new_rent_created", text: "New rent created" },
-      { name: "rent_due_reminder", text: "Rent due reminder" },
-      { name: "rent_expired", text: "Rent expired" },
-      { name: "late_payment_warning", text: "Late payment warning" },
-      { name: "part_payment_made", text: "Part payment made" },
-      { name: "upfront_payment_received", text: "Upfront payment received" },
-      { name: "renewal_processed", text: "Renewal processed" },
-      { name: "property_change_update", text: "Property change update" },
-      { name: "unit_change_update", text: "Unit change update" },
+      {
+        name: "new_rent_created",
+        text: "New rent created",
+      },
+      {
+        name: "rent_due_reminder",
+        text: "Rent due reminder",
+      },
+      {
+        name: "rent_expired",
+        text: "Rent expired",
+      },
+      {
+        name: "late_payment_warning",
+        text: "Late payment warning",
+      },
+      {
+        name: "part_payment_made",
+        text: "Part payment made",
+      },
+      {
+        name: "upfront_payment_received",
+        text: "Upfront payment received",
+      },
+      {
+        name: "renewal_processed",
+        text: "Renewal processed",
+      },
+      {
+        name: "property_change_update",
+        text: "Property change update",
+      },
+      {
+        name: "unit_change_update",
+        text: "Unit change update",
+      },
     ],
   },
   {
     title: "Tasks & Workflow",
+    value: "tasks",
     desc: "Track all applications, complaints, tasks, inspections, and maintenance progress.",
     options: [
-      { name: "new_application_pending", text: "New application pending" },
-      { name: "complaint_updates", text: "Complaint updates (new/approved/rejected/comments)" },
-      { name: "task_progress_update", text: "Task progress update" },
-      { name: "new_note_added", text: "New note added" },
-      { name: "inspection_created_completed", text: "Inspection created/completed" },
-      { name: "examination_created_report_ready", text: "Examination created/report ready" },
-      { name: "maintenance_reminder", text: "Maintenance reminder" },
+      {
+        name: "new_application_pending",
+        text: "New application pending",
+      },
+      {
+        name: "complaint_updates",
+        text: "Complaint updates (new/approved/rejected/comments)",
+      },
+      {
+        name: "task_progress_update",
+        text: "Task progress update",
+      },
+      {
+        name: "new_note_added",
+        text: "New note added",
+      },
+      {
+        name: "inspection_created_completed",
+        text: "Inspection created/completed",
+      },
+      {
+        name: "examination_created_report_ready",
+        text: "Examination created/report ready",
+      },
+      {
+        name: "maintenance_reminder",
+        text: "Maintenance reminder",
+      },
     ],
   },
   {
     title: "Calendar & Reminders",
+    value: "calendar",
     desc: "Never miss important deadlines, events, or pending activities.",
     options: [
-      { name: "daily_weekly_monthly_events", text: "Daily/weekly/monthly events" },
-      { name: "rent_expiry_reminder", text: "Rent expiry reminder" },
-      { name: "pending_applications", text: "Pending applications" },
-      { name: "pending_inspections", text: "Pending inspections" },
-      { name: "upcoming_maintenance", text: "Upcoming maintenance" },
-      { name: "upcoming_examinations", text: "Upcoming examinations" },
-      { name: "pending_call_requests", text: "Pending call requests" },
+      {
+        name: "daily_weekly_monthly_events",
+        text: "Daily/weekly/monthly events",
+      },
+      {
+        name: "rent_expiry_reminder",
+        text: "Rent expiry reminder",
+      },
+      {
+        name: "pending_applications",
+        text: "Pending applications",
+      },
+      {
+        name: "pending_inspections",
+        text: "Pending inspections",
+      },
+      {
+        name: "upcoming_maintenance",
+        text: "Upcoming maintenance",
+      },
+      {
+        name: "upcoming_examinations",
+        text: "Upcoming examinations",
+      },
+      {
+        name: "pending_call_requests",
+        text: "Pending call requests",
+      },
     ],
   },
   {
     title: "Announcements & Requests",
+    value: "announcements",
     desc: "Receive updates on new announcements, call requests, and property/deposit requests.",
     options: [
-      { name: "new_announcements", text: "New announcements" },
-      { name: "new_call_request", text: "New call request" },
-      { name: "property_request_updates", text: "Property request (new/approved/rejected/reminder)" },
-      { name: "deposit_request_updates", text: "Deposit request updates" },
+      {
+        name: "new_announcements",
+        text: "New announcements",
+      },
+      {
+        name: "new_call_request",
+        text: "New call request",
+      },
+      {
+        name: "property_request_updates",
+        text: "Property request (new/approved/rejected/reminder)",
+      },
+      {
+        name: "deposit_request_updates",
+        text: "Deposit request updates",
+      },
     ],
   },
   {
     title: "Listings",
+    value: "listings",
     desc: "Stay informed about property listings, sponsorships, bookmarks, and drafts.",
     options: [
-      { name: "listing_approved_rejected", text: "Listing approved/rejected" },
-      { name: "sponsored_listing_update", text: "Sponsored listing update" },
-      { name: "bookmarked_property", text: "Bookmarked property" },
-      { name: "property_request_sent_received", text: "Property request sent/received" },
-      { name: "property_draft_reminder", text: "Property draft reminder" },
+      {
+        name: "listing_approved_rejected",
+        text: "Listing approved/rejected",
+      },
+      {
+        name: "sponsored_listing_update",
+        text: "Sponsored listing update",
+      },
+      {
+        name: "bookmarked_property",
+        text: "Bookmarked property",
+      },
+      {
+        name: "property_request_sent_received",
+        text: "Property request sent/received",
+      },
+      {
+        name: "property_draft_reminder",
+        text: "Property draft reminder",
+      },
     ],
   },
   {
     title: "Accounting",
+    value: "accounting",
     desc: "Monitor all invoice and disbursement activities to stay on top of finances.",
     options: [
-      { name: "invoice_created", text: "Invoice created" },
-      { name: "invoice_paid", text: "Invoice paid" },
-      { name: "invoice_due_reminder", text: "Invoice due reminder" },
-      { name: "disbursement_processed", text: "Disbursement processed" },
+      {
+        name: "invoice_created",
+        text: "Invoice created",
+      },
+      {
+        name: "invoice_paid",
+        text: "Invoice paid",
+      },
+      {
+        name: "invoice_due_reminder",
+        text: "Invoice due reminder",
+      },
+      {
+        name: "disbursement_processed",
+        text: "Disbursement processed",
+      },
     ],
   },
   {
     title: "Community",
+    value: "community",
     desc: "Engage with agent community updates, forum posts, contributions, and feedback.",
     options: [
-      { name: "new_group_message", text: "New group message" },
-      { name: "new_forum_post", text: "New forum post" },
-      { name: "new_agent_request", text: "New agent request" },
-      { name: "contribution_approved_rejected", text: "Contribution approved/rejected" },
-      { name: "new_comment", text: "New comment" },
-      { name: "new_like_dislike", text: "New like/dislike" },
+      {
+        name: "new_group_message",
+        text: "New group message",
+      },
+      {
+        name: "new_forum_post",
+        text: "New forum post",
+      },
+      {
+        name: "new_agent_request",
+        text: "New agent request",
+      },
+      {
+        name: "contribution_approved_rejected",
+        text: "Contribution approved/rejected",
+      },
+      {
+        name: "new_comment",
+        text: "New comment",
+      },
+      {
+        name: "new_like_dislike",
+        text: "New like/dislike",
+      },
     ],
   },
   {
     title: "Settings & Subscriptions",
+    value: "settings",
     desc: "Track subscription updates, system settings, and document verification results.",
     options: [
-      { name: "subscription_updates", text: "Subscription updates (activation/upgrade/renewal/expiry)" },
-      { name: "document_verification_result", text: "Document verification result" },
-      { name: "system_settings_addons_updated", text: "System settings/add-ons updated" },
+      {
+        name: "subscription_updates",
+        text: "Subscription updates (activation/upgrade/renewal/expiry)",
+      },
+      {
+        name: "document_verification_result",
+        text: "Document verification result",
+      },
+      {
+        name: "system_settings_addons_updated",
+        text: "System settings/add-ons updated",
+      },
     ],
   },
   {
     title: "System & Communication",
+    value: "system",
     desc: "Get notified about call requests and delivery failures for SMS or email.",
     options: [
-      { name: "call_request_submitted", text: "Call request submitted" },
-      { name: "sms_delivery_failed", text: "SMS delivery failed" },
-      { name: "email_delivery_failed", text: "Email delivery failed" },
+      {
+        name: "call_request_submitted",
+        text: "Call request submitted",
+      },
+      {
+        name: "sms_delivery_failed",
+        text: "SMS delivery failed",
+      },
+      {
+        name: "email_delivery_failed",
+        text: "Email delivery failed",
+      },
     ],
   },
   {
     title: "Units & Campaigns",
+    value: "units",
     desc: "Stay alerted on unit balances, sponsorships, features, and campaign statuses.",
     options: [
-      { name: "units_low_exhausted", text: "Units low/exhausted" },
-      { name: "listing_sponsorship_updates", text: "Listing sponsorship (new/expired reminder/expired)" },
-      { name: "sms_units_low_exhausted", text: "SMS units low/exhausted" },
-      { name: "feature_subscription_updates", text: "Feature subscription (new/expired reminder/expired)" },
-      { name: "campaign_subscription_updates", text: "Campaign subscription (new/expired reminder/expired)" },
+      {
+        name: "units_low_exhausted",
+        text: "Units low/exhausted",
+      },
+      {
+        name: "listing_sponsorship_updates",
+        text: "Listing sponsorship (new/expired reminder/expired)",
+      },
+      {
+        name: "sms_units_low_exhausted",
+        text: "SMS units low/exhausted",
+      },
+      {
+        name: "feature_subscription_updates",
+        text: "Feature subscription (new/expired reminder/expired)",
+      },
+      {
+        name: "campaign_subscription_updates",
+        text: "Campaign subscription (new/expired reminder/expired)",
+      },
     ],
   },
 ];

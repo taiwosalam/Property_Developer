@@ -71,7 +71,7 @@ const ManageInventory = () => {
   const [isDeleting, setIsDeleting] = useState(false);
   const [video, setVideo] = useState<string>("");
   const [showRemoveButton, setShowRemoveButton] = useState(false);
-  
+
   const { data, loading, error, isNetworkError } = useFetch<InventoryFetchData>(
     `/inventory/unit/${inventoryId}`
   );
@@ -106,7 +106,6 @@ const ManageInventory = () => {
     fetchAllBranches();
   }, [data]);
 
-
   useEffect(() => {
     setShowRemoveButton(moreInventory > 0);
   }, [moreInventory]);
@@ -126,6 +125,19 @@ const ManageInventory = () => {
   ) => {
     event.preventDefault();
     setIsLoading(true);
+
+    // Check if all inventory items have at least one image
+    const hasEmptyImages = inventoryFiles.some((files, index) => {
+      if (files.length === 0) {
+        toast.error(`Please select at least one inventory image`);
+        return true;
+      }
+      return false;
+    });
+
+    if (hasEmptyImages) {
+      return;
+    }
 
     try {
       const formData = new FormData(event.currentTarget);
@@ -214,7 +226,7 @@ const ManageInventory = () => {
       );
       if (success) {
         toast.success("Inventory updated successfully!");
-        router.push(`/manager/management/inventory/${PROPERTY_ID}`);
+        router.push(`/staff/management/inventory/${PROPERTY_ID}`);
       }
     } catch (error) {
       console.error("Error updating inventory:", error);

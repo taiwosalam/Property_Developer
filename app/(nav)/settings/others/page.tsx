@@ -51,6 +51,7 @@ import {
   SettingsBellIcon,
   SettingsServiceIcon,
   SettingsAppearanceIcon,
+  NotificationResetSettingsIcon,
 } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
 import {
@@ -65,6 +66,7 @@ import {
   updateCompanyNotification,
   updateDirector,
   updateMessageAndReviewSettings,
+  updateNotificationSettings,
   updateResetSettings,
 } from "./data";
 import { toast } from "sonner";
@@ -74,6 +76,7 @@ import {
   ApiResponseDirector,
   ApiResponseUserPlan,
   CompanySettingsResponse,
+  INotificationSetting,
   RestrictedTenant,
   RestrictedUserApiResponse,
 } from "./types";
@@ -183,7 +186,7 @@ const resetSettingsOptions = [
     name: "notifications",
     title: "Notification",
     desc: "Your notification settings can be reverted to default mode if you've made any modifications that you want to undo. This allows you to reset your notifications to their original settings in case you've made changes that you'd like to revert.",
-    icon: <SettingsBellIcon />,
+    icon: <NotificationResetSettingsIcon />,
   },
   {
     name: "appearance",
@@ -207,6 +210,7 @@ interface NotificationSettings {
 const notificationCategories = [
   {
     title: "Management",
+    value: "management",
     desc: "Stay updated on company-wide activities, approvals, and property status changes.",
     options: [
       {
@@ -245,6 +249,7 @@ const notificationCategories = [
   },
   {
     title: "Rent & Payments",
+    value: "rent",
     desc: "Get alerts for rent creation, due dates, expiries, payments, and property/unit changes.",
     options: [
       {
@@ -287,6 +292,7 @@ const notificationCategories = [
   },
   {
     title: "Tasks & Workflow",
+    value: "tasks",
     desc: "Track all applications, complaints, tasks, inspections, and maintenance progress.",
     options: [
       {
@@ -321,6 +327,7 @@ const notificationCategories = [
   },
   {
     title: "Calendar & Reminders",
+    value: "calendar",
     desc: "Never miss important deadlines, events, or pending activities.",
     options: [
       {
@@ -355,6 +362,7 @@ const notificationCategories = [
   },
   {
     title: "Announcements & Requests",
+    value: "announcements",
     desc: "Receive updates on new announcements, call requests, and property/deposit requests.",
     options: [
       {
@@ -377,6 +385,7 @@ const notificationCategories = [
   },
   {
     title: "Listings",
+    value: "listings",
     desc: "Stay informed about property listings, sponsorships, bookmarks, and drafts.",
     options: [
       {
@@ -403,6 +412,7 @@ const notificationCategories = [
   },
   {
     title: "Accounting",
+    value: "accounting",
     desc: "Monitor all invoice and disbursement activities to stay on top of finances.",
     options: [
       {
@@ -425,6 +435,7 @@ const notificationCategories = [
   },
   {
     title: "Community",
+    value: "community",
     desc: "Engage with agent community updates, forum posts, contributions, and feedback.",
     options: [
       {
@@ -455,6 +466,7 @@ const notificationCategories = [
   },
   {
     title: "Settings & Subscriptions",
+    value: "settings",
     desc: "Track subscription updates, system settings, and document verification results.",
     options: [
       {
@@ -473,6 +485,7 @@ const notificationCategories = [
   },
   {
     title: "System & Communication",
+    value: "system",
     desc: "Get notified about call requests and delivery failures for SMS or email.",
     options: [
       {
@@ -491,6 +504,7 @@ const notificationCategories = [
   },
   {
     title: "Units & Campaigns",
+    value: "units",
     desc: "Stay alerted on unit balances, sponsorships, features, and campaign statuses.",
     options: [
       {
@@ -593,94 +607,68 @@ const Others = () => {
   const [isDirectorModalOpen, setIsDirectorModalOpen] = useState(false);
   const { company_id } = usePersonalInfoStore();
 
-  const { data: apiDataProfile } = useFetch(`user/profile`);
+  const { data: apiDataProfile } = useFetch<INotificationSetting>(`user/profile`);
 
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
-      // Legacy settings
-      profile_changes: true,
-      new_messages: true,
-      task_updates: true,
-      profile_approval: true,
-      property_approval: true,
-      property_vacant: true,
-      document_creation: true,
-      // New Management settings
-      vehicle_activity_summary: true,
-      management_summary: true,
-      property_invite_approved_rejected: true,
-      drafted_property_reminder: true,
-      tenant_branch_staff_company_limit_alerts: true,
-      new_property_awaiting_approval: true,
-      property_vacant_listed: true,
-      new_landlord_tenant_profile_awaiting_approval: true,
-      // New Rent & Payments settings
-      new_rent_created: true,
-      rent_due_reminder: true,
-      rent_expired: true,
-      late_payment_warning: true,
-      part_payment_made: true,
-      upfront_payment_received: true,
-      renewal_processed: true,
-      property_change_update: true,
-      unit_change_update: true,
-      // New Tasks & Workflow settings
-      new_application_pending: true,
-      complaint_updates: true,
-      task_progress_update: true,
-      new_note_added: true,
-      inspection_created_completed: true,
-      examination_created_report_ready: true,
-      maintenance_reminder: true,
-      // New Calendar & Reminders settings
-      daily_weekly_monthly_events: true,
-      rent_expiry_reminder: true,
-      pending_applications: true,
-      pending_inspections: true,
-      upcoming_maintenance: true,
-      upcoming_examinations: true,
-      pending_call_requests: true,
-      // New Announcements & Requests settings
-      new_announcements: true,
-      new_call_request: true,
-      property_request_updates: true,
-      deposit_request_updates: true,
-      // New Listings settings
-      listing_approved_rejected: true,
-      sponsored_listing_update: true,
-      bookmarked_property: true,
-      property_request_sent_received: true,
-      property_draft_reminder: true,
-      // New Accounting settings
-      invoice_created: true,
-      invoice_paid: true,
-      invoice_due_reminder: true,
-      disbursement_processed: true,
-      // New Community settings
-      new_group_message: true,
-      new_forum_post: true,
-      new_agent_request: true,
-      contribution_approved_rejected: true,
-      new_comment: true,
-      new_like_dislike: true,
-      // New Settings & Subscriptions settings
-      subscription_updates: true,
-      document_verification_result: true,
-      system_settings_addons_updated: true,
-      // New System & Communication settings
-      call_request_submitted: true,
-      sms_delivery_failed: true,
-      email_delivery_failed: true,
-      // New Units & Campaigns settings
-      units_low_exhausted: true,
-      listing_sponsorship_updates: true,
-      sms_units_low_exhausted: true,
-      feature_subscription_updates: true,
-      campaign_subscription_updates: true,
+      management: true,
+      rent: true,
+      tasks: true,
+      calendar: true,
+      announcements: true,
+      accounting: true,
+      listings: true,
+      settings: true,
+      system: true,
+      units: true,
+      community: true,
     });
+
+  useEffect(() => {
+    if (apiDataProfile?.data?.notificationSetting) {
+      const { notificationSetting } = apiDataProfile.data;
+      setNotificationSettings({
+        management: notificationSetting.management,
+        rent: notificationSetting.rent,
+        tasks: notificationSetting.tasks,
+        calendar: notificationSetting.calendar,
+        announcements: notificationSetting.announcements,
+        accounting: notificationSetting.accounting,
+        listings: notificationSetting.listings,
+        settings: notificationSetting.settings,
+        system: notificationSetting.system,
+        units: notificationSetting.units,
+        community: notificationSetting.community,
+      });
+    }
+  }, [apiDataProfile]);
 
   const [resetOptions, setResetOptions] = useState<string[]>([]);
   const [loadingReset, setLoadingReset] = useState(false);
+
+  // const handleSetIsChecked = (categoryValue: string, value: boolean | ((prev: boolean) => boolean)) => {
+  //   const newValue = typeof value === "function" ? value(notificationSettings[categoryValue]) : value;
+  //   setNotificationSettings((prev) => ({
+  //     ...prev,
+  //     [categoryValue]: newValue,
+  //   }));
+  // };
+
+  const saveSettingsNotification = async () => {
+    try {
+      setLoadingNotification(true);
+      const success = await updateNotificationSettings(notificationSettings);
+      if (success) {
+        toast.success("Notification settings updated successfully");
+      } else {
+        toast.error("Failed to update notification settings");
+      }
+    } catch (error) {
+      toast.error("Failed to update notification settings");
+    } finally {
+      setLoadingNotification(false);
+    }
+  };
 
   const handleResetCheckboxChange = (name: string, checked: boolean) => {
     setResetOptions((prev) => {
@@ -750,6 +738,7 @@ const Others = () => {
     //   );
     //   return;
     // }
+
     setNotificationSettings((prev) => ({
       ...prev,
       [name]: checked,
@@ -844,8 +833,6 @@ const Others = () => {
   const { data: apiData, refetch } =
     useFetch<ApiResponseDirector>(`/directors`);
 
-  console.log(apiData);
-
   const [cardView, setCardView] = useState<DirectorCardProps | null>(null);
 
   const { data: planData } = useFetch<ApiResponseUserPlan>(
@@ -854,6 +841,10 @@ const Others = () => {
 
   const { data: otherSettingResponse } =
     useFetch<CompanySettingsResponse>("/company/settings");
+
+  const { data: notificationSettingsModule, loading } = useFetch<{
+    data: INotificationSetting;
+  }>("/user/profile");
 
   useEffect(() => {
     if (!otherSettingResponse) return;
@@ -1194,6 +1185,17 @@ const Others = () => {
     }
   };
 
+  const [isUpdatingNotification, setUpdatingNotification] = useState(false);
+
+  const handleUpdateNotificationSetting = async () => {
+    try {
+      const res = await updateNotificationSettings("");
+      if (res) {
+        toast.success("Notification settings updated successfully");
+      }
+    } catch (error) {}
+  };
+
   const [formStateById, setFormStateById] = useState<
     Record<string, Record<string, string>>
   >({});
@@ -1234,8 +1236,6 @@ const Others = () => {
   };
 
   const [activeDirectorId, setActiveDirectorId] = useState<string | null>(null);
-
-  console.log(cardView);
 
   // PERMISSIONS TO RENDER COMPONENTS
   // 💀😈👿 BE CAREFUL NOT TO SPOIL THE BELOW PERMISSIONS 💀😈👿
@@ -1618,8 +1618,6 @@ Once restricted, they will no longer have access to participate in the property'
                 <div className="flex items-center justify-between">
                   <div>
                     <div className="flex items-center gap-2">
-                      {/* <div className="w-2 h-2 bg-black rounded-full"></div>  */}
-                      {/* <h4 className="text-lg font-semibold text-text-primary">{category.title}</h4> */}
                       <h4 className="text-lg text-text-primary">
                         {category.title}
                       </h4>
@@ -1632,21 +1630,25 @@ Once restricted, they will no longer have access to participate in the property'
 
                   {/* Category Toggle Switch */}
                   <div className="flex items-center gap-2">
-                    {/* <span className="text-sm text-text-disabled">Enable all</span> */}
                     <Switch
-                      checked={category.options.some(
-                        (option) => notificationSettings[option.name]
-                      )}
+                      checked={notificationSettings[category.value]}
                       onClick={() => {
-                        // Toggle all options in this category
-                        const anyChecked = category.options.some(
-                          (option) => notificationSettings[option.name]
+                        handleSetIsChecked(
+                          category.value,
+                          !notificationSettings[category.value]
                         );
-                        const newValue = !anyChecked;
-                        category.options.forEach((option) => {
-                          handleSetIsChecked(option.name, newValue);
-                        });
                       }}
+                      // onClick={() => {
+                      //   // Toggle all options in this category
+                      //   console.log("Toggle switch...", category.value);
+                      //   const anyChecked = category.options.some(
+                      //     (option) => notificationSettings[option.name]
+                      //   );
+                      //   const newValue = !anyChecked;
+                      //   category.options.forEach((option) => {
+                      //     handleSetIsChecked(option.name, newValue);
+                      //   });
+                      // }}
                     />
                   </div>
                 </div>
@@ -1659,11 +1661,17 @@ Once restricted, they will no longer have access to participate in the property'
                       name={option.name}
                       darkText
                       state={{
-                        isChecked: notificationSettings[option.name] || false,
+                        isChecked: notificationSettings[category.value],
                         setIsChecked: (value) =>
-                          handleSetIsChecked(option.name, value),
+                          handleSetIsChecked(category.value, value),
                       }}
-                      onChange={handleCheckboxChange}
+                      onChange={() =>
+                        handleCheckboxChange(
+                          category.value,
+                          !notificationSettings[category.value]
+                        )
+                      }
+                      //disabled
                     >
                       {option.text}
                     </DocumentCheckbox>
@@ -1685,7 +1693,7 @@ Once restricted, they will no longer have access to participate in the property'
           <div className="flex justify-end mt-8">
             <SettingsUpdateButton
               loading={loadingNotification}
-              action={saveSettings}
+              action={saveSettingsNotification}
             />
           </div>
         </SettingsSection>

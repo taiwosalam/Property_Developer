@@ -40,8 +40,8 @@ export const MatchedProfile: React.FC<{
                 containerClassName="w-fit mx-auto custom-secondary-bg rounded-full"
               />
               <div className="w-full text-center">
-                <div className="flex items-center gap-1">
-                  <p className="font-bold text-xl">
+                <div className="flex items-center justify-center gap-1">
+                  <p className="font-bold text-xl text-center">
                     {isValidValue(occupant.name) ? (
                       <p className="font-bold text-xl">
                         {capitalizeEachWord(occupant.name)}

@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
 import { parseCurrencyToNumber, sponsorUnit } from "../data";
 import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
+import { useRole } from "@/hooks/roleContext";
 
 interface UnitSponsorPopoverProps {
   availableSponsors: number;
@@ -39,9 +40,10 @@ const UnitSponsorPopover = ({
   status,
   annualRent,
   is_sponsored = true,
-  sponsored_count
+  sponsored_count,
 }: UnitSponsorPopoverProps) => {
   const [modalOpen, setModalOpen] = useState(false);
+  const { role } = useRole();
   const [buyModal, setBuyModal] = useState(false);
   const [showPopover, setShowPopover] = useState(false);
   const [reqLoading, setReqLoading] = useState(false);
@@ -197,7 +199,20 @@ const UnitSponsorPopover = ({
                   <BuySponsorModal />
                 </ModalContent>
               </Modal>
-            ) : null}
+            ) : (
+              <>
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="sm_medium" className="py-2 px-8">
+                      Proceed
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <BuySponsorModal />
+                  </ModalContent>
+                </Modal>
+              </>
+            )}
           </div>
         </div>
         <svg
@@ -216,10 +231,12 @@ const UnitSponsorPopover = ({
         onClick={() => setShowPopover((prev) => !prev)}
       >
         <SponsorIcon />
-        {
-          sponsored_count > 0 ? <p className="hidden sm:block">Sponsored</p> : <p className="hidden sm:block">Sponsor</p>
-        }
-       {sponsored_count > 1 && <span>x{sponsored_count}</span>}
+        {sponsored_count > 0 ? (
+          <p className="hidden sm:block">Sponsored</p>
+        ) : (
+          <p className="hidden sm:block">Sponsor</p>
+        )}
+        {sponsored_count > 1 && <span>x{sponsored_count}</span>}
       </button>
       {/* Modal for success message */}
       <Modal state={{ isOpen: modalOpen, setIsOpen: setModalOpen }}>

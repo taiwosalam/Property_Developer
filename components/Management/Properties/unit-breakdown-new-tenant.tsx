@@ -18,6 +18,12 @@ import { UnitDataObject } from "@/app/(nav)/management/properties/data";
 const UnitBreakdownNewTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+
+  const showAgencyCharge =
+    propertySettings?.who_to_charge_new_tenant?.toLowerCase() === "tenants" ||
+    propertySettings?.who_to_charge_new_tenant?.toLowerCase() === "both";
+  const showCautionFee = propertySettings?.caution_deposit !== undefined;
+
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
   );
@@ -32,6 +38,8 @@ const UnitBreakdownNewTenant = () => {
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.other_charge || "0")
   );
+
+  console.log(" unitData here", unitData);
 
   const initialFormValues = useMemo(() => {
     return {
@@ -56,8 +64,8 @@ const UnitBreakdownNewTenant = () => {
       otherCharges: unitData?.other_charge
         ? formatNumber(parseFloat(unitData.other_charge))
         : "",
-      vat: unitData?.vat
-        ? formatNumber(parseFloat(unitData.vat as string))
+      vat: unitData?.vat_amount
+        ? formatNumber(parseFloat(unitData.vat_amount as string))
         : "0",
       totalPackage: unitData?.total_package
         ? formatNumber(parseFloat(unitData.total_package))
@@ -71,7 +79,7 @@ const UnitBreakdownNewTenant = () => {
     unitData?.caution_fee,
     unitData?.inspection_fee,
     unitData?.other_charge,
-    unitData?.vat,
+    unitData?.vat_amount,
     unitData?.total_package,
   ]);
 
@@ -248,36 +256,42 @@ const UnitBreakdownNewTenant = () => {
           type="text"
           autoComplete="off"
         />
-        <Input
-          id="agency_fee"
-          label="Agency Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={agencyFee}
-          readOnly
-          type="text"
-          autoComplete="off"
-        />
-        <Input
-          id="legal_fee"
-          label="Legal Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={legalFee}
-          onChange={(value) => handleInputChange("legalFee", value)}
-          type="text"
-          autoComplete="off"
-        />
-        <Input
-          id="caution_fee"
-          label="Caution Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={cautionFee}
-          onChange={(value) => handleInputChange("cautionFee", value)}
-          type="text"
-          autoComplete="off"
-        />
+        {showAgencyCharge && (
+          <>
+            <Input
+              id="agency_fee"
+              label="Agency Fee"
+              inputClassName="bg-white"
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              value={agencyFee}
+              readOnly
+              type="text"
+              autoComplete="off"
+            />
+            <Input
+              id="legal_fee"
+              label="Legal Fee"
+              inputClassName="bg-white"
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              value={legalFee}
+              onChange={(value) => handleInputChange("legalFee", value)}
+              type="text"
+              autoComplete="off"
+            />
+          </>
+        )}
+        {showCautionFee && (
+          <Input
+            id="caution_fee"
+            label="Caution Fee"
+            inputClassName="bg-white"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={cautionFee}
+            onChange={(value) => handleInputChange("cautionFee", value)}
+            type="text"
+            autoComplete="off"
+          />
+        )}
         <Input
           id="inspection_fee"
           label="Inspection Fee"

@@ -126,6 +126,19 @@ const ManageInventory = () => {
     event.preventDefault();
     setIsLoading(true);
 
+    // Check if all inventory items have at least one image
+    const hasEmptyImages = inventoryFiles.some((files, index) => {
+      if (files.length === 0) {
+        toast.error(`Please select at least one inventory image`);
+        return true;
+      }
+      return false;
+    });
+
+    if (hasEmptyImages) {
+      return;
+    }
+
     try {
       const formData = new FormData(event.currentTarget);
       const totalItems = inventoryItems.length + moreInventory;

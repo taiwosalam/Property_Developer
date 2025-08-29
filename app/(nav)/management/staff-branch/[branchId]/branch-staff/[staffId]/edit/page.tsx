@@ -34,11 +34,13 @@ import SettingsBank from "@/components/Settings/settings-bank";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
 import { cleanPathname } from "@/tour/steps/page-steps";
+import { useRole } from "@/hooks/roleContext";
 
 const EditStaffProfile = () => {
   const { branchId, staffId } = useParams();
   const { branch } = useBranchStore();
   const router = useRouter();
+  const { role } = useRole();
 
   const [pageData, setPageData] = useState<StaffProfileProps>(staffData);
   const {
@@ -92,13 +94,28 @@ const EditStaffProfile = () => {
     return () => setShouldRenderTour(false);
   }, [setShouldRenderTour, setPersist, isTourCompleted]);
 
+  const getRoute = () => {
+    switch (role) {
+      case "manager":
+        router.push(`/manager/management/staff-branch`);
+        break;
+      case "account":
+        router.push(`/accountant/management/staff-branch`);
+        break;
+      case "staff":
+        router.push(`/staff/management/staff-branch`);
+        break;
+      default:
+        router.push(`/management/staff-branch`);
+        break;
+    }
+  };
+
   if (loading)
     return <CustomLoader layout="edit-page" pageTitle="Edit Staff" />;
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
   if (!apiData) return null;
-
-
 
   return (
     <StaffEditContext.Provider value={{ data: pageData }}>
@@ -140,7 +157,7 @@ const EditStaffProfile = () => {
             <ModalContent>
               <DeleteAccountModal
                 action={async () => await deleteStaff(pageData.id)}
-                afterAction={() => router.push("/management/staff-branch")}
+                afterAction={() => getRoute()}
               />
             </ModalContent>
           </Modal>

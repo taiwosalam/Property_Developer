@@ -20,6 +20,7 @@ import { empty } from "@/app/config";
 import { toast } from "sonner";
 import useBranchStore from "@/store/branch-store";
 import { ArrowLeftIcon } from "@/public/icons/icons";
+import { cacheManager } from "@/hooks/cacheManager";
 
 const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
   picture,
@@ -81,9 +82,11 @@ const SendFundRecipient: React.FC<Omit<Beneficiary, "id">> = ({
         }
         if (branch) {
           toast.success("Branch Wallet Funded Successfully");
+          cacheManager.deleteCacheByUrl("branch");
           window.dispatchEvent(new Event("refetch-wallet"));
           window.dispatchEvent(new Event("refetch-branch-data"));
-        };
+        }
+        cacheManager.deleteCacheByUrl("branch");
         window.dispatchEvent(new Event("refetch_staff"));
         window.dispatchEvent(new Event("refetch-wallet"));
         window.dispatchEvent(new Event("refetch-branch-data"));

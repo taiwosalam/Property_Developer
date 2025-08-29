@@ -137,10 +137,8 @@ const Tenants = () => {
 
   // Infinite scroll callback
   const handleInfiniteScroll = useCallback(async () => {
-    console.log("handleInfiniteScroll called, current page:", page);
     setPage((prev) => {
       const nextPage = prev + 1;
-      console.log("Incrementing to page:", nextPage);
       sessionStorage.setItem("tenant_page", nextPage.toString());
       return nextPage;
     });
@@ -151,25 +149,6 @@ const Tenants = () => {
       callback: handleInfiniteScroll,
       hasMore: pageData.current_page < pageData.total_pages,
     });
-
-  useEffect(() => {
-    console.log("Infinite scroll state:", {
-      page,
-      currentPage: pageData.current_page,
-      totalPages: pageData.total_pages,
-      hasMore: pageData.current_page < pageData.total_pages,
-      infiniteScrollLoading,
-      silentLoading,
-      fromCache,
-    });
-  }, [
-    page,
-    pageData.current_page,
-    pageData.total_pages,
-    infiniteScrollLoading,
-    silentLoading,
-    fromCache,
-  ]);
 
   useEffect(() => {
     setView(storedView);
@@ -230,13 +209,6 @@ const Tenants = () => {
 
   useEffect(() => {
     if (apiData?.data && Array.isArray(apiData.data.tenants)) {
-      console.log("API data received:", {
-        page: config.params.page,
-        total_pages: apiData.data.pagination.total_pages,
-        tenants: apiData.data.tenants.length,
-        fromCache,
-        apiData,
-      });
       const transformedData = transformTenantApiResponse(apiData);
       setPageData((prevData) => {
         const updatedTenants =

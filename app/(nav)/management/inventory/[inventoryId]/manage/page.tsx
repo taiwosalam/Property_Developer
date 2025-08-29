@@ -33,6 +33,7 @@ import KeyValueList from "@/components/KeyValueList/key-value-list";
 import { InventoryFetchData } from "../types";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark } from "@/public/icons/icons";
+import { useRole } from "@/hooks/roleContext";
 
 interface InventoryData {
   status: string;
@@ -75,6 +76,7 @@ const ManageInventory = () => {
   const { data, loading, error, isNetworkError } = useFetch<InventoryFetchData>(
     `/inventory/unit/${inventoryId}`
   );
+  const { role } = useRole();
 
   useEffect(() => {
     const fetchBranchData = async () => {
@@ -120,11 +122,44 @@ const ManageInventory = () => {
     }
   };
 
+  const getRoute = () => {
+    switch (role) {
+      case "director":
+        router.push(`/management/inventory/${PROPERTY_ID}`);
+        break;
+      case "manager":
+        router.push(`/management/inventory/${PROPERTY_ID}`);
+        break;
+      case "account":
+        router.push(`/management/inventory/${PROPERTY_ID}`);
+        break;
+      case "staff":
+        router.push(`/management/inventory/${PROPERTY_ID}`);
+        break;
+      default:
+        router.push("/unauthorized");
+        break;
+    }
+  };
+
   const handleUpdateInventory = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
     event.preventDefault();
     setIsLoading(true);
+
+    // Check if all inventory items have at least one image
+    const hasEmptyImages = inventoryFiles.some((files, index) => {
+      if (files.length === 0) {
+        toast.error(`Please select at least one inventory image`);
+        return true;
+      }
+      return false;
+    });
+
+    if (hasEmptyImages) {
+      return;
+    }
 
     try {
       const formData = new FormData(event.currentTarget);
@@ -213,7 +248,7 @@ const ManageInventory = () => {
       );
       if (success) {
         toast.success("Inventory updated successfully!");
-        router.push(`/management/inventory/${PROPERTY_ID}`);
+        getRoute();
       }
     } catch (error) {
       console.error("Error updating inventory:", error);

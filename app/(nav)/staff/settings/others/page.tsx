@@ -40,16 +40,21 @@ import {
 } from "@/public/icons/icons";
 import Avatars from "@/components/Avatars/avatars";
 import useFetch from "@/hooks/useFetch";
-import { ApiResponseUserPlan } from "@/app/(nav)/settings/others/types";
+import {
+  ApiResponseUserPlan,
+  INotificationSetting,
+} from "@/app/(nav)/settings/others/types";
 import { debounce } from "lodash";
 import {
   otherNotificationSettings,
   updateCompanyNotification,
+  updateNotificationSettings,
 } from "@/app/(nav)/settings/others/data";
 import SoundSelector from "@/app/(nav)/settings/others/NotificationSound";
 import Switch from "@/components/Form/Switch/switch";
 import { SectionSeparator } from "@/components/Section/section-components";
 import { notificationCategories } from "@/app/(nav)/settings/others/data";
+import { toast } from "sonner";
 const notificationSettingOptions = [
   {
     title: "System Notification",
@@ -88,12 +93,57 @@ const Others = () => {
     [key: string]: boolean;
   }>({});
 
+  const { data: apiDataProfile } =
+    useFetch<INotificationSetting>(`user/profile`);
   const [notificationSettings, setNotificationSettings] =
     useState<NotificationSettings>({
-      new_messages: true,
-      task_updates: true,
-      document_creation: true,
+      management: true,
+      rent: true,
+      tasks: true,
+      calendar: true,
+      announcements: true,
+      accounting: true,
+      listings: true,
+      settings: true,
+      system: true,
+      units: true,
+      community: true,
     });
+
+  useEffect(() => {
+    if (apiDataProfile?.data?.notificationSetting) {
+      const { notificationSetting } = apiDataProfile.data;
+      setNotificationSettings({
+        management: notificationSetting.management,
+        rent: notificationSetting.rent,
+        tasks: notificationSetting.tasks,
+        calendar: notificationSetting.calendar,
+        announcements: notificationSetting.announcements,
+        accounting: notificationSetting.accounting,
+        listings: notificationSetting.listings,
+        settings: notificationSetting.settings,
+        system: notificationSetting.system,
+        units: notificationSetting.units,
+        community: notificationSetting.community,
+      });
+    }
+  }, [apiDataProfile]);
+
+  const saveSettingsNotification = async () => {
+    try {
+      setLoadingNotification(true);
+      const success = await updateNotificationSettings(notificationSettings);
+      if (success) {
+        toast.success("Notification settings updated successfully");
+      } else {
+        toast.error("Failed to update notification settings");
+      }
+    } catch (error) {
+      toast.error("Failed to update notification settings");
+    } finally {
+      setLoadingNotification(false);
+    }
+  };
 
   type DirectorsFormOptions = "options" | "choose-avatar";
 
@@ -278,21 +328,28 @@ const Others = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Switch
-                    checked={category.options.some(
-                      (option) => notificationSettings[option.name] ?? true
-                    )}
+                    checked={notificationSettings[category.value]}
                     onClick={() => {
-                      const anyChecked = category.options.some(
-                        (option) => notificationSettings[option.name] ?? true
+                      handleSetIsChecked(
+                        category.value,
+                        !notificationSettings[category.value]
                       );
-                      const newValue = !anyChecked;
-                      category.options.forEach((option) => {
-                        handleSetIsChecked(option.name, newValue);
-                      });
                     }}
+                    // onClick={() => {
+                    //   // Toggle all options in this category
+                    //   console.log("Toggle switch...", category.value);
+                    //   const anyChecked = category.options.some(
+                    //     (option) => notificationSettings[option.name]
+                    //   );
+                    //   const newValue = !anyChecked;
+                    //   category.options.forEach((option) => {
+                    //     handleSetIsChecked(option.name, newValue);
+                    //   });
+                    // }}
                   />
                 </div>
               </div>
+              {/* Category Options */}
               <div className="ml-4 space-y-3">
                 {category.options.map((option) => (
                   <DocumentCheckbox
@@ -300,11 +357,17 @@ const Others = () => {
                     name={option.name}
                     darkText
                     state={{
-                      isChecked: notificationSettings[option.name] ?? true,
+                      isChecked: notificationSettings[category.value],
                       setIsChecked: (value) =>
-                        handleSetIsChecked(option.name, value),
+                        handleSetIsChecked(category.value, value),
                     }}
-                    onChange={handleCheckboxChange}
+                    onChange={() =>
+                      handleCheckboxChange(
+                        category.value,
+                        !notificationSettings[category.value]
+                      )
+                    }
+                    //disabled
                   >
                     {option.text}
                   </DocumentCheckbox>
@@ -321,7 +384,7 @@ const Others = () => {
         <div className="flex justify-end mt-8">
           <SettingsUpdateButton
             loading={loadingNotification}
-            action={saveSettings}
+            action={saveSettingsNotification}
           />
         </div>
       </SettingsSection>

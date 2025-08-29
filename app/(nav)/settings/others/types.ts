@@ -1,3 +1,5 @@
+import { boolean } from "zod";
+
 export type ApiResponseDirector = {
   success: boolean;
   message: string;
@@ -307,3 +309,21 @@ export type RestrictedUserApiResponse = {
   message: string;
   data: RestrictedTenant[];
 };
+
+export interface INotificationSetting {
+  data: {
+    notificationSetting: {
+      management: boolean;
+      rent: boolean;
+      tasks: boolean;
+      calendar: boolean;
+      announcements: boolean;
+      accounting: boolean;
+      listings: boolean;
+      settings: boolean;
+      system: boolean;
+      community: boolean;
+      units: boolean;
+    };
+  };
+}

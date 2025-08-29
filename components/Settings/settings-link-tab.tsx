@@ -75,6 +75,7 @@ const SettingsLinkTab: React.FC<
       href={`${path}settings/${type}`}
       className={clsx(
         "py-[14px] w-[138px] flex items-center justify-center gap-1 border-b-[2px] border-solid",
+        // "py-[14px] w-[138px] mt-8 md:mt-4 flex items-center justify-center gap-1 border-b-[2px] border-solid",
         {
           "bg-white border-brand-9 dark:bg-darkText-primary dark:text-white":
             active,
