@@ -171,7 +171,7 @@ const UnitSponsorPopover = ({
             >
               Cancel
             </Button>
-            {availableSponsors > 0 ? (
+            {availableSponsors > 0 && role === "director"  ? (
               <Button
                 onClick={(e) => {
                   proceed();
