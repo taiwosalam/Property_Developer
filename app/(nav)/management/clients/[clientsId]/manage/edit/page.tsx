@@ -8,7 +8,8 @@ import {
   transformIndividualClientAPIResponse,
 } from "../data";
 // import { LandlordPageData } from "../../../types";
-import { ClientPageData } from "../../../../../../../../../../app/(nav)/management/clients/types";
+// import { ClientPageData } from "../../../../../../../../../../app/(nav)/management/clients/types";
+import type { LandlordPageData } from "@/app/(nav)/management/landlord/types";
 import { Modal, ModalContent, ModalTrigger } from "@/components/Modal/modal";
 import DeleteAccountModal from "@/components/Management/delete-account-modal";
 import BackButton from "@/components/BackButton/back-button";
@@ -33,8 +34,9 @@ import { ExclamationMark } from "@/public/icons/icons";
 
 const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
   const { landlordId } = params;
-  const router = useRouter();
-  const [landlordData, setLandlordData] = useState<ClientPageData | null>(
+  const router = useRouter();  
+    // const [landlordData, setLandlordData] = useState<ClientPageData | null>(
+  const [landlordData, setLandlordData] = useState<LandlordPageData | null>(
     null
   );
 
@@ -42,12 +44,22 @@ const EditLandlord = ({ params }: { params: { landlordId: string } }) => {
     useFetch<IndividualClientAPIResponse>(`landlord/${landlordId}`);
 
   useRefetchOnEvent("landlord-updated", () => refetch({ silent: true }));
-
+// useEffect(() => {
+//     if (data) {
+//       setLandlordData(transformIndividualClientAPIResponse(data));
+//     }
+//   }, [data]);
   useEffect(() => {
     if (data) {
-      setLandlordData(transformIndividualClientAPIResponse(data));
+      const transformed = transformIndividualClientAPIResponse(data);
+      const landlordShape: LandlordPageData = {
+        ...transformed,
+        picture: transformed.picture_url,
+      } as unknown as LandlordPageData;
+      setLandlordData(landlordShape);
     }
   }, [data]);
+  
 
   const pathname = usePathname();
   const {

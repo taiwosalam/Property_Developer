@@ -1,5 +1,6 @@
 import type { Field } from "@/components/Table/types";
-import { IndividualClientData } from "../../types";
+// import { IndividualClientData } from "../../types";
+import { IndividualClientData } from "@/components/PAGES/DIRECTOR/PropertyDeveloper/VariantA/management/clients/types";
 import { tierColorMap } from "@/components/BadgeIcon/badge-icon";
 import moment from "moment";
 import { v4 as uuidv4 } from "uuid";

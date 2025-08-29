@@ -58,7 +58,7 @@ export const property_developer_director_nav_items: NavItemsProps = [
       { label: "to do", href: "/to-do" },
       { label: "request", href: "/requests" },
       { label: "inquiries", href: "/inquiries" },
-      { label: "complain", href: "/complaints" },
+      { label: "complain", href: "/complain" },
     ],
   },
   {
