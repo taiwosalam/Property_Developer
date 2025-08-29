@@ -72,7 +72,6 @@ const VacantUnitCard = ({
   const CAN_LINK_TENANT = role === "manager" || role === "director";
   const CAN_SPONSOR_UNIT = role === "manager" || role === "director";
 
-  console.log("role", role)
   // Function to determine route prefix based on page
   const getRoutePrefix = function (): string {
     switch (role) {

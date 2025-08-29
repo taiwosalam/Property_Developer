@@ -255,7 +255,6 @@ const ManagerDashboard = () => {
   }, [complaintData]);
 
   // =========== INVOICE DATA ===========
-  // =========== INVOICE DATA with cache ===========
   const fetchUrl =
     BRANCH_ID && BRANCH_ID !== 0
       ? `/invoice/list?branch_id=${BRANCH_ID}`
@@ -336,8 +335,7 @@ const ManagerDashboard = () => {
     return () => setShouldRenderTour(false);
   }, [tourShouldRun, setShouldRenderTour, setPersist]);
 
-
-//================================= RENDER STARTS HERE ========================================
+  //================================= RENDER STARTS HERE ========================================
   return (
     <div>
       {isModalOpen && (

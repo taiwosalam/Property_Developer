@@ -17,31 +17,36 @@ import { usePathname } from "next/navigation";
 const UnitBreakdownNewTenant = () => {
   const propertySettings = useAddUnitStore((s) => s.propertySettings);
   const propertyDetails = useAddUnitStore((s) => s.propertyDetails);
+
+  const showAgencyCharge =
+    propertySettings?.who_to_charge_new_tenant?.toLowerCase() === "tenants" ||
+    propertySettings?.who_to_charge_new_tenant?.toLowerCase() === "both";
+  const showCautionFee = propertySettings?.caution_deposit !== undefined;
+
   const agencyFeePercentage = parseFloat(
     String(propertySettings?.agency_fee || "0")
   );
 
-  
   const { formResetKey, unitData } = useUnitForm();
   const CURRENCY_SYMBOL =
-  currencySymbols[propertySettings?.currency || "naira"];
+    currencySymbols[propertySettings?.currency || "naira"];
   const [otherChargesInput, setOtherChargesInput] = useState(
     !!parseFloat(unitData?.other_charge || "0")
   );
 
-  console.log(" unitData here", unitData)
+  console.log(" unitData here", unitData);
 
   const initialFormValues = useMemo(() => {
     return {
       rentAmount: unitData?.fee_amount
-      ? formatNumber(parseFloat(unitData.fee_amount))
+        ? formatNumber(parseFloat(unitData.fee_amount))
         : "",
-        agencyFee: unitData?.agency_fee
+      agencyFee: unitData?.agency_fee
         ? formatNumber(parseFloat(unitData.agency_fee))
         : "",
       legalFee: unitData?.legal_fee
-      ? formatNumber(parseFloat(unitData.legal_fee))
-      : "",
+        ? formatNumber(parseFloat(unitData.legal_fee))
+        : "",
       serviceCharge: unitData?.service_charge
         ? formatNumber(parseFloat(unitData.service_charge))
         : "",
@@ -52,14 +57,14 @@ const UnitBreakdownNewTenant = () => {
         ? formatNumber(parseFloat(unitData.inspection_fee))
         : "",
       otherCharges: unitData?.other_charge
-      ? formatNumber(parseFloat(unitData.other_charge))
-      : "",
+        ? formatNumber(parseFloat(unitData.other_charge))
+        : "",
       vat: unitData?.vat_amount
-      ? formatNumber(parseFloat(unitData.vat_amount as string))
-      : "0",
+        ? formatNumber(parseFloat(unitData.vat_amount as string))
+        : "0",
       totalPackage: unitData?.total_package
-      ? formatNumber(parseFloat(unitData.total_package))
-      : "",
+        ? formatNumber(parseFloat(unitData.total_package))
+        : "",
     };
   }, [
     unitData?.fee_amount,
@@ -85,7 +90,7 @@ const UnitBreakdownNewTenant = () => {
     vat,
     totalPackage,
   } = formValues;
-  
+
   type FormField = keyof typeof formValues;
   // Update formValues based on input changes
   const handleInputChange = (field: FormField, value: string) => {
@@ -94,11 +99,11 @@ const UnitBreakdownNewTenant = () => {
       [field]: formatCostInputValue(value),
     }));
   };
-  
+
   const addOtherCharges = () => {
     setOtherChargesInput(true);
   };
-  
+
   const handleRemoveOtherCharges = () => {
     setOtherChargesInput(false);
     setFormValues((prevValues) => ({
@@ -106,7 +111,7 @@ const UnitBreakdownNewTenant = () => {
       otherCharges: "0",
     }));
   };
-  
+
   // Calculate VAT (only if VAT is enabled in settings)
   useEffect(() => {
     const rentAmountValue = parseFloat(rentAmount.replace(/,/g, "")) || 0;
@@ -115,9 +120,9 @@ const UnitBreakdownNewTenant = () => {
     const legalFeeValue = (rentAmountValue * agencyFeePercentage) / 100;
     const shouldCalculateVAT = propertySettings?.VAT?.toLowerCase() === "yes";
     const vatValue = shouldCalculateVAT
-    ? (agencyFeeValue + legalFeeValue) * 0.075
-    : 0;
-    
+      ? (agencyFeeValue + legalFeeValue) * 0.075
+      : 0;
+
     setFormValues((prevValues) => ({
       ...prevValues,
       agencyFee: formatNumber(agencyFeeValue.toFixed(2)),
@@ -125,19 +130,19 @@ const UnitBreakdownNewTenant = () => {
       vat: formatNumber(vatValue.toFixed(2)),
     }));
   }, [rentAmount, legalFee, agencyFeePercentage, propertySettings?.VAT]);
-  
+
   // Calculate the total package
   useEffect(() => {
     const total =
-    (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
-    (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
-    (parseFloat(legalFee.replace(/,/g, "")) || 0) +
-    (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
-    (parseFloat(cautionFee.replace(/,/g, "")) || 0) +
-    (parseFloat(inspectionFee.replace(/,/g, "")) || 0) +
-    (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
-    (parseFloat(vat.replace(/,/g, "")) || 0);
-    
+      (parseFloat(rentAmount.replace(/,/g, "")) || 0) +
+      (parseFloat(agencyFee.replace(/,/g, "")) || 0) +
+      (parseFloat(legalFee.replace(/,/g, "")) || 0) +
+      (parseFloat(serviceCharge.replace(/,/g, "")) || 0) +
+      (parseFloat(cautionFee.replace(/,/g, "")) || 0) +
+      (parseFloat(inspectionFee.replace(/,/g, "")) || 0) +
+      (parseFloat(otherCharges.replace(/,/g, "")) || 0) +
+      (parseFloat(vat.replace(/,/g, "")) || 0);
+
     setFormValues((prevValues) => ({
       ...prevValues,
       totalPackage: formatNumber(total.toFixed(2)),
@@ -152,7 +157,7 @@ const UnitBreakdownNewTenant = () => {
     otherCharges,
     vat,
   ]);
-  
+
   // Reset form when formResetKey changes
   useEffect(() => {
     if (formResetKey !== 0) {
@@ -160,7 +165,7 @@ const UnitBreakdownNewTenant = () => {
       setFormValues(initialFormValues);
     }
   }, [formResetKey, initialFormValues, unitData?.other_charge]);
-  
+
   // Tour implementation
   const pathname = usePathname();
   const {
@@ -170,7 +175,7 @@ const UnitBreakdownNewTenant = () => {
     goToStep,
     restartTour,
   } = useTourStore();
-  
+
   useEffect(() => {
     setPersist(false);
     if (!isTourCompleted("EditPropertyTour")) {
@@ -178,13 +183,13 @@ const UnitBreakdownNewTenant = () => {
     } else {
       setShouldRenderTour(false);
     }
-    
+
     return () => setShouldRenderTour(false);
   }, [setShouldRenderTour, setPersist, isTourCompleted]);
-  
+
   const propertyType = useAddUnitStore((state) => state.propertyType);
   const isRental = propertyType === "rental";
-  
+
   const handleTourSection = () => {
     if (!isRental && pathname.startsWith("/manager")) {
       goToStep(25);
@@ -199,9 +204,11 @@ const UnitBreakdownNewTenant = () => {
       goToStep(33);
     }
   };
-  
-  const [defaultPeriod, setDefaultPeriod] = useState(unitData?.fee_period || "yearly");
-  
+
+  const [defaultPeriod, setDefaultPeriod] = useState(
+    unitData?.fee_period || "yearly"
+  );
+
   return (
     <div className="unit-fee-breakdown-new-tenant new-tenant-fee-form">
       <div className="flex items-center gap-2">
@@ -251,36 +258,42 @@ const UnitBreakdownNewTenant = () => {
           type="text"
           autoComplete="off"
         />
-        <Input
-          id="agency_fee"
-          label="Agency Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={agencyFee}
-          readOnly
-          type="text"
-          autoComplete="off"
-        />
-        <Input
-          id="legal_fee"
-          label="Legal Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={legalFee}
-          onChange={(value) => handleInputChange("legalFee", value)}
-          type="text"
-          autoComplete="off"
-        />
-        <Input
-          id="caution_fee"
-          label="Caution Fee"
-          inputClassName="bg-white"
-          CURRENCY_SYMBOL={CURRENCY_SYMBOL}
-          value={cautionFee}
-          onChange={(value) => handleInputChange("cautionFee", value)}
-          type="text"
-          autoComplete="off"
-        />
+        {showAgencyCharge && (
+          <>
+            <Input
+              id="agency_fee"
+              label="Agency Fee"
+              inputClassName="bg-white"
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              value={agencyFee}
+              readOnly
+              type="text"
+              autoComplete="off"
+            />
+            <Input
+              id="legal_fee"
+              label="Legal Fee"
+              inputClassName="bg-white"
+              CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+              value={legalFee}
+              onChange={(value) => handleInputChange("legalFee", value)}
+              type="text"
+              autoComplete="off"
+            />
+          </>
+        )}
+        {showCautionFee && (
+          <Input
+            id="caution_fee"
+            label="Caution Fee"
+            inputClassName="bg-white"
+            CURRENCY_SYMBOL={CURRENCY_SYMBOL}
+            value={cautionFee}
+            onChange={(value) => handleInputChange("cautionFee", value)}
+            type="text"
+            autoComplete="off"
+          />
+        )}
         <Input
           id="inspection_fee"
           label="Inspection Fee"

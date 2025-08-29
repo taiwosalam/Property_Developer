@@ -171,7 +171,7 @@ const UnitSponsorPopover = ({
             >
               Cancel
             </Button>
-            {availableSponsors > 0 && role === "director"  ? (
+            {availableSponsors > 0 ? (
               <Button
                 onClick={(e) => {
                   proceed();
@@ -199,7 +199,20 @@ const UnitSponsorPopover = ({
                   <BuySponsorModal />
                 </ModalContent>
               </Modal>
-            ) : null}
+            ) : (
+              <>
+                <Modal>
+                  <ModalTrigger>
+                    <Button size="sm_medium" className="py-2 px-8">
+                      Proceed
+                    </Button>
+                  </ModalTrigger>
+                  <ModalContent>
+                    <BuySponsorModal />
+                  </ModalContent>
+                </Modal>
+              </>
+            )}
           </div>
         </div>
         <svg

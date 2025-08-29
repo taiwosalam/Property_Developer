@@ -49994,6 +49994,7 @@ export const accountRoutes = [
   "/accountant/documents",
   "/accountant/settings",
   "/accountant/settings/profile",
+  "/accountant/documents",
   "/agent-community",
 ];
 
