@@ -313,18 +313,6 @@ const CreatePropertyForm: React.FC<CreatePropertyFormProps> = ({
     [branchData?.accountOfficer?.data]
   );
 
-  // const staffOption = useMemo(
-  //   () =>
-  //     branchData?.staff?.data?.data
-  //       ?.filter((s: any) => s.staff_role !== "manager")
-  //       .map((s: any) => ({
-  //         value: s.id,
-  //         label: s.user.name,
-  //         icon: s.user.profile.picture,
-  //       })) || [],
-  //   [branchData?.staff?.data]
-  // );
-
   const staffOption = useMemo(
     () =>
       branchData?.staff?.data?.data
