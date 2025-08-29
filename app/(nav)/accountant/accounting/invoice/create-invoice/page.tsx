@@ -209,9 +209,9 @@ const CreateInvoicePage = () => {
   if (isNetworkError) return <NetworkError />;
   if (error) return <ServerError error={error} />;
 
-  const CURRENCY =
-    currencySymbols[propertyData?.currency as keyof typeof currencySymbols] ||
-    currencySymbols["naira"];
+  // const CURRENCY =
+  //   currencySymbols[propertyData?.currency as keyof typeof currencySymbols] ||
+  //   currencySymbols["naira"];
 
   return (
     <section className="space-y-7 pb-20">
@@ -233,11 +233,11 @@ const CreateInvoicePage = () => {
       >
         <div className="flex flex-col gap-4">
           <div className="property-card">
-            <Details
+            {/* <Details
               property_id={propertyData?.id}
               property_name={propertyData?.property_name}
               account_officer={propertyData?.account_officer}
-            />
+            /> */}
           </div>
           <div className="grid lg:grid-cols-2 gap-4">
             <Select
