@@ -301,7 +301,11 @@ export const account_nav_items: NavItemsProps = [
       { label: "agent request", href: "/agent-request" },
     ],
   },
-
+  {
+    type: "folder",
+    label: "documents",
+    href: "/accountant/documents",
+  },
   { type: "settings", label: "settings", href: "/accountant/settings" },
 ];
 

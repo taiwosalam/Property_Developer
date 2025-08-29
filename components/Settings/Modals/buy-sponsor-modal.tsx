@@ -2,7 +2,7 @@ import Button from "@/components/Form/Button/button";
 import LandlordTenantModalPreset from "@/components/Management/landlord-tenant-modal-preset";
 import ModalPreset from "@/components/Modal/modal-preset";
 import { formatNumber } from "@/utils/number-formatter";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CounterButton } from "../SettingsEnrollment/settings-enrollment-components";
 import { useModal } from "@/components/Modal/modal";
 import { usePersonalInfoStore } from "@/store/personal-info-store";
@@ -11,16 +11,44 @@ import { objectToFormData } from "@/utils/checkFormDataForImageOrAvatar";
 import { toast } from "sonner";
 import { useWalletStore } from "@/store/wallet-store";
 import AddFundsModal from "@/components/Wallet/AddFunds/add-funds-modal";
+import { WalletDataResponse } from "@/app/(nav)/wallet/data";
+import useFetch from "@/hooks/useFetch";
 
 const BuySponsorModal = () => {
   const UNIT_SPONSOR_COST = 2000;
   const [count, setCount] = React.useState(1);
   const balance = useWalletStore((s) => s.balance);
+  const setWalletStore = useWalletStore((s) => s.setWalletStore);
+  console.log("balance", balance);
   const companyId = usePersonalInfoStore((state) => state.company_id) || "";
   const { setIsOpen } = useModal();
   const [reqLoading, setReqLoading] = useState(false);
   const AVAILABLE_COMPANY_BALANCE = parseFloat(balance.my_balance);
   const [step, setStep] = useState<"confirm" | "add-funds">("confirm");
+
+  // GET USER WALLET BALANCE
+  const { data, error, refetch } = useFetch<WalletDataResponse>(
+    "/wallets/dashboard",
+    {
+      cache: {
+        enabled: true,
+        key: "wallet_balance",
+        ttl: 1000 * 60 * 5,
+      },
+    }
+  );
+
+  useEffect(() => {
+    if (data) {
+      console.log("wallet data", data);
+      setWalletStore("balance", {
+        my_balance: data.balance.my_balance,
+        caution_deposit: data.balance.escrow_balance,
+        earned_bonus: data.balance.earned_bonus,
+      });
+    }
+  }, [data, setWalletStore]);
+
   const handleIncrement = () => {
     setCount((prevCount) => (prevCount < 12 ? prevCount + 1 : prevCount));
   };

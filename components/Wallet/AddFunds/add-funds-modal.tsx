@@ -14,6 +14,7 @@ import { useModal } from "@/components/Modal/modal";
 import PaymentMethod from "./payment-method";
 import { useDrawerStore } from "@/store/drawerStore";
 import { useRole } from "@/hooks/roleContext";
+import { cacheManager } from "@/hooks/cacheManager";
 
 const AddFundsModal = ({
   branch,
@@ -30,7 +31,7 @@ const AddFundsModal = ({
   const { role } = useRole();
   const { setSelectedLegalOption, selectedLegalOption } = useDrawerStore();
   const company_name = usePersonalInfoStore((state) => state.company_name);
-
+  const isBranch = branch || role === "manager";
   const [activeStep, setActiveStep] =
     useState<WalletSendFundsOptions>("send funds menu");
   // State to hold payment details
@@ -47,6 +48,7 @@ const AddFundsModal = ({
     // Once payment is confirmed, you may reset to the menu or show a success message.
     // setActiveStep("send funds menu");
     setIsOpen(false);
+    cacheManager.deleteCacheByUrl("branch");
     window.dispatchEvent(new Event("fetch-profile"));
     window.dispatchEvent(new Event("refetch-wallet"));
     window.dispatchEvent(new Event("refetch-branch-data"));
@@ -69,7 +71,7 @@ const AddFundsModal = ({
   // Otherwise, render the WalletModalPreset with your funding options.
   return (
     <WalletModalPreset
-      title={branch ? "Add Funds" : "Select payment method"}
+      title={isBranch ? "Add Funds" : "Select payment method"}
       back={
         activeStep !== "send funds menu"
           ? () => setActiveStep("send funds menu")
