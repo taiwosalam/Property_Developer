@@ -124,6 +124,7 @@ export interface PropertyDataObject {
   is_inventory: any;
   property_type: string;
   fee_period: string;
+  isRental?: boolean; 
   updated_at: Date;
   currency?: keyof typeof currencySymbols;
   units_count: number;

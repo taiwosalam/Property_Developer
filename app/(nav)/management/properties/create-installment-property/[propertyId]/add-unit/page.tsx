@@ -5,6 +5,7 @@ import FlowProgress from "@/components/FlowProgress/flow-progress";
 import {
   InstallmentPropertyDetails,
   InstallmentPropertySettings,
+  InstallmentPropertyTerms,
 } from "@/components/Management/Properties/installment-property-unit-components";
 import {
   OutrightPropertyDetails,
@@ -16,7 +17,7 @@ import PageProgressBar from "@/components/PageProgressBar/page-progress-bar";
 import { UnitTypeKey } from "@/data";
 import { useGlobalStore } from "@/store/general-store";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { sampleInstallmentUnits } from "./data";
 import AddUnitFormCard from "@/components/Management/Properties/add-unit-form-card";
 import { useAddUnitStore } from "@/store/add-unit-store";
@@ -42,10 +43,17 @@ const InstallmentPropertyAddUnit = ({
   const [showUnitForm, setShowUnitForm] = useState(true);
   const newForm = useAddUnitStore((s) => s.newForm);
   const closeUnitForm = useGlobalStore((s) => s.closeUnitForm);
+  const setAddUnitStore = useAddUnitStore((s) => s.setAddUnitStore);
+  const installmentUnits = useAddUnitStore((s) => s.installmentUnits);
   const editMode = false;
 
-  // const addedUnits = useAddUnitStore((s) => s.addedUnits);
-  const addedUnits = sampleInstallmentUnits;
+  // Initialize installmentUnits with sample data for testing
+  useEffect(() => {
+    if (installmentUnits.length === 0) {
+      setAddUnitStore("installmentUnits", sampleInstallmentUnits);
+      setAddUnitStore("property_id", propertyId);
+    }
+  }, [setAddUnitStore, installmentUnits.length]);
 
   const resetForm = () => {
     setImages([]);
@@ -82,7 +90,8 @@ const InstallmentPropertyAddUnit = ({
   //   }
   // }, [propertyData, setAddUnitStore, router, propertyId]);
 
-  const SHOW_UNIT_FORM = !closeUnitForm && (newForm || addedUnits.length === 0);
+  const SHOW_UNIT_FORM =
+    !closeUnitForm && (newForm || installmentUnits.length === 0);
 
   return (
     <div>
@@ -131,7 +140,7 @@ const InstallmentPropertyAddUnit = ({
             setShouldRedirect,
           }}
         >
-          <div className="space-y-6 lg:space-y-8">
+          <div className="space-y-6 lg:space-y-8 mb-[60px]">
             <div className="property-details-wrapper">
               <InstallmentPropertyDetails heading="Property Details" />
             </div>
@@ -140,13 +149,17 @@ const InstallmentPropertyAddUnit = ({
               <InstallmentPropertySettings heading="Property Settings" />
             </div>
 
-            {addedUnits.length > 0 && (
+            <div className="property-details-wrapper">
+              <InstallmentPropertyTerms heading="Property Terms" />
+            </div>
+
+            {installmentUnits.length > 0 && (
               <>
                 <h4 className="text-primary-navy text-lg lg:text-xl font-bold">
                   {hideEmptyForm ? "Units Summary" : "Added Units"}
                 </h4>
                 <hr className="!my-4 border-none bg-borders-dark h-[1px]" />
-                {addedUnits.map((unit, index) => (
+                {installmentUnits.map((unit, index) => (
                   <AddUnitFormCard key={index} index={index} data={unit} />
                 ))}
               </>
@@ -158,7 +171,7 @@ const InstallmentPropertyAddUnit = ({
               </div>
             )}
 
-            {addedUnits.length > 0 && <AddUnitFooter noForm={true} />}
+            {installmentUnits.length > 0 && <AddUnitFooter noForm={true} />}
           </div>
         </UnitFormContext.Provider>
       </FlowProgress>
