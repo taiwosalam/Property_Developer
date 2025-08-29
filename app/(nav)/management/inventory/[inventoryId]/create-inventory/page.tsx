@@ -15,6 +15,7 @@ import { InventoryApiResponse } from "../types";
 import useFetch from "@/hooks/useFetch";
 import { useTourStore } from "@/store/tour-store";
 import { ExclamationMark, PlusIcon } from "@/public/icons/icons";
+import { useRole } from "@/hooks/roleContext";
 
 const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
   const isDarkMode = useDarkMode();
@@ -28,6 +29,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
   const [inventoryFiles, setInventoryFiles] = useState<File[][]>([]);
   const [showRemoveButton, setShowRemoveButton] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(0);
+  const { role } = useRole();
 
   const input_styles: CSSProperties = {
     padding: "12px 14px",
@@ -44,6 +46,26 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
     setShowRemoveButton(inventoryItems > 2);
   }, [inventoryItems]);
 
+  const getRoute = () => {
+    switch (role) {
+      case "director":
+       router.push(`/management/inventory/${params.inventoryId}`);
+       break;
+      case "manager":
+        router.push(`/manager/management/inventory/${params.inventoryId}`);
+        break;
+      case "account":
+        router.push(`/accountant/management/inventory/${params.inventoryId}`);
+        break;
+      case "staff":
+        router.push(`/staff/management/inventory/${params.inventoryId}`);
+        break;
+      default:
+        router.push('/unauthorized');
+        break;
+    }
+  };
+
   const handleAddInventory = async (
     event: React.FormEvent<HTMLFormElement>
   ) => {
@@ -51,6 +73,19 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
 
     if (!INVENTORY_ID || INVENTORY_ID === "0") {
       toast.warning("Inventory ID is Invalid");
+      return;
+    }
+
+    // Check if all inventory items have at least one image
+    const hasEmptyImages = inventoryFiles.some((files, index) => {
+      if (files.length === 0) {
+        toast.error(`Please select at least one inventory image`);
+        return true;
+      }
+      return false;
+    });
+
+    if (hasEmptyImages) {
       return;
     }
 
@@ -92,7 +127,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
         Number(unitId)
       );
       if (success) {
-        router.push(`/management/inventory/${params.inventoryId}`);
+        getRoute();
         toast.success("Inventory created successfully");
       }
     } catch (error) {

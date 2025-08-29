@@ -54,6 +54,19 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
       return;
     }
 
+    // Check if all inventory items have at least one image
+    const hasEmptyImages = inventoryFiles.some((files, index) => {
+      if (files.length === 0) {
+        toast.error(`Please select at least one inventory image`);
+        return true;
+      }
+      return false;
+    });
+
+    if (hasEmptyImages) {
+      return;
+    }
+
     setIsLoading(true);
     const formData = new FormData(event.currentTarget);
     const inventoryData = [];
@@ -92,7 +105,7 @@ const CreateInventory = ({ params }: { params: { inventoryId: string } }) => {
         Number(unitId)
       );
       if (success) {
-        router.push(`/manager/management/inventory/${params.inventoryId}`);
+        router.push(`/accountant/management/inventory/${params.inventoryId}`);
         toast.success("Inventory created successfully");
       }
     } catch (error) {

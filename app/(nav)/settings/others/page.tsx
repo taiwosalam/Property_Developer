@@ -613,14 +613,14 @@ const Others = () => {
     useState<NotificationSettings>({
       management: true,
       rent: true,
-      tasks: false,
+      tasks: true,
       calendar: true,
-      announcements: false,
+      announcements: true,
       accounting: true,
-      listings: false,
+      listings: true,
       settings: true,
       system: true,
-      units: false,
+      units: true,
       community: true,
     });
 
