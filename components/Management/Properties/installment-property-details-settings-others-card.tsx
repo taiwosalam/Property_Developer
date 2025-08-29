@@ -1,7 +1,7 @@
 import TruncatedText from "@/components/TruncatedText/truncated-text";
 import { currencySymbols, formatNumber } from "@/utils/number-formatter";
 
-export interface PropertyDetailsSettingsCardProps {
+export interface InstallmentPropertyDetailsSettingsCardProps {
   // Property Details
   propertyTitle: string;
   state: string;
@@ -48,7 +48,7 @@ const DetailItem: React.FC<{ label: string; value?: string | number }> = ({
 );
 
 const InstallmentPropertyDetailsSettingsCard: React.FC<
-  PropertyDetailsSettingsCardProps
+  InstallmentPropertyDetailsSettingsCardProps
 > = ({
   propertyTitle,
   state,

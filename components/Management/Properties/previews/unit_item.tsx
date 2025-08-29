@@ -12,7 +12,7 @@ import Sample4 from "@/public/empty/SampleProperty4.png";
 import Sample5 from "@/public/empty/SampleProperty5.jpg";
 import PopupImageModal from "@/components/PopupSlider/PopupSlider";
 import PropertyTag from "@/components/Tags/property-tag";
-import { InstallmentPropertyStatus } from "../property-details-settings-others-card";
+import { InstallmentPropertyStatus } from "../installment-property-details-settings-others-card";
 
 const UnitItem = () => {
   const status: InstallmentPropertyStatus = "available";

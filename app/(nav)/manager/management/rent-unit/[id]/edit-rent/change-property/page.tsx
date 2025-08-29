@@ -9,7 +9,6 @@ import Button from "@/components/Form/Button/button";
 import PostProceedContent from "@/components/Management/Rent And Unit/Edit-Rent/PostProceedContent";
 import FixedFooter from "@/components/FixedFooter/fixed-footer";
 import { RentSectionTitle } from "@/components/Management/Rent And Unit/rent-section-container";
-import PropeertyDetailsSettingsCard from "@/components/Management/Properties/property-details-settings-others-card";
 import { useSearchParams } from "next/navigation";
 import {
   SinglePropertyResponse,
@@ -22,6 +21,7 @@ import dynamic from "next/dynamic";
 import { useOccupantStore } from "@/hooks/occupant-store";
 import Select from "@/components/Form/Select/select";
 import ServerError from "@/components/Error/ServerError";
+import PropeertyDetailsSettingsCard from "@/components/Management/Properties/property-details-settings-others-card copy";
 const DynamicReactPlayer = dynamic(() => import("react-player"), {
   ssr: false,
 });

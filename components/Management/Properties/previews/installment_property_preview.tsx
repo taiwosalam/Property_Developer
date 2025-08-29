@@ -10,7 +10,7 @@ import UnitItem from "./unit_item";
 import { dummyPropertyDetails } from "./data";
 import InstallmentPropertyDetailsSettingsCard, {
   InstallmentPropertyStatus,
-} from "../property-details-settings-others-card";
+} from "../installment-property-details-settings-others-card";
 
 const InstallmentPropertyPreview = ({
   id,

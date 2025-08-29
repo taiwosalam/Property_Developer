@@ -2,7 +2,7 @@ import BackButton from "@/components/BackButton/back-button";
 import ImageSlider from "@/components/ImageSlider/image-slider";
 import { LocationIcon, PlayIconButton } from "@/public/icons/icons";
 import Image from "next/image";
-import PropeertyDetailsSettingsCard from "../property-details-settings-others-card";
+import PropeertyDetailsSettingsCard from "../installment-property-details-settings-others-card";
 import { empty } from "@/app/config";
 import Button from "@/components/Form/Button/button";
 import {
